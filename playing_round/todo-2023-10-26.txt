@@ -1,0 +1,97 @@
+todo-2023-10-26.txt
+
+2023/10/26
+0608 	installed Sublime merge, got CommanderX16 repo started on github as 
+		private / MIT license for general exploration/misc things that don't 
+		have proper place to live...
+TODO 	install assembler / emulator
+	DONE
+
+TODO 	explore video modes setup / writing pixels
+
+????	started verastuff.asm
+
+2023/10/27
+0745 	working on verastuff.asm
+0850 	rainbow.asm OK - have written pixels on screen
+
+	Just a thought... but what if adjusted the h_scale of the screen every line 
+	to make perspective?
+	Then mode7 style perspective simplifies to orthogonal -> 
+		need to write less pixels to screen... 
+	would work for maybe like a demo but would have to do inverse scaling of 
+	anything that wasn't at the z for that line on the screen. is the xmas demo.
+
+2023/10/28
+0800
+TODO 	figure out timing interrupts... play with scaling or something..  
+TODO 	output some text or something on layer 1 as overlay...80
+1300 	ooof... ok.. scale.asm working at least ... minor weirdness with the
+		displayed values but the scaling works so.. .
+	
+
+TODO 	tilemap graphics
+TODO 	explore VERA accelerations - line draw
+TODO 	explore VERA accelerations - polyfill
+TODO 	explore VERA accelerations - affine
+	ooo... cache filling... 
+	writes 32bits at a time.. 4 pixels wide.. so for like wolf3D style thing do 
+	4px strips down.. 	increment after is based on autoincrement..
+
+
+	; configure affine helper to scale this bit of wall
+	; x has height of wall 
+	; 						cycles 		bytes
+	texture_col_4_wide_loop:		
+		lda VERA_data0 	;	4 	4
+		lda VERA_data0 	;	4 	8
+		lda VERA_data0  ; 	4 	12
+		lda VERA_data0 	; 	4 	16
+		sta VERA_data0 	;	4 	20
+		dec x 			;	2 	22
+		BNE texture_col_4_wide_loop ; 3 	25 	for 4 pixels.. 
+
+	lets say wall textures are 64x64 like OG wolf3D - which ran on 286 @4mhz.. 
+	64x64 using 8x8 would be 128 bytes map base + 4K if unique tiles..
+	wolf3d used 114 tiles total with half being darker versions.. 456K.. oof
+	possibly could write tiles to some scratch space in VRAM as needed? 
+	writing 8x64 strip - 512 bytes ... fastest method would use routine per strip
+	write_texture_strip:
+		lda #imm ; 2
+		sta #abs ; 4 	6 per byte * 512 = 3072 cycles 
+		eyeballing 20fps, have ~400,000 (390x1024) cycles per frame out .. writing 4 pixel strips, worse case some
+		screen would need 320/4 = 80 strips written.. 80*3k = 240K cycles ... not bad, worse case some laggy frames?
+
+		enemy sprites - like 32x48 - 1.5K at 256 color .. 48 frames though.. so more texture stripping.
+		320x240x256 color would require 75K VRAM ... so no double buffer at all.. 
+		should be a HUD - something like 48 pixels or so.. say is 40 so 200px col - 25*200=5,000 cycles max/col..
+		80 cols = 400,000 ... exactly the 20 fps budget.. oof.. could shave 5 cycles by unrolling loop.. 320,000 cycles.
+
+		but that's without rendering enemies/sprites- enemies/sprites would also be texture cols.. say average 64 rows
+		per col - 64*20=1280*102,400 cycles ... oof..
+
+		would like double-buffer.. maybe fiddle with scaling?.. 320x240
+			/1.25 	= 256x192 .. 48K 
+			/1.33 	= 240x180 .. 42.2K
+			/1.5  	= ~216x160 .. 	33.75K
+			/2 		= 160x120 ... 18.75K 
+
+		256x192 - 32px hud => 256x160 to draw.. 160*20=3,200 * 64 cols = 204,800 cycles ... cheeky. 
+
+		96K for the 2 screen buffers leaves 32K for other stuff.. HUD is drawn to buffer so already included or could use
+		mapped sprite data or like 1bpp or 2bpp tiled mode.. 64x24 tilemap = 3K .. 1bpp straight data = 1K -> 4K total
+		straight sprite data -> 4k for 16 color! ... ok.. say use sprites to fill that in and for menu or whatever.. 
+		28K remaining ... enough to stash 7 entire object textures at 256 colors .. but really wouldn't need entire thing.
+
+		and optimize in case tiny - can decide if better to fetch 64x64 or 32x32 or even intermediate size and interpolate.
+
+
+
+
+
+
+TODO 	MODE7 demo - Wacky wheels?
+
+
+TODO 	explore BASIC stuff - can do TSR stuff? 
+TODO 	explore sprites stuff

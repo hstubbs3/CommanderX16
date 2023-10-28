@@ -1,0 +1,103 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : rainbow.asm
+Current file: rainbow.asm
+
+000000r 1               .org $080D
+00080D  1               .segment "STARTUP"
+00080D  1               .segment "INIT"
+00080D  1               .segment "ONCE"
+00080D  1               .segment "CODE"
+00080D  1               
+00080D  1  4C 10 08       jmp start
+000810  1               
+000810  1               ; VERA
+000810  1               VERA_addr_low     = $9F20
+000810  1               VERA_addr_high    = $9F21
+000810  1               VERA_addr_bank    = $9F22
+000810  1               VERA_data0        = $9F23
+000810  1               VERA_data1        = $9F24
+000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_dc_video     = $9F29 ; DCSEL = 0
+000810  1               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+000810  1               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+000810  1               
+000810  1               VERA_dc_hscale    = $9F2A
+000810  1               VERA_dc_vscale    = $9F2B
+000810  1               VERA_L0_config    = $9F2D
+000810  1               ;   7       6     5   4       3       2             1   0
+000810  1               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+000810  1               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+000810  1               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+000810  1               ;   2 - 128                                         2   4bpp 16 color
+000810  1               ;   3 - 256                                         3   8bpp 256 color
+000810  1               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+000810  1               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+000810  1               ;   The palette offset (in 'H-Scroll (11:8)') modifies the color indexes of the bitmap in the same way as in the tile modes.
+000810  1               
+000810  1               VERA_L0_mapbase   = $9F2E
+000810  1               VERA_L0_tilebase  = $9F2F
+000810  1               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+000810  1               VERA_L1_config    = $9F34
+000810  1               VERA_L1_mapbase   = $9F35
+000810  1               VERA_L1_tilebase  = $9F36
+000810  1               VERA_L0_hscroll_h = $9F31
+000810  1               
+000810  1               ; VRAM Addresses
+000810  1               VRAM_layer1_map   = $1B000
+000810  1               VRAM_layer0_map   = $00000
+000810  1               VRAM_lowerchars   = $0B000
+000810  1               VRAM_lower_rev    = VRAM_lowerchars + 128*8
+000810  1               VRAM_petscii      = $1F000
+000810  1               VRAM_palette      = $1FA00
+000810  1               BITMAP_PAL_OFFSET = VERA_L0_hscroll_h
+000810  1               
+000810  1               DISPLAY_SCALE_FOUR    = 32
+000810  1               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+000810  1               DISPLAY_SCALE_ONE     = 128 ; 640x480
+000810  1               MODE_BITMAP_256BPP = $07
+000810  1               MODE_BITMAP_16BPP  = $06
+000810  1               LAYER0_ONLY       = $11
+000810  1               VRAM_bitmap       = $04000
+000810  1               
+000810  1               start:
+000810  1                 ; start of program
+000810  1  9C 29 9F       stz VERA_dc_video   ; disable display
+000813  1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+000815  1  8D 2A 9F       sta VERA_dc_hscale
+000818  1  8D 2B 9F       sta VERA_dc_vscale
+00081B  1  A9 07          lda #MODE_BITMAP_256BPP
+00081D  1  8D 2D 9F       sta VERA_L0_config
+000820  1  A9 20          lda #(VRAM_bitmap >> 9) ; 320 pixel wide bitmap
+000822  1  8D 2F 9F       sta VERA_L0_tilebase
+000825  1  9C 31 9F       stz BITMAP_PAL_OFFSET ; palette offset 0
+000828  1  A9 11          lda #LAYER0_ONLY
+00082A  1  8D 29 9F       sta VERA_dc_video
+00082D  1  A9 00          lda #^VRAM_bitmap   ; load the bank byte of VRAM bitmap
+00082F  1  69 10          adc #$10            ; set increment value
+000831  1  8D 22 9F       sta VERA_addr_bank  ; set bank byte for screen..
+000834  1  A2 00          ldx #<VRAM_bitmap
+000836  1  A0 40          ldy #>VRAM_bitmap
+000838  1  A9 F0          lda #240
+00083A  1                 @outerloop:
+00083A  1  8E 20 9F         stx VERA_addr_low    ;  set VRAM address for the line
+00083D  1  8C 21 9F         sty VERA_addr_high    ;
+000840  1  48               pha                 ; push loop counter
+000841  1  A9 00            lda #0               ; start with a zero for the loop..
+000843  1                   @innerloop:
+000843  1  8D 23 9F           sta VERA_data0    ; write a pixel
+000846  1  1A                 inc a             ; add 1
+000847  1  D0 FA              BNE @innerloop    ; did write 256 pixels?
+000849  1  8A               txa               ; transfer x register to A
+00084A  1  18               clc
+00084B  1  69 40            ADC #64           ; add 64 ( carry should be 1 from loop...)
+00084D  1  AA               tax               ; transfer a to X -> low byte of address
+00084E  1  98               tya               ; transfer y to a
+00084F  1  69 01            adc #1            ; if x overflowed, adjusts Y .. combined adds 256 to the address to start next line
+000851  1  A8               tay               ; transfer high byte of the address ..
+000852  1  68               pla               ; pop our counter var
+000853  1  3A               dec a             ; decrement loop counter
+000854  1  D0 E4            bne @outerloop    ; not done!
+000856  1               endless:
+000856  1  80 FE            bra endless       ; little endless loop to sit at..
+000858  1  60             rts
+000858  1               

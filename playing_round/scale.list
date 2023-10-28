@@ -1,0 +1,410 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : scale.asm
+Current file: scale.asm
+
+000000r 1               .org $080D
+00080D  1               .segment "STARTUP"
+00080D  1               .segment "INIT"
+00080D  1               .segment "ONCE"
+00080D  1               .segment "CODE"
+00080D  1               
+00080D  1  4C 43 09       jmp start
+000810  1               ; RAM Interrupt Vectors
+000810  1               IRQVec            = $0314
+000810  1               
+000810  1               ; VERA
+000810  1               VERA_addr_low     = $9F20
+000810  1               VERA_addr_high    = $9F21
+000810  1               VERA_addr_bank    = $9F22
+000810  1               VERA_data0        = $9F23
+000810  1               VERA_data1        = $9F24
+000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_ien          = $9F26
+000810  1               VERA_dc_video     = $9F29 ; DCSEL = 0
+000810  1               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+000810  1               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+000810  1               
+000810  1               VERA_dc_hscale    = $9F2A
+000810  1               VERA_dc_vscale    = $9F2B
+000810  1               VERA_L0_config    = $9F2D
+000810  1               ;   7       6     5   4       3       2             1   0
+000810  1               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+000810  1               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+000810  1               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+000810  1               ;   2 - 128                                         2   4bpp 16 color
+000810  1               ;   3 - 256                                         3   8bpp 256 color
+000810  1               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+000810  1               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+000810  1               ;   The palette offset (in 'H-Scroll (11:8)') modifies the color indexes of the bitmap in the same way as in the tile modes.
+000810  1               
+000810  1               VERA_L0_mapbase   = $9F2E
+000810  1               VERA_L0_tilebase  = $9F2F
+000810  1               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+000810  1               VERA_L1_config    = $9F34
+000810  1               VERA_L1_mapbase   = $9F35
+000810  1               VERA_L1_tilebase  = $9F36
+000810  1               VERA_L0_hscroll_h = $9F31
+000810  1               VERA_isr          = $9F27
+000810  1               VSYNC_BIT         = $01
+000810  1               
+000810  1               ; VRAM Addresses
+000810  1               VRAM_layer0_map   = $00000
+000810  1               VRAM_layer1_map   = $1B000
+000810  1               VRAM_lowerchars   = $0B000
+000810  1               VRAM_lower_rev    = VRAM_lowerchars + 128*8
+000810  1               VRAM_petscii      = $1F000
+000810  1               VRAM_palette      = $1FA00
+000810  1               BITMAP_PAL_OFFSET = VERA_L0_hscroll_h
+000810  1               
+000810  1               ; constants
+000810  1               DISPLAY_SCALE_FOUR    = 32
+000810  1               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+000810  1               DISPLAY_SCALE_ONE     = 128 ; 640x480
+000810  1               MODE_BITMAP_256BPP = $07
+000810  1               MODE_BITMAP_16BPP  = $06
+000810  1               MODE_TILE_64_WIDE = $10
+000810  1               MODE_T256C = $0D
+000810  1               MODE_128x64_T16C = $60 ; 128x64, 16-color text
+000810  1               MODE_128x64_T256C = $68 ; 128x64, 256-color text
+000810  1               MODE_64x32_T256C = $18
+000810  1               LAYER0_ONLY       = $11
+000810  1               LAYER01_ENABLE    = $31
+000810  1               VRAM_bitmap       = $04000
+000810  1               LOWER_UPPER       = $C400
+000810  1               
+000810  1               ; ROM Banks
+000810  1               ROM_BANK          = $01
+000810  1               BASIC_BANK        = 4
+000810  1               CHARSET_BANK      = 6
+000810  1               
+000810  1               ; Kernal
+000810  1               CHROUT            = $FFD2
+000810  1               GETIN             = $FFE4
+000810  1               
+000810  1               ; PETSCII Codes
+000810  1               WHITE             = $05
+000810  1               RETURN            = $0D
+000810  1               SPACE             = $20
+000810  1               ZERO_CHAR         = $30
+000810  1               SIX_CHAR          = $36
+000810  1               NINE_CHAR         = $39
+000810  1               C_CHAR            = $43
+000810  1               I_CHAR            = $49
+000810  1               O_CHAR            = $4F
+000810  1               T_CHAR            = $54
+000810  1               CLR               = $93
+000810  1               
+000810  1               ; global data
+000810  1  00 00        default_irq_vector:  .addr 0
+000812  1               ZP_PTR            = $30
+000812  1               INIT_COUNTER = 6
+000812  1  06           counter:             .byte INIT_COUNTER
+000813  1  00           scale_mode:          .byte 0
+000814  1  01           VSYNC_counter:       .byte 1
+000815  1  02           text_layer_offset_low: .byte 2
+000816  1  03           text_layer_offset_high: .byte 3
+000817  1  01           old_scale_mode:    .byte 1
+000818  1               
+000818  1               custom_irq_handler:
+000818  1  AD 27 9F        lda VERA_isr
+00081B  1  29 01           and #VSYNC_BIT
+00081D  1  F0 5B           beq @continue ; non-VSYNC IRQ, no tick update
+00081F  1  EE 14 08        inc VSYNC_counter
+000822  1  CE 12 08        dec counter
+000825  1  D0 53           bne @continue
+000827  1                  ; counter down to zero, reset
+000827  1  A9 06           lda #INIT_COUNTER
+000829  1  8D 12 08        sta counter
+00082C  1                  ; ok a second has passed, let's change the scaling based on mode..
+00082C  1  AE 13 08        ldx scale_mode
+00082F  1  F0 49           BEQ @continue
+000831  1  8A              txa
+000832  1  CA              dex
+000833  1  F0 0E           BEQ @SCALE_H_DEC
+000835  1  CA              dex
+000836  1  F0 12           BEQ @SCALE_H_INC
+000838  1  CA              dex
+000839  1  F0 16           BEQ @SCALE_V_DEC
+00083B  1  CA              dex
+00083C  1  F0 1A           BEQ @SCALE_V_INC
+00083E  1  CA              dex
+00083F  1  F0 1E           BEQ @SCALE_HV_DEC
+000841  1  80 26           BRA @SCALE_HV_INC
+000843  1               @SCALE_H_DEC:
+000843  1  CE 2A 9F         dec VERA_dc_hscale
+000846  1  D0 32            BNE @continue
+000848  1  80 2C            BRA @next_mode
+00084A  1               @SCALE_H_INC:
+00084A  1  EE 2A 9F         inc VERA_dc_hscale
+00084D  1  10 2B            BPL @continue
+00084F  1  80 25            BRA @next_mode
+000851  1               @SCALE_V_DEC:
+000851  1  CE 2B 9F         dec VERA_dc_vscale
+000854  1  D0 24            BNE @continue
+000856  1  80 1E            BRA @next_mode
+000858  1               @SCALE_V_INC:
+000858  1  EE 2B 9F         inc VERA_dc_vscale
+00085B  1  10 1D            BPL @continue
+00085D  1  80 17            BRA @next_mode
+00085F  1               @SCALE_HV_DEC:
+00085F  1  CE 2A 9F         dec VERA_dc_hscale
+000862  1  CE 2B 9F         dec VERA_dc_vscale
+000865  1  D0 13            BNE @continue
+000867  1  80 0D            BRA @next_mode
+000869  1               @SCALE_HV_INC:
+000869  1  EE 2A 9F         inc VERA_dc_hscale
+00086C  1  EE 2B 9F         inc VERA_dc_vscale
+00086F  1  10 09            BPL @continue
+000871  1  8E 13 08         stx scale_mode
+000874  1  80 04            BRA @continue
+000876  1               @next_mode:
+000876  1  1A               inc a
+000877  1               @stash_mode:
+000877  1  8D 13 08       sta scale_mode
+00087A  1               @continue:
+00087A  1                   ;update Layer1 output stuff
+00087A  1  A9 00            lda #<VRAM_layer1_map
+00087C  1  8D 20 9F         sta VERA_addr_low
+00087F  1  A9 B1            lda #(>VRAM_layer1_map+1)
+000881  1  8D 21 9F         sta VERA_addr_high
+000884  1  A9 11            lda #($10 |^VRAM_layer1_map)
+000886  1  8D 22 9F         sta VERA_addr_bank
+000889  1  A2 10            ldx #16
+00088B  1  A0 20            ldy #32
+00088D  1  8C 23 9F         sty VERA_data0
+000890  1  8E 23 9F         stx VERA_data0
+000893  1  8C 23 9F         sty VERA_data0
+000896  1  8E 23 9F         stx VERA_data0
+000899  1               
+000899  1  AD 2A 9F         lda VERA_dc_hscale
+00089C  1  4A               lsr a
+00089D  1  4A               lsr a
+00089E  1  4A               lsr a
+00089F  1  4A               lsr a
+0008A0  1  18               clc
+0008A1  1  E9 0A            sbc #10
+0008A3  1  10 02            BPL @h_scaleh_high_digit
+0008A5  1                 @h_scaleh_low_digit:
+0008A5  1  69 3A            adc #58
+0008A7  1                 @h_scaleh_high_digit:
+0008A7  1  1A               inc a
+0008A8  1  8D 23 9F         sta VERA_data0
+0008AB  1  8E 23 9F         stx VERA_data0
+0008AE  1  AD 2A 9F         lda VERA_dc_hscale
+0008B1  1  29 0F            AND #15
+0008B3  1  18               clc
+0008B4  1  E9 0A            sbc #10
+0008B6  1  10 02            bpl @h_scalel_high_digit
+0008B8  1  69 3A            adc #58
+0008BA  1                 @h_scalel_high_digit:
+0008BA  1  1A               inc a
+0008BB  1  8D 23 9F         sta VERA_data0
+0008BE  1  8E 23 9F         stx VERA_data0
+0008C1  1               
+0008C1  1  8C 23 9F         sty VERA_data0
+0008C4  1  8E 23 9F         stx VERA_data0
+0008C7  1  8C 23 9F         sty VERA_data0
+0008CA  1  8E 23 9F         stx VERA_data0
+0008CD  1               
+0008CD  1  AD 2B 9F         lda VERA_dc_vscale
+0008D0  1  4A               lsr a
+0008D1  1  4A               lsr a
+0008D2  1  4A               lsr a
+0008D3  1  4A               lsr a
+0008D4  1  18               clc
+0008D5  1  E9 0A            sbc #10
+0008D7  1  10 02            BPL @v_scaleh_high_digit
+0008D9  1  69 3A            adc #58
+0008DB  1                 @v_scaleh_high_digit:
+0008DB  1  1A               inc a
+0008DC  1  8D 23 9F         sta VERA_data0
+0008DF  1  8E 23 9F         stx VERA_data0
+0008E2  1  AD 2B 9F         lda VERA_dc_vscale
+0008E5  1  29 0F            AND #15
+0008E7  1  18               clc
+0008E8  1  E9 0A            sbc #10
+0008EA  1  10 02            BPL @v_scalel_high_digit
+0008EC  1  69 3A            adc #58
+0008EE  1                 @v_scalel_high_digit:
+0008EE  1  1A               inc a
+0008EF  1  8D 23 9F         sta VERA_data0
+0008F2  1  8E 23 9F         stx VERA_data0
+0008F5  1               
+0008F5  1                  ; continue to default IRQ handler
+0008F5  1  6C 10 08        jmp (default_irq_vector)
+0008F8  1                  ; RTI will happen after jump
+0008F8  1               
+0008F8  1               
+0008F8  1               COPY_CHAR_FROM_ROM:
+0008F8  1                  ; Copy Lower/Upper character set from ROM (1kB) to VRAM
+0008F8  1  A9 06           lda #CHARSET_BANK
+0008FA  1  85 01           sta ROM_BANK
+0008FC  1  A9 00           lda #<LOWER_UPPER
+0008FE  1  85 30           sta ZP_PTR
+000900  1  A9 C4           lda #>LOWER_UPPER
+000902  1  85 31           sta ZP_PTR+1
+000904  1  9C 25 9F        stz VERA_ctrl  ; Port 0: Standard glyphs copied from ROM
+000907  1  A9 10           lda #($10 | ^VRAM_lowerchars) ; Stride = 1
+000909  1  8D 22 9F        sta VERA_addr_bank
+00090C  1  A9 B0           lda #>VRAM_lowerchars
+00090E  1  8D 21 9F        sta VERA_addr_high
+000911  1  9C 20 9F        stz VERA_addr_low
+000914  1  A9 01           lda #1
+000916  1  8D 25 9F        sta VERA_ctrl ; Port 1: Reverse glyphs inverted from ROM
+000919  1  A9 10           lda #($10 | ^VRAM_lower_rev) ; Stride = 1
+00091B  1  8D 22 9F        sta VERA_addr_bank
+00091E  1  A9 B4           lda #>VRAM_lower_rev
+000920  1  8D 21 9F        sta VERA_addr_high
+000923  1  A9 00           lda #<VRAM_lower_rev
+000925  1  8D 20 9F        sta VERA_addr_low
+000928  1  A2 04           ldx #4
+00092A  1  A0 00           ldy #0
+00092C  1               @copy_char_loop:
+00092C  1  B1 30           lda (ZP_PTR),y
+00092E  1  8D 23 9F        sta VERA_data0 ; original pixel row
+000931  1  49 FF           eor #$FF
+000933  1  8D 24 9F        sta VERA_data1 ; inverted pixel row
+000936  1  C8              iny
+000937  1  D0 F3           bne @copy_char_loop
+000939  1  E6 31           inc ZP_PTR+1
+00093B  1  CA              dex
+00093C  1  D0 EE           bne @copy_char_loop
+00093E  1  A9 04           lda #BASIC_BANK
+000940  1  85 01           sta ROM_BANK
+000942  1  60              rts
+000943  1               
+000943  1               start:
+000943  1                 ; start of program - init globals
+000943  1  AD 14 03       lda IRQVec
+000946  1  8D 10 08       sta default_irq_vector
+000949  1  AD 15 03       lda IRQVec+1
+00094C  1  8D 11 08       sta default_irq_vector+1
+00094F  1  A9 06          lda #INIT_COUNTER
+000951  1  8D 12 08       sta counter
+000954  1  9C 13 08       stz scale_mode
+000957  1                 ; configure video stuff
+000957  1  9C 29 9F       stz VERA_dc_video   ; disable display
+00095A  1                 ;lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+00095A  1                 ;sta VERA_dc_hscale
+00095A  1                 ;sta VERA_dc_vscale
+00095A  1  A9 07          lda #MODE_BITMAP_256BPP
+00095C  1  8D 2D 9F       sta VERA_L0_config
+00095F  1  A9 20          lda #(VRAM_bitmap >> 9) ; 320 pixel wide bitmap
+000961  1  8D 2F 9F       sta VERA_L0_tilebase
+000964  1  9C 31 9F       stz BITMAP_PAL_OFFSET ; palette offset 0
+000967  1                 ;configure text overlay
+000967  1  A9 68          lda #MODE_128x64_T256C
+000969  1  8D 34 9F       sta VERA_L1_config
+00096C  1  A9 D8          lda #(VRAM_layer1_map >> 9)
+00096E  1  8D 35 9F       sta VERA_L1_mapbase
+000971  1  A9 F8          lda #(VRAM_petscii>>9)
+000973  1  8D 36 9F       sta VERA_L1_tilebase
+000976  1  A9 00          lda #<VRAM_layer1_map
+000978  1  8D 15 08       sta text_layer_offset_low
+00097B  1  A9 B0          lda #>VRAM_layer1_map
+00097D  1  8D 16 08       sta text_layer_offset_high
+000980  1               
+000980  1                 ; load the char set from ROM
+000980  1               
+000980  1                 ; enable layers and start drawing
+000980  1  9C 25 9F       stz VERA_ctrl
+000983  1  A9 31          lda #LAYER01_ENABLE
+000985  1  8D 29 9F       sta VERA_dc_video
+000988  1               
+000988  1               
+000988  1               
+000988  1               write_text_layer1:
+000988  1  A9 11          lda #($10 | ^VRAM_layer1_map) ; Stride = 1
+00098A  1  8D 22 9F       sta VERA_addr_bank  ; set bank byte for screen..
+00098D  1  AD 16 08       lda text_layer_offset_high
+000990  1  69 03          adc #3
+000992  1  8D 21 9F       sta VERA_addr_high
+000995  1  A2 00          ldx #0
+000997  1  A0 10          ldy #16
+000999  1  A9 10          lda #16
+00099B  1                 @text_loop_outer:
+00099B  1  48                 pha   ; push outer counter
+00099C  1  A9 10              lda #16
+00099E  1  9C 20 9F           stz VERA_addr_low
+0009A1  1                   @text_loop_inner:
+0009A1  1  8E 23 9F             stx VERA_data0
+0009A4  1  8C 23 9F             sty VERA_data0
+0009A7  1  E8                   inx
+0009A8  1  3A                   dec a
+0009A9  1  D0 F6                BNE @text_loop_inner
+0009AB  1  EE 21 9F           inc VERA_addr_high
+0009AE  1  68                 pla
+0009AF  1  3A                 dec a
+0009B0  1  D0 E9              BNE @text_loop_outer
+0009B2  1               
+0009B2  1               ;  jmp endless
+0009B2  1               
+0009B2  1               write_pal_stuff:
+0009B2  1  A9 10          lda #($10 | ^VRAM_bitmap) ; Stride = 1
+0009B4  1  8D 22 9F       sta VERA_addr_bank  ; set bank byte for screen..
+0009B7  1  A2 00          ldx #<VRAM_bitmap
+0009B9  1  A0 40          ldy #>VRAM_bitmap
+0009BB  1  A9 F0          lda #240
+0009BD  1                 @outerloop:
+0009BD  1  8E 20 9F         stx VERA_addr_low    ;  set VRAM address for the line
+0009C0  1  8C 21 9F         sty VERA_addr_high    ;
+0009C3  1  48               pha                 ; push loop counter
+0009C4  1  A9 00            lda #0               ; start with a zero for the loop..
+0009C6  1                   @innerloop:
+0009C6  1  8D 23 9F           sta VERA_data0    ; write a pixel
+0009C9  1  1A                 inc a             ; add 1
+0009CA  1  D0 FA              BNE @innerloop    ; did write 256 pixels?
+0009CC  1  8A               txa               ; transfer x register to A
+0009CD  1  18               clc
+0009CE  1  69 40            ADC #64           ; add 64 ( carry should be 1 from loop...)
+0009D0  1  AA               tax               ; transfer a to X -> low byte of address
+0009D1  1  98               tya               ; transfer y to a
+0009D2  1  69 01            adc #1            ; if x overflowed, adjusts Y .. combined adds 256 to the address to start next line
+0009D4  1  A8               tay               ; transfer high byte of the address ..
+0009D5  1  68               pla               ; pop our counter var
+0009D6  1  3A               dec a             ; decrement loop counter
+0009D7  1  D0 E4            bne @outerloop    ; not done!
+0009D9  1               
+0009D9  1                 ; overwrite RAM IRQ vector with custom handler address
+0009D9  1  78             sei ; disable IRQ while vector is changing
+0009DA  1  A9 18          lda #<custom_irq_handler
+0009DC  1  8D 14 03       sta IRQVec
+0009DF  1  A9 08          lda #>custom_irq_handler
+0009E1  1  8D 15 03       sta IRQVec+1
+0009E4  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+0009E6  1  8D 26 9F       sta VERA_ien
+0009E9  1  58             cli ; enable IRQ now that vector is properly set
+0009EA  1               
+0009EA  1               @start_stop:
+0009EA  1  AD 13 08       lda scale_mode
+0009ED  1  F0 08          beq @start_scale
+0009EF  1               @stop_scale:
+0009EF  1  8D 17 08       sta old_scale_mode
+0009F2  1  9C 13 08       stz scale_mode
+0009F5  1  80 06          bra @check_keyboard
+0009F7  1               @start_scale:
+0009F7  1  AD 17 08       lda old_scale_mode
+0009FA  1  8D 13 08       sta scale_mode
+0009FD  1               @check_keyboard:
+0009FD  1                  ; poll keyboard for input
+0009FD  1  20 E4 FF        jsr GETIN
+000A00  1  C9 00           cmp #0
+000A02  1  F0 F9           beq @check_keyboard
+000A04  1  C9 20           cmp #SPACE
+000A06  1  F0 E2           beq @start_stop
+000A08  1  C9 0D           cmp #RETURN
+000A0A  1  D0 F1           BNE @check_keyboard
+000A0C  1               
+000A0C  1               cleanup_and_exit:
+000A0C  1                  ; restore default IRQ vector
+000A0C  1  78              sei
+000A0D  1  AD 10 08        lda default_irq_vector
+000A10  1  8D 14 03        sta IRQVec
+000A13  1  AD 11 08        lda default_irq_vector+1
+000A16  1  8D 15 03        sta IRQVec+1
+000A19  1  58              cli
+000A1A  1  A9 60           lda #MODE_128x64_T16C
+000A1C  1  8D 34 9F        sta VERA_L1_config
+000A1F  1  60              rts
+000A20  1               
+000A20  1               
