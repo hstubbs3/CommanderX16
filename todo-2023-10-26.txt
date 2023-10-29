@@ -28,7 +28,10 @@ TODO 	figure out timing interrupts... play with scaling or something..
 TODO 	output some text or something on layer 1 as overlay...80
 1300 	ooof... ok.. scale.asm working at least ... minor weirdness with the
 		displayed values but the scaling works so.. .
-	
+1915 	into the depths... configure for wolf3D clone... 
+
+2145 	OK got something sorta figured out for the HUD/border bit... 	
+
 
 TODO 	tilemap graphics
 TODO 	explore VERA accelerations - line draw
