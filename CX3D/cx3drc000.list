@@ -8,7 +8,7 @@ Current file: cx3drc000-basevideo.asm
 00080D  1               .segment "ONCE"
 00080D  1               .segment "CODE"
 00080D  1               
-00080D  1  4C 84 0E       jmp start
+00080D  1  4C 82 0E       jmp start
 000810  1               ; RAM Interrupt Vectors
 000810  1               IRQVec            = $0314
 000810  1               
@@ -329,7 +329,7 @@ Current file: cx3drc000-basevideo.asm
 000DD9  1  8C 23 9F         sty VERA_data0
 000DDC  1  3A               dec a
 000DDD  1  D0 F7            BNE @init_layer0_map_line0
-000DDF  1  A9 FE          lda #254
+000DDF  1  A9 FF          lda #255
 000DE1  1  85 22          sta ZP_PTR
 000DE3  1  64 23          stz ZP_PTR+1
 000DE5  1  A0 0E          ldy #14
@@ -337,186 +337,185 @@ Current file: cx3drc000-basevideo.asm
 000DE9  1  18             clc
 000DEA  1                 @init_layer0_map_disp_row_loop:
 000DEA  1  A0 19            ldy #25
-000DEC  1  A5 22            lda ZP_PTR
-000DEE  1  69 02            adc #2
-000DF0  1  85 22            sta ZP_PTR
-000DF2  1  A6 23            ldx ZP_PTR+1
-000DF4  1                   @init_layer0_disp_row:
-000DF4  1  8D 23 9F           sta VERA_data0
-000DF7  1  8E 23 9F           stx VERA_data0
-000DFA  1  69 1C              adc #28
-000DFC  1  90 02              bcc @no_carry
-000DFE  1  E8                 inx
-000DFF  1  18                 clc
-000E00  1                   @no_carry:
-000E00  1  88                 dey
-000E01  1  D0 F1              BNE @init_layer0_disp_row
-000E03  1  A9 07            lda #7
-000E05  1  A2 BE            ldx #$BE
-000E07  1  A0 02            ldy #$02
-000E09  1                   @zero_rest_row:
-000E09  1  8E 23 9F           stx VERA_data0
-000E0C  1  8C 23 9F           sty VERA_data0
-000E0F  1  3A                 dec a
-000E10  1  D0 F7              BNE @zero_rest_row
-000E12  1  C6 24            dec ZP_PTR+2
-000E14  1  D0 D4            BNE @init_layer0_map_disp_row_loop
-000E16  1  A9 A0          lda #160
-000E18  1                 @init_layer1_clear_bottom_rows:
-000E18  1  8E 23 9F         stx VERA_data0
-000E1B  1  8C 23 9F         sty VERA_data0
-000E1E  1  3A               dec a
-000E1F  1  D0 F7            BNE @init_layer1_clear_bottom_rows
-000E21  1               
-000E21  1                 ; jmp no_tilemap_0A_clear
-000E21  1               
-000E21  1  9C 20 9F       stz VERA_addr_low
-000E24  1  9C 21 9F       stz VERA_addr_high
-000E27  1  A9 10          lda #$10
-000E29  1  8D 22 9F       sta VERA_addr_bank
-000E2C  1  A0 58          ldy #88
-000E2E  1  A9 00          lda #0
-000E30  1                 @loopA:
-000E30  1                   @loopB:
-000E30  1  8D 23 9F           sta VERA_data0
-000E33  1  1A                 inc a
-000E34  1  D0 FA              BNE @loopB
-000E36  1  88               dey
-000E37  1  D0 F7            BNE @loopB
-000E39  1               no_tilemap_0A_clear:
-000E39  1               
-000E39  1  9C 20 9F       stz VERA_addr_low
-000E3C  1  A9 C0          lda #>VRAM_layer1_tile ;
-000E3E  1  8D 21 9F       sta VERA_addr_high
-000E41  1  A9 10          lda #($10 | ^VRAM_layer1_tile) ;
-000E43  1  8D 22 9F       sta VERA_addr_bank
-000E46  1  A9 13          lda #<LAYER1_TILEDATA
-000E48  1  85 22          sta ZP_PTR
-000E4A  1  A9 08          lda #>LAYER1_TILEDATA
-000E4C  1  85 23          STA ZP_PTR+1
-000E4E  1  A2 08          ldx #8
-000E50  1  A0 00          ldy #0
-000E52  1                 @init_layer1_tiledata:
-000E52  1                   @init_layer1_tiledata_inner:
-000E52  1  B1 22              lda (ZP_PTR),y
-000E54  1  8D 23 9F           sta VERA_data0
-000E57  1  C8                 iny
-000E58  1  D0 F8              BNE @init_layer1_tiledata_inner
-000E5A  1  E6 23            inc ZP_PTR+1
-000E5C  1  CA               dex
-000E5D  1  D0 F3            BNE @init_layer1_tiledata
-000E5F  1  9C 20 9F       stz VERA_addr_low
-000E62  1  A9 B8          lda #>VRAM_layer1_map
-000E64  1  8D 21 9F       sta VERA_addr_high
-000E67  1  A9 10          lda #($10 | ^VRAM_layer1_map) ;
-000E69  1  8D 22 9F       sta VERA_addr_bank
-000E6C  1  A9 B3          lda #<LAYER1_MAPDATA
-000E6E  1  85 22          sta ZP_PTR
-000E70  1  A9 08          lda #>LAYER1_MAPDATA
-000E72  1  85 23          sta ZP_PTR+1
-000E74  1  A2 05          ldx #5
-000E76  1                 @init_layer1_mapdata:
-000E76  1                   @init_layer1_mapdata_inner:
-000E76  1  B1 22              lda (ZP_PTR),y
-000E78  1  8D 23 9F           sta VERA_data0
-000E7B  1  C8                 iny
-000E7C  1  D0 F8              BNE @init_layer1_mapdata_inner
-000E7E  1  E6 23            inc ZP_PTR+1
-000E80  1  CA               dex
-000E81  1  D0 F3            BNE @init_layer1_mapdata
-000E83  1  60             rts
-000E84  1               
-000E84  1               
-000E84  1               start:
-000E84  1                 ; start of program - init globals
-000E84  1  AD 14 03       lda IRQVec
-000E87  1  8D 10 08       sta default_irq_vector
-000E8A  1  AD 15 03       lda IRQVec+1
-000E8D  1  8D 11 08       sta default_irq_vector+1
-000E90  1               
-000E90  1  9C 29 9F       stz VERA_dc_video   ; disable display
-000E93  1  A9 2A          lda #42 ; set scale for bitmap mode
-000E95  1  8D 2A 9F       sta VERA_dc_hscale
-000E98  1  A9 29          lda #41
-000E9A  1  8D 2B 9F       sta VERA_dc_vscale
-000E9D  1                 ; layer 0 config...
-000E9D  1  A9 03          lda #MODE_32x32_256BPP
-000E9F  1  8D 2D 9F       sta VERA_L0_config
-000EA2  1  A9 2C          lda #(VRAM_layer0_map >> 9)
-000EA4  1  8D 2E 9F       sta VERA_L0_mapbase
-000EA7  1                 ; lda #(VRAM_layer0_tileA >> 9) ;
-000EA7  1                 ; sta VERA_L0_tilebase
-000EA7  1  9C 2F 9F       stz VERA_L0_tilebase
-000EAA  1  64 00          stz BITMAP_PAL_OFFSET ; palette offset 0
-000EAC  1                 ;layer 1 config
-000EAC  1  A9 00          lda #MODE_32x32_T16C
-000EAE  1  8D 34 9F       sta VERA_L1_config
-000EB1  1  A9 5C          lda #(VRAM_layer1_map >> 9)
-000EB3  1  8D 35 9F       sta VERA_L1_mapbase
-000EB6  1  A9 60          lda #(VRAM_layer1_tile>>9)
-000EB8  1  8D 36 9F       sta VERA_L1_tilebase
-000EBB  1  A9 01          lda #1
-000EBD  1  8D 31 9F       sta VERA_L0_HSCROLL_H
-000EC0  1  8D 33 9F       sta VERA_L0_VSCROLL_H
-000EC3  1  8D 38 9F       sta VERA_L1_HSCROLL_H
-000EC6  1  8D 3A 9F       sta VERA_L1_VSCROLL_H
-000EC9  1  A9 03          lda #3
-000ECB  1  8D 30 9F       sta VERA_L0_HSCROLL_L
-000ECE  1  8D 32 9F       sta VERA_L0_VSCROLL_L
-000ED1  1  8D 37 9F       sta VERA_L1_HSCROLL_L
-000ED4  1  8D 39 9F       sta VERA_L1_VSCROLL_L
-000ED7  1                 ; load initial tile data
-000ED7  1  20 C0 0D       jsr INITIALIZE_VRAM_DATA;
-000EDA  1               
-000EDA  1                 ; enable layers and start drawing
-000EDA  1  9C 25 9F       stz VERA_ctrl
-000EDD  1  A9 31          lda #LAYER01_ENABLE
-000EDF  1                 ;lda #LAYER0_ONLY ; for testing
-000EDF  1                 ;lda #LAYER1_ONLY
-000EDF  1  8D 29 9F       sta VERA_dc_video
-000EE2  1               
-000EE2  1  4C 11 0F     jmp no_interrupt
-000EE5  1                 ; overwrite RAM IRQ vector with custom handler address
-000EE5  1  78             sei ; disable IRQ while vector is changing
-000EE6  1  A9 B3          lda #<custom_irq_handler
-000EE8  1  8D 14 03       sta IRQVec
-000EEB  1  A9 0D          lda #>custom_irq_handler
-000EED  1  8D 15 03       sta IRQVec+1
-000EF0  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
-000EF2  1  8D 26 9F       sta VERA_ien
-000EF5  1  58             cli ; enable IRQ now that vector is properly set
-000EF6  1               
-000EF6  1               
-000EF6  1                 ; draw stuff
-000EF6  1               
-000EF6  1                 ; main loop here...
-000EF6  1               @check_keyboard:
-000EF6  1                  ; poll keyboard for input
-000EF6  1  20 E4 FF        jsr GETIN
-000EF9  1  C9 00           cmp #0
-000EFB  1  F0 F9           beq @check_keyboard
-000EFD  1                  ;cmp #SPACE
-000EFD  1                  ;bne @check_keyboard
-000EFD  1                  ;cmp #RETURN
-000EFD  1                  ;BNE @check_keyboard
-000EFD  1               
-000EFD  1               cleanup_and_exit:
-000EFD  1                  ; restore default IRQ vector
-000EFD  1  78              sei
-000EFE  1  AD 10 08        lda default_irq_vector
-000F01  1  8D 14 03        sta IRQVec
-000F04  1  AD 11 08        lda default_irq_vector+1
-000F07  1  8D 15 03        sta IRQVec+1
-000F0A  1  58              cli
-000F0B  1  A9 60           lda #MODE_128x64_T16C
-000F0D  1  8D 34 9F        sta VERA_L1_config
-000F10  1  60              rts
-000F11  1               
-000F11  1               no_interrupt:
-000F11  1               @check_keyboard:
-000F11  1                  ; poll keyboard for input
-000F11  1  20 E4 FF        jsr GETIN
-000F14  1  C9 00           cmp #0
-000F16  1  F0 F9           beq @check_keyboard
-000F18  1  60             rts
-000F18  1               
+000DEC  1  E6 22            inc ZP_PTR
+000DEE  1  A5 22            lda ZP_PTR
+000DF0  1  A6 23            ldx ZP_PTR+1
+000DF2  1                   @init_layer0_disp_row:
+000DF2  1  8D 23 9F           sta VERA_data0
+000DF5  1  8E 23 9F           stx VERA_data0
+000DF8  1  69 0E              adc #14 ; was 28
+000DFA  1  90 02              bcc @no_carry
+000DFC  1  E8                 inx
+000DFD  1  18                 clc
+000DFE  1                   @no_carry:
+000DFE  1  88                 dey
+000DFF  1  D0 F1              BNE @init_layer0_disp_row
+000E01  1  A9 07            lda #7
+000E03  1  A2 BE            ldx #$BE
+000E05  1  A0 02            ldy #$02
+000E07  1                   @zero_rest_row:
+000E07  1  8E 23 9F           stx VERA_data0
+000E0A  1  8C 23 9F           sty VERA_data0
+000E0D  1  3A                 dec a
+000E0E  1  D0 F7              BNE @zero_rest_row
+000E10  1  C6 24            dec ZP_PTR+2
+000E12  1  D0 D6            BNE @init_layer0_map_disp_row_loop
+000E14  1  A9 A0          lda #160
+000E16  1                 @init_layer1_clear_bottom_rows:
+000E16  1  8E 23 9F         stx VERA_data0
+000E19  1  8C 23 9F         sty VERA_data0
+000E1C  1  3A               dec a
+000E1D  1  D0 F7            BNE @init_layer1_clear_bottom_rows
+000E1F  1               
+000E1F  1                 ; jmp no_tilemap_0A_clear
+000E1F  1               
+000E1F  1  9C 20 9F       stz VERA_addr_low
+000E22  1  9C 21 9F       stz VERA_addr_high
+000E25  1  A9 10          lda #$10
+000E27  1  8D 22 9F       sta VERA_addr_bank
+000E2A  1  A0 58          ldy #88
+000E2C  1  A9 00          lda #0
+000E2E  1                 @loopA:
+000E2E  1                   @loopB:
+000E2E  1  8D 23 9F           sta VERA_data0
+000E31  1  1A                 inc a
+000E32  1  D0 FA              BNE @loopB
+000E34  1  88               dey
+000E35  1  D0 F7            BNE @loopB
+000E37  1               no_tilemap_0A_clear:
+000E37  1               
+000E37  1  9C 20 9F       stz VERA_addr_low
+000E3A  1  A9 C0          lda #>VRAM_layer1_tile ;
+000E3C  1  8D 21 9F       sta VERA_addr_high
+000E3F  1  A9 10          lda #($10 | ^VRAM_layer1_tile) ;
+000E41  1  8D 22 9F       sta VERA_addr_bank
+000E44  1  A9 13          lda #<LAYER1_TILEDATA
+000E46  1  85 22          sta ZP_PTR
+000E48  1  A9 08          lda #>LAYER1_TILEDATA
+000E4A  1  85 23          STA ZP_PTR+1
+000E4C  1  A2 08          ldx #8
+000E4E  1  A0 00          ldy #0
+000E50  1                 @init_layer1_tiledata:
+000E50  1                   @init_layer1_tiledata_inner:
+000E50  1  B1 22              lda (ZP_PTR),y
+000E52  1  8D 23 9F           sta VERA_data0
+000E55  1  C8                 iny
+000E56  1  D0 F8              BNE @init_layer1_tiledata_inner
+000E58  1  E6 23            inc ZP_PTR+1
+000E5A  1  CA               dex
+000E5B  1  D0 F3            BNE @init_layer1_tiledata
+000E5D  1  9C 20 9F       stz VERA_addr_low
+000E60  1  A9 B8          lda #>VRAM_layer1_map
+000E62  1  8D 21 9F       sta VERA_addr_high
+000E65  1  A9 10          lda #($10 | ^VRAM_layer1_map) ;
+000E67  1  8D 22 9F       sta VERA_addr_bank
+000E6A  1  A9 B3          lda #<LAYER1_MAPDATA
+000E6C  1  85 22          sta ZP_PTR
+000E6E  1  A9 08          lda #>LAYER1_MAPDATA
+000E70  1  85 23          sta ZP_PTR+1
+000E72  1  A2 05          ldx #5
+000E74  1                 @init_layer1_mapdata:
+000E74  1                   @init_layer1_mapdata_inner:
+000E74  1  B1 22              lda (ZP_PTR),y
+000E76  1  8D 23 9F           sta VERA_data0
+000E79  1  C8                 iny
+000E7A  1  D0 F8              BNE @init_layer1_mapdata_inner
+000E7C  1  E6 23            inc ZP_PTR+1
+000E7E  1  CA               dex
+000E7F  1  D0 F3            BNE @init_layer1_mapdata
+000E81  1  60             rts
+000E82  1               
+000E82  1               
+000E82  1               start:
+000E82  1                 ; start of program - init globals
+000E82  1  AD 14 03       lda IRQVec
+000E85  1  8D 10 08       sta default_irq_vector
+000E88  1  AD 15 03       lda IRQVec+1
+000E8B  1  8D 11 08       sta default_irq_vector+1
+000E8E  1               
+000E8E  1  9C 29 9F       stz VERA_dc_video   ; disable display
+000E91  1  A9 2A          lda #42 ; set scale for bitmap mode
+000E93  1  8D 2A 9F       sta VERA_dc_hscale
+000E96  1  A9 29          lda #41
+000E98  1  8D 2B 9F       sta VERA_dc_vscale
+000E9B  1                 ; layer 0 config...
+000E9B  1  A9 03          lda #MODE_32x32_256BPP
+000E9D  1  8D 2D 9F       sta VERA_L0_config
+000EA0  1  A9 2C          lda #(VRAM_layer0_map >> 9)
+000EA2  1  8D 2E 9F       sta VERA_L0_mapbase
+000EA5  1                 ; lda #(VRAM_layer0_tileA >> 9) ;
+000EA5  1                 ; sta VERA_L0_tilebase
+000EA5  1  9C 2F 9F       stz VERA_L0_tilebase
+000EA8  1  64 00          stz BITMAP_PAL_OFFSET ; palette offset 0
+000EAA  1                 ;layer 1 config
+000EAA  1  A9 00          lda #MODE_32x32_T16C
+000EAC  1  8D 34 9F       sta VERA_L1_config
+000EAF  1  A9 5C          lda #(VRAM_layer1_map >> 9)
+000EB1  1  8D 35 9F       sta VERA_L1_mapbase
+000EB4  1  A9 60          lda #(VRAM_layer1_tile>>9)
+000EB6  1  8D 36 9F       sta VERA_L1_tilebase
+000EB9  1  A9 01          lda #1
+000EBB  1  8D 31 9F       sta VERA_L0_HSCROLL_H
+000EBE  1  8D 33 9F       sta VERA_L0_VSCROLL_H
+000EC1  1  8D 38 9F       sta VERA_L1_HSCROLL_H
+000EC4  1  8D 3A 9F       sta VERA_L1_VSCROLL_H
+000EC7  1  A9 03          lda #3
+000EC9  1  8D 30 9F       sta VERA_L0_HSCROLL_L
+000ECC  1  8D 32 9F       sta VERA_L0_VSCROLL_L
+000ECF  1  8D 37 9F       sta VERA_L1_HSCROLL_L
+000ED2  1  8D 39 9F       sta VERA_L1_VSCROLL_L
+000ED5  1                 ; load initial tile data
+000ED5  1  20 C0 0D       jsr INITIALIZE_VRAM_DATA;
+000ED8  1               
+000ED8  1                 ; enable layers and start drawing
+000ED8  1  9C 25 9F       stz VERA_ctrl
+000EDB  1  A9 31          lda #LAYER01_ENABLE
+000EDD  1                 ;lda #LAYER0_ONLY ; for testing
+000EDD  1                 ;lda #LAYER1_ONLY
+000EDD  1  8D 29 9F       sta VERA_dc_video
+000EE0  1               
+000EE0  1               ;jmp no_interrupt
+000EE0  1                 ; overwrite RAM IRQ vector with custom handler address
+000EE0  1  78             sei ; disable IRQ while vector is changing
+000EE1  1  A9 B3          lda #<custom_irq_handler
+000EE3  1  8D 14 03       sta IRQVec
+000EE6  1  A9 0D          lda #>custom_irq_handler
+000EE8  1  8D 15 03       sta IRQVec+1
+000EEB  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000EED  1  8D 26 9F       sta VERA_ien
+000EF0  1  58             cli ; enable IRQ now that vector is properly set
+000EF1  1               
+000EF1  1               
+000EF1  1                 ; draw stuff
+000EF1  1               
+000EF1  1                 ; main loop here...
+000EF1  1               @check_keyboard:
+000EF1  1                  ; poll keyboard for input
+000EF1  1  20 E4 FF        jsr GETIN
+000EF4  1  C9 00           cmp #0
+000EF6  1  F0 F9           beq @check_keyboard
+000EF8  1                  ;cmp #SPACE
+000EF8  1                  ;bne @check_keyboard
+000EF8  1                  ;cmp #RETURN
+000EF8  1                  ;BNE @check_keyboard
+000EF8  1               
+000EF8  1               cleanup_and_exit:
+000EF8  1                  ; restore default IRQ vector
+000EF8  1  78              sei
+000EF9  1  AD 10 08        lda default_irq_vector
+000EFC  1  8D 14 03        sta IRQVec
+000EFF  1  AD 11 08        lda default_irq_vector+1
+000F02  1  8D 15 03        sta IRQVec+1
+000F05  1  58              cli
+000F06  1  A9 60           lda #MODE_128x64_T16C
+000F08  1  8D 34 9F        sta VERA_L1_config
+000F0B  1  60              rts
+000F0C  1               
+000F0C  1               no_interrupt:
+000F0C  1               @check_keyboard:
+000F0C  1                  ; poll keyboard for input
+000F0C  1  20 E4 FF        jsr GETIN
+000F0F  1  C9 00           cmp #0
+000F11  1  F0 F9           beq @check_keyboard
+000F13  1  60             rts
+000F13  1               

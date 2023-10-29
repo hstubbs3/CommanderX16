@@ -226,7 +226,7 @@ INITIALIZE_VRAM_DATA:
     sty VERA_data0
     dec a
     BNE @init_layer0_map_line0
-  lda #254
+  lda #255
   sta ZP_PTR
   stz ZP_PTR+1
   ldy #14  
@@ -234,14 +234,13 @@ INITIALIZE_VRAM_DATA:
   clc
   @init_layer0_map_disp_row_loop:
     ldy #25
+    inc ZP_PTR
     lda ZP_PTR
-    adc #2
-    sta ZP_PTR
     ldx ZP_PTR+1
     @init_layer0_disp_row:
       sta VERA_data0
       stx VERA_data0
-      adc #28
+      adc #14 ; was 28
       bcc @no_carry
       inx
       clc
@@ -372,7 +371,7 @@ start:
   ;lda #LAYER1_ONLY
   sta VERA_dc_video
 
-jmp no_interrupt
+;jmp no_interrupt
   ; overwrite RAM IRQ vector with custom handler address
   sei ; disable IRQ while vector is changing
   lda #<custom_irq_handler
@@ -398,6 +397,8 @@ jmp no_interrupt
    ;BNE @check_keyboard
 
 cleanup_and_exit:
+   ; TODO - somehow reset to BASIC ? 
+
    ; restore default IRQ vector
    sei
    lda default_irq_vector
