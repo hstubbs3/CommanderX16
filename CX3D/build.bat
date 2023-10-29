@@ -1,0 +1,1 @@
+cl65 -t cx16 -o 000.PRG -l cx3drc000.list cx3drc000-basevideo.asm
