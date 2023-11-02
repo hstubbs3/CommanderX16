@@ -1,0 +1,40 @@
+mode7_plan.txt
+
+Basing on SNES specs, everything is 16 color... 
+
+SNES had resolution 256x224 ... 256 is 1/2.5 640.. but use 240 instead of 224..
+
+so screen is scaled to 256x240 ... 
+
+screen is split into areas - 
+
+8px 	blank/black
+32px 	skybox0 - data for 768x32 @16color = 12K .. but using 5x 64x32 sprites to scroll.. 				12K 	12K
+16px 	mode7 area - 4x 64x16 sprites @16 color 	0.5K *4 * doublebuffer = 4k 						4k 		16K
+64px 	mode7 area - 4x 64x64 sprites @16 color 	2.0k *4 * doublebuffer = 16K 						16K 	32K
+HUD 	layer0 over sprites - 2bit 8x8 tilemap using 32x30 - ~2K (both players)							2K 		34K
+2bit HUD tile set - 8x8 @2bit = 16B		basically 1K 													1K 		35K
+	item box - 3 tiles 						3 
+	time display - 8x16
+		quote/double quote -	2 tiles 	2 	5
+		0-9 - 2 tiles each 		20 tiles 	20 	25
+	cart/coin/x/small numeral - 13 			13 	38
+	lap counter - 123 16x24 - 18 			18 	56 	
+
+character sprites - 32x32 @16color = 512B 
+misc stuff on the road - static 32x32 @16 color sprite data .. 12 powerups + 4 per course?
+up to 32 sprites at a time, not doublebuffered 															16K 	51K
+
+Lower section - 1player would be map or rear view.. 
+map - uses VRAM that would otherwise be player2's mode7 tiles..
+
+Player2 - 
+skybox reuses the sprites data from before
+mode7 area - 																							20k 	71K
+character sprites - 																					16k 	87k
+
+
+track - FX tilemap 	4bit color 128x128 = 																16K 	103k
+256 4bit 8x8 tiles - 256*32B  = 8K 																		 8K 	113K
+
+126-113K => leaves 13K for caching / scratch for FX frames ... 

@@ -103,6 +103,7 @@ CHARSET_BANK      = 6
 ; Kernal
 CHROUT            = $FFD2
 GETIN             = $FFE4
+CINT              = $FF81
 
 ; PETSCII Codes
 WHITE             = $05
@@ -406,8 +407,7 @@ cleanup_and_exit:
    lda default_irq_vector+1
    sta IRQVec+1
    cli   
-   lda #MODE_128x64_T16C
-   sta VERA_L1_config
+   jsr CINT
    rts
 
 no_interrupt:
@@ -416,4 +416,6 @@ no_interrupt:
    jsr GETIN
    cmp #0
    beq @check_keyboard
+end:
+  jsr CINT
   rts

@@ -107,6 +107,7 @@ Current file: cx3drc000-basevideo.asm
 000810  1               ; Kernal
 000810  1               CHROUT            = $FFD2
 000810  1               GETIN             = $FFE4
+000810  1               CINT              = $FF81
 000810  1               
 000810  1               ; PETSCII Codes
 000810  1               WHITE             = $05
@@ -500,6 +501,8 @@ Current file: cx3drc000-basevideo.asm
 000EF8  1                  ;BNE @check_keyboard
 000EF8  1               
 000EF8  1               cleanup_and_exit:
+000EF8  1                  ; TODO - somehow reset to BASIC ?
+000EF8  1               
 000EF8  1                  ; restore default IRQ vector
 000EF8  1  78              sei
 000EF9  1  AD 10 08        lda default_irq_vector
@@ -507,15 +510,16 @@ Current file: cx3drc000-basevideo.asm
 000EFF  1  AD 11 08        lda default_irq_vector+1
 000F02  1  8D 15 03        sta IRQVec+1
 000F05  1  58              cli
-000F06  1  A9 60           lda #MODE_128x64_T16C
-000F08  1  8D 34 9F        sta VERA_L1_config
-000F0B  1  60              rts
-000F0C  1               
-000F0C  1               no_interrupt:
-000F0C  1               @check_keyboard:
-000F0C  1                  ; poll keyboard for input
-000F0C  1  20 E4 FF        jsr GETIN
-000F0F  1  C9 00           cmp #0
-000F11  1  F0 F9           beq @check_keyboard
-000F13  1  60             rts
-000F13  1               
+000F06  1  20 81 FF        jsr CINT
+000F09  1  60              rts
+000F0A  1               
+000F0A  1               no_interrupt:
+000F0A  1               @check_keyboard:
+000F0A  1                  ; poll keyboard for input
+000F0A  1  20 E4 FF        jsr GETIN
+000F0D  1  C9 00           cmp #0
+000F0F  1  F0 F9           beq @check_keyboard
+000F11  1               end:
+000F11  1  20 81 FF       jsr CINT
+000F14  1  60             rts
+000F14  1               
