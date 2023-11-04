@@ -177,6 +177,15 @@ TODO 	output some text or something on layer 1 as overlay...80
 
 		Yeah you get distance but what slice of what did you hit???!
 
+2023/11/04
+0900 	Starting work on the actual raycasting bit.. need to sort out DDA algo..
+		reconsidering some of the layout - could have gradient ceiling and floor using static tiles in layer0
+		or by using sprites set behind layer0..
+		sprites could be like 32x64 and reuse data.. would need like 14 32x64 or 28 16x64 to cover the 3D bit of the screen..
+		or swap layer 0 and layer1 as they currently are and add gradient tiles to layer0 tileset?
+
+1045 	OK finally got a grid sorted out for the video display... -.-
+
 
 TODO 	tilemap graphics
 TODO 	explore VERA accelerations - line draw

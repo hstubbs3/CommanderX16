@@ -1,0 +1,592 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : cx3drc001-raycaster_base.asm
+Current file: cx3drc001-raycaster_base.asm
+
+000000r 1               .org $080D
+00080D  1               .segment "STARTUP"
+00080D  1               .segment "INIT"
+00080D  1               .segment "ONCE"
+00080D  1               .segment "CODE"
+00080D  1               
+00080D  1  4C F6 0E       jmp start
+000810  1               ; RAM Interrupt Vectors
+000810  1               IRQVec            = $0314
+000810  1               
+000810  1               ; VERA
+000810  1               VERA_addr_low     = $9F20
+000810  1               VERA_addr_high    = $9F21
+000810  1               VERA_addr_bank    = $9F22
+000810  1               VERA_data0        = $9F23
+000810  1               VERA_data1        = $9F24
+000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_ien          = $9F26
+000810  1               VERA_isr          = $9F27
+000810  1               VERA_dc_video     = $9F29 ; DCSEL = 0
+000810  1               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+000810  1               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+000810  1               
+000810  1               VERA_dc_hscale    = $9F2A
+000810  1               VERA_dc_vscale    = $9F2B
+000810  1               
+000810  1               VERA_L0_config    = $9F2D
+000810  1               ;   7       6     5   4       3       2             1   0
+000810  1               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+000810  1               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+000810  1               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+000810  1               ;   2 - 128                                         2   4bpp 16 color
+000810  1               ;   3 - 256                                         3   8bpp 256 color
+000810  1               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+000810  1               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+000810  1               ;   The palette offset (in 'H-Scroll (11:8)') modifies the color indexes of the bitmap in the same way as in the tile modes.
+000810  1               
+000810  1               VERA_L0_mapbase   = $9F2E
+000810  1               VERA_L0_tilebase  = $9F2F ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+000810  1               VERA_L0_HSCROLL_L = $9F30 ;  H-Scroll (7:0)
+000810  1               VERA_L0_HSCROLL_H = $9F31 ;  - H-Scroll (11:8)
+000810  1               VERA_L0_VSCROLL_L = $9F32 ;  V-Scroll (7:0)
+000810  1               VERA_L0_VSCROLL_H = $9F33 ;  - V-Scroll (11:8)
+000810  1               
+000810  1               VERA_L1_config    = $9F34
+000810  1               VERA_L1_mapbase   = $9F35
+000810  1               VERA_L1_tilebase  = $9F36
+000810  1               VERA_L1_HSCROLL_L = $9F37 ;  H-Scroll (7:0)
+000810  1               VERA_L1_HSCROLL_H = $9F38 ;  - H-Scroll (11:8)
+000810  1               VERA_L1_VSCROLL_L = $9F39 ;  V-Scroll (7:0)
+000810  1               VERA_L1_VSCROLL_H = $9F3A ;  - V-Scroll (11:8)
+000810  1               
+000810  1               VSYNC_BIT         = $01
+000810  1               
+000810  1               ; VRAM Addresses
+000810  1               ;   Address range Description
+000810  1               ;   $00000 - $1F9BF Video RAM   - 129,424 bytes -> 126K is 129,024 (1F800)
+000810  1               ;   $1F9C0 - $1F9FF PSG registers
+000810  1               ;   $1FA00 - $1FBFF Palette
+000810  1               ;   $1FC00 - $1FFFF Sprite attributes
+000810  1               
+000810  1               VRAM_RC_layer_tileA = $00000      ; must be 4K aligned - 25x14 x8x8 = 22,400B   21.875K actually starts at  0   - 21.875K - last 128 bytes unused...
+000810  1               VRAM_RC_layer_map  = $05800       ; must be 512B aligned  32x32 assigned=2K actually using ~32x20           22K  - 24K    -
+000810  1               VRAM_RC_layer_tileB = $06000      ; must be 4K aligned              21.875K                                 24k  - 45.875K
+000810  1               RC_ZERO_TILE=$015E
+000810  1               VRAM_HUD_layer_map   = $0B800      ; must be 512B aligned  32x32 assigned=2k uses 20 lines -> 1,280 used..   46k  - 47.25  - 768 bytes unused...
+000810  1               VRAM_HUD_layer_tile  = $0C000      ; must be 4K aligned . 256*1bpp 8x8 = 2K max                              48K  - 50K
+000810  1               
+000810  1               VRAM_tex_cache_64 = $0C800      ; space for 64x64 textures.. 4x of these just in case..                   50k  - 66K
+000810  1               VRAM_tex_cache_48 = $10800      ; 48x48 textures - 2.25K each.. space for 8x .. 18K                       66k  - 84k
+000810  1               VRAM_tex_cache_32 = $15000      ; 32x32 textures - 1k each - space for 16x                                84k  - 100k
+000810  1               VRAM_tex_cache_24 = $19000      ; 16x16 textures 256k each - 32x=8k                                       100k - 108k
+000810  1               VRAM_UNRESERVED   = $1A000      ; 126K+ used for palette/sprites, so 108K-126K=18K available for hud/effects stuffs..
+000810  1               ; sprite starts must be 32byte aligned...
+000810  1               ; only can go to 126K ...
+000810  1               VRAM_palette      = $1FA00      ;
+000810  1               
+000810  1               BITMAP_PAL_OFFSET = 0
+000810  1               ; constants
+000810  1               DISPLAY_SCALE_FOUR    = 32
+000810  1               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+000810  1               DISPLAY_SCALE_ONE     = 128 ; 640x480
+000810  1               MODE_BITMAP_256BPP = $07
+000810  1               MODE_BITMAP_16BPP  = $06
+000810  1               MODE_TILE_64_WIDE = $10
+000810  1               MODE_T256C = $0D
+000810  1               MODE_128x64_T16C = $60 ; 128x64, 16-color text
+000810  1               MODE_128x64_T256C = $68 ; 128x64, 256-color text
+000810  1               MODE_64x32_T256C = $18
+000810  1               MODE_32x32_256BPP = $03
+000810  1               MODE_32x32_T16C   = $00
+000810  1               LAYER0_ONLY       = $11
+000810  1               LAYER01_ENABLE    = $31
+000810  1               LAYER1_ONLY       = $21
+000810  1               VRAM_bitmap       = $04000
+000810  1               LOWER_UPPER       = $C400
+000810  1               
+000810  1               ; ROM Banks
+000810  1               ROM_BANK          = $01
+000810  1               BASIC_BANK        = 4
+000810  1               CHARSET_BANK      = 6
+000810  1               
+000810  1               ; Kernal
+000810  1               CHROUT            = $FFD2
+000810  1               GETIN             = $FFE4
+000810  1               CINT              = $FF81
+000810  1               
+000810  1               ; PETSCII Codes
+000810  1               WHITE             = $05
+000810  1               RETURN            = $0D
+000810  1               SPACE             = $20
+000810  1               ZERO_CHAR         = $30
+000810  1               SIX_CHAR          = $36
+000810  1               NINE_CHAR         = $39
+000810  1               C_CHAR            = $43
+000810  1               I_CHAR            = $49
+000810  1               O_CHAR            = $4F
+000810  1               T_CHAR            = $54
+000810  1               CLR               = $93
+000810  1               
+000810  1               ; global data
+000810  1  00 00        default_irq_vector:  .addr 0
+000812  1  01           VSYNC_counter:       .byte 1
+000813  1               ZP_PTR = $22
+000813  1               
+000813  1               HUD_layer_TILEDATA:
+000813  1  00 00 00 00    .byte %00000000, %00000000, %00000000, %00000000, %00000000, %00000000, %00000000, %00000000 ; empty
+000817  1  00 00 00 00  
+00081B  1               
+00081B  1  00             .byte %00000000   ; HEX digits for debug
+00081C  1  1E             .byte %00011110
+00081D  1  2B             .byte %00101011
+00081E  1  4B             .byte %01001011
+00081F  1  53             .byte %01010011
+000820  1  52             .byte %01010010
+000821  1  7C             .byte %01111100
+000822  1  00             .byte %00000000
+000823  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 1
+000827  1  53 52 7C 00  
+00082B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 2
+00082F  1  53 52 7C 00  
+000833  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 3
+000837  1  53 52 7C 00  
+00083B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 4
+00083F  1  53 52 7C 00  
+000843  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 5
+000847  1  53 52 7C 00  
+00084B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 6
+00084F  1  53 52 7C 00  
+000853  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 7
+000857  1  53 52 7C 00  
+00085B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 8
+00085F  1  53 52 7C 00  
+000863  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; 9
+000867  1  53 52 7C 00  
+00086B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; A
+00086F  1  53 52 7C 00  
+000873  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; B
+000877  1  53 52 7C 00  
+00087B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; C
+00087F  1  53 52 7C 00  
+000883  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; D
+000887  1  53 52 7C 00  
+00088B  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; E
+00088F  1  53 52 7C 00  
+000893  1  00 1E 2B 4B    .byte %00000000, %00011110, %00101011, %01001011, %01010011, %01010010, %01111100, %00000000 ; F (16)
+000897  1  53 52 7C 00  
+00089B  1               
+00089B  1  FF FF FF FF    .byte %11111111, %11111111, %11111111, %11111111, %11111111, %11111111, %11111111, %11111111 ; filled (17)
+00089F  1  FF FF FF FF  
+0008A3  1  AA 55 AA 55    .byte %10101010, %01010101, %10101010, %01010101, %10101010, %01010101, %10101010, %01010101 ; 1x1 checkerboard - 18
+0008A7  1  AA 55 AA 55  
+0008AB  1                 ; 19 - floor / ceiling gradients
+0008AB  1                 ; is like fade between two colors ..
+0008AB  1                 ;    100% color0 7/8 ...    6/8(3/4)    5/8
+0008AB  1  00 01 44 92    .byte %00000000, %00000001, %01000100, %10010010, %01010101, %10110110, %11011011, %01111111
+0008AF  1  55 B6 DB 7F  
+0008B3  1               
+0008B3  1               HUD_layer_MAPDATA:
+0008B3  1                 ; 32x32 but only populating 32x20
+0008B3  1                 ;     0         1       2         3       4         5         6       7         8       9       10        11      12          13        14    15
+0008B3  1  12 03 12 03    .byte $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03 ;
+0008B7  1  12 03 12 03  
+0008BB  1  12 03 12 03  
+0008D3  1  12 03 12 03    .byte $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 0
+0008D7  1  12 03 12 03  
+0008DB  1  12 03 12 03  
+0008F3  1               
+0008F3  1  12 03 13 11    .byte $12,$03, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11
+0008F7  1  13 11 13 11  
+0008FB  1  13 11 13 11  
+000913  1  13 11 13 11    .byte $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 1
+000917  1  13 11 13 11  
+00091B  1  13 11 13 11  
+000933  1               
+000933  1  12 03 13 11    .byte $12,$03, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11
+000937  1  13 11 13 11  
+00093B  1  13 11 13 11  
+000953  1  13 11 13 11    .byte $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $13,$11, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 2
+000957  1  13 11 13 11  
+00095B  1  13 11 13 11  
+000973  1               
+000973  1  12 03 13 1F    .byte $12,$03, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F
+000977  1  13 1F 13 1F  
+00097B  1  13 1F 13 1F  
+000993  1  13 1F 13 1F    .byte $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $13,$1F, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 3
+000997  1  13 1F 13 1F  
+00099B  1  13 1F 13 1F  
+0009B3  1               
+0009B3  1  12 03 13 FC    .byte $12,$03, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC
+0009B7  1  13 FC 13 FC  
+0009BB  1  13 FC 13 FC  
+0009D3  1  13 FC 13 FC    .byte $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $13,$FC, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 4
+0009D7  1  13 FC 13 FC  
+0009DB  1  13 FC 13 FC  
+0009F3  1               
+0009F3  1  12 03 13 CB    .byte $12,$03, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB
+0009F7  1  13 CB 13 CB  
+0009FB  1  13 CB 13 CB  
+000A13  1  13 CB 13 CB    .byte $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $13,$CB, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 5
+000A17  1  13 CB 13 CB  
+000A1B  1  13 CB 13 CB  
+000A33  1               
+000A33  1  12 03 13 BB    .byte $12,$03, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB
+000A37  1  13 BB 13 BB  
+000A3B  1  13 BB 13 BB  
+000A53  1  13 BB 13 BB    .byte $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 6
+000A57  1  13 BB 13 BB  
+000A5B  1  13 BB 13 BB  
+000A73  1               
+000A73  1  12 03 13 BB    .byte $12,$03, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB
+000A77  1  13 BB 13 BB  
+000A7B  1  13 BB 13 BB  
+000A93  1  13 BB 13 BB    .byte $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $13,$BB, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 7
+000A97  1  13 BB 13 BB  
+000A9B  1  13 BB 13 BB  
+000AB3  1               
+000AB3  1  12 03 13 99    .byte $12,$03, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99
+000AB7  1  13 99 13 99  
+000ABB  1  13 99 13 99  
+000AD3  1  13 99 13 99    .byte $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ;  line 8
+000AD7  1  13 99 13 99  
+000ADB  1  13 99 13 99  
+000AF3  1               
+000AF3  1  12 03 13 99    .byte $12,$03, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99
+000AF7  1  13 99 13 99  
+000AFB  1  13 99 13 99  
+000B13  1  13 99 13 99    .byte $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $13,$99, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ;  line 9
+000B17  1  13 99 13 99  
+000B1B  1  13 99 13 99  
+000B33  1               
+000B33  1  12 03 13 98    .byte $12,$03, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98
+000B37  1  13 98 13 98  
+000B3B  1  13 98 13 98  
+000B53  1  13 98 13 98    .byte $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $13,$98, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ;  line 10
+000B57  1  13 98 13 98  
+000B5B  1  13 98 13 98  
+000B73  1               
+000B73  1  12 03 13 88    .byte $12,$03, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88
+000B77  1  13 88 13 88  
+000B7B  1  13 88 13 88  
+000B93  1  13 88 13 88    .byte $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $13,$88, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ;
+000B97  1  13 88 13 88  
+000B9B  1  13 88 13 88  
+000BB3  1  12 03 13 87    .byte $12,$03, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87 ;
+000BB7  1  13 87 13 87  
+000BBB  1  13 87 13 87  
+000BD3  1  13 87 13 87    .byte $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $13,$87, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 12
+000BD7  1  13 87 13 87  
+000BDB  1  13 87 13 87  
+000BF3  1               
+000BF3  1  12 03 13 77    .byte $12,$03, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77
+000BF7  1  13 77 13 77  
+000BFB  1  13 77 13 77  
+000C13  1  13 77 13 77    .byte $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 13
+000C17  1  13 77 13 77  
+000C1B  1  13 77 13 77  
+000C33  1               
+000C33  1  12 03 13 77    .byte $12,$03, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77
+000C37  1  13 77 13 77  
+000C3B  1  13 77 13 77  
+000C53  1  13 77 13 77    .byte $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $13,$77, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 14
+000C57  1  13 77 13 77  
+000C5B  1  13 77 13 77  
+000C73  1               
+000C73  1  12 03 00 00    .byte $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00
+000C77  1  00 00 00 00  
+000C7B  1  00 00 00 00  
+000C93  1  00 00 00 00    .byte $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 15
+000C97  1  00 00 00 00  
+000C9B  1  00 00 00 00  
+000CB3  1  12 03 00 00    .byte $12,$03, $00,$00, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01
+000CB7  1  01 01 01 01  
+000CBB  1  01 01 01 01  
+000CD3  1  01 01 01 01    .byte $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $00,$00, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 16
+000CD7  1  01 01 01 01  
+000CDB  1  01 01 01 01  
+000CF3  1  12 03 00 00    .byte $12,$03, $00,$00, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01
+000CF7  1  01 01 01 01  
+000CFB  1  01 01 01 01  
+000D13  1  01 01 01 01    .byte $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $01,$01, $00,$00, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 17
+000D17  1  01 01 01 01  
+000D1B  1  01 01 01 01  
+000D33  1  12 03 00 00    .byte $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00
+000D37  1  00 00 00 00  
+000D3B  1  00 00 00 00  
+000D53  1  00 00 00 00    .byte $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 18
+000D57  1  00 00 00 00  
+000D5B  1  00 00 00 00  
+000D73  1  12 03 12 03    .byte $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03 ;
+000D77  1  12 03 12 03  
+000D7B  1  12 03 12 03  
+000D93  1  12 03 12 03    .byte $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $12,$03, $00,$00, $00,$00, $00,$00, $00,$00, $00,$00 ; line 19
+000D97  1  12 03 12 03  
+000D9B  1  12 03 12 03  
+000DB3  1               
+000DB3  1               custom_irq_handler:
+000DB3  1  AD 27 9F        lda VERA_isr
+000DB6  1  29 01           and #VSYNC_BIT
+000DB8  1  F0 03           beq @continue ; non-VSYNC IRQ, no tick update
+000DBA  1  EE 12 08        inc VSYNC_counter
+000DBD  1               @continue:
+000DBD  1                  ; continue to default IRQ handler
+000DBD  1  6C 10 08        jmp (default_irq_vector)
+000DC0  1                  ; RTI will happen after jump
+000DC0  1               
+000DC0  1               INITIALIZE_VRAM_DATA:
+000DC0  1  9C 25 9F       stz VERA_ctrl
+000DC3  1                 ;init layer0
+000DC3  1  9C 20 9F       stz VERA_addr_low
+000DC6  1  A9 58          lda #>VRAM_RC_layer_map
+000DC8  1  8D 21 9F       sta VERA_addr_high
+000DCB  1  A9 10          lda #($10 | ^VRAM_RC_layer_map) ;
+000DCD  1  8D 22 9F       sta VERA_addr_bank
+000DD0  1  A9 21          lda #33
+000DD2  1  A2 5E          ldx #$5E
+000DD4  1  A0 01          ldy #$01
+000DD6  1                 @init_layer0_map_line0:
+000DD6  1  8E 23 9F         stx VERA_data0
+000DD9  1  8C 23 9F         sty VERA_data0
+000DDC  1  3A               dec a
+000DDD  1  D0 F7            BNE @init_layer0_map_line0
+000DDF  1  A9 FF          lda #255
+000DE1  1  85 22          sta ZP_PTR
+000DE3  1  64 23          stz ZP_PTR+1
+000DE5  1  A0 0E          ldy #14
+000DE7  1  84 24          sty ZP_PTR+2
+000DE9  1  18             clc
+000DEA  1                 @init_layer0_map_disp_row_loop:
+000DEA  1  A0 19            ldy #25
+000DEC  1  E6 22            inc ZP_PTR
+000DEE  1  A5 22            lda ZP_PTR
+000DF0  1  A6 23            ldx ZP_PTR+1
+000DF2  1                   @init_layer0_disp_row:
+000DF2  1  8D 23 9F           sta VERA_data0
+000DF5  1  8E 23 9F           stx VERA_data0
+000DF8  1  69 0E              adc #14 ; was 28
+000DFA  1  90 02              bcc @no_carry
+000DFC  1  E8                 inx
+000DFD  1  18                 clc
+000DFE  1                   @no_carry:
+000DFE  1  88                 dey
+000DFF  1  D0 F1              BNE @init_layer0_disp_row
+000E01  1  A9 07            lda #7
+000E03  1  A2 5E            ldx #$5E
+000E05  1  A0 01            ldy #$01
+000E07  1                   @zero_rest_row:
+000E07  1  8E 23 9F           stx VERA_data0
+000E0A  1  8C 23 9F           sty VERA_data0
+000E0D  1  3A                 dec a
+000E0E  1  D0 F7              BNE @zero_rest_row
+000E10  1  C6 24            dec ZP_PTR+2
+000E12  1  D0 D6            BNE @init_layer0_map_disp_row_loop
+000E14  1  A9 A0          lda #160
+000E16  1                 @init_layer1_clear_bottom_rows:
+000E16  1  8E 23 9F         stx VERA_data0
+000E19  1  8C 23 9F         sty VERA_data0
+000E1C  1  3A               dec a
+000E1D  1  D0 F7            BNE @init_layer1_clear_bottom_rows
+000E1F  1               
+000E1F  1                 ; jmp no_tilemap_0A_clear
+000E1F  1                 ; zero out RC layer
+000E1F  1  9C 20 9F       stz VERA_addr_low
+000E22  1  9C 21 9F       stz VERA_addr_high
+000E25  1  A9 10          lda #$10
+000E27  1  8D 22 9F       sta VERA_addr_bank
+000E2A  1  A0 58          ldy #88
+000E2C  1  A9 00          lda #0
+000E2E  1  A2 01          ldx #1
+000E30  1  18             clc
+000E31  1                 @loopA:
+000E31  1                   @loopB:
+000E31  1                     ; simple loop to zero out..
+000E31  1                     ; stz VERA_data0
+000E31  1                     ; inc a
+000E31  1               
+000E31  1                     ; draw a 4x4 grid...
+000E31  1  9C 23 9F           stz VERA_data0  ; one tile row
+000E34  1  8E 23 9F           stx VERA_data0
+000E37  1  9C 23 9F           stz VERA_data0
+000E3A  1  9C 23 9F           stz VERA_data0
+000E3D  1  9C 23 9F           stz VERA_data0
+000E40  1  8E 23 9F           stx VERA_data0
+000E43  1  9C 23 9F           stz VERA_data0
+000E46  1  9C 23 9F           stz VERA_data0
+000E49  1               
+000E49  1  8E 23 9F           stx VERA_data0  ; 2 tile row
+000E4C  1  8E 23 9F           stx VERA_data0
+000E4F  1  8E 23 9F           stx VERA_data0
+000E52  1  8E 23 9F           stx VERA_data0
+000E55  1  8E 23 9F           stx VERA_data0
+000E58  1  8E 23 9F           stx VERA_data0
+000E5B  1  8E 23 9F           stx VERA_data0
+000E5E  1  8E 23 9F           stx VERA_data0
+000E61  1               
+000E61  1  9C 23 9F           stz VERA_data0  ; 3 tile row
+000E64  1  8E 23 9F           stx VERA_data0
+000E67  1  9C 23 9F           stz VERA_data0
+000E6A  1  9C 23 9F           stz VERA_data0
+000E6D  1  9C 23 9F           stz VERA_data0
+000E70  1  8E 23 9F           stx VERA_data0
+000E73  1  9C 23 9F           stz VERA_data0
+000E76  1  9C 23 9F           stz VERA_data0
+000E79  1               
+000E79  1  9C 23 9F           stz VERA_data0  ; 4 tile row
+000E7C  1  8E 23 9F           stx VERA_data0
+000E7F  1  9C 23 9F           stz VERA_data0
+000E82  1  9C 23 9F           stz VERA_data0
+000E85  1  9C 23 9F           stz VERA_data0
+000E88  1  8E 23 9F           stx VERA_data0
+000E8B  1  9C 23 9F           stz VERA_data0
+000E8E  1  9C 23 9F           stz VERA_data0
+000E91  1  69 20              adc #32 ; 32 pixels drawn...
+000E93  1  D0 9C              BNE @loopB
+000E95  1  18               clc
+000E96  1  88               dey
+000E97  1  D0 98            BNE @loopB
+000E99  1  A9 80            lda #$80
+000E9B  1  8D 20 9F         sta VERA_addr_low
+000E9E  1  A9 57            lda #$57
+000EA0  1  8D 21 9F         sta VERA_addr_high
+000EA3  1  A9 40            lda #64
+000EA5  1                   @clear_tile_15E:
+000EA5  1  9C 23 9F           stz VERA_data0
+000EA8  1  3A                 dec a
+000EA9  1  D0 FA              BNE @clear_tile_15E
+000EAB  1               
+000EAB  1               no_tilemap_0A_clear:
+000EAB  1               
+000EAB  1  9C 20 9F       stz VERA_addr_low
+000EAE  1  A9 C0          lda #>VRAM_HUD_layer_tile ;
+000EB0  1  8D 21 9F       sta VERA_addr_high
+000EB3  1  A9 10          lda #($10 | ^VRAM_HUD_layer_tile) ;
+000EB5  1  8D 22 9F       sta VERA_addr_bank
+000EB8  1  A9 13          lda #<HUD_layer_TILEDATA
+000EBA  1  85 22          sta ZP_PTR
+000EBC  1  A9 08          lda #>HUD_layer_TILEDATA
+000EBE  1  85 23          STA ZP_PTR+1
+000EC0  1  A2 08          ldx #8
+000EC2  1  A0 00          ldy #0
+000EC4  1                 @init_layer1_tiledata:
+000EC4  1                   @init_layer1_tiledata_inner:
+000EC4  1  B1 22              lda (ZP_PTR),y
+000EC6  1  8D 23 9F           sta VERA_data0
+000EC9  1  C8                 iny
+000ECA  1  D0 F8              BNE @init_layer1_tiledata_inner
+000ECC  1  E6 23            inc ZP_PTR+1
+000ECE  1  CA               dex
+000ECF  1  D0 F3            BNE @init_layer1_tiledata
+000ED1  1  9C 20 9F       stz VERA_addr_low
+000ED4  1  A9 B8          lda #>VRAM_HUD_layer_map
+000ED6  1  8D 21 9F       sta VERA_addr_high
+000ED9  1  A9 10          lda #($10 | ^VRAM_HUD_layer_map) ;
+000EDB  1  8D 22 9F       sta VERA_addr_bank
+000EDE  1  A9 B3          lda #<HUD_layer_MAPDATA
+000EE0  1  85 22          sta ZP_PTR
+000EE2  1  A9 08          lda #>HUD_layer_MAPDATA
+000EE4  1  85 23          sta ZP_PTR+1
+000EE6  1  A2 05          ldx #5
+000EE8  1                 @init_layer1_mapdata:
+000EE8  1                   @init_layer1_mapdata_inner:
+000EE8  1  B1 22              lda (ZP_PTR),y
+000EEA  1  8D 23 9F           sta VERA_data0
+000EED  1  C8                 iny
+000EEE  1  D0 F8              BNE @init_layer1_mapdata_inner
+000EF0  1  E6 23            inc ZP_PTR+1
+000EF2  1  CA               dex
+000EF3  1  D0 F3            BNE @init_layer1_mapdata
+000EF5  1  60             rts
+000EF6  1               
+000EF6  1               
+000EF6  1               start:
+000EF6  1                 ; start of program - init globals
+000EF6  1  AD 14 03       lda IRQVec
+000EF9  1  8D 10 08       sta default_irq_vector
+000EFC  1  AD 15 03       lda IRQVec+1
+000EFF  1  8D 11 08       sta default_irq_vector+1
+000F02  1               
+000F02  1  9C 29 9F       stz VERA_dc_video   ; disable display
+000F05  1  A9 2B          lda #43 ; set scale for bitmap mode
+000F07  1  8D 2A 9F       sta VERA_dc_hscale
+000F0A  1  A9 2A          lda #42
+000F0C  1  8D 2B 9F       sta VERA_dc_vscale
+000F0F  1                 ; layer 0 config...
+000F0F  1  A9 03          lda #MODE_32x32_256BPP
+000F11  1  8D 34 9F       sta VERA_L1_config
+000F14  1  A9 2C          lda #(VRAM_RC_layer_map >> 9)
+000F16  1  8D 35 9F       sta VERA_L1_mapbase
+000F19  1                 ; lda #(VRAM_layer0_tileA >> 9) ;
+000F19  1                 ; sta VERA_L0_tilebase
+000F19  1  9C 36 9F       stz VERA_L1_tilebase
+000F1C  1  64 00          stz BITMAP_PAL_OFFSET ; palette offset 0
+000F1E  1                 ;layer 1 config
+000F1E  1  A9 00          lda #MODE_32x32_T16C
+000F20  1  8D 2D 9F       sta VERA_L0_config
+000F23  1  A9 5C          lda #(VRAM_HUD_layer_map >> 9)
+000F25  1  8D 2E 9F       sta VERA_L0_mapbase
+000F28  1  A9 60          lda #(VRAM_HUD_layer_tile>>9)
+000F2A  1  8D 2F 9F       sta VERA_L0_tilebase
+000F2D  1               
+000F2D  1  A9 01          lda #1
+000F2F  1  8D 31 9F       sta VERA_L0_HSCROLL_H
+000F32  1  8D 33 9F       sta VERA_L0_VSCROLL_H
+000F35  1  8D 38 9F       sta VERA_L1_HSCROLL_H
+000F38  1  8D 3A 9F       sta VERA_L1_VSCROLL_H
+000F3B  1  A9 01          lda #1
+000F3D  1  8D 30 9F       sta VERA_L0_HSCROLL_L
+000F40  1  8D 32 9F       sta VERA_L0_VSCROLL_L
+000F43  1  8D 37 9F       sta VERA_L1_HSCROLL_L
+000F46  1  8D 39 9F       sta VERA_L1_VSCROLL_L
+000F49  1                 ; load initial tile data
+000F49  1  20 C0 0D       jsr INITIALIZE_VRAM_DATA;
+000F4C  1               
+000F4C  1                 ; enable layers and start drawing
+000F4C  1                 ;stz VERA_ctrl
+000F4C  1  A9 31          lda #LAYER01_ENABLE
+000F4E  1                 ;lda #LAYER0_ONLY ; for testing
+000F4E  1                 ;lda #LAYER1_ONLY
+000F4E  1  8D 29 9F       sta VERA_dc_video
+000F51  1               
+000F51  1               ;jmp no_interrupt
+000F51  1                 ; overwrite RAM IRQ vector with custom handler address
+000F51  1  78             sei ; disable IRQ while vector is changing
+000F52  1  A9 B3          lda #<custom_irq_handler
+000F54  1  8D 14 03       sta IRQVec
+000F57  1  A9 0D          lda #>custom_irq_handler
+000F59  1  8D 15 03       sta IRQVec+1
+000F5C  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000F5E  1  8D 26 9F       sta VERA_ien
+000F61  1  58             cli ; enable IRQ now that vector is properly set
+000F62  1               
+000F62  1               
+000F62  1                 ; draw stuff
+000F62  1               
+000F62  1                 ; main loop here...
+000F62  1               @check_keyboard:
+000F62  1                  ; poll keyboard for input
+000F62  1  20 E4 FF        jsr GETIN
+000F65  1  C9 00           cmp #0
+000F67  1  F0 F9           beq @check_keyboard
+000F69  1                  ;cmp #SPACE
+000F69  1                  ;bne @check_keyboard
+000F69  1                  ;cmp #RETURN
+000F69  1                  ;BNE @check_keyboard
+000F69  1               
+000F69  1               cleanup_and_exit:
+000F69  1                  ; TODO - somehow reset to BASIC ?
+000F69  1               
+000F69  1                  ; restore default IRQ vector
+000F69  1  78              sei
+000F6A  1  AD 10 08        lda default_irq_vector
+000F6D  1  8D 14 03        sta IRQVec
+000F70  1  AD 11 08        lda default_irq_vector+1
+000F73  1  8D 15 03        sta IRQVec+1
+000F76  1  58              cli
+000F77  1  20 81 FF        jsr CINT
+000F7A  1  60              rts
+000F7B  1               
+000F7B  1               no_interrupt:
+000F7B  1               @check_keyboard:
+000F7B  1                  ; poll keyboard for input
+000F7B  1  20 E4 FF        jsr GETIN
+000F7E  1  C9 00           cmp #0
+000F80  1  F0 F9           beq @check_keyboard
+000F82  1               end:
+000F82  1  20 81 FF       jsr CINT
+000F85  1  60             rts
+000F85  1               

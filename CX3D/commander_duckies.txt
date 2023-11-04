@@ -1,0 +1,40 @@
+commander_duckies.txt
+
+adapting the Genesis heightmap renderer to the X16... 
+
+Using 640x480 resolution like God intended... 
+
+first person perspective / "commanche" rendering using tile map..
+screen layout - 512x480	3D area - 64x60 8x8 tiles and 128x480 hud/map thing..
+layer0 - 16 color 8x8 tile mode - declared as 64x64 - map -> 	8k 		0 		8k-1
+		is double buffered 										8k 		8k 		16k-1
+		tileset - each tile is 32B - 64 water/fog variants 		2K 		16k 	18k-1
+		tiles for making tub wall / room background 	64 		2k 		18k 	20k-1
+																							20K
+layer1 - text mode 16color - 16x16 tiles - uses 64x30 map -> 	4K 		0 		4k
+		256 16x16 1bpp tiles 32B each 							8k 		4K 		12k
+																							32k
+char sprites - vary in size / clipped against world.
+	double-buffered (if able) - pooled cache of 32k? 										64k 
+
+126-64=62K VRAM still available.. 
+	splash effect data - 8x16,16x16,32x16,64x16 x4bpp =1k  	
+	misc splats, icons, status stuff, hud/map indicators... 	8k 							72k
+
+126-72=54K remaining... 
+FX smallest map size is 16x16px then 64x64px
+but tilebase is 6 bits = 2k aligned.. so will use cache sheet for at least 64x64 px.. 
+fx  map = 8x8 = 64 bytes somewhere at 2k align.. 
+
+FX 	tilecache -
+	char base 8 orientations using 5 and flip = 32x32 x4bpp = 0.5K 2.5k per
+	16 orientations using 9+flip = 4.5k per @32x32 or 18k per @64x64 ... 
+
+alternately - build up duckies from parts using write transparency?
+then can use 64x64 pixel sources to scale parts from and build up sprite each time??
+rather than use main ram and push into a cache.. 54k of char bits at various rotations... hmmm
+
+will have to consider after getting the renderer up.. 
+
+fallback plan - if 64 cols too expensive, layer0 to 16 color 16x16 tile map using 32x32 -> 2k 
+	double buffered 4k tileset needs 16k now.. still 20K for this bit.. lol ok whatevs

@@ -1,1 +1,1 @@
-cl65 -t cx16 -o 000.PRG -l cx3drc000.list cx3drc000-basevideo.asm
+cl65 -t cx16 -o 001.PRG -l cx3drc001.list cx3drc001-raycaster_base.asm
