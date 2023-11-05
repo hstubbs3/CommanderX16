@@ -184,7 +184,13 @@ TODO 	output some text or something on layer 1 as overlay...80
 		sprites could be like 32x64 and reuse data.. would need like 14 32x64 or 28 16x64 to cover the 3D bit of the screen..
 		or swap layer 0 and layer1 as they currently are and add gradient tiles to layer0 tileset?
 
-1045 	OK finally got a grid sorted out for the video display... -.-
+1045 	OK finally got a grid sorted out for the video display... -.- committed 001
+1155 	got a ghetto raycaster in place to test quick little map.. 
+
+2023/11/05
+0805 	
+TODO 	DDA algorithm for raycast through world.. 
+
 
 
 TODO 	tilemap graphics

@@ -99,6 +99,11 @@ LOWER_UPPER       = $C400
 ROM_BANK          = $01
 BASIC_BANK        = 4
 CHARSET_BANK      = 6
+RAM_BANK          = $00
+KERNAL_RAM_BANK   = $00
+
+MAP_RAM_BANK      = $01
+BANKED_RAM_HIGH   = $A0
 
 ; Kernal
 CHROUT            = $FFD2
@@ -117,10 +122,21 @@ I_CHAR            = $49
 O_CHAR            = $4F
 T_CHAR            = $54
 CLR               = $93
+CHAR_UP           = $91
+CHAR_DOWN         = $11
+CHAR_LEFT         = $9D
+CHAR_RIGHT        = $1D
 
 ; global data
+
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
+PLAYER_X_SUB: .byte   $80
+PLAYER_X:     .byte   $01 ; (1,14) on the small test map.. 
+PLAYER_Y_SUB:  .byte   $80
+PLAYER_Y:     .byte   $0E
+PLAYER_ANGLE:        .byte 32 ; facing NorthEast
+
 ZP_PTR = $22
 
 HUD_layer_TILEDATA:
@@ -459,10 +475,34 @@ start:
    jsr GETIN
    cmp #0
    beq @check_keyboard
-   ;cmp #SPACE
-   ;bne @check_keyboard
-   ;cmp #RETURN
-   ;BNE @check_keyboard
+   cmp #SPACE
+   beq cleanup_and_exit
+   cmp #CHAR_UP
+   BEQ @move_foward
+   cmp #CHAR_DOWN
+   BEQ @move_backward
+   cmp #CHAR_LEFT
+   BEQ @turn_left
+   cmp #CHAR_RIGHT
+   BEQ @turn_right
+   BRA @check_keyboard
+  @move_foward:
+    dec PLAYER_Y
+    bra @update_display
+  @move_backward:
+    inc PLAYER_Y
+    bra @update_display
+  @turn_left:
+    inc PLAYER_ANGLE
+    dec PLAYER_X
+    bra @update_display
+  @turn_right:
+    dec PLAYER_ANGLE
+    dec PLAYER_X
+    ;bra @update_display
+  @update_display:
+    jsr RENDER_RAYCAST
+    bra @check_keyboard
 
 cleanup_and_exit:
    ; TODO - somehow reset to BASIC ? 
@@ -486,3 +526,55 @@ no_interrupt:
 end:
   jsr CINT
   rts
+
+RENDER_RAYCAST:
+  stz VERA_addr_low
+  stz VERA_addr_high
+  lda #$10
+  sta VERA_addr_bank
+  lda PLAYER_Y
+  asl a
+  asl a
+  asl a
+  asl a
+  clc 
+  adc PLAYER_X
+  tay
+  stz ZP_PTR
+  lda #BANKED_RAM_HIGH
+  sta ZP_PTR+1
+  ; do a ghetto raycast up/right
+  @find_wall:
+    tya
+    sbc $10 ; up in y
+    inc a ; go to right
+    tay     
+    lda (ZP_PTR),y
+    beq @find_wall
+  ldx #64
+  @loop:
+    sta VERA_data0
+    dex
+    BNE @loop
+  rts
+
+
+.org $A000 
+SMALLTESTMAPDATA:
+  ;     0    1  2   3   4   5   6   7   8   9   10  11  12  13  14  15 
+  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $06, $05, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $05, $06, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $FF, $02, $03, $04, $05, $06, $07, $08, $09, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
+  .byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03 
