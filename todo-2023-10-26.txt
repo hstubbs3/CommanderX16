@@ -188,7 +188,14 @@ TODO 	output some text or something on layer 1 as overlay...80
 1155 	got a ghetto raycaster in place to test quick little map.. 
 
 2023/11/05
-0805 	
+0805 	sorting out map pointers and movement some.. 
+1115 	enabled sprites .. getting some basic HUD stuff together.. 
+1200 	weird, doesn't appear to be showing map correctly... need to check loading, maybe not put into banked memory.. ? 
+1300 	OK HUD map overlay confirmed working ... previously wasn't putting into correct memory locations..
+
+
+TODO 	actual directional movement through level
+TODO 	collision detection player vs level
 TODO 	DDA algorithm for raycast through world.. 
 
 

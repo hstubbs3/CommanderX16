@@ -66,15 +66,17 @@ RC_ZERO_TILE=$015E
 VRAM_HUD_layer_map   = $0B800      ; must be 512B aligned  32x32 assigned=2k uses 20 lines -> 1,280 used..   46k  - 47.25  - 768 bytes unused...
 VRAM_HUD_layer_tile  = $0C000      ; must be 4K aligned . 256*1bpp 8x8 = 2K max                              48K  - 50K 
 
-VRAM_tex_cache_64 = $0C800      ; space for 64x64 textures.. 4x of these just in case..                   50k  - 66K
-VRAM_tex_cache_48 = $10800      ; 48x48 textures - 2.25K each.. space for 8x .. 18K                       66k  - 84k
-VRAM_tex_cache_32 = $15000      ; 32x32 textures - 1k each - space for 16x                                84k  - 100k
-VRAM_tex_cache_24 = $19000      ; 16x16 textures 256k each - 32x=8k                                       100k - 108k
+VRAM_MAP_SPRITE     = $0C800      ; space for 256 color 64x64 sprite for HUD/map ..                         50K  - 54K 
+
+; VRAM_tex_cache_64 = $0C800      ; space for 64x64 textures.. 4x of these just in case..                   50k  - 66K
+; VRAM_tex_cache_48 = $10800      ; 48x48 textures - 2.25K each.. space for 8x .. 18K                       66k  - 84k
+; VRAM_tex_cache_32 = $15000      ; 32x32 textures - 1k each - space for 16x                                84k  - 100k
+; VRAM_tex_cache_24 = $19000      ; 16x16 textures 256k each - 32x=8k                                       100k - 108k
 VRAM_UNRESERVED   = $1A000      ; 126K+ used for palette/sprites, so 108K-126K=18K available for hud/effects stuffs..
 ; sprite starts must be 32byte aligned...
 ; only can go to 126K ... 
 VRAM_palette      = $1FA00      ;  
-
+VRAM_SPRITE_LIST  = $1FC00
 BITMAP_PAL_OFFSET = 0
 ; constants
 DISPLAY_SCALE_FOUR    = 32
@@ -92,6 +94,8 @@ MODE_32x32_T16C   = $00
 LAYER0_ONLY       = $11
 LAYER01_ENABLE    = $31
 LAYER1_ONLY       = $21
+LAYER01SPRITES_ENABLE = $71
+LAYERSPRITES_ONLY = $41
 VRAM_bitmap       = $04000
 LOWER_UPPER       = $C400
 
@@ -136,8 +140,60 @@ PLAYER_X:     .byte   $01 ; (1,14) on the small test map..
 PLAYER_Y_SUB:  .byte   $80
 PLAYER_Y:     .byte   $0E
 PLAYER_ANGLE:        .byte 32 ; facing NorthEast
+PLAYER_SPEED:        .byte 0
+PLAYER_DX:           .byte 0
+PLAYER_DY:           .byte 0
 
 ZP_PTR = $22
+
+
+.macro set_cosine_ptr_from_bearing ; angle should be in a ... a becomes lookup for value, x contains quadrant 0-3
+    ; 1 | 0
+    ; -----
+    ; 2 | 3   
+    ldx #0 ; 2  2
+    asl a ; 2   4
+    bcc @no_carry_high ; 2/3   6/7
+    inx ; 2   8/7
+    inx ; 2   10/7
+  @no_carry_high:
+    asl a ; 2 12/9
+    bcc @no_carry_low ; 14/12
+    inx ; 2   16/12
+    clc ; 2   18/12
+  @no_carry_low:
+.endmacro
+
+.macro set_map_pointer  ; Y in a - clobbers a and y ZP_PTR and ZP_PTR+1 set to map pointer, put x in Y to do lookup proper
+    lsr a ; 2 
+    bcs @quad13_  ; 2/3     4/5
+  @quad02_:
+      lsr a ; 2   6
+      bcs @quad2 ; 2/3   8/9
+    @quad0:
+        tay 
+        lda #0
+        bra end_set_map_pointer
+    @quad2:
+        tay
+        lda #128
+        bra end_set_map_pointer
+  @quad13_:
+      lsr a ; 
+      bcs @quad3
+    @quad1:
+        tay 
+        lda #64
+        bra end_set_map_pointer
+    @quad3:
+        tay
+        lda #192
+  end_set_map_pointer:
+      sta ZP_PTR
+      tya 
+      ora #$A0
+      sta ZP_PTR+1
+.endmacro
 
 HUD_layer_TILEDATA:
   .byte %00000000, %00000000, %00000000, %00000000, %00000000, %00000000, %00000000, %00000000 ; empty
@@ -361,6 +417,79 @@ INITIALIZE_VRAM_DATA:
       stz VERA_data0
       dec a 
       BNE @clear_tile_15E
+    lda #$8F
+    stz VERA_data0
+    stz VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    sta VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    sta VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    sta VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+    stz VERA_data0
+
 
 no_tilemap_0A_clear:
 
@@ -403,8 +532,47 @@ no_tilemap_0A_clear:
     inc ZP_PTR+1
     dex
     BNE @init_layer1_mapdata
-  rts
 
+  stz VERA_addr_low
+  lda #>VRAM_SPRITE_LIST
+  sta VERA_addr_high
+  lda #($10 | ^VRAM_SPRITE_LIST) ;
+  sta VERA_addr_bank
+  ; 0010 10111110 00000
+  lda #$BE  ; sprite 0 - player cursor.. use tile 15F from layer1
+  sta VERA_data0 ;  address low
+  lda #$82
+  sta VERA_data0  ; address high
+  lda #3
+  
+  stz VERA_data0 ;  low X zero
+  stz VERA_data0 ; high x zero
+  
+  stz VERA_data0 ; low y zero
+  stz VERA_data0 ; high y zero 
+  
+  lda #$0C ; infront of everything
+  sta VERA_data0
+  stz VERA_data0 ; 8x8 palette offset 0 
+
+  ; setup HUD map sprite
+  ; 0110 01000000 00000
+  lda #64 ; #((VRAM_MAP_SPRITE>>5) & $FF)
+  sta VERA_data0
+  lda #$86 ;#($80 | (VRAM_MAP_SPRITE>>13))
+  sta VERA_data0
+
+  lda #2
+  sta VERA_data0 ;  low X zero
+  stz VERA_data0 ; high x zero
+  
+  sta VERA_data0 ; low y zero
+  stz VERA_data0 ; high y zero 
+  lda #$0C
+  sta VERA_data0
+  lda #$F0
+  sta VERA_data0
+  rts
 
 start:
   ; start of program - init globals
@@ -450,9 +618,11 @@ start:
 
   ; enable layers and start drawing
   ;stz VERA_ctrl
-  lda #LAYER01_ENABLE
+  ;lda #LAYER01_ENABLE
   ;lda #LAYER0_ONLY ; for testing
   ;lda #LAYER1_ONLY
+  ;lda #LAYERSPRITES_ONLY
+  lda #LAYER01SPRITES_ENABLE
   sta VERA_dc_video
 
 ;jmp no_interrupt
@@ -467,42 +637,136 @@ start:
   cli ; enable IRQ now that vector is properly set
 
 
-  ; draw stuff
+  jsr start_level
+
 
   ; main loop here... 
+update_display:
+    jsr RENDER_RAYCAST
+    jsr UPDATE_HUD_MAP
+
 @check_keyboard:
    ; poll keyboard for input
    jsr GETIN
    cmp #0
    beq @check_keyboard
    cmp #SPACE
-   beq cleanup_and_exit
+   beq @do_start_level
+   cmp #RETURN 
+   bne @check_up 
+   jmp cleanup_and_exit
+  @check_up:
    cmp #CHAR_UP
-   BEQ @move_foward
+   BEQ move_foward
    cmp #CHAR_DOWN
-   BEQ @move_backward
+   BNE @check_left
+   jmp move_backward
+  @check_left:
    cmp #CHAR_LEFT
    BEQ @turn_left
    cmp #CHAR_RIGHT
    BEQ @turn_right
+   ;lda PLAYER_SPEED
+   ;BEQ @check_keyboard
+   ;BPL @moving forward
+   ;inc a
    BRA @check_keyboard
-  @move_foward:
-    dec PLAYER_Y
-    bra @update_display
-  @move_backward:
-    inc PLAYER_Y
-    bra @update_display
+  @do_start_level:
+    jsr start_level
+    bra update_display
   @turn_left:
-    inc PLAYER_ANGLE
     dec PLAYER_X
-    bra @update_display
+    ;inc PLAYER_ANGLE
+    bra update_display
   @turn_right:
-    dec PLAYER_ANGLE
-    dec PLAYER_X
-    ;bra @update_display
-  @update_display:
-    jsr RENDER_RAYCAST
-    bra @check_keyboard
+    inc PLAYER_X
+    ; dec PLAYER_ANGLE
+    bra update_display
+  move_foward:
+      dec PLAYER_Y
+      jmp update_display
+      lda PLAYER_Y
+      set_map_pointer  ; Y in a - clobbers a and y ZP_PTR and ZP_PTR+1 set to map pointer, put x in Y to do lookup proper
+      ldx PLAYER_SPEED
+      BPL @forward_positive_speed 
+      ldx #0 
+    @forward_positive_speed:
+      cpx #8 ; max speed forward
+      beq @forward_max_speed
+      inx 
+      stx PLAYER_SPEED
+    @forward_max_speed:
+      lda PLAYER_ANGLE
+      set_cosine_ptr_from_bearing
+      tay ; transfer the converted angle to y ..
+      dex 
+      BMI @quad0_forward
+      BEQ @quad1_forward
+      dex 
+      BEQ @quad2_forward
+    @quad3_forward:
+        ; x+, y+ 
+        lda COSINES,y
+        lsr ; move 1/2 block per step
+        lsr ; move 1/4 block per step
+        lsr ; move 1/8 block per step
+        sta PLAYER_DX
+        lda SINES,y
+        lsr ; move 1/2 block per step
+        lsr ; move 1/4 block per step
+        lsr ; move 1/8 block per step
+        sta PLAYER_DY       
+        clc 
+        lda PLAYER_X_SUB
+        sta ZP_PTR+2
+        ldy PLAYER_X
+        ; sty ZP_PTR+3
+        lda PLAYER_Y_SUB
+        sta ZP_PTR+4 
+        lda PLAYER_Y
+        sta ZP_PTR+5
+        ldx PLAYER_SPEED 
+      @quad3_forward_step_loop:
+          lda ZP_PTR+2
+          adc PLAYER_DX
+          sta ZP_PTR+2
+          bcc @quad3_forward_done_x_step
+          iny  
+          clc
+        @quad3_forward_done_x_step:
+          lda ZP_PTR+4
+          adc PLAYER_DY
+          sta ZP_PTR+4
+          bcc @quad3_forward_done_y_step
+          lda ZP_PTR
+          adc #63 ; 64 with the carry!
+          sta ZP_PTR
+          lda ZP_PTR+1 
+          adc #0 
+          sta ZP_PTR+1  ; increment high byte as needed
+          inc ZP_PTR+5
+        @quad3_forward_done_y_step:
+          lda (ZP_PTR),y ;  grab value from map
+          beq @q3f_stash_step 
+          jmp update_display
+        @q3f_stash_step:
+          sty PLAYER_X
+          lda ZP_PTR+5
+          sta PLAYER_Y
+          dex 
+          BNE @quad3_forward_step_loop
+          jmp update_display
+    @quad2_forward:
+      jmp update_display
+    @quad1_forward:
+      jmp update_display
+    @quad0_forward:
+      jmp update_display
+
+  move_backward:
+     inc PLAYER_Y
+    jmp update_display
+
 
 cleanup_and_exit:
    ; TODO - somehow reset to BASIC ? 
@@ -528,53 +792,67 @@ end:
   rts
 
 RENDER_RAYCAST:
+  rts
+
+UPDATE_HUD_MAP:
+    stz VERA_ctrl
+    lda #($10 | ^VRAM_MAP_SPRITE) ;
+    sta VERA_addr_bank
+    lda #>VRAM_MAP_SPRITE
+    sta VERA_addr_high
+    stz VERA_addr_low
+    ldx #16
+    stz ZP_PTR
+    lda #>MAPDDATA 
+    sta ZP_PTR+1
+    ldy #0
+  @draw_map:
+    @draw_map_256_bytes:
+        lda (ZP_PTR),y
+        sta VERA_data0
+        iny 
+        BNE @draw_map_256_bytes
+      inc ZP_PTR+1
+      dex 
+      BNE @draw_map
   stz VERA_addr_low
-  stz VERA_addr_high
-  lda #$10
+  lda #2
+  sta VERA_addr_low
+  lda #>VRAM_SPRITE_LIST
+  sta VERA_addr_high
+  lda #($20 | ^VRAM_SPRITE_LIST) ;
   sta VERA_addr_bank
+  lda PLAYER_X
+  sta VERA_data0
   lda PLAYER_Y
-  asl a
-  asl a
-  asl a
-  asl a
-  clc 
-  adc PLAYER_X
-  tay
-  stz ZP_PTR
-  lda #BANKED_RAM_HIGH
-  sta ZP_PTR+1
-  ; do a ghetto raycast up/right
-  @find_wall:
-    tya
-    sbc $10 ; up in y
-    inc a ; go to right
-    tay     
-    lda (ZP_PTR),y
-    beq @find_wall
-  ldx #64
-  @loop:
-    sta VERA_data0
-    dex
-    BNE @loop
+  sta VERA_data0
+    rts
+
+MAP_PLAYER_START_X=$9000
+MAP_PLAYER_START_Y=$9001
+MAP_PLAYER_START_ANGLE=$9002
+
+start_level:
+  ldx #$80
+  lda MAP_PLAYER_START_X
+  sta PLAYER_X
+  stx PLAYER_X_SUB
+  lda MAP_PLAYER_START_Y
+  sta PLAYER_Y
+  stx PLAYER_Y_SUB
+  lda MAP_PLAYER_START_ANGLE
+  sta PLAYER_ANGLE
   rts
 
 
-.org $A000 
-SMALLTESTMAPDATA:
-  ;     0    1  2   3   4   5   6   7   8   9   10  11  12  13  14  15 
-  .byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $06, $05, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $05, $06, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $FF, $02, $03, $04, $05, $06, $07, $08, $09, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $02, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $04
-  .byte $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03, $03 
+.res $7000-*
+COSINES:
+.include "cosines-quadrant0-8bit.inc"
+SINES:
+.include "sines-quadrant0-8bit.inc"
+
+.res $8000-*
+MAPDDATA:
+.incbin "raycast_testmap_001.rcm"
+
+
