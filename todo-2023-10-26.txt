@@ -194,6 +194,44 @@ TODO 	output some text or something on layer 1 as overlay...80
 1300 	OK HUD map overlay confirmed working ... previously wasn't putting into correct memory locations..
 
 
+2023/11/10 	Friday - off work cuz veteran's day observed
+0745 	downloaded source code for Super Noah's Ark 3D for SNES to port to x16 ... muahahaha
+0845 	converted graphics from Super Noah's Ark 3D from lbm to png format for later processing...
+0920 	Installed Havoc's Wolf3D editor ... OMG I can actually edit stuff
+0935 	Installed ChaosEdit as well for good measure... woot! 
+0945 	sound files include .voc for FX and midi for music.... should be simple enough to sort out later.. 
+		
+		OK.. so now I know I can read in all the original map and graphics files.. 
+													disk (uncompressed)	 	RAM 			VRAM
+		levels 		64x64 							~200k 		200k 		16k
+		walls 		32x32 			1kb 	64 		64k 		264k		64k 	80K		
+		sprites 	up to 64x64 	4k 		185 	740K ...
+			likely ~50% empty tiles 				320K
+			remove shadows to allow mirroring 		~160k  		424k 		160k 	240k
+		sound FX 	SNS format 116K total 			116K 		540k 		116k 	356k
+		Music 		~34k of midis, <8k each 		34K 		574k 		8k 		374k
+
+		not bad.. PRG ~600K but should fit OK within 512K of RAM.. is wiggle room at least..
+		going to 16 color doesn't seem it would look ok.. 
+1030 	update TODO's and commit files to GIT
+
+
+
+TODO 	export map1 walls to 64x64 1byte per wall format...
+TODO 	port the BSP tracing code to x16 assembler for initial testing 
+TODO 	rasterize untextured walls from BSP tracing
+TODO 	create Python code to convert walls png's to raw textures
+TODO 	load wall textures to banked memory from file
+TODO 	rasterize textured walls from BSP tracing
+TODO 	get music working
+TODO 	get menu working
+TODO 	get HUD working
+TODO 	get SFX working
+TODO 	levels loading/unloading
+TODO 	sprites - map1 objects loaded / rendered
+TODO 	port AI / logic for everything
+
+
 TODO 	actual directional movement through level
 TODO 	collision detection player vs level
 TODO 	DDA algorithm for raycast through world.. 
