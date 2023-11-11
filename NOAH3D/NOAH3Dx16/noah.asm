@@ -50,6 +50,19 @@ VERA_L1_HSCROLL_H = $9F38 ;  - H-Scroll (11:8)
 VERA_L1_VSCROLL_L = $9F39 ;  V-Scroll (7:0)
 VERA_L1_VSCROLL_H = $9F3A ;  - V-Scroll (11:8)
 
+VERA_FX_TILEBASE = $9F2A
+VERA_FX_MAPBASE = $9F2B
+
+VERA_FX_X_INC_L = $9F29
+VERA_FX_X_INC_H = $9F2A
+VERA_FX_Y_INC_L = $9F2B
+VERA_FX_Y_INC_H = $9F2C
+
+VERA_FX_X_POS_L = $9F29
+VERA_FX_X_POS_H = $9F2A
+VERA_FX_Y_POS_L = $9F2B
+VERA_FX_Y_POS_H = $9F2C
+
 VSYNC_BIT         = $01
 
 ; VRAM Addresses
@@ -60,11 +73,41 @@ VSYNC_BIT         = $01
 ;   $1FC00 - $1FFFF Sprite attributes
 
 ; video output scaling to 320x161 ( 40 x 20 (mod8=1) 8x8 tiles)
-VRAM_layer0_bitmap  = $00000 ;  using 320x120 doublebuffered for viewport = 75k     0k    75k-1
-VRAM_layer1_map     = $12C00 ;  using 8x8 8bit for HUD and stuff 64x21x2=2688b      75k   78k
-VRAM_layer1_tiles   = $13800 ;  border HUD and font stuff - maybe 256 tiles         16k   94k
+VRAM_layer0_bitmapA  = $00000 ;  really visible area starts $00500 - 1.25K down...   
+                              ; 320x120 for viewport is 37.5K - so viewA            1.25K   38.75K 
+                              ; this needs to be on 2K boundary..  
+VRAM_layer0_bitmapA_start = $00500
+
+;   512 bytes slack here...
+VRAM_layer0_bitmapB = $0A000 ;  viewB declares @38K to display starting 39.25 to 76.75  39.25   76.75
+VRAM_layer0_bitmapB_start = $0A500
+;   256 bytes slack here... 
+VRAM_layer1_map     = $13400 ;  using 8x8 8bit for HUD and stuff 64x21x2=2688b declare at 77k     77k   80k    
+VRAM_layer1_tiles   = $14000 ;  border HUD and font stuff - maybe 256 tiles         16k     80k to  96k 
 ; for testing this is initialized to use 1bit tile mode / 16 color 
-VRAM_cursor_sprite  = $1E7C0 ; 8x8 256 color sprite to make a cursor to track position
+
+
+;20k currently unused.. 
+
+
+VRAM_floor_ceiling  = $1D000 ;  map/tile data for floor/ceiling...                  116k  116.5k 
+                              ;wolf3d map was based on like 6 foot cubes? 
+                              ; and floor on ships laid in 6,9,or 12 foot lengths.. 
+                              ; will do 8x56 with a repeated tile to get 8x64 .. so use 8x8 map = 64 bytes + 7 8x8 tiles = 512bytes
+floor_ceiling_map:
+  .byte   1,1,4,3,1,1,4,3
+  .byte   1,2,5,4,1,2,5,4
+  .byte   2,3,6,5,2,3,6,5
+  .byte   3,4,7,6,3,4,7,6
+  .byte   4,5,1,7,4,5,1,7
+  .byte   5,6,1,1,6,5,1,1
+  .byte   6,7,2,1,6,7,2,1
+  .byte   7,1,3,2,7,1,3,2
+.include "floor_ceiling_8x56.inc"
+
+
+VRAM_weapon_sprite  = $1D800 ; 64x64 8bit color for now .. prob go to 16 color..    118k
+VRAM_cursor_sprite  = $1E7C0 ; 8x8 256 color sprite to make a cursor to track... stealing bottom line of weapon sprite... hehe
 VRAM_MAP_SPRITE     = $1E800 ; space for 256 color 64x64 sprite for HUD/map ..      122k  126k 
 VRAM_UNRESERVED     = $1A000 ; 126K+ used for palette/sprites, so 108K-126K=18K available for hud/effects stuffs..
 ; sprite starts must be 32byte aligned...
@@ -321,6 +364,51 @@ start:
 
   ; start by init VRAM data 
   stz VERA_ctrl
+
+  ; init layer0 for use as 320 wide bitmap
+  stz VERA_addr_low
+  lda #>VRAM_layer0_bitmapA_start ;
+  sta VERA_addr_high
+  lda #($10 | ^VRAM_layer0_bitmapA_start) ;
+  sta VERA_addr_bank
+  ldx #120
+  lda #0
+  @clear_layer0_to_color:
+    ldy #160
+    @clear_320_byte_line:
+      sta VERA_data0
+      sta VERA_data0
+      dey 
+      bne @clear_320_byte_line
+    inc a
+    dex
+    bne @clear_layer0_to_color
+
+  stz VERA_addr_low
+  lda #>VRAM_layer0_bitmapA_start ;
+  sta VERA_addr_high
+  lda #($10 | ^VRAM_layer0_bitmapA_start) ;
+  sta VERA_addr_bank
+  ; should zero it out out but for now drawing floor ceiling/floor data as test pattern
+  lda #<floor_ceiling_map
+  sta ZP_PTR
+  lda #>floor_ceiling_map
+  sta ZP_PTR+1
+  ldx #2
+  copy_bytes_to_vram_data0
+
+  ; layer 0 config
+  lda #MODE_BITMAP_256BPP
+  sta VERA_L0_config
+  stz VERA_L0_tilebase
+  lda #$0f
+  sta VERA_L0_VSCROLL_L
+  lda #$00
+  sta VERA_L0_VSCROLL_H
+
+  stz VERA_L0_HSCROLL_L
+  stz VERA_L0_HSCROLL_H
+
   ; init layer1 for hud testing...
   stz VERA_addr_low
   lda #>VRAM_layer1_tiles ;
@@ -359,21 +447,147 @@ start:
   lda #4
   sta VERA_L1_VSCROLL_L
 
+  ; initialize floor/ceiling stuff....
+  stz VERA_addr_low
+  lda #>VRAM_floor_ceiling
+  sta VERA_addr_high
+  lda  #($10 | ^VRAM_floor_ceiling)
+  sta VERA_addr_high
+  lda #<floor_ceiling_map
+  sta ZP_PTR
+  lda #>floor_ceiling_map
+  sta ZP_PTR+1
+  ldx #2
+  copy_bytes_to_vram_data0
+
+
   ; enable layers and start drawing
   ;stz VERA_ctrl
-  ;lda #LAYER01_ENABLE
+  lda #LAYER01_ENABLE
   ;lda #LAYER0_ONLY ; for testing
-  lda #LAYER1_ONLY
+  ;lda #LAYER1_ONLY
   ;lda #LAYERSPRITES_ONLY
   ;lda #LAYER01SPRITES_ENABLE
   sta VERA_dc_video
 
-@check_keyboard:
-   ; poll keyboard for input
+
+  ; overwrite RAM IRQ vector with custom handler address
+  sei ; disable IRQ while vector is changing
+  lda #<custom_irq_handler
+  sta IRQVec
+  lda #>custom_irq_handler
+  sta IRQVec+1
+  lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+  sta VERA_ien
+  cli ; enable IRQ now that vector is properly set
+   stz VSYNC_counter
+
+check_keyboard:
+   wai
+   ldy VSYNC_counter
+   beq check_keyboard
+   stz VSYNC_counter
+   lda #$2   ; we're going to put VSYNC counter between HUD and viewport..
+   sta VERA_addr_low
+   lda #>VRAM_layer1_map+8
+   sta VERA_addr_high
+   lda #($20 | ^VRAM_layer1_map) ;
+   sta VERA_addr_bank
+   tya 
+   lsr 
+   lsr 
+   lsr 
+   lsr 
+   sta VERA_data0
+   tya 
+   AND #$0F
+   sta VERA_data0
+   ; poll keyboard for input once per vsync
    jsr GETIN
    cmp #0
-   beq @check_keyboard
+   beq check_keyboard
+   cmp #SPACE
+   beq do_mode7_test
+   jmp do_cleanup
 
+do_mode7_test:
+   ;  add in mode7 draw thing here..
+
+    stz ZP_PTR
+    lda #>VRAM_layer0_bitmapA_start ; start a bit of the ways downscreen for now
+    sta ZP_PTR+1
+    lda #($10 | ^VRAM_layer0_bitmapA_start) ;
+    sta ZP_PTR+2
+
+   ;  configure FX_ctrl
+   lda #%00000100    ; DCSEL=2, ADDRSEL=0
+   sta VERA_ctrl
+   stz VERA_dc_video
+   lda #(VRAM_floor_ceiling >>9)
+   sta VERA_FX_TILEBASE
+   inc a ; add 1 to set FX tilemap size to 8x8
+   sta VERA_FX_MAPBASE
+
+   lda #%00000110    ; DCSEL=3, ADDRSEL=0
+   sta VERA_ctrl
+   stz VERA_FX_X_INC_L
+   lda #2 ; incrementing x by 1 each time 
+   sta VERA_FX_X_INC_H
+   stz VERA_FX_Y_INC_L
+   stz VERA_FX_Y_INC_H
+
+   ldx #0
+   @draw_row:
+    lda #%00000110  ; DCSEL=3, ADDRSEL=0
+    sta VERA_ctrl
+    lda ZP_PTR+2
+    sta VERA_addr_bank
+    lda ZP_PTR+1
+    sta VERA_addr_high
+    lda ZP_PTR
+    sta VERA_addr_low
+
+    lda #%00001001   ; DCSEL=4, addrsel=0
+    sta VERA_ctrl
+    stz VERA_FX_X_POS_L
+    stz VERA_FX_X_POS_H
+    stx VERA_FX_Y_POS_L
+    stz VERA_FX_Y_POS_H
+    ldy #160
+    @draw_2_pixel:
+        lda VERA_data1
+        sta VERA_data0
+        lda VERA_data1
+        lda VERA_data0
+        dey
+        bne @draw_2_pixel
+    clc
+    lda ZP_PTR
+    adc #64
+    sta ZP_PTR
+    lda ZP_PTR+1
+    adc #1
+    sta ZP_PTR+1
+    lda ZP_PTR+2
+    adc #0
+    sta ZP_PTR+2
+    inx 
+    cpx #120
+    bne @draw_row
+   stz VERA_ctrl ; clear fX mode
+
+   jmp check_keyboard
+
+do_cleanup:
+   ; restore default IRQ vector
+   sei
+   lda default_irq_vector
+   sta IRQVec
+   lda default_irq_vector+1
+   sta IRQVec+1
+   cli   
+   jsr CINT
+   rts
   rts 
 
 custom_irq_handler:
@@ -381,7 +595,11 @@ custom_irq_handler:
    and #VSYNC_BIT
    beq @continue ; non-VSYNC IRQ, no tick update
    inc VSYNC_counter
+
 @continue:
    ; continue to default IRQ handler
    jmp (default_irq_vector)
    ; RTI will happen after jump
+
+
+

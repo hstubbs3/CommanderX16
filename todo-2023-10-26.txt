@@ -219,11 +219,21 @@ TODO 	output some text or something on layer 1 as overlay...80
 1615 	create base file to do NOAH3Dx16
 1930 	OK... dunno why init tiles was being weird ... but yay is working now... 
 
+2023/11/11
+??? 	not sure exactly when I started today.. been working on setting up for 'mode7' floor/ceiling
+1045 	ok generated palette for use in GIMP for indexed graphics .. 
+		ooof... will maybe need more browns in this palette.. 
+		in the color ramps there is some duplicated colors - really only 228 colors, so there's room for 27 more colors
+		somewhere
+		for now generated floor/ceiling using base cx16 palette
 
+1425 	trying out the affine helper thing, for now just trying to draw the floor/ceiling texture repeated across the screen
+		isn't working currently.. but need break .. 
+		
 
 TODO 	mode7 style for floors / ceiling rendering
 
-
+TODO 	optimized 256 color palette for game
 TODO 	export map1 walls to 64x64 1byte per wall format...
 TODO 	port the BSP tracing code to x16 assembler for initial testing 
 TODO 	rasterize untextured walls from BSP tracing
