@@ -1,0 +1,1 @@
+cl65 -t cx16 -o NOAH.PRG -l noah.list noah.asm

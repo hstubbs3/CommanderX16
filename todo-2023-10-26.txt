@@ -216,6 +216,13 @@ TODO 	output some text or something on layer 1 as overlay...80
 1030 	update TODO's and commit files to GIT
 
 
+1615 	create base file to do NOAH3Dx16
+1930 	OK... dunno why init tiles was being weird ... but yay is working now... 
+
+
+
+TODO 	mode7 style for floors / ceiling rendering
+
 
 TODO 	export map1 walls to 64x64 1byte per wall format...
 TODO 	port the BSP tracing code to x16 assembler for initial testing 

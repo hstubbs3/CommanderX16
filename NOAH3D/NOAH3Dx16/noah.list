@@ -1,0 +1,407 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : noah.asm
+Current file: noah.asm
+
+000000r 1               .org $080D
+00080D  1               .segment "STARTUP"
+00080D  1               .segment "INIT"
+00080D  1               .segment "ONCE"
+00080D  1               .segment "CODE"
+00080D  1               
+00080D  1  4C 5B 13       jmp start
+000810  1               ; RAM Interrupt Vectors
+000810  1               IRQVec            = $0314
+000810  1               
+000810  1               ; VERA
+000810  1               VERA_addr_low     = $9F20
+000810  1               VERA_addr_high    = $9F21
+000810  1               VERA_addr_bank    = $9F22
+000810  1               VERA_data0        = $9F23
+000810  1               VERA_data1        = $9F24
+000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_ien          = $9F26
+000810  1               VERA_isr          = $9F27
+000810  1               VERA_dc_video     = $9F29 ; DCSEL = 0
+000810  1               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+000810  1               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+000810  1               
+000810  1               VERA_dc_hscale    = $9F2A
+000810  1               VERA_dc_vscale    = $9F2B
+000810  1               
+000810  1               VERA_L0_config    = $9F2D
+000810  1               ;   7       6     5   4       3       2             1   0
+000810  1               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+000810  1               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+000810  1               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+000810  1               ;   2 - 128                                         2   4bpp 16 color
+000810  1               ;   3 - 256                                         3   8bpp 256 color
+000810  1               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+000810  1               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+000810  1               ;   The palette offset (in 'H-Scroll (11:8)') modifies the color indexes of the bitmap in the same way as in the tile modes.
+000810  1               
+000810  1               VERA_L0_mapbase   = $9F2E
+000810  1               VERA_L0_tilebase  = $9F2F ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+000810  1               VERA_L0_HSCROLL_L = $9F30 ;  H-Scroll (7:0)
+000810  1               VERA_L0_HSCROLL_H = $9F31 ;  - H-Scroll (11:8)
+000810  1               VERA_L0_VSCROLL_L = $9F32 ;  V-Scroll (7:0)
+000810  1               VERA_L0_VSCROLL_H = $9F33 ;  - V-Scroll (11:8)
+000810  1               
+000810  1               VERA_L1_config    = $9F34
+000810  1               VERA_L1_mapbase   = $9F35
+000810  1               VERA_L1_tilebase  = $9F36
+000810  1               VERA_L1_HSCROLL_L = $9F37 ;  H-Scroll (7:0)
+000810  1               VERA_L1_HSCROLL_H = $9F38 ;  - H-Scroll (11:8)
+000810  1               VERA_L1_VSCROLL_L = $9F39 ;  V-Scroll (7:0)
+000810  1               VERA_L1_VSCROLL_H = $9F3A ;  - V-Scroll (11:8)
+000810  1               
+000810  1               VSYNC_BIT         = $01
+000810  1               
+000810  1               ; VRAM Addresses
+000810  1               ;   Address range Description
+000810  1               ;   $00000 - $1F9BF Video RAM   - 129,424 bytes -> 126K is 129,024 (1F800)
+000810  1               ;   $1F9C0 - $1F9FF PSG registers
+000810  1               ;   $1FA00 - $1FBFF Palette
+000810  1               ;   $1FC00 - $1FFFF Sprite attributes
+000810  1               
+000810  1               ; video output scaling to 320x161 ( 40 x 20 (mod8=1) 8x8 tiles)
+000810  1               VRAM_layer0_bitmap  = $00000 ;  using 320x120 doublebuffered for viewport = 75k     0k    75k-1
+000810  1               VRAM_layer1_map     = $12C00 ;  using 8x8 8bit for HUD and stuff 64x21x2=2688b      75k   78k
+000810  1               VRAM_layer1_tiles   = $13800 ;  border HUD and font stuff - maybe 256 tiles         16k   94k
+000810  1               ; for testing this is initialized to use 1bit tile mode / 16 color
+000810  1               VRAM_cursor_sprite  = $1E7C0 ; 8x8 256 color sprite to make a cursor to track position
+000810  1               VRAM_MAP_SPRITE     = $1E800 ; space for 256 color 64x64 sprite for HUD/map ..      122k  126k
+000810  1               VRAM_UNRESERVED     = $1A000 ; 126K+ used for palette/sprites, so 108K-126K=18K available for hud/effects stuffs..
+000810  1               ; sprite starts must be 32byte aligned...
+000810  1               ; only can go to 126K ...
+000810  1               VRAM_palette      = $1FA00      ;
+000810  1               VRAM_SPRITE_LIST  = $1FC00
+000810  1               BITMAP_PAL_OFFSET = 0
+000810  1               
+000810  1               ; constants
+000810  1               MODE_BITMAP_256BPP = $07
+000810  1               MODE_BITMAP_16BPP  = $06
+000810  1               MODE_TILE_64_WIDE = $10
+000810  1               MODE_T256C = $0D
+000810  1               MODE_128x64_T16C = $60 ; 128x64, 16-color text
+000810  1               MODE_128x64_T256C = $68 ; 128x64, 256-color text
+000810  1               MODE_64x32_T256C = $18
+000810  1               MODE_64x32_T16C  = $10
+000810  1               MODE_32x32_256BPP = $03
+000810  1               MODE_32x32_T16C   = $00
+000810  1               LAYER0_ONLY       = $11
+000810  1               LAYER01_ENABLE    = $31
+000810  1               LAYER1_ONLY       = $21
+000810  1               LAYER01SPRITES_ENABLE = $71
+000810  1               LAYERSPRITES_ONLY = $41
+000810  1               VRAM_bitmap       = $04000
+000810  1               LOWER_UPPER       = $C400
+000810  1               
+000810  1               ; ROM Banks
+000810  1               ROM_BANK          = $01
+000810  1               BASIC_BANK        = 4
+000810  1               CHARSET_BANK      = 6
+000810  1               RAM_BANK          = $00
+000810  1               KERNAL_RAM_BANK   = $00
+000810  1               
+000810  1               MAP_RAM_BANK      = $01
+000810  1               BANKED_RAM_HIGH   = $A0
+000810  1               
+000810  1               ; Kernal
+000810  1               CHROUT            = $FFD2
+000810  1               GETIN             = $FFE4
+000810  1               CINT              = $FF81
+000810  1               
+000810  1               ; PETSCII Codes
+000810  1               WHITE             = $05
+000810  1               RETURN            = $0D
+000810  1               SPACE             = $20
+000810  1               ZERO_CHAR         = $30
+000810  1               SIX_CHAR          = $36
+000810  1               NINE_CHAR         = $39
+000810  1               C_CHAR            = $43
+000810  1               I_CHAR            = $49
+000810  1               O_CHAR            = $4F
+000810  1               T_CHAR            = $54
+000810  1               CLR               = $93
+000810  1               CHAR_UP           = $91
+000810  1               CHAR_DOWN         = $11
+000810  1               CHAR_LEFT         = $9D
+000810  1               CHAR_RIGHT        = $1D
+000810  1               
+000810  1               ; global data
+000810  1               
+000810  1  00 00        default_irq_vector:  .addr 0
+000812  1  01           VSYNC_counter:       .byte 1
+000813  1               ZP_PTR = $22
+000813  1               
+000813  1               cursor_data:
+000813  1  01 01 01 01    .byte   $1,$1,$1,$1,$1,$0,$0,$0
+000817  1  01 00 00 00  
+00081B  1  01 00 01 00    .byte   $1,$0,$1,$0,$1,$0,$0,$0
+00081F  1  01 00 00 00  
+000823  1  01 01 00 01    .byte   $1,$1,$0,$1,$1,$0,$0,$0
+000827  1  01 00 00 00  
+00082B  1  01 00 01 00    .byte   $1,$0,$1,$0,$1,$0,$0,$0
+00082F  1  01 00 00 00  
+000833  1  01 01 01 01    .byte   $1,$1,$1,$1,$1,$0,$0,$0
+000837  1  01 00 00 00  
+00083B  1  00 00 00 00    .byte   $0,$0,$0,$0,$0,$0,$0,$0
+00083F  1  00 00 00 00  
+000843  1  00 00 00 00    .byte   $0,$0,$0,$0,$0,$0,$0,$0
+000847  1  00 00 00 00  
+00084B  1  00 00 00 00    .byte   $0,$0,$0,$0,$0,$0,$0,$0
+00084F  1  00 00 00 00  
+000853  1               
+000853  1               test_tiles:
+000853  1  00             .byte   %00000000                 ; 0
+000854  1  3C             .byte   %00111100
+000855  1  42             .byte   %01000010
+000856  1  42             .byte   %01000010
+000857  1  42             .byte   %01000010
+000858  1  42             .byte   %01000010
+000859  1  3C             .byte   %00111100
+00085A  1  00             .byte   %00000000
+00085B  1               
+00085B  1  00             .byte   %00000000                 ; 1
+00085C  1  18             .byte   %00011000
+00085D  1  28             .byte   %00101000
+00085E  1  08             .byte   %00001000
+00085F  1  08             .byte   %00001000
+000860  1  48             .byte   %01001000
+000861  1  7E             .byte   %01111110
+000862  1  00             .byte   %00000000
+000863  1               
+000863  1  00             .byte   %00000000                 ; 2
+000864  1  3C             .byte   %00111100
+000865  1  6E             .byte   %01101110
+000866  1  1C             .byte   %00011100
+000867  1  70             .byte   %01110000
+000868  1  70             .byte   %01110000
+000869  1  7E             .byte   %01111110
+00086A  1  00             .byte   %00000000
+00086B  1               
+00086B  1  00             .byte   %00000000                 ; 3
+00086C  1  3C             .byte   %00111100
+00086D  1  46             .byte   %01000110
+00086E  1  1C             .byte   %00011100
+00086F  1  04             .byte   %00000100
+000870  1  46             .byte   %01000110
+000871  1  3C             .byte   %00111100
+000872  1  11             .byte   %00010001
+000873  1               
+000873  1  00             .byte   %00000000                 ; 4
+000874  1  44             .byte   %01000100
+000875  1  44             .byte   %01000100
+000876  1  7C             .byte   %01111100
+000877  1  0C             .byte   %00001100
+000878  1  0C             .byte   %00001100
+000879  1  0C             .byte   %00001100
+00087A  1  10             .byte   %00010000
+00087B  1               
+00087B  1  20             .byte   %00100000                 ; 5
+00087C  1  7C             .byte   %01111100
+00087D  1  40             .byte   %01000000
+00087E  1  7C             .byte   %01111100
+00087F  1  04             .byte   %00000100
+000880  1  44             .byte   %01000100
+000881  1  3C             .byte   %00111100
+000882  1  10             .byte   %00010000
+000883  1               
+000883  1  00             .byte   %00000000                 ; 6
+000884  1  3C             .byte   %00111100
+000885  1  42             .byte   %01000010
+000886  1  70             .byte   %01110000
+000887  1  44             .byte   %01000100
+000888  1  74             .byte   %01110100
+000889  1  3C             .byte   %00111100
+00088A  1  10             .byte   %00010000
+00088B  1               
+00088B  1  00             .byte   %00000000                 ; 7
+00088C  1  7E             .byte   %01111110
+00088D  1  7E             .byte   %01111110
+00088E  1  0C             .byte   %00001100
+00088F  1  18             .byte   %00011000
+000890  1  34             .byte   %00110100
+000891  1  60             .byte   %01100000
+000892  1  10             .byte   %00010000
+000893  1               
+000893  1  00             .byte   %00000000                 ; 8
+000894  1  7C             .byte   %01111100
+000895  1  42             .byte   %01000010
+000896  1  3C             .byte   %00111100
+000897  1  42             .byte   %01000010
+000898  1  42             .byte   %01000010
+000899  1  7C             .byte   %01111100
+00089A  1  10             .byte   %00010000
+00089B  1               
+00089B  1  20             .byte   %00100000                 ; 9
+00089C  1  7C             .byte   %01111100
+00089D  1  7E             .byte   %01111110
+00089E  1  7E             .byte   %01111110
+00089F  1  1C             .byte   %00011100
+0008A0  1  74             .byte   %01110100
+0008A1  1  7E             .byte   %01111110
+0008A2  1  11             .byte   %00010001
+0008A3  1               
+0008A3  1  20             .byte   %00100000                 ; A
+0008A4  1  7C             .byte   %01111100
+0008A5  1  7E             .byte   %01111110
+0008A6  1  1C             .byte   %00011100
+0008A7  1  7E             .byte   %01111110
+0008A8  1  74             .byte   %01110100
+0008A9  1  7E             .byte   %01111110
+0008AA  1  11             .byte   %00010001
+0008AB  1               
+0008AB  1  20             .byte   %00100000                 ; B
+0008AC  1  7C             .byte   %01111100
+0008AD  1  7E             .byte   %01111110
+0008AE  1  7E             .byte   %01111110
+0008AF  1  1C             .byte   %00011100
+0008B0  1  74             .byte   %01110100
+0008B1  1  7E             .byte   %01111110
+0008B2  1  11             .byte   %00010001
+0008B3  1               
+0008B3  1  20             .byte   %00100000                 ; C
+0008B4  1  7C             .byte   %01111100
+0008B5  1  7E             .byte   %01111110
+0008B6  1  7E             .byte   %01111110
+0008B7  1  1C             .byte   %00011100
+0008B8  1  74             .byte   %01110100
+0008B9  1  7E             .byte   %01111110
+0008BA  1  11             .byte   %00010001
+0008BB  1               
+0008BB  1  20             .byte   %00100000                 ; D
+0008BC  1  7C             .byte   %01111100
+0008BD  1  7E             .byte   %01111110
+0008BE  1  7E             .byte   %01111110
+0008BF  1  1C             .byte   %00011100
+0008C0  1  74             .byte   %01110100
+0008C1  1  7E             .byte   %01111110
+0008C2  1  11             .byte   %00010001
+0008C3  1               
+0008C3  1  20             .byte   %00100000                 ; E
+0008C4  1  7C             .byte   %01111100
+0008C5  1  7E             .byte   %01111110
+0008C6  1  7E             .byte   %01111110
+0008C7  1  1C             .byte   %00011100
+0008C8  1  74             .byte   %01110100
+0008C9  1  7E             .byte   %01111110
+0008CA  1  11             .byte   %00010001
+0008CB  1               
+0008CB  1  20             .byte   %00100000                 ; F
+0008CC  1  7C             .byte   %01111100
+0008CD  1  7E             .byte   %01111110
+0008CE  1  7E             .byte   %01111110
+0008CF  1  1C             .byte   %00011100
+0008D0  1  74             .byte   %01110100
+0008D1  1  7E             .byte   %01111110
+0008D2  1  11             .byte   %00010001
+0008D3  1               
+0008D3  1  00 00 00 00    .byte   $0,$0,$0,$0,$0,$0,$0,$0   ; $10   blank
+0008D7  1  00 00 00 00  
+0008DB  1               
+0008DB  1               layer1_map:
+0008DB  1  10 80 10 80  .incbin "hud_test_map.bin"
+0008DF  1  10 80 10 80  
+0008E3  1  10 80 10 80  
+00135B  1               
+00135B  1               .macro copy_bytes_to_vram_data0 ; ZP_PTR/+1 is source, x is *256 bytes to copy, x y a ZP_PTR+1 clobbered
+00135B  1                   .local _copy
+00135B  1                   .local _copy_byte
+00135B  1                   ldy #0
+00135B  1                   _copy:
+00135B  1                     _copy_byte:
+00135B  1                       lda (ZP_PTR),y
+00135B  1                       sta VERA_data0
+00135B  1                       iny
+00135B  1                       bne _copy_byte
+00135B  1                     inc ZP_PTR+1
+00135B  1                     dex
+00135B  1                     bne _copy
+00135B  1               .endmacro
+00135B  1               
+00135B  1               start:
+00135B  1               
+00135B  1                 ; start of program - init globals
+00135B  1  AD 14 03       lda IRQVec
+00135E  1  8D 10 08       sta default_irq_vector
+001361  1  AD 15 03       lda IRQVec+1
+001364  1  8D 11 08       sta default_irq_vector+1
+001367  1               
+001367  1  9C 29 9F       stz VERA_dc_video   ; disable display
+00136A  1  A9 40          lda #64 ; set screen scaling - 320 wide
+00136C  1  8D 2A 9F       sta VERA_dc_hscale
+00136F  1  A9 2B          lda #43 ; by 160 tall
+001371  1  8D 2B 9F       sta VERA_dc_vscale
+001374  1               
+001374  1                 ; start by init VRAM data
+001374  1  9C 25 9F       stz VERA_ctrl
+001377  1                 ; init layer1 for hud testing...
+001377  1  9C 20 9F       stz VERA_addr_low
+00137A  1  A9 38          lda #>VRAM_layer1_tiles ;
+00137C  1  8D 21 9F       sta VERA_addr_high
+00137F  1  A9 11          lda #($10 | ^VRAM_layer1_tiles) ;
+001381  1  8D 22 9F       sta VERA_addr_bank
+001384  1  A9 53          lda #<test_tiles
+001386  1  85 22          sta ZP_PTR
+001388  1  A9 08          lda #>test_tiles
+00138A  1  85 23          sta ZP_PTR+1
+00138C  1  A2 01          ldx #1  ; really only need to copy 136 bytes but.. whatev
+00138E  1  A0 00 B1 22    copy_bytes_to_vram_data0
+001392  1  8D 23 9F C8  
+001396  1  D0 F8 E6 23  
+00139D  1               
+00139D  1  9C 20 9F       stz VERA_addr_low
+0013A0  1  A9 2C          lda #>VRAM_layer1_map ;
+0013A2  1  8D 21 9F       sta VERA_addr_high
+0013A5  1  A9 11          lda #($10 | ^VRAM_layer1_map) ;
+0013A7  1  8D 22 9F       sta VERA_addr_bank
+0013AA  1  A9 DB          lda #<layer1_map
+0013AC  1  85 22          sta ZP_PTR
+0013AE  1  A9 08          lda #>layer1_map
+0013B0  1  85 23          sta ZP_PTR+1
+0013B2  1  A2 0B          ldx #11   ; copy 21 rows * 128 bytes = 2,688 - ~11*256
+0013B4  1  A0 00 B1 22    copy_bytes_to_vram_data0
+0013B8  1  8D 23 9F C8  
+0013BC  1  D0 F8 E6 23  
+0013C3  1               
+0013C3  1                 ;layer 1 config
+0013C3  1  A9 10          lda #MODE_64x32_T16C
+0013C5  1  8D 34 9F       sta VERA_L1_config
+0013C8  1  A9 96          lda #(VRAM_layer1_map >> 9)
+0013CA  1  8D 35 9F       sta VERA_L1_mapbase
+0013CD  1  A9 9C          lda #(VRAM_layer1_tiles>>9)
+0013CF  1  8D 36 9F       sta VERA_L1_tilebase
+0013D2  1               
+0013D2  1  A9 01          lda #1
+0013D4  1  8D 3A 9F       sta VERA_L1_VSCROLL_H
+0013D7  1  A9 04          lda #4
+0013D9  1  8D 39 9F       sta VERA_L1_VSCROLL_L
+0013DC  1               
+0013DC  1                 ; enable layers and start drawing
+0013DC  1                 ;stz VERA_ctrl
+0013DC  1                 ;lda #LAYER01_ENABLE
+0013DC  1                 ;lda #LAYER0_ONLY ; for testing
+0013DC  1  A9 21          lda #LAYER1_ONLY
+0013DE  1                 ;lda #LAYERSPRITES_ONLY
+0013DE  1                 ;lda #LAYER01SPRITES_ENABLE
+0013DE  1  8D 29 9F       sta VERA_dc_video
+0013E1  1               
+0013E1  1               @check_keyboard:
+0013E1  1                  ; poll keyboard for input
+0013E1  1  20 E4 FF        jsr GETIN
+0013E4  1  C9 00           cmp #0
+0013E6  1  F0 F9           beq @check_keyboard
+0013E8  1               
+0013E8  1  60             rts
+0013E9  1               
+0013E9  1               custom_irq_handler:
+0013E9  1  AD 27 9F        lda VERA_isr
+0013EC  1  29 01           and #VSYNC_BIT
+0013EE  1  F0 03           beq @continue ; non-VSYNC IRQ, no tick update
+0013F0  1  EE 12 08        inc VSYNC_counter
+0013F3  1               @continue:
+0013F3  1                  ; continue to default IRQ handler
+0013F3  1  6C 10 08        jmp (default_irq_vector)
+0013F6  1                  ; RTI will happen after jump
+0013F6  1               
