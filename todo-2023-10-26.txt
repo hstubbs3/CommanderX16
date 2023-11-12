@@ -233,8 +233,56 @@ TODO 	output some text or something on layer 1 as overlay...80
 1930 	getting back at it
 2000 	OK.. 'mode7' thinger sorta working... need to feed it calculated array of startX/Y and X increments... but is working
 
+2255 	Thinking on the 'mode7' thing - the affine helper ignores most of the bits in the high byte of the address, only use 11/16
+		bits in the value - effectively 2048 pixels, endlessly wrapped around when affine clipping is disabled.. 
+		so if our 1 plank is about 1 foot wide, and is 8 pixels, and each cube would be 8 planks wide = 64 pixels..
+		only really ever need to set low byte since we only have 64x64 map actually anyway... already wrapping around..
+		basically each cube in the world is 64x64 pixels (as far as floor/ceiling concerned...) so 1:1 mapping.. ok
+
+		if pressed up against a wall, wall would be 120px... so top line of the viewport is 304/120 = 2.5333 ...
+		1/2.5333 = 404 	.. looking dead ahead -> x increment at top of screen would be #$0194
+		will say starting x=0 .. 
+		setting FOV to something like 70 degrees, tan(35)=0.7 .. 
+		vanishing point ... for wall to get to 2px ... 2=64*120/d=3,840 ... yeah no.. maybe other way.. 
+		2 = 304/1.4*d = 108.571 .. OK ? hmmm... wall_height * focal_length / distance ... 
+		ok so if focal_length is stated at being like 32 blocks - 64px a block .. 64/32 = 2 px... 
+		32 blocks distance is 2048... 
+		each row moves start pixel 'left' to maintain center line.. also needs to skip along y more and more.. 
+		yay small incrementing values? 
+
+		at some point quickly would become horizon line and likely behind walls anyway.. out of 120 rows,
+		60 would be ceiling, and only 32 of those should be rendered using the scaling..
+		 0 	-	120/304 = x increment  404 			224 <- just ADD 224 to x iteration? srsly?
+		 1 	-								0.4375 	448
+		 2 											672
+		 3  - 								0.875 	896
+		 7  - 								1.75
+		15 	- 								3.5
+		31 	- 	x increment 				7.0 
+		just need to calc x/y start offsets , FX increments / row, and increments updating row start position...
+		for each direction that is 6 bytes ... via symmetry only should need 1/8th of circle though... 
+		so 256 view directions = 32 rows in lookup table * 8 bytes = 256 bytes ... 
+		or avoid writing the same code 8 times and just use 8*256 = 4K ...  
+
+2023/11/12
+0900 	starting in on reduced palette to maybe do lighting and stuff - 
+1045 	palette of 282 can be had by reducing bit depth of r/g/b to 4 each, 176 by reducing bit depth to 3 ... 
+		51 by going to 222 ... 64 color main palette with 4 degrees of lighting?
+		hmmm... will have to dig out the previous work on dithering / color quantization to go this route..
+
+		switching to more mode7 scaling effect for the planes.. 
+		x/y increment are s5.9 signed fixed point with 1bit saying switch to s10.4 instead.
+
+1120 	tossing some numbers around.. looks like x_increment should be 14 and increase by 1 each iteration.. but is hard 
+		to make out with this texture.. 
+		switching texture to have full lines..
+1140 	OK that is clearer.. committing before moving on .. 
+
 
 TODO 	mode7 style for floors / ceiling rendering
+
+TODO 	distance lighting/fog - would require reducing needed palette to 16-64 colors .. would be amazed if there's over
+		64 unique colors across the assets. 
 
 TODO 	optimized 256 color palette for game
 TODO 	export map1 walls to 64x64 1byte per wall format...

@@ -1,0 +1,3204 @@
+Processing : MISC\brief.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (92, 92, 92)       now num_colors: 2
+adding color : (51, 34, 24)       now num_colors: 3
+adding color : (90, 59, 41)       now num_colors: 4
+adding color : (80, 53, 37)       now num_colors: 5
+adding color : (100, 65, 45)       now num_colors: 6
+adding color : (110, 72, 50)       now num_colors: 7
+adding color : (0, 0, 77)       now num_colors: 8
+adding color : (255, 202, 24)       now num_colors: 9
+adding color : (71, 46, 32)       now num_colors: 10
+adding color : (61, 40, 28)       now num_colors: 11
+adding color : (152, 152, 152)       now num_colors: 12
+adding color : (106, 106, 106)       now num_colors: 13
+adding color : (66, 66, 66)       now num_colors: 14
+adding color : (119, 78, 54)       now num_colors: 15
+adding color : (255, 255, 255)       now num_colors: 16
+Processing : MISC\inter0.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (195, 119, 75)       now num_colors: 17
+adding color : (135, 83, 51)       now num_colors: 18
+adding color : (239, 219, 207)       now num_colors: 19
+adding color : (0, 0, 64)       now num_colors: 20
+adding color : (0, 0, 79)       now num_colors: 21
+adding color : (0, 0, 94)       now num_colors: 22
+adding color : (0, 0, 108)       now num_colors: 23
+adding color : (0, 0, 123)       now num_colors: 24
+adding color : (30, 0, 56)       now num_colors: 25
+adding color : (0, 0, 50)       now num_colors: 26
+adding color : (0, 0, 43)       now num_colors: 27
+adding color : (159, 103, 63)       now num_colors: 28
+adding color : (199, 123, 79)       now num_colors: 29
+adding color : (242, 159, 107)       now num_colors: 30
+adding color : (127, 83, 47)       now num_colors: 31
+adding color : (88, 61, 39)       now num_colors: 32
+adding color : (207, 207, 207)       now num_colors: 33
+adding color : (239, 187, 147)       now num_colors: 34
+adding color : (150, 150, 150)       now num_colors: 35
+adding color : (0, 0, 138)       now num_colors: 36
+adding color : (0, 0, 152)       now num_colors: 37
+adding color : (185, 0, 0)       now num_colors: 38
+adding color : (92, 0, 125)       now num_colors: 39
+adding color : (70, 0, 95)       now num_colors: 40
+adding color : (101, 0, 156)       now num_colors: 41
+Processing : MISC\inter1.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (67, 0, 0)       now num_colors: 42
+adding color : (59, 55, 0)       now num_colors: 43
+adding color : (227, 0, 0)       now num_colors: 44
+adding color : (203, 203, 31)       now num_colors: 45
+adding color : (171, 0, 0)       now num_colors: 46
+adding color : (155, 155, 15)       now num_colors: 47
+adding color : (239, 0, 0)       now num_colors: 48
+adding color : (131, 0, 0)       now num_colors: 49
+Processing : MISC\mapicons.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 0, 171)       now num_colors: 50
+adding color : (43, 35, 15)       now num_colors: 51
+adding color : (75, 59, 27)       now num_colors: 52
+adding color : (87, 63, 31)       now num_colors: 53
+adding color : (95, 67, 35)       now num_colors: 54
+adding color : (0, 0, 0)       now num_colors: 55
+adding color : (111, 75, 39)       now num_colors: 56
+adding color : (255, 159, 99)       now num_colors: 57
+adding color : (211, 131, 83)       now num_colors: 58
+adding color : (255, 167, 115)       now num_colors: 59
+adding color : (243, 151, 95)       now num_colors: 60
+adding color : (59, 59, 59)       now num_colors: 61
+adding color : (55, 55, 55)       now num_colors: 62
+adding color : (75, 75, 75)       now num_colors: 63
+adding color : (67, 67, 67)       now num_colors: 64
+adding color : (59, 47, 23)       now num_colors: 65
+adding color : (35, 35, 35)       now num_colors: 66
+adding color : (115, 115, 115)       now num_colors: 67
+adding color : (143, 143, 143)       now num_colors: 68
+adding color : (171, 171, 171)       now num_colors: 69
+adding color : (67, 67, 0)       now num_colors: 70
+adding color : (119, 79, 43)       now num_colors: 71
+adding color : (103, 103, 103)       now num_colors: 72
+adding color : (115, 111, 0)       now num_colors: 73
+adding color : (67, 51, 27)       now num_colors: 74
+adding color : (35, 255, 255)       now num_colors: 75
+adding color : (87, 255, 255)       now num_colors: 76
+adding color : (131, 83, 47)       now num_colors: 77
+adding color : (191, 123, 75)       now num_colors: 78
+adding color : (163, 103, 63)       now num_colors: 79
+adding color : (159, 99, 59)       now num_colors: 80
+adding color : (127, 127, 127)       now num_colors: 81
+adding color : (183, 183, 183)       now num_colors: 82
+adding color : (155, 155, 155)       now num_colors: 83
+adding color : (183, 115, 71)       now num_colors: 84
+adding color : (195, 195, 195)       now num_colors: 85
+adding color : (87, 87, 87)       now num_colors: 86
+adding color : (47, 47, 47)       now num_colors: 87
+adding color : (51, 51, 51)       now num_colors: 88
+adding color : (135, 135, 0)       now num_colors: 89
+adding color : (91, 87, 0)       now num_colors: 90
+adding color : (207, 99, 0)       now num_colors: 91
+adding color : (147, 95, 55)       now num_colors: 92
+adding color : (171, 107, 67)       now num_colors: 93
+adding color : (159, 255, 255)       now num_colors: 94
+adding color : (127, 255, 251)       now num_colors: 95
+adding color : (0, 135, 135)       now num_colors: 96
+adding color : (255, 123, 0)       now num_colors: 97
+adding color : (0, 127, 127)       now num_colors: 98
+adding color : (0, 115, 115)       now num_colors: 99
+adding color : (187, 255, 255)       now num_colors: 100
+adding color : (219, 255, 255)       now num_colors: 101
+adding color : (159, 159, 0)       now num_colors: 102
+adding color : (255, 179, 131)       now num_colors: 103
+adding color : (255, 139, 35)       now num_colors: 104
+adding color : (255, 155, 67)       now num_colors: 105
+adding color : (0, 111, 111)       now num_colors: 106
+adding color : (0, 143, 143)       now num_colors: 107
+adding color : (79, 0, 0)       now num_colors: 108
+adding color : (139, 91, 51)       now num_colors: 109
+adding color : (0, 159, 159)       now num_colors: 110
+adding color : (91, 0, 0)       now num_colors: 111
+adding color : (255, 247, 0)       now num_colors: 112
+adding color : (183, 175, 0)       now num_colors: 113
+adding color : (0, 91, 91)       now num_colors: 114
+adding color : (255, 235, 223)       now num_colors: 115
+adding color : (0, 0, 179)       now num_colors: 116
+adding color : (103, 0, 0)       now num_colors: 117
+adding color : (231, 111, 0)       now num_colors: 118
+adding color : (255, 207, 179)       now num_colors: 119
+adding color : (223, 139, 87)       now num_colors: 120
+adding color : (0, 67, 67)       now num_colors: 121
+adding color : (203, 127, 79)       now num_colors: 122
+adding color : (235, 143, 91)       now num_colors: 123
+adding color : (115, 0, 0)       now num_colors: 124
+adding color : (207, 199, 0)       now num_colors: 125
+adding color : (211, 211, 211)       now num_colors: 126
+adding color : (0, 0, 127)       now num_colors: 127
+adding color : (0, 0, 67)       now num_colors: 128
+adding color : (231, 219, 0)       now num_colors: 129
+adding color : (0, 0, 139)       now num_colors: 130
+adding color : (0, 0, 103)       now num_colors: 131
+adding color : (127, 0, 0)       now num_colors: 132
+adding color : (0, 0, 167)       now num_colors: 133
+adding color : (0, 0, 191)       now num_colors: 134
+adding color : (0, 0, 255)       now num_colors: 135
+adding color : (139, 0, 0)       now num_colors: 136
+adding color : (0, 0, 227)       now num_colors: 137
+adding color : (0, 0, 155)       now num_colors: 138
+adding color : (0, 0, 215)       now num_colors: 139
+adding color : (7, 155, 0)       now num_colors: 140
+adding color : (0, 215, 0)       now num_colors: 141
+adding color : (0, 255, 0)       now num_colors: 142
+adding color : (7, 139, 0)       now num_colors: 143
+adding color : (111, 0, 115)       now num_colors: 144
+adding color : (183, 0, 183)       now num_colors: 145
+adding color : (227, 0, 231)       now num_colors: 146
+adding color : (255, 0, 255)       now num_colors: 147
+adding color : (135, 0, 135)       now num_colors: 148
+adding color : (0, 239, 0)       now num_colors: 149
+adding color : (7, 179, 0)       now num_colors: 150
+adding color : (203, 0, 207)       now num_colors: 151
+adding color : (0, 155, 155)       now num_colors: 152
+adding color : (0, 171, 171)       now num_colors: 153
+adding color : (255, 0, 0)       now num_colors: 154
+adding color : (179, 0, 0)       now num_colors: 155
+adding color : (0, 0, 115)       now num_colors: 156
+adding color : (91, 0, 91)       now num_colors: 157
+adding color : (67, 0, 67)       now num_colors: 158
+adding color : (35, 179, 179)       now num_colors: 159
+adding color : (183, 87, 0)       now num_colors: 160
+adding color : (159, 79, 0)       now num_colors: 161
+adding color : (0, 167, 167)       now num_colors: 162
+adding color : (131, 207, 0)       now num_colors: 163
+adding color : (0, 227, 0)       now num_colors: 164
+adding color : (215, 0, 0)       now num_colors: 165
+adding color : (159, 0, 159)       now num_colors: 166
+adding color : (223, 223, 223)       now num_colors: 167
+adding color : (191, 0, 0)       now num_colors: 168
+adding color : (0, 0, 203)       now num_colors: 169
+adding color : (255, 87, 87)       now num_colors: 170
+adding color : (203, 0, 0)       now num_colors: 171
+adding color : (0, 0, 239)       now num_colors: 172
+adding color : (255, 255, 87)       now num_colors: 173
+adding color : (255, 171, 95)       now num_colors: 174
+adding color : (219, 247, 247)       now num_colors: 175
+adding color : (187, 235, 235)       now num_colors: 176
+adding color : (159, 223, 223)       now num_colors: 177
+adding color : (119, 203, 203)       now num_colors: 178
+adding color : (255, 255, 219)       now num_colors: 179
+adding color : (255, 251, 95)       now num_colors: 180
+adding color : (127, 131, 255)       now num_colors: 181
+adding color : (255, 95, 95)       now num_colors: 182
+adding color : (255, 255, 127)       now num_colors: 183
+adding color : (75, 195, 195)       now num_colors: 184
+adding color : (35, 183, 183)       now num_colors: 185
+adding color : (7, 127, 0)       now num_colors: 186
+adding color : (171, 87, 0)       now num_colors: 187
+adding color : (87, 255, 87)       now num_colors: 188
+adding color : (0, 171, 0)       now num_colors: 189
+adding color : (87, 87, 255)       now num_colors: 190
+adding color : (171, 0, 171)       now num_colors: 191
+adding color : (255, 87, 255)       now num_colors: 192
+Processing : MISC\playback.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 0, 31)       now num_colors: 193
+adding color : (31, 31, 31)       now num_colors: 194
+adding color : (91, 91, 91)       now num_colors: 195
+adding color : (119, 0, 0)       now num_colors: 196
+adding color : (99, 0, 0)       now num_colors: 197
+adding color : (75, 0, 0)       now num_colors: 198
+adding color : (255, 191, 159)       now num_colors: 199
+adding color : (235, 163, 119)       now num_colors: 200
+adding color : (87, 0, 0)       now num_colors: 201
+adding color : (239, 239, 239)       now num_colors: 202
+adding color : (167, 0, 0)       now num_colors: 203
+adding color : (143, 0, 0)       now num_colors: 204
+adding color : (0, 0, 95)       now num_colors: 205
+adding color : (159, 0, 0)       now num_colors: 206
+adding color : (155, 0, 0)       now num_colors: 207
+adding color : (111, 0, 0)       now num_colors: 208
+adding color : (55, 0, 0)       now num_colors: 209
+adding color : (43, 0, 0)       now num_colors: 210
+adding color : (0, 0, 159)       now num_colors: 211
+adding color : (239, 127, 31)       now num_colors: 212
+Processing : MISC\psprites.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (243, 179, 35)       now num_colors: 213
+adding color : (239, 187, 155)       now num_colors: 214
+adding color : (187, 187, 187)       now num_colors: 215
+adding color : (123, 123, 123)       now num_colors: 216
+adding color : (251, 0, 0)       now num_colors: 217
+Processing : MISC\title.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (102, 204, 255)       now num_colors: 218
+adding color : (153, 102, 51)       now num_colors: 219
+adding color : (2, 2, 2)       now num_colors: 220
+adding color : (255, 204, 204)       now num_colors: 221
+adding color : (204, 0, 0)       now num_colors: 222
+adding color : (0, 0, 102)       now num_colors: 223
+adding color : (153, 204, 153)       now num_colors: 224
+adding color : (255, 204, 102)       now num_colors: 225
+adding color : (0, 0, 204)       now num_colors: 226
+adding color : (204, 102, 0)       now num_colors: 227
+adding color : (204, 125, 74)       now num_colors: 228
+adding color : (153, 102, 0)       now num_colors: 229
+adding color : (0, 0, 51)       now num_colors: 230
+adding color : (0, 102, 204)       now num_colors: 231
+adding color : (229, 150, 99)       now num_colors: 232
+adding color : (0, 153, 255)       now num_colors: 233
+adding color : (204, 153, 0)       now num_colors: 234
+adding color : (0, 204, 255)       now num_colors: 235
+adding color : (102, 102, 51)       now num_colors: 236
+adding color : (102, 153, 153)       now num_colors: 237
+adding color : (102, 51, 0)       now num_colors: 238
+adding color : (51, 51, 102)       now num_colors: 239
+adding color : (102, 204, 153)       now num_colors: 240
+adding color : (153, 51, 51)       now num_colors: 241
+adding color : (153, 204, 204)       now num_colors: 242
+adding color : (153, 51, 0)       now num_colors: 243
+adding color : (204, 102, 51)       now num_colors: 244
+adding color : (204, 51, 0)       now num_colors: 245
+adding color : (153, 153, 102)       now num_colors: 246
+adding color : (189, 77, 0)       now num_colors: 247
+adding color : (255, 255, 204)       now num_colors: 248
+adding color : (204, 153, 51)       now num_colors: 249
+adding color : (255, 255, 153)       now num_colors: 250
+adding color : (102, 0, 0)       now num_colors: 251
+adding color : (102, 51, 51)       now num_colors: 252
+adding color : (255, 255, 102)       now num_colors: 253
+adding color : (200, 200, 0)       now num_colors: 254
+adding color : (255, 255, 0)       now num_colors: 255
+adding color : (205, 205, 205)       now num_colors: 256
+adding color : (51, 141, 0)       now num_colors: 257
+adding color : (0, 51, 51)       now num_colors: 258
+adding color : (0, 102, 0)       now num_colors: 259
+adding color : (51, 153, 51)       now num_colors: 260
+adding color : (51, 153, 0)       now num_colors: 261
+adding color : (0, 51, 0)       now num_colors: 262
+adding color : (153, 0, 51)       now num_colors: 263
+adding color : (102, 0, 51)       now num_colors: 264
+adding color : (51, 0, 102)       now num_colors: 265
+adding color : (102, 0, 102)       now num_colors: 266
+adding color : (204, 102, 102)       now num_colors: 267
+adding color : (176, 75, 0)       now num_colors: 268
+adding color : (102, 51, 102)       now num_colors: 269
+adding color : (255, 153, 153)       now num_colors: 270
+adding color : (75, 0, 75)       now num_colors: 271
+adding color : (102, 102, 102)       now num_colors: 272
+adding color : (51, 102, 153)       now num_colors: 273
+adding color : (204, 0, 51)       now num_colors: 274
+adding color : (51, 51, 153)       now num_colors: 275
+adding color : (255, 51, 0)       now num_colors: 276
+adding color : (255, 0, 51)       now num_colors: 277
+adding color : (255, 204, 51)       now num_colors: 278
+adding color : (153, 153, 153)       now num_colors: 279
+adding color : (204, 102, 153)       now num_colors: 280
+adding color : (51, 102, 0)       now num_colors: 281
+adding color : (102, 153, 51)       now num_colors: 282
+adding color : (102, 153, 0)       now num_colors: 283
+adding color : (255, 255, 51)       now num_colors: 284
+adding color : (100, 100, 100)       now num_colors: 285
+adding color : (235, 235, 235)       now num_colors: 286
+adding color : (102, 102, 0)       now num_colors: 287
+adding color : (255, 153, 0)       now num_colors: 288
+adding color : (204, 204, 204)       now num_colors: 289
+Processing : MISC\title2.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (73, 147, 184)       now num_colors: 290
+adding color : (110, 73, 37)       now num_colors: 291
+adding color : (1, 1, 1)       now num_colors: 292
+adding color : (37, 37, 37)       now num_colors: 293
+adding color : (184, 147, 147)       now num_colors: 294
+adding color : (147, 0, 0)       now num_colors: 295
+adding color : (0, 0, 73)       now num_colors: 296
+adding color : (110, 147, 110)       now num_colors: 297
+adding color : (184, 147, 73)       now num_colors: 298
+adding color : (0, 0, 147)       now num_colors: 299
+adding color : (147, 73, 0)       now num_colors: 300
+adding color : (147, 90, 53)       now num_colors: 301
+adding color : (110, 73, 0)       now num_colors: 302
+adding color : (0, 0, 37)       now num_colors: 303
+adding color : (0, 73, 147)       now num_colors: 304
+adding color : (165, 108, 71)       now num_colors: 305
+adding color : (0, 110, 184)       now num_colors: 306
+adding color : (147, 110, 0)       now num_colors: 307
+adding color : (0, 147, 184)       now num_colors: 308
+adding color : (73, 73, 37)       now num_colors: 309
+adding color : (73, 110, 110)       now num_colors: 310
+adding color : (73, 37, 0)       now num_colors: 311
+adding color : (37, 37, 73)       now num_colors: 312
+adding color : (73, 147, 110)       now num_colors: 313
+adding color : (110, 37, 37)       now num_colors: 314
+adding color : (110, 147, 147)       now num_colors: 315
+adding color : (110, 37, 0)       now num_colors: 316
+adding color : (147, 73, 37)       now num_colors: 317
+adding color : (147, 37, 0)       now num_colors: 318
+adding color : (110, 110, 73)       now num_colors: 319
+adding color : (136, 55, 0)       now num_colors: 320
+adding color : (184, 184, 147)       now num_colors: 321
+adding color : (147, 110, 37)       now num_colors: 322
+adding color : (184, 184, 110)       now num_colors: 323
+adding color : (73, 0, 0)       now num_colors: 324
+adding color : (73, 37, 37)       now num_colors: 325
+adding color : (184, 184, 73)       now num_colors: 326
+adding color : (144, 144, 0)       now num_colors: 327
+adding color : (184, 184, 0)       now num_colors: 328
+adding color : (148, 148, 148)       now num_colors: 329
+adding color : (184, 184, 184)       now num_colors: 330
+adding color : (108, 108, 108)       now num_colors: 331
+adding color : (37, 102, 0)       now num_colors: 332
+adding color : (0, 37, 37)       now num_colors: 333
+adding color : (0, 73, 0)       now num_colors: 334
+adding color : (37, 110, 37)       now num_colors: 335
+adding color : (37, 110, 0)       now num_colors: 336
+adding color : (0, 37, 0)       now num_colors: 337
+adding color : (110, 0, 37)       now num_colors: 338
+adding color : (73, 0, 37)       now num_colors: 339
+adding color : (184, 0, 0)       now num_colors: 340
+adding color : (37, 0, 73)       now num_colors: 341
+adding color : (73, 0, 73)       now num_colors: 342
+adding color : (147, 73, 73)       now num_colors: 343
+adding color : (127, 54, 0)       now num_colors: 344
+adding color : (73, 37, 73)       now num_colors: 345
+adding color : (184, 110, 110)       now num_colors: 346
+adding color : (54, 0, 54)       now num_colors: 347
+adding color : (73, 73, 73)       now num_colors: 348
+adding color : (37, 73, 110)       now num_colors: 349
+adding color : (147, 0, 37)       now num_colors: 350
+adding color : (37, 37, 110)       now num_colors: 351
+adding color : (184, 37, 0)       now num_colors: 352
+adding color : (184, 0, 37)       now num_colors: 353
+adding color : (184, 147, 37)       now num_colors: 354
+adding color : (110, 110, 110)       now num_colors: 355
+adding color : (147, 73, 110)       now num_colors: 356
+adding color : (37, 73, 0)       now num_colors: 357
+adding color : (73, 110, 37)       now num_colors: 358
+adding color : (73, 110, 0)       now num_colors: 359
+adding color : (184, 184, 37)       now num_colors: 360
+adding color : (72, 72, 72)       now num_colors: 361
+adding color : (169, 169, 169)       now num_colors: 362
+adding color : (73, 73, 0)       now num_colors: 363
+adding color : (184, 110, 0)       now num_colors: 364
+Processing : MISC\weapon1.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : MISC\weapon2.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : MISC\weapon3.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : MISC\weapon4.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (247, 95, 15)       now num_colors: 365
+Processing : MISC\weapon5.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : MISC\weapon6.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\blank.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (155, 0, 139)       now num_colors: 366
+Processing : SPRITE\dk_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (35, 35, 255)       now num_colors: 367
+adding color : (255, 219, 199)       now num_colors: 368
+adding color : (255, 187, 147)       now num_colors: 369
+adding color : (255, 227, 211)       now num_colors: 370
+adding color : (255, 199, 167)       now num_colors: 371
+adding color : (255, 215, 191)       now num_colors: 372
+Processing : SPRITE\dk_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (11, 0, 0)       now num_colors: 373
+Processing : SPRITE\grd_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\grd_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (223, 0, 0)       now num_colors: 374
+Processing : SPRITE\hans_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (43, 23, 0)       now num_colors: 375
+adding color : (55, 35, 0)       now num_colors: 376
+Processing : SPRITE\hans_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\htlr_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (31, 0, 0)       now num_colors: 377
+Processing : SPRITE\htlr_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (27, 7, 0)       now num_colors: 378
+adding color : (43, 0, 67)       now num_colors: 379
+adding color : (35, 11, 0)       now num_colors: 380
+Processing : SPRITE\mbos_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (215, 215, 255)       now num_colors: 381
+Processing : SPRITE\mbos_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\mhit_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (95, 95, 0)       now num_colors: 382
+adding color : (23, 143, 0)       now num_colors: 383
+adding color : (7, 167, 0)       now num_colors: 384
+adding color : (7, 183, 0)       now num_colors: 385
+adding color : (0, 223, 0)       now num_colors: 386
+adding color : (0, 211, 0)       now num_colors: 387
+Processing : SPRITE\mhit_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (75, 67, 0)       now num_colors: 388
+adding color : (39, 135, 0)       now num_colors: 389
+adding color : (71, 103, 0)       now num_colors: 390
+adding color : (79, 95, 0)       now num_colors: 391
+adding color : (63, 115, 0)       now num_colors: 392
+adding color : (55, 123, 0)       now num_colors: 393
+adding color : (83, 83, 0)       now num_colors: 394
+adding color : (0, 195, 0)       now num_colors: 395
+adding color : (63, 51, 0)       now num_colors: 396
+adding color : (55, 55, 0)       now num_colors: 397
+Processing : SPRITE\miss1.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (175, 175, 0)       now num_colors: 398
+adding color : (79, 79, 0)       now num_colors: 399
+adding color : (227, 227, 0)       now num_colors: 400
+Processing : SPRITE\mut_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 123, 123)       now num_colors: 401
+Processing : SPRITE\mut_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\of_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 0, 223)       now num_colors: 402
+adding color : (187, 191, 255)       now num_colors: 403
+adding color : (159, 159, 255)       now num_colors: 404
+adding color : (19, 0, 0)       now num_colors: 405
+adding color : (219, 219, 255)       now num_colors: 406
+adding color : (95, 99, 255)       now num_colors: 407
+adding color : (35, 39, 255)       now num_colors: 408
+adding color : (67, 67, 255)       now num_colors: 409
+Processing : SPRITE\of_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (179, 179, 255)       now num_colors: 410
+adding color : (143, 143, 255)       now num_colors: 411
+adding color : (107, 107, 255)       now num_colors: 412
+adding color : (71, 71, 255)       now num_colors: 413
+Processing : SPRITE\rat_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\rat_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\shab_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\shab_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\spr1v.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (147, 147, 0)       now num_colors: 414
+adding color : (119, 119, 0)       now num_colors: 415
+adding color : (187, 187, 0)       now num_colors: 416
+Processing : SPRITE\spr2v.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 0, 63)       now num_colors: 417
+adding color : (0, 0, 91)       now num_colors: 418
+Processing : SPRITE\spr3v.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (199, 199, 0)       now num_colors: 419
+adding color : (215, 215, 0)       now num_colors: 420
+adding color : (107, 107, 0)       now num_colors: 421
+Processing : SPRITE\spr4v.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 183, 183)       now num_colors: 422
+adding color : (0, 207, 207)       now num_colors: 423
+adding color : (0, 231, 231)       now num_colors: 424
+Processing : SPRITE\spr5v.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\ss_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\ss_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\trns_atk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : SPRITE\trns_wlk.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+Processing : WALLS\walls1.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (95, 191, 255)       now num_colors: 425
+Processing : WALLS\walls2.png : 320 x 200
+has palette of length 256 - checking used colors and assuming 0 is transparent
+adding color : (0, 119, 119)       now num_colors: 426
+adding color : (155, 199, 0)       now num_colors: 427
+adding color : (243, 83, 83)       now num_colors: 428
+adding color : (7, 0, 0)       now num_colors: 429
+adding color : (15, 0, 0)       now num_colors: 430
+
+
+
+ Gathered palette length : 430
+
+
+
+(155, 0, 139) : 856831
+(0, 0, 0) : 632055
+transparent : 455957
+(0, 0, 171) : 232881
+(0, 171, 0) : 110103
+(195, 119, 75) : 97176
+(255, 255, 255) : 89895
+(135, 83, 51) : 35128
+(2, 2, 2) : 19729
+(1, 1, 1) : 19715
+(239, 219, 207) : 18255
+(67, 51, 27) : 18022
+(100, 65, 45) : 16148
+(80, 53, 37) : 13758
+(90, 59, 41) : 13122
+(59, 47, 23) : 12740
+(111, 75, 39) : 12169
+(0, 0, 43) : 11879
+(67, 0, 0) : 9288
+(102, 204, 255) : 9115
+(73, 147, 184) : 9115
+(75, 59, 27) : 8514
+(87, 87, 255) : 8406
+(87, 255, 255) : 7405
+(95, 67, 35) : 6928
+(51, 153, 51) : 6652
+(37, 110, 37) : 6652
+(87, 63, 31) : 6498
+(59, 59, 59) : 6411
+(235, 163, 119) : 6026
+(75, 75, 75) : 5708
+(43, 35, 15) : 5552
+(87, 87, 87) : 5509
+(131, 83, 47) : 4704
+(31, 31, 31) : 3878
+(255, 204, 102) : 3680
+(184, 147, 73) : 3680
+(51, 34, 24) : 3656
+(47, 47, 47) : 3611
+(171, 0, 0) : 3446
+(103, 103, 103) : 3308
+(163, 103, 63) : 3285
+(119, 79, 43) : 3241
+(92, 92, 92) : 3236
+(183, 115, 71) : 3192
+(139, 91, 51) : 3138
+(171, 171, 171) : 3131
+(51, 141, 0) : 3125
+(37, 102, 0) : 3125
+(143, 0, 0) : 2899
+(127, 127, 127) : 2897
+(70, 0, 95) : 2867
+(143, 143, 143) : 2808
+(171, 87, 0) : 2796
+(153, 102, 51) : 2760
+(110, 73, 37) : 2760
+(147, 95, 55) : 2695
+(155, 155, 155) : 2671
+(255, 255, 87) : 2664
+(119, 0, 0) : 2648
+(171, 107, 67) : 2549
+(67, 67, 67) : 2540
+(183, 183, 183) : 2404
+(159, 99, 59) : 2292
+(203, 127, 79) : 2289
+(35, 35, 35) : 2235
+(59, 55, 0) : 2224
+(0, 0, 77) : 2155
+(115, 115, 115) : 2145
+(55, 55, 55) : 2004
+(223, 139, 87) : 1944
+(227, 0, 0) : 1870
+(191, 123, 75) : 1852
+(184, 184, 184) : 1848
+(211, 131, 83) : 1845
+(110, 72, 50) : 1835
+(30, 0, 56) : 1734
+(7, 155, 0) : 1731
+(92, 0, 125) : 1669
+(159, 79, 0) : 1663
+(243, 151, 95) : 1645
+(75, 0, 0) : 1608
+(251, 0, 0) : 1565
+(95, 95, 0) : 1509
+(255, 235, 223) : 1457
+(155, 0, 0) : 1420
+(195, 195, 195) : 1395
+(255, 167, 115) : 1378
+(235, 143, 91) : 1365
+(67, 67, 0) : 1344
+(205, 205, 205) : 1342
+(148, 148, 148) : 1342
+(223, 223, 223) : 1317
+(91, 91, 91) : 1311
+(0, 0, 108) : 1269
+(99, 0, 0) : 1221
+(229, 150, 99) : 1218
+(165, 108, 71) : 1218
+(239, 187, 155) : 1215
+(211, 211, 211) : 1201
+(255, 159, 99) : 1178
+(255, 255, 204) : 1174
+(184, 184, 147) : 1174
+(187, 187, 187) : 1158
+(204, 0, 0) : 1131
+(147, 0, 0) : 1131
+(204, 102, 0) : 1102
+(147, 73, 0) : 1102
+(167, 0, 0) : 1073
+(123, 123, 123) : 1054
+(153, 51, 0) : 1047
+(110, 37, 0) : 1047
+(55, 55, 0) : 1033
+(71, 103, 0) : 1018
+(0, 0, 127) : 998
+(0, 0, 31) : 988
+(255, 202, 24) : 983
+(0, 0, 79) : 939
+(155, 155, 15) : 938
+(51, 51, 51) : 927
+(102, 0, 102) : 867
+(73, 0, 73) : 867
+(204, 125, 74) : 838
+(147, 90, 53) : 838
+(255, 0, 0) : 834
+(239, 127, 31) : 793
+(255, 139, 35) : 792
+(243, 179, 35) : 759
+(255, 187, 147) : 751
+(255, 171, 95) : 730
+(0, 0, 94) : 707
+(0, 0, 64) : 696
+(150, 150, 150) : 694
+(255, 179, 131) : 692
+(255, 255, 0) : 669
+(108, 108, 108) : 635
+(37, 37, 37) : 632
+(83, 83, 0) : 625
+(131, 0, 0) : 618
+(51, 153, 0) : 617
+(37, 110, 0) : 617
+(102, 0, 0) : 594
+(73, 0, 0) : 594
+(255, 191, 159) : 583
+(135, 0, 135) : 575
+(135, 135, 0) : 567
+(0, 143, 143) : 565
+(255, 199, 167) : 563
+(255, 207, 179) : 553
+(255, 219, 199) : 541
+(87, 0, 0) : 523
+(203, 203, 31) : 522
+(0, 0, 255) : 504
+(0, 0, 51) : 489
+(0, 0, 37) : 489
+(55, 0, 0) : 484
+(199, 123, 79) : 474
+(102, 51, 0) : 464
+(73, 37, 0) : 464
+(242, 159, 107) : 462
+(239, 239, 239) : 447
+(200, 200, 0) : 446
+(144, 144, 0) : 446
+(119, 119, 0) : 437
+(0, 0, 123) : 433
+(219, 219, 255) : 429
+(231, 111, 0) : 424
+(227, 227, 0) : 424
+(75, 0, 75) : 419
+(54, 0, 54) : 419
+(255, 255, 153) : 416
+(184, 184, 110) : 416
+(184, 184, 0) : 413
+(88, 61, 39) : 412
+(75, 67, 0) : 412
+(255, 155, 67) : 403
+(207, 99, 0) : 398
+(0, 0, 139) : 397
+(101, 0, 156) : 394
+(91, 0, 91) : 390
+(23, 143, 0) : 382
+(175, 175, 0) : 374
+(227, 0, 231) : 354
+(255, 123, 0) : 351
+(203, 0, 0) : 346
+(183, 87, 0) : 342
+(147, 147, 0) : 342
+(0, 123, 123) : 341
+(207, 207, 207) : 333
+(191, 0, 0) : 328
+(0, 91, 91) : 321
+(255, 215, 191) : 319
+(51, 102, 0) : 317
+(37, 73, 0) : 317
+(31, 0, 0) : 317
+(107, 107, 0) : 316
+(0, 167, 167) : 315
+(39, 135, 0) : 314
+(35, 255, 255) : 314
+(183, 0, 183) : 312
+(176, 75, 0) : 307
+(127, 54, 0) : 307
+(0, 0, 191) : 306
+(111, 0, 0) : 304
+(71, 46, 32) : 303
+(159, 103, 63) : 302
+(159, 159, 255) : 297
+(95, 99, 255) : 293
+(7, 183, 0) : 284
+(63, 51, 0) : 273
+(127, 83, 47) : 271
+(219, 255, 255) : 269
+(0, 0, 67) : 268
+(159, 0, 159) : 266
+(43, 0, 0) : 262
+(255, 227, 211) : 258
+(255, 204, 204) : 252
+(184, 147, 147) : 252
+(255, 0, 255) : 248
+(204, 153, 0) : 235
+(147, 110, 0) : 235
+(0, 0, 155) : 232
+(203, 0, 207) : 228
+(79, 95, 0) : 227
+(0, 0, 179) : 224
+(0, 111, 111) : 220
+(100, 100, 100) : 219
+(72, 72, 72) : 219
+(7, 167, 0) : 219
+(0, 0, 159) : 211
+(199, 199, 0) : 210
+(111, 0, 115) : 210
+(0, 0, 102) : 207
+(0, 0, 73) : 207
+(35, 35, 255) : 204
+(35, 39, 255) : 200
+(0, 0, 223) : 196
+(63, 115, 0) : 194
+(153, 102, 0) : 191
+(110, 73, 0) : 191
+(0, 115, 115) : 191
+(0, 0, 103) : 188
+(255, 255, 102) : 183
+(184, 184, 73) : 183
+(51, 0, 102) : 181
+(37, 0, 73) : 181
+(91, 87, 0) : 173
+(79, 79, 0) : 170
+(247, 95, 15) : 160
+(55, 123, 0) : 158
+(0, 0, 167) : 158
+(159, 159, 0) : 146
+(55, 35, 0) : 146
+(11, 0, 0) : 145
+(215, 215, 0) : 138
+(102, 51, 102) : 138
+(73, 37, 73) : 138
+(0, 0, 115) : 134
+(75, 195, 195) : 133
+(15, 0, 0) : 133
+(159, 0, 0) : 124
+(0, 195, 0) : 120
+(127, 131, 255) : 119
+(0, 135, 135) : 118
+(235, 235, 235) : 116
+(169, 169, 169) : 116
+(0, 0, 204) : 115
+(0, 0, 147) : 115
+(61, 40, 28) : 113
+(207, 199, 0) : 109
+(43, 23, 0) : 109
+(0, 0, 215) : 109
+(0, 0, 95) : 107
+(0, 223, 0) : 106
+(106, 106, 106) : 104
+(183, 175, 0) : 98
+(255, 87, 255) : 97
+(187, 255, 255) : 94
+(179, 0, 0) : 89
+(255, 247, 0) : 88
+(187, 187, 0) : 88
+(255, 153, 153) : 86
+(184, 110, 110) : 86
+(0, 0, 63) : 83
+(0, 102, 204) : 82
+(0, 73, 147) : 82
+(0, 211, 0) : 80
+(115, 111, 0) : 79
+(239, 187, 147) : 78
+(187, 191, 255) : 77
+(27, 7, 0) : 75
+(0, 159, 159) : 71
+(0, 171, 171) : 69
+(171, 0, 171) : 68
+(223, 0, 0) : 66
+(0, 215, 0) : 64
+(204, 102, 102) : 62
+(147, 73, 73) : 62
+(0, 0, 203) : 62
+(159, 255, 255) : 61
+(215, 0, 0) : 58
+(189, 77, 0) : 57
+(136, 55, 0) : 57
+(115, 0, 0) : 57
+(0, 0, 227) : 57
+(0, 127, 127) : 54
+(0, 255, 0) : 53
+(0, 153, 255) : 53
+(0, 110, 184) : 53
+(152, 152, 152) : 52
+(66, 66, 66) : 52
+(204, 204, 204) : 51
+(67, 67, 255) : 51
+(153, 0, 51) : 49
+(110, 0, 37) : 49
+(71, 71, 255) : 47
+(255, 251, 95) : 45
+(255, 255, 219) : 44
+(0, 0, 50) : 42
+(215, 215, 255) : 39
+(204, 102, 51) : 36
+(147, 73, 37) : 36
+(231, 219, 0) : 35
+(79, 0, 0) : 35
+(0, 67, 67) : 35
+(143, 143, 255) : 34
+(0, 204, 255) : 34
+(0, 147, 184) : 34
+(239, 0, 0) : 33
+(87, 255, 87) : 33
+(0, 0, 91) : 33
+(102, 51, 51) : 32
+(95, 191, 255) : 32
+(73, 37, 37) : 32
+(0, 155, 155) : 32
+(187, 235, 235) : 30
+(0, 51, 51) : 30
+(0, 37, 37) : 30
+(255, 255, 127) : 28
+(35, 11, 0) : 28
+(107, 107, 255) : 27
+(184, 0, 0) : 26
+(179, 179, 255) : 25
+(204, 0, 51) : 24
+(147, 0, 37) : 24
+(102, 153, 51) : 24
+(91, 0, 0) : 24
+(73, 110, 37) : 24
+(119, 203, 203) : 22
+(102, 153, 0) : 22
+(73, 110, 0) : 22
+(0, 0, 138) : 22
+(185, 0, 0) : 18
+(7, 139, 0) : 18
+(0, 207, 207) : 18
+(0, 183, 183) : 18
+(159, 223, 223) : 17
+(102, 0, 51) : 17
+(73, 0, 37) : 17
+(35, 179, 179) : 16
+(0, 51, 0) : 16
+(0, 37, 0) : 16
+(7, 179, 0) : 15
+(0, 119, 119) : 15
+(0, 102, 0) : 15
+(0, 73, 0) : 15
+(43, 0, 67) : 13
+(19, 0, 0) : 13
+(255, 0, 51) : 12
+(184, 0, 37) : 12
+(155, 199, 0) : 12
+(103, 0, 0) : 12
+(0, 0, 152) : 11
+(127, 0, 0) : 10
+(119, 78, 54) : 9
+(255, 87, 87) : 8
+(204, 153, 51) : 8
+(147, 110, 37) : 8
+(131, 207, 0) : 7
+(67, 0, 67) : 7
+(51, 51, 102) : 7
+(37, 37, 73) : 7
+(255, 255, 51) : 6
+(184, 184, 37) : 6
+(51, 102, 153) : 6
+(37, 73, 110) : 6
+(204, 102, 153) : 5
+(147, 73, 110) : 5
+(219, 247, 247) : 4
+(127, 255, 251) : 4
+(0, 231, 231) : 4
+(255, 95, 95) : 3
+(255, 51, 0) : 3
+(184, 37, 0) : 3
+(102, 153, 153) : 3
+(102, 102, 51) : 3
+(73, 110, 110) : 3
+(73, 73, 37) : 3
+(243, 83, 83) : 2
+(204, 51, 0) : 2
+(153, 204, 153) : 2
+(153, 153, 153) : 2
+(147, 37, 0) : 2
+(110, 147, 110) : 2
+(110, 110, 110) : 2
+(102, 102, 102) : 2
+(73, 73, 73) : 2
+(51, 51, 153) : 2
+(37, 37, 110) : 2
+(35, 183, 183) : 2
+(7, 0, 0) : 2
+(0, 0, 239) : 2
+(255, 204, 51) : 1
+(255, 153, 0) : 1
+(184, 147, 37) : 1
+(184, 110, 0) : 1
+(153, 204, 204) : 1
+(153, 153, 102) : 1
+(153, 51, 51) : 1
+(139, 0, 0) : 1
+(110, 147, 147) : 1
+(110, 110, 73) : 1
+(110, 37, 37) : 1
+(102, 204, 153) : 1
+(102, 102, 0) : 1
+(73, 147, 110) : 1
+(73, 73, 0) : 1
+(7, 127, 0) : 1
+(0, 239, 0) : 1
+(0, 227, 0) : 1
+
+
+
+Too many colors! will attempt reducing using mod 2
+
+
+
+(155, 0, 139) : 856831
+(0, 0, 0) : 632055
+transparent : 455957
+(0, 0, 171) : 232881
+(0, 171, 0) : 110103
+(195, 119, 75) : 97176
+(255, 255, 255) : 89895
+(135, 83, 51) : 35128
+(2, 2, 2) : 19729
+(1, 1, 1) : 19715
+(239, 219, 207) : 18255
+(67, 51, 27) : 18022
+(100, 65, 45) : 16148
+(80, 53, 37) : 13758
+(90, 59, 41) : 13122
+(59, 47, 23) : 12740
+(111, 75, 39) : 12169
+(0, 0, 43) : 11879
+(67, 0, 0) : 9288
+(102, 204, 255) : 9115
+(73, 147, 184) : 9115
+(75, 59, 27) : 8514
+(87, 87, 255) : 8406
+(87, 255, 255) : 7405
+(95, 67, 35) : 6928
+(51, 153, 51) : 6652
+(37, 110, 37) : 6652
+(87, 63, 31) : 6498
+(59, 59, 59) : 6411
+(235, 163, 119) : 6026
+(75, 75, 75) : 5708
+(43, 35, 15) : 5552
+(87, 87, 87) : 5509
+(131, 83, 47) : 4704
+(31, 31, 31) : 3878
+(255, 204, 102) : 3680
+(184, 147, 73) : 3680
+(51, 34, 24) : 3656
+(47, 47, 47) : 3611
+(171, 0, 0) : 3446
+(103, 103, 103) : 3308
+(163, 103, 63) : 3285
+(119, 79, 43) : 3241
+(92, 92, 92) : 3236
+(183, 115, 71) : 3192
+(139, 91, 51) : 3138
+(171, 171, 171) : 3131
+(51, 141, 0) : 3125
+(37, 102, 0) : 3125
+(143, 0, 0) : 2899
+(127, 127, 127) : 2897
+(70, 0, 95) : 2867
+(143, 143, 143) : 2808
+(171, 87, 0) : 2796
+(153, 102, 51) : 2760
+(110, 73, 37) : 2760
+(147, 95, 55) : 2695
+(155, 155, 155) : 2671
+(255, 255, 87) : 2664
+(119, 0, 0) : 2648
+(171, 107, 67) : 2549
+(67, 67, 67) : 2540
+(183, 183, 183) : 2404
+(159, 99, 59) : 2292
+(203, 127, 79) : 2289
+(35, 35, 35) : 2235
+(59, 55, 0) : 2224
+(0, 0, 77) : 2155
+(115, 115, 115) : 2145
+(55, 55, 55) : 2004
+(223, 139, 87) : 1944
+(227, 0, 0) : 1870
+(191, 123, 75) : 1852
+(184, 184, 184) : 1848
+(211, 131, 83) : 1845
+(110, 72, 50) : 1835
+(30, 0, 56) : 1734
+(7, 155, 0) : 1731
+(92, 0, 125) : 1669
+(159, 79, 0) : 1663
+(243, 151, 95) : 1645
+(75, 0, 0) : 1608
+(251, 0, 0) : 1565
+(95, 95, 0) : 1509
+(255, 235, 223) : 1457
+(155, 0, 0) : 1420
+(195, 195, 195) : 1395
+(255, 167, 115) : 1378
+(235, 143, 91) : 1365
+(67, 67, 0) : 1344
+(205, 205, 205) : 1342
+(148, 148, 148) : 1342
+(223, 223, 223) : 1317
+(91, 91, 91) : 1311
+(0, 0, 108) : 1269
+(99, 0, 0) : 1221
+(229, 150, 99) : 1218
+(165, 108, 71) : 1218
+(239, 187, 155) : 1215
+(211, 211, 211) : 1201
+(255, 159, 99) : 1178
+(255, 255, 204) : 1174
+(184, 184, 147) : 1174
+(187, 187, 187) : 1158
+(204, 0, 0) : 1131
+(147, 0, 0) : 1131
+(204, 102, 0) : 1102
+(147, 73, 0) : 1102
+(167, 0, 0) : 1073
+(123, 123, 123) : 1054
+(153, 51, 0) : 1047
+(110, 37, 0) : 1047
+(55, 55, 0) : 1033
+(71, 103, 0) : 1018
+(0, 0, 127) : 998
+(0, 0, 31) : 988
+(255, 202, 24) : 983
+(0, 0, 79) : 939
+(155, 155, 15) : 938
+(51, 51, 51) : 927
+(102, 0, 102) : 867
+(73, 0, 73) : 867
+(204, 125, 74) : 838
+(147, 90, 53) : 838
+(255, 0, 0) : 834
+(239, 127, 31) : 793
+(255, 139, 35) : 792
+(243, 179, 35) : 759
+(255, 187, 147) : 751
+(255, 171, 95) : 730
+(0, 0, 94) : 707
+(0, 0, 64) : 696
+(150, 150, 150) : 694
+(255, 179, 131) : 692
+(255, 255, 0) : 669
+(108, 108, 108) : 635
+(37, 37, 37) : 632
+(83, 83, 0) : 625
+(131, 0, 0) : 618
+(51, 153, 0) : 617
+(37, 110, 0) : 617
+(102, 0, 0) : 594
+(73, 0, 0) : 594
+(255, 191, 159) : 583
+(135, 0, 135) : 575
+(135, 135, 0) : 567
+(0, 143, 143) : 565
+(255, 199, 167) : 563
+(255, 207, 179) : 553
+(255, 219, 199) : 541
+(87, 0, 0) : 523
+(203, 203, 31) : 522
+(0, 0, 255) : 504
+(0, 0, 51) : 489
+(0, 0, 37) : 489
+(55, 0, 0) : 484
+(199, 123, 79) : 474
+(102, 51, 0) : 464
+(73, 37, 0) : 464
+(242, 159, 107) : 462
+(239, 239, 239) : 447
+(200, 200, 0) : 446
+(144, 144, 0) : 446
+(119, 119, 0) : 437
+(0, 0, 123) : 433
+(219, 219, 255) : 429
+(231, 111, 0) : 424
+(227, 227, 0) : 424
+(75, 0, 75) : 419
+(54, 0, 54) : 419
+(255, 255, 153) : 416
+(184, 184, 110) : 416
+(184, 184, 0) : 413
+(88, 61, 39) : 412
+(75, 67, 0) : 412
+(255, 155, 67) : 403
+(207, 99, 0) : 398
+(0, 0, 139) : 397
+(101, 0, 156) : 394
+(91, 0, 91) : 390
+(23, 143, 0) : 382
+(175, 175, 0) : 374
+(227, 0, 231) : 354
+(255, 123, 0) : 351
+(203, 0, 0) : 346
+(183, 87, 0) : 342
+(147, 147, 0) : 342
+(0, 123, 123) : 341
+(207, 207, 207) : 333
+(191, 0, 0) : 328
+(0, 91, 91) : 321
+(255, 215, 191) : 319
+(51, 102, 0) : 317
+(37, 73, 0) : 317
+(31, 0, 0) : 317
+(107, 107, 0) : 316
+(0, 167, 167) : 315
+(39, 135, 0) : 314
+(35, 255, 255) : 314
+(183, 0, 183) : 312
+(176, 75, 0) : 307
+(127, 54, 0) : 307
+(0, 0, 191) : 306
+(111, 0, 0) : 304
+(71, 46, 32) : 303
+(159, 103, 63) : 302
+(159, 159, 255) : 297
+(95, 99, 255) : 293
+(7, 183, 0) : 284
+(63, 51, 0) : 273
+(127, 83, 47) : 271
+(219, 255, 255) : 269
+(0, 0, 67) : 268
+(159, 0, 159) : 266
+(43, 0, 0) : 262
+(255, 227, 211) : 258
+(255, 204, 204) : 252
+(184, 147, 147) : 252
+(255, 0, 255) : 248
+(204, 153, 0) : 235
+(147, 110, 0) : 235
+(0, 0, 155) : 232
+(203, 0, 207) : 228
+(79, 95, 0) : 227
+(0, 0, 179) : 224
+(0, 111, 111) : 220
+(100, 100, 100) : 219
+(72, 72, 72) : 219
+(7, 167, 0) : 219
+(0, 0, 159) : 211
+(199, 199, 0) : 210
+(111, 0, 115) : 210
+(0, 0, 102) : 207
+(0, 0, 73) : 207
+(35, 35, 255) : 204
+(35, 39, 255) : 200
+(0, 0, 223) : 196
+(63, 115, 0) : 194
+(153, 102, 0) : 191
+(110, 73, 0) : 191
+(0, 115, 115) : 191
+(0, 0, 103) : 188
+(255, 255, 102) : 183
+(184, 184, 73) : 183
+(51, 0, 102) : 181
+(37, 0, 73) : 181
+(91, 87, 0) : 173
+(79, 79, 0) : 170
+(247, 95, 15) : 160
+(55, 123, 0) : 158
+(0, 0, 167) : 158
+(159, 159, 0) : 146
+(55, 35, 0) : 146
+(11, 0, 0) : 145
+(215, 215, 0) : 138
+(102, 51, 102) : 138
+(73, 37, 73) : 138
+(0, 0, 115) : 134
+(75, 195, 195) : 133
+(15, 0, 0) : 133
+(159, 0, 0) : 124
+(0, 195, 0) : 120
+(127, 131, 255) : 119
+(0, 135, 135) : 118
+(235, 235, 235) : 116
+(169, 169, 169) : 116
+(0, 0, 204) : 115
+(0, 0, 147) : 115
+(61, 40, 28) : 113
+(207, 199, 0) : 109
+(43, 23, 0) : 109
+(0, 0, 215) : 109
+(0, 0, 95) : 107
+(0, 223, 0) : 106
+(106, 106, 106) : 104
+(183, 175, 0) : 98
+(255, 87, 255) : 97
+(187, 255, 255) : 94
+(179, 0, 0) : 89
+(255, 247, 0) : 88
+(187, 187, 0) : 88
+(255, 153, 153) : 86
+(184, 110, 110) : 86
+(0, 0, 63) : 83
+(0, 102, 204) : 82
+(0, 73, 147) : 82
+(0, 211, 0) : 80
+(115, 111, 0) : 79
+(239, 187, 147) : 78
+(187, 191, 255) : 77
+(27, 7, 0) : 75
+(0, 159, 159) : 71
+(0, 171, 171) : 69
+(171, 0, 171) : 68
+(223, 0, 0) : 66
+(0, 215, 0) : 64
+(204, 102, 102) : 62
+(147, 73, 73) : 62
+(0, 0, 203) : 62
+(159, 255, 255) : 61
+(215, 0, 0) : 58
+(189, 77, 0) : 57
+(136, 55, 0) : 57
+(115, 0, 0) : 57
+(0, 0, 227) : 57
+(0, 127, 127) : 54
+(0, 255, 0) : 53
+(0, 153, 255) : 53
+(0, 110, 184) : 53
+(152, 152, 152) : 52
+(66, 66, 66) : 52
+(204, 204, 204) : 51
+(67, 67, 255) : 51
+(153, 0, 51) : 49
+(110, 0, 37) : 49
+(71, 71, 255) : 47
+(255, 251, 95) : 45
+(255, 255, 219) : 44
+(0, 0, 50) : 42
+(215, 215, 255) : 39
+(204, 102, 51) : 36
+(147, 73, 37) : 36
+(231, 219, 0) : 35
+(79, 0, 0) : 35
+(0, 67, 67) : 35
+(143, 143, 255) : 34
+(0, 204, 255) : 34
+(0, 147, 184) : 34
+(239, 0, 0) : 33
+(87, 255, 87) : 33
+(0, 0, 91) : 33
+(102, 51, 51) : 32
+(95, 191, 255) : 32
+(73, 37, 37) : 32
+(0, 155, 155) : 32
+(187, 235, 235) : 30
+(0, 51, 51) : 30
+(0, 37, 37) : 30
+(255, 255, 127) : 28
+(35, 11, 0) : 28
+(107, 107, 255) : 27
+(184, 0, 0) : 26
+(179, 179, 255) : 25
+(204, 0, 51) : 24
+(147, 0, 37) : 24
+(102, 153, 51) : 24
+(91, 0, 0) : 24
+(73, 110, 37) : 24
+(119, 203, 203) : 22
+(102, 153, 0) : 22
+(73, 110, 0) : 22
+(0, 0, 138) : 22
+(185, 0, 0) : 18
+(7, 139, 0) : 18
+(0, 207, 207) : 18
+(0, 183, 183) : 18
+(159, 223, 223) : 17
+(102, 0, 51) : 17
+(73, 0, 37) : 17
+(35, 179, 179) : 16
+(0, 51, 0) : 16
+(0, 37, 0) : 16
+(7, 179, 0) : 15
+(0, 119, 119) : 15
+(0, 102, 0) : 15
+(0, 73, 0) : 15
+(43, 0, 67) : 13
+(19, 0, 0) : 13
+(255, 0, 51) : 12
+(184, 0, 37) : 12
+(155, 199, 0) : 12
+(103, 0, 0) : 12
+(0, 0, 152) : 11
+(127, 0, 0) : 10
+(119, 78, 54) : 9
+(255, 87, 87) : 8
+(204, 153, 51) : 8
+(147, 110, 37) : 8
+(131, 207, 0) : 7
+(67, 0, 67) : 7
+(51, 51, 102) : 7
+(37, 37, 73) : 7
+(255, 255, 51) : 6
+(184, 184, 37) : 6
+(51, 102, 153) : 6
+(37, 73, 110) : 6
+(204, 102, 153) : 5
+(147, 73, 110) : 5
+(219, 247, 247) : 4
+(127, 255, 251) : 4
+(0, 231, 231) : 4
+(255, 95, 95) : 3
+(255, 51, 0) : 3
+(184, 37, 0) : 3
+(102, 153, 153) : 3
+(102, 102, 51) : 3
+(73, 110, 110) : 3
+(73, 73, 37) : 3
+(243, 83, 83) : 2
+(204, 51, 0) : 2
+(153, 204, 153) : 2
+(153, 153, 153) : 2
+(147, 37, 0) : 2
+(110, 147, 110) : 2
+(110, 110, 110) : 2
+(102, 102, 102) : 2
+(73, 73, 73) : 2
+(51, 51, 153) : 2
+(37, 37, 110) : 2
+(35, 183, 183) : 2
+(7, 0, 0) : 2
+(0, 0, 239) : 2
+(255, 204, 51) : 1
+(255, 153, 0) : 1
+(184, 147, 37) : 1
+(184, 110, 0) : 1
+(153, 204, 204) : 1
+(153, 153, 102) : 1
+(153, 51, 51) : 1
+(139, 0, 0) : 1
+(110, 147, 147) : 1
+(110, 110, 73) : 1
+(110, 37, 37) : 1
+(102, 204, 153) : 1
+(102, 102, 0) : 1
+(73, 147, 110) : 1
+(73, 73, 0) : 1
+(7, 127, 0) : 1
+(0, 239, 0) : 1
+(0, 227, 0) : 1
+
+
+
+ MOD 2 resulted in reduced gathered palette length : 430
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 4
+
+
+
+(155, 0, 139) : 856831
+(0, 0, 0) : 651770
+transparent : 455957
+(0, 0, 171) : 232881
+(0, 171, 0) : 110103
+(195, 119, 75) : 97176
+(255, 255, 255) : 89895
+(135, 83, 51) : 35128
+(3, 3, 3) : 19729
+(239, 219, 207) : 18255
+(67, 51, 27) : 18022
+(100, 64, 44) : 16148
+(80, 52, 36) : 13758
+(91, 59, 40) : 13122
+(59, 47, 23) : 12740
+(111, 75, 39) : 12169
+(0, 0, 43) : 11879
+(67, 0, 0) : 9288
+(103, 204, 255) : 9115
+(72, 147, 184) : 9115
+(75, 59, 27) : 8514
+(87, 87, 255) : 8406
+(87, 255, 255) : 7405
+(95, 67, 35) : 6928
+(51, 152, 51) : 6652
+(36, 111, 36) : 6652
+(87, 63, 31) : 6498
+(59, 59, 59) : 6411
+(235, 163, 119) : 6026
+(75, 75, 75) : 5708
+(43, 35, 15) : 5552
+(87, 87, 87) : 5509
+(131, 83, 47) : 4704
+(31, 31, 31) : 3878
+(255, 204, 103) : 3680
+(184, 147, 72) : 3680
+(51, 35, 24) : 3656
+(47, 47, 47) : 3611
+(171, 0, 0) : 3446
+(103, 103, 103) : 3310
+(163, 103, 63) : 3285
+(119, 79, 43) : 3241
+(92, 92, 92) : 3236
+(183, 115, 71) : 3192
+(139, 91, 51) : 3138
+(171, 171, 171) : 3131
+(51, 140, 0) : 3125
+(36, 103, 0) : 3125
+(143, 0, 0) : 2899
+(127, 127, 127) : 2897
+(71, 0, 95) : 2867
+(143, 143, 143) : 2808
+(171, 87, 0) : 2796
+(152, 103, 51) : 2760
+(111, 72, 36) : 2760
+(147, 95, 55) : 2695
+(155, 155, 155) : 2671
+(255, 255, 87) : 2664
+(119, 0, 0) : 2648
+(67, 67, 67) : 2592
+(171, 107, 67) : 2549
+(183, 183, 183) : 2404
+(159, 99, 59) : 2292
+(203, 127, 79) : 2289
+(35, 35, 35) : 2235
+(59, 55, 0) : 2224
+(0, 0, 76) : 2155
+(115, 115, 115) : 2145
+(55, 55, 55) : 2004
+(223, 139, 87) : 1944
+(227, 0, 0) : 1870
+(191, 123, 75) : 1852
+(184, 184, 184) : 1848
+(211, 131, 83) : 1845
+(111, 72, 51) : 1835
+(31, 0, 56) : 1734
+(7, 155, 0) : 1731
+(92, 0, 124) : 1669
+(159, 79, 0) : 1663
+(243, 151, 95) : 1645
+(75, 0, 0) : 1608
+(251, 0, 0) : 1565
+(95, 95, 0) : 1509
+(255, 235, 223) : 1457
+(155, 0, 0) : 1420
+(195, 195, 195) : 1395
+(204, 204, 204) : 1393
+(255, 167, 115) : 1378
+(235, 143, 91) : 1365
+(67, 67, 0) : 1344
+(148, 148, 148) : 1342
+(223, 223, 223) : 1317
+(91, 91, 91) : 1311
+(0, 0, 108) : 1269
+(99, 0, 0) : 1221
+(228, 151, 99) : 1218
+(164, 108, 71) : 1218
+(239, 187, 155) : 1215
+(211, 211, 211) : 1201
+(255, 159, 99) : 1178
+(255, 255, 204) : 1174
+(184, 184, 147) : 1174
+(187, 187, 187) : 1158
+(204, 0, 0) : 1131
+(147, 0, 0) : 1131
+(204, 103, 0) : 1102
+(147, 72, 0) : 1102
+(167, 0, 0) : 1073
+(123, 123, 123) : 1054
+(152, 51, 0) : 1047
+(111, 36, 0) : 1047
+(55, 55, 0) : 1033
+(71, 103, 0) : 1018
+(0, 0, 127) : 998
+(0, 0, 31) : 988
+(255, 203, 24) : 983
+(0, 0, 79) : 939
+(155, 155, 15) : 938
+(51, 51, 51) : 927
+(103, 0, 103) : 867
+(72, 0, 72) : 867
+(204, 124, 75) : 838
+(147, 91, 52) : 838
+(255, 0, 0) : 834
+(0, 0, 95) : 814
+(239, 127, 31) : 793
+(255, 139, 35) : 792
+(243, 179, 35) : 759
+(255, 187, 147) : 751
+(255, 171, 95) : 730
+(0, 0, 64) : 696
+(151, 151, 151) : 694
+(255, 179, 131) : 692
+(255, 255, 0) : 669
+(108, 108, 108) : 635
+(36, 36, 36) : 632
+(83, 83, 0) : 625
+(131, 0, 0) : 618
+(51, 152, 0) : 617
+(36, 111, 0) : 617
+(103, 0, 0) : 606
+(72, 0, 0) : 594
+(255, 191, 159) : 583
+(135, 0, 135) : 575
+(135, 135, 0) : 567
+(0, 143, 143) : 565
+(255, 199, 167) : 563
+(255, 207, 179) : 553
+(255, 219, 199) : 541
+(0, 0, 51) : 531
+(87, 0, 0) : 523
+(203, 203, 31) : 522
+(0, 0, 255) : 504
+(0, 0, 36) : 489
+(55, 0, 0) : 484
+(199, 123, 79) : 474
+(103, 51, 0) : 464
+(72, 36, 0) : 464
+(243, 159, 107) : 462
+(239, 239, 239) : 447
+(200, 200, 0) : 446
+(144, 144, 0) : 446
+(119, 119, 0) : 437
+(0, 0, 123) : 433
+(219, 219, 255) : 429
+(231, 111, 0) : 424
+(227, 227, 0) : 424
+(75, 0, 75) : 419
+(55, 0, 55) : 419
+(0, 0, 139) : 419
+(255, 255, 152) : 416
+(184, 184, 111) : 416
+(184, 184, 0) : 413
+(88, 60, 39) : 412
+(75, 67, 0) : 412
+(255, 155, 67) : 403
+(207, 99, 0) : 398
+(0, 0, 103) : 395
+(100, 0, 156) : 394
+(91, 0, 91) : 390
+(23, 143, 0) : 382
+(175, 175, 0) : 374
+(227, 0, 231) : 354
+(255, 123, 0) : 351
+(203, 0, 0) : 346
+(183, 87, 0) : 342
+(147, 147, 0) : 342
+(0, 123, 123) : 341
+(207, 207, 207) : 333
+(191, 0, 0) : 328
+(0, 91, 91) : 321
+(255, 215, 191) : 319
+(51, 103, 0) : 317
+(36, 72, 0) : 317
+(31, 0, 0) : 317
+(107, 107, 0) : 316
+(0, 167, 167) : 315
+(39, 135, 0) : 314
+(35, 255, 255) : 314
+(183, 0, 183) : 312
+(176, 75, 0) : 307
+(127, 55, 0) : 307
+(0, 0, 191) : 306
+(111, 0, 0) : 304
+(71, 47, 32) : 303
+(159, 103, 63) : 302
+(159, 159, 255) : 297
+(95, 99, 255) : 293
+(7, 183, 0) : 284
+(63, 51, 0) : 273
+(127, 83, 47) : 271
+(219, 255, 255) : 269
+(0, 0, 67) : 268
+(159, 0, 159) : 266
+(43, 0, 0) : 262
+(255, 227, 211) : 258
+(255, 204, 204) : 252
+(184, 147, 147) : 252
+(255, 0, 255) : 248
+(204, 152, 0) : 235
+(147, 111, 0) : 235
+(0, 0, 155) : 232
+(203, 0, 207) : 228
+(79, 95, 0) : 227
+(0, 0, 179) : 224
+(72, 72, 72) : 221
+(0, 111, 111) : 220
+(100, 100, 100) : 219
+(7, 167, 0) : 219
+(0, 0, 159) : 211
+(199, 199, 0) : 210
+(111, 0, 115) : 210
+(0, 0, 72) : 207
+(35, 35, 255) : 204
+(35, 39, 255) : 200
+(0, 0, 223) : 196
+(63, 115, 0) : 194
+(152, 103, 0) : 191
+(111, 72, 0) : 191
+(0, 115, 115) : 191
+(255, 255, 103) : 183
+(184, 184, 72) : 183
+(51, 0, 103) : 181
+(36, 0, 72) : 181
+(91, 87, 0) : 173
+(79, 79, 0) : 170
+(247, 95, 15) : 160
+(55, 123, 0) : 158
+(0, 0, 167) : 158
+(159, 159, 0) : 146
+(55, 35, 0) : 146
+(11, 0, 0) : 145
+(215, 215, 0) : 138
+(103, 51, 103) : 138
+(72, 36, 72) : 138
+(0, 0, 115) : 134
+(75, 195, 195) : 133
+(15, 0, 0) : 133
+(159, 0, 0) : 124
+(0, 195, 0) : 120
+(127, 131, 255) : 119
+(0, 135, 135) : 118
+(235, 235, 235) : 116
+(168, 168, 168) : 116
+(0, 0, 204) : 115
+(0, 0, 147) : 115
+(60, 40, 28) : 113
+(207, 199, 0) : 109
+(43, 23, 0) : 109
+(0, 0, 215) : 109
+(0, 223, 0) : 106
+(107, 107, 107) : 104
+(183, 175, 0) : 98
+(255, 87, 255) : 97
+(187, 255, 255) : 94
+(179, 0, 0) : 89
+(255, 247, 0) : 88
+(187, 187, 0) : 88
+(255, 152, 152) : 86
+(184, 111, 111) : 86
+(0, 0, 63) : 83
+(0, 103, 204) : 82
+(0, 72, 147) : 82
+(0, 211, 0) : 80
+(115, 111, 0) : 79
+(239, 187, 147) : 78
+(187, 191, 255) : 77
+(27, 7, 0) : 75
+(0, 159, 159) : 71
+(0, 171, 171) : 69
+(171, 0, 171) : 68
+(223, 0, 0) : 66
+(0, 215, 0) : 64
+(204, 103, 103) : 62
+(147, 72, 72) : 62
+(0, 0, 203) : 62
+(159, 255, 255) : 61
+(215, 0, 0) : 58
+(188, 76, 0) : 57
+(136, 55, 0) : 57
+(115, 0, 0) : 57
+(0, 0, 227) : 57
+(152, 152, 152) : 54
+(0, 127, 127) : 54
+(0, 255, 0) : 53
+(0, 152, 255) : 53
+(0, 111, 184) : 53
+(67, 67, 255) : 51
+(152, 0, 51) : 49
+(111, 0, 36) : 49
+(71, 71, 255) : 47
+(255, 251, 95) : 45
+(255, 255, 219) : 44
+(184, 0, 0) : 44
+(215, 215, 255) : 39
+(204, 103, 51) : 36
+(147, 72, 36) : 36
+(231, 219, 0) : 35
+(79, 0, 0) : 35
+(0, 67, 67) : 35
+(143, 143, 255) : 34
+(0, 204, 255) : 34
+(0, 147, 184) : 34
+(239, 0, 0) : 33
+(87, 255, 87) : 33
+(0, 0, 91) : 33
+(103, 51, 51) : 32
+(95, 191, 255) : 32
+(72, 36, 36) : 32
+(0, 155, 155) : 32
+(187, 235, 235) : 30
+(0, 51, 51) : 30
+(0, 36, 36) : 30
+(255, 255, 127) : 28
+(35, 11, 0) : 28
+(107, 107, 255) : 27
+(179, 179, 255) : 25
+(204, 0, 51) : 24
+(147, 0, 36) : 24
+(103, 152, 51) : 24
+(91, 0, 0) : 24
+(72, 111, 36) : 24
+(119, 203, 203) : 22
+(103, 152, 0) : 22
+(72, 111, 0) : 22
+(7, 139, 0) : 18
+(0, 207, 207) : 18
+(0, 183, 183) : 18
+(159, 223, 223) : 17
+(103, 0, 51) : 17
+(72, 0, 36) : 17
+(35, 179, 179) : 16
+(0, 51, 0) : 16
+(0, 36, 0) : 16
+(7, 179, 0) : 15
+(0, 119, 119) : 15
+(0, 103, 0) : 15
+(0, 72, 0) : 15
+(43, 0, 67) : 13
+(19, 0, 0) : 13
+(255, 0, 51) : 12
+(184, 0, 36) : 12
+(155, 199, 0) : 12
+(0, 0, 152) : 11
+(127, 0, 0) : 10
+(119, 79, 55) : 9
+(255, 87, 87) : 8
+(204, 152, 51) : 8
+(147, 111, 36) : 8
+(131, 207, 0) : 7
+(67, 0, 67) : 7
+(51, 51, 103) : 7
+(36, 36, 72) : 7
+(255, 255, 51) : 6
+(184, 184, 36) : 6
+(51, 103, 152) : 6
+(36, 72, 111) : 6
+(204, 103, 152) : 5
+(147, 72, 111) : 5
+(219, 247, 247) : 4
+(127, 255, 251) : 4
+(0, 231, 231) : 4
+(255, 95, 95) : 3
+(255, 51, 0) : 3
+(184, 36, 0) : 3
+(103, 152, 152) : 3
+(103, 103, 51) : 3
+(72, 111, 111) : 3
+(72, 72, 36) : 3
+(243, 83, 83) : 2
+(204, 51, 0) : 2
+(152, 204, 152) : 2
+(147, 36, 0) : 2
+(111, 147, 111) : 2
+(111, 111, 111) : 2
+(51, 51, 152) : 2
+(36, 36, 111) : 2
+(35, 183, 183) : 2
+(7, 0, 0) : 2
+(0, 0, 239) : 2
+(255, 204, 51) : 1
+(255, 152, 0) : 1
+(184, 147, 36) : 1
+(184, 111, 0) : 1
+(152, 204, 204) : 1
+(152, 152, 103) : 1
+(152, 51, 51) : 1
+(139, 0, 0) : 1
+(111, 147, 147) : 1
+(111, 111, 72) : 1
+(111, 36, 36) : 1
+(103, 204, 152) : 1
+(103, 103, 0) : 1
+(72, 147, 111) : 1
+(72, 72, 0) : 1
+(7, 127, 0) : 1
+(0, 239, 0) : 1
+(0, 227, 0) : 1
+
+
+
+ MOD 4 resulted in reduced gathered palette length : 418
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 8
+
+
+
+(152, 0, 136) : 856831
+(0, 0, 0) : 671499
+transparent : 455957
+(0, 0, 168) : 232881
+(0, 168, 0) : 110103
+(192, 118, 72) : 97176
+(254, 254, 254) : 89895
+(134, 80, 48) : 35128
+(238, 216, 206) : 18255
+(64, 48, 24) : 18022
+(102, 64, 46) : 16148
+(110, 72, 38) : 14929
+(80, 54, 38) : 13758
+(88, 56, 40) : 13122
+(56, 46, 22) : 12740
+(0, 0, 40) : 11879
+(64, 0, 0) : 9288
+(102, 206, 254) : 9115
+(72, 144, 184) : 9115
+(72, 56, 24) : 8514
+(86, 86, 254) : 8406
+(86, 254, 254) : 7405
+(94, 64, 32) : 6928
+(48, 152, 48) : 6652
+(38, 110, 38) : 6652
+(86, 62, 30) : 6498
+(56, 56, 56) : 6411
+(232, 160, 118) : 6026
+(72, 72, 72) : 5929
+(40, 32, 14) : 5552
+(86, 86, 86) : 5509
+(128, 80, 46) : 4704
+(30, 30, 30) : 3878
+(254, 206, 102) : 3680
+(184, 144, 72) : 3680
+(48, 32, 24) : 3656
+(46, 46, 46) : 3611
+(102, 102, 102) : 3529
+(168, 0, 0) : 3446
+(160, 102, 62) : 3285
+(168, 168, 168) : 3247
+(118, 78, 40) : 3241
+(94, 94, 94) : 3236
+(182, 112, 70) : 3192
+(136, 88, 48) : 3138
+(48, 142, 0) : 3125
+(38, 102, 0) : 3125
+(0, 0, 78) : 3094
+(184, 184, 184) : 3006
+(142, 0, 0) : 2899
+(126, 126, 126) : 2897
+(70, 0, 94) : 2867
+(142, 142, 142) : 2808
+(168, 86, 0) : 2796
+(152, 102, 48) : 2760
+(152, 152, 152) : 2725
+(144, 94, 54) : 2695
+(254, 254, 86) : 2664
+(118, 0, 0) : 2648
+(64, 64, 64) : 2592
+(168, 104, 64) : 2549
+(182, 182, 182) : 2404
+(158, 96, 56) : 2292
+(200, 126, 78) : 2289
+(32, 32, 32) : 2235
+(56, 54, 0) : 2224
+(72, 0, 0) : 2202
+(112, 112, 112) : 2145
+(150, 150, 150) : 2036
+(54, 54, 54) : 2004
+(222, 136, 86) : 1944
+(224, 0, 0) : 1870
+(190, 120, 72) : 1852
+(208, 128, 80) : 1845
+(110, 72, 48) : 1835
+(30, 0, 56) : 1734
+(6, 152, 0) : 1731
+(206, 206, 206) : 1726
+(94, 0, 126) : 1669
+(158, 78, 0) : 1663
+(240, 150, 94) : 1645
+(248, 0, 0) : 1565
+(94, 94, 0) : 1509
+(254, 232, 222) : 1457
+(152, 0, 0) : 1420
+(192, 192, 192) : 1395
+(254, 166, 112) : 1378
+(232, 142, 88) : 1365
+(64, 64, 0) : 1344
+(222, 222, 222) : 1317
+(88, 88, 88) : 1311
+(72, 0, 72) : 1286
+(0, 0, 110) : 1269
+(96, 0, 0) : 1221
+(230, 150, 96) : 1218
+(166, 110, 70) : 1218
+(238, 184, 152) : 1215
+(208, 208, 208) : 1201
+(254, 158, 96) : 1178
+(254, 254, 206) : 1174
+(184, 184, 144) : 1174
+(206, 0, 0) : 1131
+(144, 0, 0) : 1131
+(206, 102, 0) : 1102
+(144, 72, 0) : 1102
+(166, 0, 0) : 1073
+(120, 120, 120) : 1054
+(152, 48, 0) : 1047
+(110, 38, 0) : 1047
+(54, 54, 0) : 1033
+(70, 102, 0) : 1018
+(0, 0, 126) : 998
+(0, 0, 30) : 988
+(254, 200, 24) : 983
+(0, 0, 64) : 964
+(152, 152, 14) : 938
+(48, 48, 48) : 927
+(102, 0, 102) : 867
+(206, 126, 72) : 838
+(144, 88, 54) : 838
+(254, 0, 0) : 834
+(0, 0, 94) : 814
+(238, 126, 30) : 793
+(254, 136, 32) : 792
+(144, 144, 0) : 788
+(240, 176, 32) : 759
+(254, 184, 144) : 751
+(254, 168, 94) : 730
+(254, 176, 128) : 692
+(254, 254, 0) : 669
+(110, 110, 110) : 637
+(38, 38, 38) : 632
+(80, 80, 0) : 625
+(128, 0, 0) : 618
+(48, 152, 0) : 617
+(38, 110, 0) : 617
+(102, 0, 0) : 606
+(254, 190, 158) : 583
+(134, 0, 134) : 575
+(134, 134, 0) : 567
+(0, 142, 142) : 565
+(254, 198, 166) : 563
+(254, 206, 176) : 553
+(254, 216, 198) : 541
+(0, 0, 48) : 531
+(86, 0, 0) : 523
+(200, 200, 30) : 522
+(0, 0, 254) : 504
+(184, 184, 0) : 501
+(0, 0, 38) : 489
+(54, 0, 0) : 484
+(198, 120, 78) : 474
+(102, 48, 0) : 464
+(72, 38, 0) : 464
+(240, 158, 104) : 462
+(238, 238, 238) : 447
+(200, 200, 0) : 446
+(118, 118, 0) : 437
+(0, 0, 120) : 433
+(216, 216, 254) : 429
+(230, 110, 0) : 424
+(224, 224, 0) : 424
+(54, 0, 54) : 419
+(0, 0, 136) : 419
+(254, 254, 152) : 416
+(184, 184, 110) : 416
+(88, 62, 38) : 412
+(72, 64, 0) : 412
+(254, 152, 64) : 403
+(206, 96, 0) : 398
+(0, 0, 102) : 395
+(102, 0, 158) : 394
+(88, 0, 88) : 390
+(22, 142, 0) : 382
+(174, 174, 0) : 374
+(224, 0, 230) : 354
+(254, 120, 0) : 351
+(200, 0, 0) : 346
+(182, 86, 0) : 342
+(0, 120, 120) : 341
+(190, 0, 0) : 328
+(0, 88, 88) : 321
+(254, 214, 190) : 319
+(48, 102, 0) : 317
+(38, 72, 0) : 317
+(30, 0, 0) : 317
+(104, 104, 0) : 316
+(0, 166, 166) : 315
+(38, 134, 0) : 314
+(32, 254, 254) : 314
+(182, 0, 182) : 312
+(176, 72, 0) : 307
+(126, 54, 0) : 307
+(0, 0, 190) : 306
+(110, 0, 0) : 304
+(70, 46, 32) : 303
+(158, 102, 62) : 302
+(158, 158, 254) : 297
+(94, 96, 254) : 293
+(6, 182, 0) : 284
+(62, 48, 0) : 273
+(126, 80, 46) : 271
+(216, 254, 254) : 269
+(158, 0, 158) : 266
+(40, 0, 0) : 262
+(254, 224, 208) : 258
+(254, 206, 206) : 252
+(184, 144, 144) : 252
+(254, 0, 254) : 248
+(0, 0, 152) : 243
+(206, 152, 0) : 235
+(144, 110, 0) : 235
+(200, 0, 206) : 228
+(78, 94, 0) : 227
+(0, 0, 176) : 224
+(0, 110, 110) : 220
+(6, 166, 0) : 219
+(0, 0, 158) : 211
+(198, 198, 0) : 210
+(110, 0, 112) : 210
+(0, 0, 72) : 207
+(32, 32, 254) : 204
+(32, 38, 254) : 200
+(0, 0, 222) : 196
+(62, 112, 0) : 194
+(152, 102, 0) : 191
+(110, 72, 0) : 191
+(0, 112, 112) : 191
+(254, 254, 102) : 183
+(184, 184, 72) : 183
+(48, 0, 102) : 181
+(38, 0, 72) : 181
+(88, 86, 0) : 173
+(78, 78, 0) : 170
+(246, 94, 14) : 160
+(54, 120, 0) : 158
+(0, 0, 166) : 158
+(158, 158, 0) : 146
+(54, 32, 0) : 146
+(8, 0, 0) : 145
+(214, 214, 0) : 138
+(102, 48, 102) : 138
+(72, 38, 72) : 138
+(0, 0, 112) : 134
+(72, 192, 192) : 133
+(14, 0, 0) : 133
+(158, 0, 0) : 124
+(0, 192, 0) : 120
+(126, 128, 254) : 119
+(0, 134, 134) : 118
+(232, 232, 232) : 116
+(0, 0, 206) : 115
+(0, 0, 144) : 115
+(62, 40, 30) : 113
+(206, 198, 0) : 109
+(40, 22, 0) : 109
+(0, 0, 214) : 109
+(0, 222, 0) : 106
+(104, 104, 104) : 104
+(182, 174, 0) : 98
+(254, 86, 254) : 97
+(184, 254, 254) : 94
+(176, 0, 0) : 89
+(254, 246, 0) : 88
+(254, 152, 152) : 86
+(184, 110, 110) : 86
+(0, 0, 62) : 83
+(0, 102, 206) : 82
+(0, 72, 144) : 82
+(0, 208, 0) : 80
+(112, 110, 0) : 79
+(238, 184, 144) : 78
+(184, 190, 254) : 77
+(24, 6, 0) : 75
+(0, 158, 158) : 71
+(0, 168, 168) : 69
+(168, 0, 168) : 68
+(222, 0, 0) : 66
+(0, 214, 0) : 64
+(206, 102, 102) : 62
+(144, 72, 72) : 62
+(0, 0, 200) : 62
+(158, 254, 254) : 61
+(214, 0, 0) : 58
+(190, 78, 0) : 57
+(136, 54, 0) : 57
+(112, 0, 0) : 57
+(0, 0, 224) : 57
+(0, 126, 126) : 54
+(0, 254, 0) : 53
+(0, 152, 254) : 53
+(0, 110, 184) : 53
+(64, 64, 254) : 51
+(152, 0, 48) : 49
+(110, 0, 38) : 49
+(70, 70, 254) : 47
+(254, 248, 94) : 45
+(254, 254, 216) : 44
+(184, 0, 0) : 44
+(214, 214, 254) : 39
+(206, 102, 48) : 36
+(144, 72, 38) : 36
+(230, 216, 0) : 35
+(78, 0, 0) : 35
+(0, 64, 64) : 35
+(142, 142, 254) : 34
+(0, 206, 254) : 34
+(0, 144, 184) : 34
+(238, 0, 0) : 33
+(86, 254, 86) : 33
+(0, 0, 88) : 33
+(102, 48, 48) : 32
+(94, 190, 254) : 32
+(72, 38, 38) : 32
+(0, 152, 152) : 32
+(184, 232, 232) : 30
+(0, 48, 48) : 30
+(0, 38, 38) : 30
+(254, 254, 126) : 28
+(32, 8, 0) : 28
+(104, 104, 254) : 27
+(176, 176, 254) : 25
+(206, 0, 48) : 24
+(144, 0, 38) : 24
+(102, 152, 48) : 24
+(88, 0, 0) : 24
+(72, 110, 38) : 24
+(118, 200, 200) : 22
+(102, 152, 0) : 22
+(72, 110, 0) : 22
+(6, 136, 0) : 18
+(0, 206, 206) : 18
+(0, 182, 182) : 18
+(158, 222, 222) : 17
+(102, 0, 48) : 17
+(72, 0, 38) : 17
+(32, 176, 176) : 16
+(0, 48, 0) : 16
+(0, 38, 0) : 16
+(6, 176, 0) : 15
+(0, 118, 118) : 15
+(0, 102, 0) : 15
+(0, 72, 0) : 15
+(40, 0, 64) : 13
+(16, 0, 0) : 13
+(254, 0, 48) : 12
+(184, 0, 38) : 12
+(152, 198, 0) : 12
+(126, 0, 0) : 10
+(118, 78, 54) : 9
+(254, 86, 86) : 8
+(206, 152, 48) : 8
+(144, 110, 38) : 8
+(128, 206, 0) : 7
+(64, 0, 64) : 7
+(48, 48, 102) : 7
+(38, 38, 72) : 7
+(254, 254, 48) : 6
+(184, 184, 38) : 6
+(48, 102, 152) : 6
+(38, 72, 110) : 6
+(206, 102, 152) : 5
+(144, 72, 110) : 5
+(216, 246, 246) : 4
+(126, 254, 248) : 4
+(0, 230, 230) : 4
+(254, 94, 94) : 3
+(254, 48, 0) : 3
+(184, 38, 0) : 3
+(102, 152, 152) : 3
+(102, 102, 48) : 3
+(72, 110, 110) : 3
+(72, 72, 38) : 3
+(240, 80, 80) : 2
+(206, 48, 0) : 2
+(152, 206, 152) : 2
+(144, 38, 0) : 2
+(110, 144, 110) : 2
+(48, 48, 152) : 2
+(38, 38, 110) : 2
+(32, 182, 182) : 2
+(6, 0, 0) : 2
+(0, 0, 238) : 2
+(254, 206, 48) : 1
+(254, 152, 0) : 1
+(184, 144, 38) : 1
+(184, 110, 0) : 1
+(152, 206, 206) : 1
+(152, 152, 102) : 1
+(152, 48, 48) : 1
+(136, 0, 0) : 1
+(110, 144, 144) : 1
+(110, 110, 72) : 1
+(110, 38, 38) : 1
+(102, 206, 152) : 1
+(102, 102, 0) : 1
+(72, 144, 110) : 1
+(72, 72, 0) : 1
+(6, 126, 0) : 1
+(0, 238, 0) : 1
+(0, 224, 0) : 1
+
+
+
+ MOD 8 resulted in reduced gathered palette length : 401
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 16
+
+
+
+(156, 0, 140) : 856831
+(0, 0, 0) : 671501
+transparent : 455957
+(0, 0, 172) : 232881
+(0, 172, 0) : 110103
+(192, 112, 76) : 97176
+(252, 252, 252) : 89895
+(128, 80, 48) : 35128
+(236, 220, 204) : 18255
+(64, 48, 28) : 18022
+(96, 64, 44) : 16148
+(108, 76, 32) : 14929
+(80, 48, 32) : 13758
+(92, 60, 44) : 13122
+(60, 44, 16) : 12740
+(0, 0, 44) : 11879
+(64, 0, 0) : 9288
+(96, 204, 252) : 9115
+(76, 144, 188) : 9115
+(76, 60, 28) : 8514
+(80, 80, 252) : 8406
+(80, 252, 252) : 7405
+(92, 64, 32) : 6928
+(48, 156, 48) : 6652
+(32, 108, 32) : 6652
+(80, 60, 28) : 6498
+(60, 60, 60) : 6411
+(236, 160, 112) : 6026
+(76, 76, 76) : 5929
+(44, 32, 12) : 5552
+(80, 80, 80) : 5509
+(128, 80, 44) : 4704
+(92, 92, 92) : 4547
+(124, 124, 124) : 3951
+(28, 28, 28) : 3878
+(252, 204, 96) : 3680
+(188, 144, 76) : 3680
+(48, 32, 28) : 3656
+(44, 44, 44) : 3611
+(144, 92, 48) : 3533
+(96, 96, 96) : 3529
+(172, 0, 0) : 3446
+(0, 0, 76) : 3301
+(160, 96, 60) : 3285
+(172, 172, 172) : 3247
+(112, 76, 44) : 3241
+(176, 112, 64) : 3192
+(140, 92, 48) : 3138
+(204, 124, 76) : 3127
+(48, 140, 0) : 3125
+(32, 96, 0) : 3125
+(188, 188, 188) : 3006
+(48, 48, 48) : 2931
+(140, 0, 0) : 2900
+(64, 0, 92) : 2867
+(32, 32, 32) : 2867
+(140, 140, 140) : 2808
+(172, 80, 0) : 2796
+(156, 96, 48) : 2760
+(156, 156, 156) : 2725
+(112, 0, 0) : 2705
+(252, 252, 80) : 2664
+(156, 96, 60) : 2594
+(64, 64, 64) : 2592
+(172, 108, 64) : 2549
+(60, 48, 0) : 2497
+(176, 176, 176) : 2404
+(252, 0, 0) : 2399
+(76, 0, 0) : 2237
+(112, 112, 112) : 2145
+(144, 144, 144) : 2036
+(220, 140, 80) : 1944
+(224, 0, 0) : 1870
+(188, 124, 76) : 1852
+(208, 128, 80) : 1845
+(108, 76, 48) : 1835
+(96, 0, 0) : 1827
+(28, 0, 60) : 1734
+(0, 156, 0) : 1731
+(204, 204, 204) : 1726
+(92, 0, 124) : 1669
+(156, 76, 0) : 1663
+(240, 144, 92) : 1645
+(156, 0, 0) : 1544
+(92, 92, 0) : 1509
+(204, 96, 0) : 1500
+(204, 0, 0) : 1477
+(252, 236, 220) : 1457
+(0, 0, 124) : 1431
+(192, 192, 192) : 1395
+(252, 160, 112) : 1378
+(236, 140, 92) : 1365
+(64, 64, 0) : 1344
+(220, 220, 220) : 1317
+(76, 0, 76) : 1286
+(0, 0, 108) : 1269
+(224, 144, 96) : 1218
+(160, 108, 64) : 1218
+(236, 188, 156) : 1215
+(208, 208, 208) : 1201
+(252, 156, 96) : 1178
+(252, 252, 204) : 1174
+(188, 188, 144) : 1174
+(144, 0, 0) : 1131
+(144, 76, 0) : 1102
+(160, 0, 0) : 1073
+(156, 48, 0) : 1047
+(108, 32, 0) : 1047
+(48, 48, 0) : 1033
+(64, 96, 0) : 1018
+(0, 0, 28) : 988
+(252, 204, 28) : 983
+(0, 0, 64) : 964
+(156, 156, 12) : 938
+(96, 0, 96) : 867
+(0, 0, 92) : 847
+(236, 124, 28) : 793
+(252, 140, 32) : 792
+(144, 144, 0) : 788
+(240, 176, 32) : 759
+(252, 188, 144) : 751
+(108, 108, 108) : 741
+(252, 172, 92) : 730
+(252, 176, 128) : 692
+(252, 252, 0) : 669
+(80, 80, 0) : 625
+(128, 0, 0) : 618
+(48, 156, 0) : 617
+(32, 108, 0) : 617
+(252, 188, 156) : 583
+(128, 0, 128) : 575
+(128, 128, 0) : 567
+(0, 140, 140) : 565
+(252, 192, 160) : 563
+(236, 236, 236) : 563
+(252, 204, 176) : 553
+(252, 220, 192) : 541
+(0, 0, 48) : 531
+(80, 0, 0) : 523
+(204, 204, 28) : 522
+(0, 0, 252) : 504
+(188, 188, 0) : 501
+(0, 0, 32) : 489
+(48, 0, 0) : 484
+(192, 124, 76) : 474
+(96, 48, 0) : 464
+(76, 32, 0) : 464
+(240, 156, 108) : 462
+(0, 0, 156) : 454
+(204, 204, 0) : 446
+(112, 112, 0) : 437
+(220, 220, 252) : 429
+(224, 224, 0) : 424
+(224, 108, 0) : 424
+(48, 0, 48) : 419
+(0, 0, 140) : 419
+(252, 252, 156) : 416
+(188, 188, 108) : 416
+(92, 60, 32) : 412
+(76, 64, 0) : 412
+(32, 32, 252) : 404
+(252, 156, 64) : 403
+(0, 124, 124) : 395
+(0, 0, 96) : 395
+(96, 0, 156) : 394
+(28, 0, 0) : 392
+(92, 0, 92) : 390
+(16, 140, 0) : 382
+(172, 172, 0) : 374
+(188, 0, 0) : 372
+(224, 0, 224) : 354
+(252, 124, 0) : 351
+(176, 80, 0) : 342
+(0, 92, 92) : 321
+(252, 208, 188) : 319
+(48, 96, 0) : 317
+(32, 76, 0) : 317
+(108, 108, 0) : 316
+(0, 160, 160) : 315
+(32, 252, 252) : 314
+(32, 128, 0) : 314
+(176, 0, 176) : 312
+(176, 76, 0) : 307
+(124, 48, 0) : 307
+(0, 0, 188) : 306
+(108, 0, 0) : 304
+(64, 44, 32) : 303
+(0, 176, 0) : 299
+(156, 156, 252) : 297
+(92, 96, 252) : 293
+(12, 0, 0) : 278
+(124, 80, 44) : 271
+(220, 252, 252) : 269
+(156, 0, 156) : 266
+(44, 0, 0) : 262
+(252, 224, 208) : 258
+(252, 204, 204) : 252
+(188, 144, 144) : 252
+(252, 0, 252) : 248
+(204, 156, 0) : 235
+(144, 108, 0) : 235
+(204, 0, 204) : 228
+(76, 92, 0) : 227
+(0, 0, 176) : 224
+(0, 108, 108) : 220
+(0, 160, 0) : 219
+(192, 192, 0) : 210
+(108, 0, 112) : 210
+(0, 112, 112) : 206
+(0, 0, 220) : 196
+(60, 112, 0) : 194
+(156, 96, 0) : 191
+(108, 76, 0) : 191
+(252, 252, 96) : 183
+(188, 188, 76) : 183
+(48, 0, 96) : 181
+(32, 0, 76) : 181
+(0, 0, 204) : 177
+(92, 80, 0) : 173
+(76, 76, 0) : 171
+(240, 92, 12) : 160
+(48, 124, 0) : 158
+(0, 0, 160) : 158
+(156, 156, 0) : 146
+(48, 32, 0) : 146
+(0, 208, 0) : 144
+(208, 208, 0) : 138
+(96, 48, 96) : 138
+(76, 32, 76) : 138
+(0, 0, 112) : 134
+(76, 192, 192) : 133
+(0, 192, 0) : 120
+(124, 128, 252) : 119
+(0, 128, 128) : 118
+(0, 0, 144) : 115
+(60, 44, 28) : 113
+(204, 192, 0) : 109
+(44, 16, 0) : 109
+(0, 0, 208) : 109
+(0, 220, 0) : 106
+(0, 156, 156) : 103
+(176, 172, 0) : 98
+(64, 64, 252) : 98
+(252, 80, 252) : 97
+(188, 252, 252) : 94
+(176, 0, 0) : 89
+(252, 240, 0) : 88
+(252, 156, 156) : 86
+(188, 108, 108) : 86
+(0, 0, 60) : 83
+(0, 96, 204) : 82
+(0, 76, 144) : 82
+(112, 108, 0) : 79
+(236, 188, 144) : 78
+(188, 188, 252) : 77
+(0, 172, 172) : 69
+(172, 0, 172) : 68
+(220, 0, 0) : 66
+(204, 96, 96) : 62
+(144, 76, 76) : 62
+(156, 252, 252) : 61
+(208, 0, 0) : 58
+(188, 76, 0) : 57
+(140, 48, 0) : 57
+(0, 0, 224) : 57
+(0, 252, 0) : 53
+(0, 156, 252) : 53
+(0, 108, 188) : 53
+(156, 0, 48) : 49
+(108, 0, 32) : 49
+(252, 252, 92) : 45
+(252, 252, 220) : 44
+(208, 208, 252) : 39
+(204, 96, 48) : 36
+(144, 76, 32) : 36
+(224, 220, 0) : 35
+(0, 64, 64) : 35
+(140, 140, 252) : 34
+(0, 204, 252) : 34
+(0, 144, 188) : 34
+(236, 0, 0) : 33
+(80, 252, 80) : 33
+(96, 48, 48) : 32
+(92, 188, 252) : 32
+(76, 32, 32) : 32
+(188, 236, 236) : 30
+(0, 48, 48) : 30
+(0, 32, 32) : 30
+(252, 252, 124) : 28
+(32, 12, 0) : 28
+(108, 108, 252) : 27
+(176, 176, 252) : 25
+(204, 0, 48) : 24
+(144, 0, 32) : 24
+(96, 156, 48) : 24
+(92, 0, 0) : 24
+(76, 108, 32) : 24
+(112, 204, 204) : 22
+(96, 156, 0) : 22
+(76, 108, 0) : 22
+(32, 176, 176) : 18
+(0, 204, 204) : 18
+(0, 176, 176) : 18
+(0, 140, 0) : 18
+(156, 220, 220) : 17
+(96, 0, 48) : 17
+(76, 0, 32) : 17
+(0, 48, 0) : 16
+(0, 32, 0) : 16
+(0, 96, 0) : 15
+(0, 76, 0) : 15
+(44, 0, 64) : 13
+(16, 0, 0) : 13
+(252, 0, 48) : 12
+(188, 0, 32) : 12
+(156, 192, 0) : 12
+(124, 0, 0) : 10
+(112, 76, 48) : 9
+(252, 80, 80) : 8
+(204, 156, 48) : 8
+(144, 108, 32) : 8
+(128, 204, 0) : 7
+(64, 0, 64) : 7
+(48, 48, 96) : 7
+(32, 32, 76) : 7
+(252, 252, 48) : 6
+(188, 188, 32) : 6
+(48, 96, 156) : 6
+(32, 76, 108) : 6
+(204, 96, 156) : 5
+(144, 76, 108) : 5
+(220, 240, 240) : 4
+(124, 252, 252) : 4
+(0, 224, 224) : 4
+(252, 92, 92) : 3
+(252, 48, 0) : 3
+(188, 32, 0) : 3
+(96, 156, 156) : 3
+(96, 96, 48) : 3
+(76, 108, 108) : 3
+(76, 76, 32) : 3
+(240, 80, 80) : 2
+(204, 48, 0) : 2
+(156, 204, 156) : 2
+(144, 32, 0) : 2
+(108, 144, 108) : 2
+(48, 48, 156) : 2
+(32, 32, 108) : 2
+(0, 0, 236) : 2
+(252, 204, 48) : 1
+(252, 156, 0) : 1
+(188, 144, 32) : 1
+(188, 108, 0) : 1
+(156, 204, 204) : 1
+(156, 156, 96) : 1
+(156, 48, 48) : 1
+(108, 144, 144) : 1
+(108, 108, 76) : 1
+(108, 32, 32) : 1
+(96, 204, 156) : 1
+(96, 96, 0) : 1
+(76, 144, 108) : 1
+(0, 236, 0) : 1
+(0, 224, 0) : 1
+(0, 124, 0) : 1
+
+
+
+ MOD 16 resulted in reduced gathered palette length : 365
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 32
+
+
+
+(152, 0, 128) : 856831
+(0, 0, 0) : 671779
+transparent : 455957
+(0, 0, 160) : 233039
+(0, 160, 0) : 110322
+(192, 120, 64) : 100777
+(248, 248, 248) : 89895
+(128, 88, 56) : 38266
+(96, 64, 32) : 31077
+(88, 56, 32) : 27292
+(64, 56, 24) : 26536
+(224, 216, 192) : 18255
+(56, 32, 24) : 16509
+(0, 0, 32) : 12368
+(64, 0, 0) : 11525
+(88, 88, 88) : 10056
+(56, 56, 56) : 9342
+(96, 192, 248) : 9115
+(64, 152, 184) : 9115
+(64, 64, 64) : 8521
+(88, 88, 248) : 8406
+(88, 248, 248) : 7405
+(88, 64, 32) : 6928
+(56, 152, 56) : 6652
+(32, 96, 32) : 6652
+(88, 56, 24) : 6498
+(32, 32, 32) : 6478
+(120, 120, 120) : 6096
+(224, 160, 120) : 6026
+(32, 32, 0) : 5552
+(184, 184, 184) : 5410
+(152, 96, 56) : 5354
+(184, 120, 64) : 5044
+(152, 152, 152) : 4761
+(128, 88, 32) : 4704
+(160, 0, 0) : 4519
+(96, 96, 96) : 4270
+(0, 0, 64) : 4265
+(24, 24, 24) : 3878
+(216, 128, 88) : 3789
+(160, 96, 64) : 3767
+(32, 96, 0) : 3742
+(248, 192, 96) : 3680
+(184, 152, 64) : 3680
+(152, 88, 56) : 3533
+(56, 56, 0) : 3530
+(128, 0, 0) : 3518
+(160, 96, 56) : 3285
+(160, 160, 160) : 3247
+(120, 64, 32) : 3241
+(56, 128, 0) : 3125
+(192, 192, 192) : 3121
+(64, 0, 88) : 2867
+(128, 128, 128) : 2808
+(160, 88, 0) : 2796
+(152, 64, 0) : 2765
+(120, 0, 0) : 2715
+(248, 248, 88) : 2709
+(152, 0, 0) : 2675
+(216, 216, 216) : 2518
+(248, 0, 0) : 2399
+(88, 88, 0) : 2307
+(96, 0, 0) : 2131
+(64, 64, 0) : 1927
+(224, 0, 0) : 1903
+(152, 152, 0) : 1872
+(96, 64, 56) : 1835
+(24, 0, 56) : 1734
+(0, 152, 0) : 1731
+(248, 224, 216) : 1715
+(88, 0, 120) : 1669
+(0, 0, 96) : 1664
+(248, 152, 88) : 1645
+(248, 152, 96) : 1640
+(0, 0, 120) : 1565
+(192, 96, 0) : 1500
+(192, 0, 0) : 1477
+(248, 160, 120) : 1378
+(224, 128, 88) : 1365
+(248, 184, 152) : 1334
+(224, 184, 152) : 1293
+(64, 0, 64) : 1293
+(224, 152, 96) : 1218
+(248, 248, 192) : 1174
+(184, 184, 152) : 1174
+(152, 56, 0) : 1047
+(96, 32, 0) : 1047
+(64, 96, 0) : 1040
+(0, 0, 24) : 988
+(248, 192, 24) : 983
+(96, 0, 96) : 867
+(0, 0, 88) : 847
+(224, 120, 24) : 793
+(248, 128, 32) : 792
+(192, 192, 0) : 765
+(248, 184, 32) : 759
+(248, 248, 0) : 757
+(248, 160, 88) : 730
+(248, 184, 128) : 692
+(0, 128, 128) : 683
+(56, 152, 0) : 617
+(0, 0, 56) : 614
+(0, 120, 120) : 601
+(128, 0, 128) : 575
+(0, 0, 152) : 569
+(128, 128, 0) : 567
+(248, 192, 160) : 563
+(224, 224, 224) : 563
+(248, 192, 184) : 553
+(88, 0, 0) : 547
+(248, 216, 192) : 541
+(0, 0, 184) : 530
+(192, 192, 24) : 522
+(0, 0, 248) : 504
+(184, 184, 0) : 501
+(56, 0, 0) : 484
+(216, 216, 248) : 468
+(96, 56, 0) : 464
+(64, 32, 0) : 464
+(184, 0, 0) : 461
+(120, 120, 0) : 437
+(152, 96, 0) : 426
+(224, 224, 0) : 424
+(224, 96, 0) : 424
+(56, 0, 56) : 419
+(0, 0, 128) : 419
+(248, 248, 152) : 416
+(184, 184, 96) : 416
+(24, 0, 0) : 405
+(32, 32, 248) : 404
+(248, 152, 64) : 403
+(96, 0, 152) : 394
+(88, 0, 88) : 390
+(0, 160, 160) : 384
+(24, 128, 0) : 382
+(160, 160, 0) : 374
+(184, 64, 0) : 364
+(224, 0, 224) : 354
+(56, 120, 0) : 352
+(248, 120, 0) : 351
+(184, 88, 0) : 342
+(64, 32, 32) : 335
+(0, 88, 88) : 321
+(248, 216, 184) : 319
+(96, 96, 0) : 317
+(56, 96, 0) : 317
+(32, 64, 0) : 317
+(32, 248, 248) : 314
+(32, 128, 0) : 314
+(184, 0, 184) : 312
+(120, 56, 0) : 307
+(0, 0, 216) : 305
+(0, 184, 0) : 299
+(152, 152, 248) : 297
+(88, 96, 248) : 293
+(32, 0, 0) : 290
+(216, 248, 248) : 273
+(120, 88, 32) : 271
+(152, 0, 152) : 266
+(248, 192, 192) : 252
+(184, 152, 152) : 252
+(0, 216, 0) : 250
+(248, 0, 248) : 248
+(192, 152, 0) : 235
+(192, 0, 192) : 228
+(64, 88, 0) : 227
+(0, 96, 96) : 220
+(96, 0, 120) : 210
+(32, 0, 64) : 194
+(96, 64, 0) : 191
+(248, 248, 96) : 183
+(184, 184, 64) : 183
+(56, 0, 96) : 181
+(0, 0, 192) : 177
+(248, 88, 0) : 160
+(56, 32, 0) : 146
+(216, 216, 0) : 138
+(96, 56, 96) : 138
+(64, 32, 64) : 138
+(64, 192, 192) : 133
+(216, 0, 0) : 124
+(0, 192, 0) : 120
+(120, 128, 248) : 119
+(32, 24, 0) : 109
+(0, 152, 152) : 103
+(184, 184, 248) : 102
+(184, 160, 0) : 98
+(64, 64, 248) : 98
+(248, 88, 248) : 97
+(184, 248, 248) : 94
+(248, 152, 152) : 86
+(184, 96, 96) : 86
+(0, 96, 192) : 82
+(0, 64, 152) : 82
+(120, 96, 0) : 79
+(160, 0, 160) : 68
+(192, 96, 96) : 62
+(152, 64, 64) : 62
+(152, 248, 248) : 61
+(0, 0, 224) : 59
+(128, 56, 0) : 57
+(0, 248, 0) : 53
+(0, 152, 248) : 53
+(0, 96, 184) : 53
+(152, 0, 56) : 49
+(96, 0, 32) : 49
+(248, 248, 216) : 44
+(192, 96, 56) : 36
+(152, 64, 32) : 36
+(224, 216, 0) : 35
+(0, 64, 64) : 35
+(128, 128, 248) : 34
+(0, 192, 248) : 34
+(0, 152, 184) : 34
+(88, 248, 88) : 33
+(96, 56, 56) : 32
+(88, 184, 248) : 32
+(184, 224, 224) : 30
+(0, 56, 56) : 30
+(0, 32, 32) : 30
+(248, 248, 120) : 28
+(96, 96, 248) : 27
+(192, 0, 56) : 24
+(152, 0, 32) : 24
+(96, 152, 56) : 24
+(64, 96, 32) : 24
+(120, 192, 192) : 22
+(96, 152, 0) : 22
+(32, 184, 184) : 18
+(0, 192, 192) : 18
+(0, 184, 184) : 18
+(0, 128, 0) : 18
+(152, 216, 216) : 17
+(96, 0, 56) : 17
+(64, 0, 32) : 17
+(0, 56, 0) : 16
+(0, 32, 0) : 16
+(0, 96, 0) : 15
+(0, 64, 0) : 15
+(248, 88, 88) : 13
+(248, 0, 56) : 12
+(184, 0, 32) : 12
+(152, 192, 0) : 12
+(120, 64, 56) : 9
+(192, 152, 56) : 8
+(152, 96, 32) : 8
+(128, 192, 0) : 7
+(56, 56, 96) : 7
+(32, 32, 64) : 7
+(248, 248, 56) : 6
+(184, 184, 32) : 6
+(56, 96, 152) : 6
+(32, 64, 96) : 6
+(192, 96, 152) : 5
+(152, 64, 96) : 5
+(120, 248, 248) : 4
+(96, 152, 152) : 4
+(0, 224, 224) : 4
+(248, 56, 0) : 3
+(184, 32, 0) : 3
+(96, 96, 56) : 3
+(64, 96, 96) : 3
+(64, 64, 32) : 3
+(192, 56, 0) : 2
+(152, 192, 152) : 2
+(152, 32, 0) : 2
+(96, 152, 96) : 2
+(56, 56, 152) : 2
+(32, 32, 96) : 2
+(0, 224, 0) : 2
+(248, 192, 56) : 1
+(248, 152, 0) : 1
+(184, 152, 32) : 1
+(184, 96, 0) : 1
+(152, 192, 192) : 1
+(152, 152, 96) : 1
+(152, 56, 56) : 1
+(96, 192, 152) : 1
+(96, 96, 64) : 1
+(96, 32, 32) : 1
+(64, 152, 96) : 1
+(0, 120, 0) : 1
+
+
+
+ MOD 32 resulted in reduced gathered palette length : 282
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 64
+
+
+
+(128, 0, 128) : 857672
+(0, 0, 0) : 677050
+transparent : 455957
+(0, 0, 176) : 233569
+(0, 176, 0) : 110621
+(192, 112, 64) : 100777
+(240, 240, 240) : 90458
+(128, 64, 48) : 46539
+(112, 64, 48) : 36433
+(64, 48, 0) : 33498
+(64, 48, 48) : 27627
+(48, 48, 0) : 25737
+(240, 192, 192) : 19048
+(64, 64, 64) : 18577
+(48, 48, 48) : 15820
+(0, 0, 48) : 14716
+(64, 0, 0) : 12072
+(112, 112, 112) : 10366
+(112, 192, 240) : 9115
+(64, 128, 176) : 9115
+(176, 112, 64) : 8811
+(176, 176, 176) : 8657
+(64, 64, 240) : 8504
+(128, 128, 128) : 7569
+(64, 240, 240) : 7405
+(240, 176, 112) : 7404
+(64, 64, 48) : 6931
+(48, 128, 48) : 6652
+(48, 112, 48) : 6652
+(128, 0, 0) : 6193
+(192, 192, 192) : 5639
+(128, 112, 48) : 5362
+(0, 0, 64) : 5112
+(176, 0, 0) : 4980
+(112, 0, 0) : 4846
+(64, 0, 64) : 4550
+(64, 64, 0) : 4461
+(48, 112, 0) : 4411
+(240, 0, 0) : 4302
+(48, 128, 0) : 4056
+(192, 128, 64) : 3789
+(240, 192, 112) : 3680
+(176, 128, 64) : 3680
+(176, 64, 0) : 3502
+(240, 128, 64) : 3413
+(240, 176, 128) : 3319
+(176, 112, 48) : 3285
+(0, 0, 112) : 3229
+(240, 240, 192) : 2933
+(240, 128, 112) : 2858
+(128, 64, 0) : 2765
+(240, 240, 64) : 2709
+(128, 128, 0) : 2439
+(0, 128, 0) : 2131
+(112, 48, 0) : 1818
+(64, 0, 112) : 1669
+(192, 0, 0) : 1601
+(240, 112, 0) : 1568
+(192, 112, 0) : 1500
+(240, 192, 176) : 1435
+(192, 192, 0) : 1425
+(240, 240, 0) : 1181
+(176, 176, 128) : 1174
+(128, 48, 0) : 1106
+(112, 0, 112) : 1077
+(64, 112, 0) : 1040
+(240, 192, 0) : 1018
+(0, 0, 128) : 988
+(176, 176, 0) : 973
+(48, 0, 0) : 883
+(112, 112, 0) : 833
+(0, 112, 112) : 821
+(240, 128, 48) : 792
+(0, 128, 128) : 786
+(240, 176, 48) : 759
+(240, 176, 64) : 730
+(240, 0, 240) : 602
+(0, 0, 240) : 563
+(0, 0, 192) : 482
+(192, 192, 240) : 468
+(128, 112, 0) : 426
+(48, 0, 48) : 419
+(240, 240, 128) : 416
+(176, 176, 112) : 416
+(48, 48, 240) : 404
+(0, 176, 176) : 402
+(112, 0, 128) : 394
+(176, 0, 176) : 380
+(0, 192, 0) : 370
+(0, 64, 64) : 356
+(128, 128, 240) : 331
+(48, 64, 0) : 317
+(48, 240, 240) : 314
+(64, 112, 240) : 293
+(192, 240, 240) : 273
+(176, 128, 128) : 252
+(192, 128, 0) : 235
+(192, 0, 192) : 228
+(240, 240, 112) : 211
+(48, 0, 64) : 194
+(112, 64, 0) : 191
+(176, 176, 64) : 183
+(48, 0, 112) : 181
+(240, 64, 0) : 160
+(112, 48, 112) : 138
+(64, 48, 64) : 138
+(64, 192, 192) : 133
+(176, 240, 240) : 124
+(112, 128, 240) : 119
+(176, 176, 240) : 102
+(240, 64, 240) : 97
+(240, 128, 128) : 86
+(176, 112, 112) : 86
+(0, 112, 192) : 82
+(0, 64, 128) : 82
+(128, 0, 48) : 73
+(112, 0, 48) : 66
+(192, 112, 112) : 62
+(128, 64, 64) : 62
+(128, 240, 240) : 61
+(0, 48, 48) : 60
+(0, 240, 0) : 55
+(0, 128, 240) : 53
+(0, 112, 176) : 53
+(192, 112, 48) : 36
+(0, 192, 240) : 34
+(0, 128, 176) : 34
+(112, 48, 48) : 33
+(64, 240, 64) : 33
+(64, 176, 240) : 32
+(0, 48, 0) : 32
+(112, 112, 240) : 27
+(192, 0, 48) : 24
+(112, 128, 48) : 24
+(64, 112, 48) : 24
+(112, 192, 192) : 22
+(112, 128, 0) : 22
+(128, 192, 0) : 19
+(128, 192, 192) : 18
+(48, 176, 176) : 18
+(0, 192, 192) : 18
+(64, 0, 48) : 17
+(0, 112, 0) : 16
+(0, 64, 0) : 15
+(240, 64, 64) : 13
+(240, 0, 48) : 12
+(176, 0, 48) : 12
+(48, 48, 112) : 9
+(192, 128, 48) : 8
+(48, 48, 64) : 7
+(240, 240, 48) : 6
+(176, 176, 48) : 6
+(48, 112, 128) : 6
+(48, 64, 112) : 6
+(192, 112, 128) : 5
+(128, 64, 112) : 5
+(112, 240, 240) : 4
+(112, 128, 128) : 4
+(0, 240, 240) : 4
+(240, 48, 0) : 3
+(176, 48, 0) : 3
+(112, 112, 48) : 3
+(64, 112, 112) : 3
+(192, 48, 0) : 2
+(128, 192, 128) : 2
+(112, 128, 112) : 2
+(48, 48, 128) : 2
+(240, 192, 48) : 1
+(240, 128, 0) : 1
+(176, 128, 48) : 1
+(176, 112, 0) : 1
+(128, 128, 112) : 1
+(128, 48, 48) : 1
+(112, 192, 128) : 1
+(112, 112, 64) : 1
+(64, 128, 112) : 1
+
+
+
+ MOD 64 resulted in reduced gathered palette length : 176
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 128
+
+
+
+(128, 0, 128) : 858052
+(0, 0, 0) : 734717
+transparent : 455957
+(0, 0, 128) : 234559
+(0, 128, 0) : 123460
+(224, 224, 224) : 118819
+(224, 96, 96) : 100852
+(96, 0, 0) : 79977
+(128, 96, 0) : 61880
+(96, 96, 0) : 49916
+(96, 96, 96) : 28947
+(224, 128, 96) : 18194
+(128, 128, 128) : 17652
+(96, 224, 224) : 16679
+(128, 0, 0) : 12368
+(0, 96, 0) : 11411
+(96, 128, 128) : 9119
+(128, 96, 96) : 8964
+(96, 96, 224) : 8824
+(0, 0, 96) : 8732
+(96, 0, 96) : 7572
+(224, 224, 96) : 6600
+(224, 0, 0) : 5944
+(128, 128, 96) : 4280
+(224, 224, 0) : 3631
+(128, 128, 0) : 3419
+(224, 128, 128) : 3405
+(224, 96, 0) : 3264
+(224, 224, 128) : 1851
+(224, 128, 0) : 1795
+(0, 0, 224) : 1449
+(0, 128, 128) : 1240
+(0, 96, 96) : 1183
+(224, 0, 224) : 830
+(128, 128, 224) : 433
+(0, 224, 0) : 425
+(96, 0, 128) : 394
+(0, 224, 224) : 370
+(128, 224, 224) : 203
+(96, 128, 224) : 151
+(0, 96, 128) : 141
+(224, 96, 224) : 97
+(0, 96, 224) : 82
+(0, 128, 224) : 53
+(96, 128, 0) : 46
+(96, 224, 96) : 33
+(128, 224, 0) : 19
+(224, 96, 128) : 5
+(96, 128, 96) : 3
+(128, 224, 128) : 2
+(96, 224, 128) : 1
+
+
+
+ MOD 128 resulted in reduced gathered palette length : 51
+
+
+
+
+
+
+Too many colors! will attempt reducing using mod 256
+
+
+
+(0, 0, 0) : 922455
+(192, 0, 192) : 858984
+transparent : 455957
+(0, 0, 192) : 245449
+(192, 0, 0) : 193272
+(192, 192, 192) : 142365
+(0, 192, 0) : 123967
+(192, 192, 0) : 37938
+(0, 192, 192) : 27613
+
+
+
+ MOD 256 resulted in reduced gathered palette length : 9
+
+
+

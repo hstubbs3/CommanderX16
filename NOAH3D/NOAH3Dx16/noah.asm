@@ -108,7 +108,7 @@ floor_ceiling_map:
   .byte   5,6,1,1,6,5,1,1
   .byte   6,7,2,1,6,7,2,1
   .byte   7,1,3,2,7,1,3,2
-.include "floor_ceiling_8x56.inc"
+.include "floor_ceiling_8x56_lines.inc"
 
 
 VRAM_weapon_sprite  = $1D800 ; 64x64 8bit color for now .. prob go to 16 color..    118k
@@ -523,9 +523,16 @@ do_mode7_test:
     sta ZP_PTR+1
     lda #($10 | ^VRAM_layer0_bitmapA_start) ;
     sta ZP_PTR+2
-    stz ZP_PTR+3
-    lda #2
-    sta ZP_PTR+4
+    ; init x increment
+    lda #128
+    sta ZP_PTR+3
+    stz ZP_PTR+4
+    lda #1
+    sta ZP_PTR+5
+    stz ZP_PTR+6
+    ; x start position
+    lda #255
+    sta ZP_PTR+7
 
    ;  configure FX_ctrl
    lda #%00000100    ; DCSEL=2, ADDRSEL=0
@@ -552,22 +559,35 @@ do_mode7_test:
     lda ZP_PTR+2
     sta VERA_addr_bank
     lda ZP_PTR+1
-    sta VERA_addr_high
+    sta VERA_addr_high    
     lda ZP_PTR
     sta VERA_addr_low
+
     clc
     lda ZP_PTR+3
+    adc ZP_PTR+5
     sta VERA_FX_X_INC_L
-    adc #2
     sta ZP_PTR+3 
     lda ZP_PTR+4
+    adc ZP_PTR+6
     sta VERA_FX_X_INC_H
-    adc #0 
     sta ZP_PTR+4
+    lda ZP_PTR+5
+    adc #1
+    sta ZP_PTR+5
+    lda ZP_PTR+6
+    adc #0
+    sta ZP_PTR+6
 
+    lda ZP_PTR+5
     lda #%00001001   ; DCSEL=4, addrsel=0
     sta VERA_ctrl
-    stz VERA_FX_X_POS_L
+
+    lda ZP_PTR+7
+    dec a 
+    sta ZP_PTR+7
+    ;lsr 
+    sta VERA_FX_X_POS_L
     stz VERA_FX_X_POS_H
     stx VERA_FX_Y_POS_L
     stz VERA_FX_Y_POS_H
@@ -590,7 +610,7 @@ do_mode7_test:
     adc #0
     sta ZP_PTR+2
     inx 
-    cpx #120
+    cpx #60
     bne @draw_row
    stz VERA_ctrl ; clear fX mode
 
