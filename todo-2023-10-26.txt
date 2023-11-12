@@ -229,7 +229,10 @@ TODO 	output some text or something on layer 1 as overlay...80
 
 1425 	trying out the affine helper thing, for now just trying to draw the floor/ceiling texture repeated across the screen
 		isn't working currently.. but need break .. 
-		
+
+1930 	getting back at it
+2000 	OK.. 'mode7' thinger sorta working... need to feed it calculated array of startX/Y and X increments... but is working
+
 
 TODO 	mode7 style for floors / ceiling rendering
 

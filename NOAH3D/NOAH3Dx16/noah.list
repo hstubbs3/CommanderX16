@@ -54,14 +54,19 @@ Current file: noah.asm
 000810  1               VERA_L1_VSCROLL_L = $9F39 ;  V-Scroll (7:0)
 000810  1               VERA_L1_VSCROLL_H = $9F3A ;  - V-Scroll (11:8)
 000810  1               
+000810  1               ; DCSEL = 2
+000810  1               VERA_FX_CTRL    = $9F29
 000810  1               VERA_FX_TILEBASE = $9F2A
 000810  1               VERA_FX_MAPBASE = $9F2B
 000810  1               
+000810  1               
+000810  1               ; DCSEL = 3
 000810  1               VERA_FX_X_INC_L = $9F29
 000810  1               VERA_FX_X_INC_H = $9F2A
 000810  1               VERA_FX_Y_INC_L = $9F2B
 000810  1               VERA_FX_Y_INC_H = $9F2C
 000810  1               
+000810  1               ; DCSEL = 4
 000810  1               VERA_FX_X_POS_L = $9F29
 000810  1               VERA_FX_X_POS_H = $9F2A
 000810  1               VERA_FX_Y_POS_L = $9F2B
@@ -94,7 +99,7 @@ Current file: noah.asm
 000810  1               ;20k currently unused..
 000810  1               
 000810  1               
-000810  1               VRAM_floor_ceiling  = $1D000 ;  map/tile data for floor/ceiling...                  116k  116.5k
+000810  1               VRAM_floor_ceiling  = $00000 ;  map/tile data for floor/ceiling...                  116k  116.5k
 000810  1                                             ;wolf3d map was based on like 6 foot cubes?
 000810  1                                             ; and floor on ships laid in 6,9,or 12 foot lengths..
 000810  1                                             ; will do 8x56 with a repeated tile to get 8x64 .. so use 8x8 map = 64 bytes + 7 8x8 tiles = 512bytes
@@ -500,10 +505,10 @@ Current file: noah.asm
 00163A  1               
 00163A  1                 ; initialize floor/ceiling stuff....
 00163A  1  9C 20 9F       stz VERA_addr_low
-00163D  1  A9 D0          lda #>VRAM_floor_ceiling
+00163D  1  A9 00          lda #>VRAM_floor_ceiling
 00163F  1  8D 21 9F       sta VERA_addr_high
-001642  1  A9 11          lda  #($10 | ^VRAM_floor_ceiling)
-001644  1  8D 21 9F       sta VERA_addr_high
+001642  1  A9 10          lda  #($10 | ^VRAM_floor_ceiling)
+001644  1  8D 22 9F       sta VERA_addr_bank
 001647  1  A9 10          lda #<floor_ceiling_map
 001649  1  85 22          sta ZP_PTR
 00164B  1  A9 08          lda #>floor_ceiling_map
@@ -526,7 +531,7 @@ Current file: noah.asm
 001665  1               
 001665  1                 ; overwrite RAM IRQ vector with custom handler address
 001665  1  78             sei ; disable IRQ while vector is changing
-001666  1  A9 44          lda #<custom_irq_handler
+001666  1  A9 60          lda #<custom_irq_handler
 001668  1  8D 14 03       sta IRQVec
 00166B  1  A9 17          lda #>custom_irq_handler
 00166D  1  8D 15 03       sta IRQVec+1
@@ -561,99 +566,112 @@ Current file: noah.asm
 0016A4  1  F0 D3           beq check_keyboard
 0016A6  1  C9 20           cmp #SPACE
 0016A8  1  F0 03           beq do_mode7_test
-0016AA  1  4C 31 17        jmp do_cleanup
+0016AA  1  4C 4D 17        jmp do_cleanup
 0016AD  1               
 0016AD  1               do_mode7_test:
 0016AD  1                  ;  add in mode7 draw thing here..
 0016AD  1               
 0016AD  1  64 22            stz ZP_PTR
-0016AF  1  A9 05            lda #>VRAM_layer0_bitmapA_start ; start a bit of the ways downscreen for now
+0016AF  1  A9 05            lda #>VRAM_layer0_bitmapA_start;
 0016B1  1  85 23            sta ZP_PTR+1
 0016B3  1  A9 10            lda #($10 | ^VRAM_layer0_bitmapA_start) ;
 0016B5  1  85 24            sta ZP_PTR+2
-0016B7  1               
-0016B7  1                  ;  configure FX_ctrl
-0016B7  1  A9 04           lda #%00000100    ; DCSEL=2, ADDRSEL=0
-0016B9  1  8D 25 9F        sta VERA_ctrl
-0016BC  1  9C 29 9F        stz VERA_dc_video
-0016BF  1  A9 E8           lda #(VRAM_floor_ceiling >>9)
-0016C1  1  8D 2A 9F        sta VERA_FX_TILEBASE
-0016C4  1  1A              inc a ; add 1 to set FX tilemap size to 8x8
-0016C5  1  8D 2B 9F        sta VERA_FX_MAPBASE
-0016C8  1               
-0016C8  1  A9 06           lda #%00000110    ; DCSEL=3, ADDRSEL=0
-0016CA  1  8D 25 9F        sta VERA_ctrl
-0016CD  1  9C 29 9F        stz VERA_FX_X_INC_L
-0016D0  1  A9 02           lda #2 ; incrementing x by 1 each time
-0016D2  1  8D 2A 9F        sta VERA_FX_X_INC_H
-0016D5  1  9C 2B 9F        stz VERA_FX_Y_INC_L
-0016D8  1  9C 2C 9F        stz VERA_FX_Y_INC_H
-0016DB  1               
-0016DB  1  A2 00           ldx #0
-0016DD  1                  @draw_row:
-0016DD  1  A9 06            lda #%00000110  ; DCSEL=3, ADDRSEL=0
-0016DF  1  8D 25 9F         sta VERA_ctrl
-0016E2  1  A5 24            lda ZP_PTR+2
-0016E4  1  8D 22 9F         sta VERA_addr_bank
-0016E7  1  A5 23            lda ZP_PTR+1
-0016E9  1  8D 21 9F         sta VERA_addr_high
-0016EC  1  A5 22            lda ZP_PTR
-0016EE  1  8D 20 9F         sta VERA_addr_low
-0016F1  1               
-0016F1  1  A9 09            lda #%00001001   ; DCSEL=4, addrsel=0
-0016F3  1  8D 25 9F         sta VERA_ctrl
-0016F6  1  9C 29 9F         stz VERA_FX_X_POS_L
-0016F9  1  9C 2A 9F         stz VERA_FX_X_POS_H
-0016FC  1  8E 2B 9F         stx VERA_FX_Y_POS_L
-0016FF  1  9C 2C 9F         stz VERA_FX_Y_POS_H
-001702  1  A0 A0            ldy #160
-001704  1                   @draw_2_pixel:
-001704  1  AD 24 9F             lda VERA_data1
-001707  1  8D 23 9F             sta VERA_data0
-00170A  1  AD 24 9F             lda VERA_data1
-00170D  1  AD 23 9F             lda VERA_data0
-001710  1  88                   dey
-001711  1  D0 F1                bne @draw_2_pixel
-001713  1  18               clc
-001714  1  A5 22            lda ZP_PTR
-001716  1  69 40            adc #64
-001718  1  85 22            sta ZP_PTR
-00171A  1  A5 23            lda ZP_PTR+1
-00171C  1  69 01            adc #1
-00171E  1  85 23            sta ZP_PTR+1
-001720  1  A5 24            lda ZP_PTR+2
-001722  1  69 00            adc #0
-001724  1  85 24            sta ZP_PTR+2
-001726  1  E8               inx
-001727  1  E0 78            cpx #120
-001729  1  D0 B2            bne @draw_row
-00172B  1  9C 25 9F        stz VERA_ctrl ; clear fX mode
-00172E  1               
-00172E  1  4C 79 16        jmp check_keyboard
-001731  1               
-001731  1               do_cleanup:
-001731  1                  ; restore default IRQ vector
-001731  1  78              sei
-001732  1  AD 10 0A        lda default_irq_vector
-001735  1  8D 14 03        sta IRQVec
-001738  1  AD 11 0A        lda default_irq_vector+1
-00173B  1  8D 15 03        sta IRQVec+1
-00173E  1  58              cli
-00173F  1  20 81 FF        jsr CINT
-001742  1  60              rts
-001743  1  60             rts
-001744  1               
-001744  1               custom_irq_handler:
-001744  1  AD 27 9F        lda VERA_isr
-001747  1  29 01           and #VSYNC_BIT
-001749  1  F0 03           beq @continue ; non-VSYNC IRQ, no tick update
-00174B  1  EE 12 0A        inc VSYNC_counter
-00174E  1               
-00174E  1               @continue:
-00174E  1                  ; continue to default IRQ handler
-00174E  1  6C 10 0A        jmp (default_irq_vector)
-001751  1                  ; RTI will happen after jump
-001751  1               
-001751  1               
-001751  1               
-001751  1               
+0016B7  1  64 25            stz ZP_PTR+3
+0016B9  1  A9 02            lda #2
+0016BB  1  85 26            sta ZP_PTR+4
+0016BD  1               
+0016BD  1                  ;  configure FX_ctrl
+0016BD  1  A9 04           lda #%00000100    ; DCSEL=2, ADDRSEL=0
+0016BF  1  8D 25 9F        sta VERA_ctrl
+0016C2  1  A9 03           lda #$03 ; affine helper transparent writes off
+0016C4  1  8D 29 9F        sta VERA_FX_CTRL
+0016C7  1  A9 00           lda #0 ; (VRAM_floor_ceiling >>9)
+0016C9  1  8D 2A 9F        sta VERA_FX_TILEBASE
+0016CC  1  A9 01           lda #1 ; add 1 to set FX tilemap size to 8x8
+0016CE  1  8D 2B 9F        sta VERA_FX_MAPBASE
+0016D1  1               
+0016D1  1  A9 06           lda #%00000110    ; DCSEL=3, ADDRSEL=0
+0016D3  1  8D 25 9F        sta VERA_ctrl
+0016D6  1  9C 29 9F        stz VERA_FX_X_INC_L
+0016D9  1  A9 01           lda #1 ; incrementing x by 1 each time
+0016DB  1  8D 2A 9F        sta VERA_FX_X_INC_H
+0016DE  1  9C 2B 9F        stz VERA_FX_Y_INC_L
+0016E1  1  9C 2C 9F        stz VERA_FX_Y_INC_H
+0016E4  1               
+0016E4  1  A2 00           ldx #0
+0016E6  1                  @draw_row:
+0016E6  1  A9 06            lda #%00000110  ; DCSEL=3, ADDRSEL=0
+0016E8  1  8D 25 9F         sta VERA_ctrl
+0016EB  1  A5 24            lda ZP_PTR+2
+0016ED  1  8D 22 9F         sta VERA_addr_bank
+0016F0  1  A5 23            lda ZP_PTR+1
+0016F2  1  8D 21 9F         sta VERA_addr_high
+0016F5  1  A5 22            lda ZP_PTR
+0016F7  1  8D 20 9F         sta VERA_addr_low
+0016FA  1  18               clc
+0016FB  1  A5 25            lda ZP_PTR+3
+0016FD  1  8D 29 9F         sta VERA_FX_X_INC_L
+001700  1  69 02            adc #2
+001702  1  85 25            sta ZP_PTR+3
+001704  1  A5 26            lda ZP_PTR+4
+001706  1  8D 2A 9F         sta VERA_FX_X_INC_H
+001709  1  69 00            adc #0
+00170B  1  85 26            sta ZP_PTR+4
+00170D  1               
+00170D  1  A9 09            lda #%00001001   ; DCSEL=4, addrsel=0
+00170F  1  8D 25 9F         sta VERA_ctrl
+001712  1  9C 29 9F         stz VERA_FX_X_POS_L
+001715  1  9C 2A 9F         stz VERA_FX_X_POS_H
+001718  1  8E 2B 9F         stx VERA_FX_Y_POS_L
+00171B  1  9C 2C 9F         stz VERA_FX_Y_POS_H
+00171E  1  A0 A0            ldy #160
+001720  1                   @draw_2_pixel:
+001720  1  AD 24 9F             lda VERA_data1
+001723  1  8D 23 9F             sta VERA_data0
+001726  1  AD 24 9F             lda VERA_data1
+001729  1  8D 23 9F             sta VERA_data0
+00172C  1  88                   dey
+00172D  1  D0 F1                bne @draw_2_pixel
+00172F  1  18               clc
+001730  1  A5 22            lda ZP_PTR
+001732  1  69 40            adc #64
+001734  1  85 22            sta ZP_PTR
+001736  1  A5 23            lda ZP_PTR+1
+001738  1  69 01            adc #1
+00173A  1  85 23            sta ZP_PTR+1
+00173C  1  A5 24            lda ZP_PTR+2
+00173E  1  69 00            adc #0
+001740  1  85 24            sta ZP_PTR+2
+001742  1  E8               inx
+001743  1  E0 78            cpx #120
+001745  1  D0 9F            bne @draw_row
+001747  1  9C 25 9F        stz VERA_ctrl ; clear fX mode
+00174A  1               
+00174A  1  4C 79 16        jmp check_keyboard
+00174D  1               
+00174D  1               do_cleanup:
+00174D  1                  ; restore default IRQ vector
+00174D  1  78              sei
+00174E  1  AD 10 0A        lda default_irq_vector
+001751  1  8D 14 03        sta IRQVec
+001754  1  AD 11 0A        lda default_irq_vector+1
+001757  1  8D 15 03        sta IRQVec+1
+00175A  1  58              cli
+00175B  1  20 81 FF        jsr CINT
+00175E  1  60              rts
+00175F  1  60             rts
+001760  1               
+001760  1               custom_irq_handler:
+001760  1  AD 27 9F        lda VERA_isr
+001763  1  29 01           and #VSYNC_BIT
+001765  1  F0 03           beq @continue ; non-VSYNC IRQ, no tick update
+001767  1  EE 12 0A        inc VSYNC_counter
+00176A  1               
+00176A  1               @continue:
+00176A  1                  ; continue to default IRQ handler
+00176A  1  6C 10 0A        jmp (default_irq_vector)
+00176D  1                  ; RTI will happen after jump
+00176D  1               
+00176D  1               
+00176D  1               
+00176D  1               

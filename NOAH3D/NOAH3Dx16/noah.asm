@@ -50,14 +50,19 @@ VERA_L1_HSCROLL_H = $9F38 ;  - H-Scroll (11:8)
 VERA_L1_VSCROLL_L = $9F39 ;  V-Scroll (7:0)
 VERA_L1_VSCROLL_H = $9F3A ;  - V-Scroll (11:8)
 
+; DCSEL = 2
+VERA_FX_CTRL    = $9F29
 VERA_FX_TILEBASE = $9F2A
 VERA_FX_MAPBASE = $9F2B
 
+
+; DCSEL = 3
 VERA_FX_X_INC_L = $9F29
 VERA_FX_X_INC_H = $9F2A
 VERA_FX_Y_INC_L = $9F2B
 VERA_FX_Y_INC_H = $9F2C
 
+; DCSEL = 4
 VERA_FX_X_POS_L = $9F29
 VERA_FX_X_POS_H = $9F2A
 VERA_FX_Y_POS_L = $9F2B
@@ -90,7 +95,7 @@ VRAM_layer1_tiles   = $14000 ;  border HUD and font stuff - maybe 256 tiles     
 ;20k currently unused.. 
 
 
-VRAM_floor_ceiling  = $1D000 ;  map/tile data for floor/ceiling...                  116k  116.5k 
+VRAM_floor_ceiling  = $00000 ;  map/tile data for floor/ceiling...                  116k  116.5k 
                               ;wolf3d map was based on like 6 foot cubes? 
                               ; and floor on ships laid in 6,9,or 12 foot lengths.. 
                               ; will do 8x56 with a repeated tile to get 8x64 .. so use 8x8 map = 64 bytes + 7 8x8 tiles = 512bytes
@@ -452,7 +457,7 @@ start:
   lda #>VRAM_floor_ceiling
   sta VERA_addr_high
   lda  #($10 | ^VRAM_floor_ceiling)
-  sta VERA_addr_high
+  sta VERA_addr_bank
   lda #<floor_ceiling_map
   sta ZP_PTR
   lda #>floor_ceiling_map
@@ -514,24 +519,28 @@ do_mode7_test:
    ;  add in mode7 draw thing here..
 
     stz ZP_PTR
-    lda #>VRAM_layer0_bitmapA_start ; start a bit of the ways downscreen for now
+    lda #>VRAM_layer0_bitmapA_start;
     sta ZP_PTR+1
     lda #($10 | ^VRAM_layer0_bitmapA_start) ;
     sta ZP_PTR+2
+    stz ZP_PTR+3
+    lda #2
+    sta ZP_PTR+4
 
    ;  configure FX_ctrl
    lda #%00000100    ; DCSEL=2, ADDRSEL=0
    sta VERA_ctrl
-   stz VERA_dc_video
-   lda #(VRAM_floor_ceiling >>9)
+   lda #$03 ; affine helper transparent writes off
+   sta VERA_FX_CTRL
+   lda #0 ; (VRAM_floor_ceiling >>9)
    sta VERA_FX_TILEBASE
-   inc a ; add 1 to set FX tilemap size to 8x8
+   lda #1 ; add 1 to set FX tilemap size to 8x8
    sta VERA_FX_MAPBASE
 
    lda #%00000110    ; DCSEL=3, ADDRSEL=0
    sta VERA_ctrl
    stz VERA_FX_X_INC_L
-   lda #2 ; incrementing x by 1 each time 
+   lda #1 ; incrementing x by 1 each time 
    sta VERA_FX_X_INC_H
    stz VERA_FX_Y_INC_L
    stz VERA_FX_Y_INC_H
@@ -546,6 +555,15 @@ do_mode7_test:
     sta VERA_addr_high
     lda ZP_PTR
     sta VERA_addr_low
+    clc
+    lda ZP_PTR+3
+    sta VERA_FX_X_INC_L
+    adc #2
+    sta ZP_PTR+3 
+    lda ZP_PTR+4
+    sta VERA_FX_X_INC_H
+    adc #0 
+    sta ZP_PTR+4
 
     lda #%00001001   ; DCSEL=4, addrsel=0
     sta VERA_ctrl
@@ -558,7 +576,7 @@ do_mode7_test:
         lda VERA_data1
         sta VERA_data0
         lda VERA_data1
-        lda VERA_data0
+        sta VERA_data0
         dey
         bne @draw_2_pixel
     clc
