@@ -178,6 +178,9 @@ default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
 ZP_PTR = $22
 
+ceiling_floor_lookup_table:
+.include "mode7_test.inc"
+
 cursor_data:
   .byte   $1,$1,$1,$1,$1,$0,$0,$0
   .byte   $1,$0,$1,$0,$1,$0,$0,$0
@@ -517,22 +520,17 @@ check_keyboard:
 
 do_mode7_test:
    ;  add in mode7 draw thing here..
-
+   ; set position to start writing to screen buffer
     stz ZP_PTR
     lda #>VRAM_layer0_bitmapA_start;
     sta ZP_PTR+1
     lda #($10 | ^VRAM_layer0_bitmapA_start) ;
     sta ZP_PTR+2
-    ; init x increment
-    lda #128
-    sta ZP_PTR+3
-    stz ZP_PTR+4
-    lda #1
-    sta ZP_PTR+5
-    stz ZP_PTR+6
-    ; x start position
-    lda #255
-    sta ZP_PTR+7
+  ; set pointer to lookup table
+   lda #<ceiling_floor_lookup_table
+   sta ZP_PTR+3
+   lda #>ceiling_floor_lookup_table
+   sta ZP_PTR+4
 
    ;  configure FX_ctrl
    lda #%00000100    ; DCSEL=2, ADDRSEL=0
@@ -544,76 +542,61 @@ do_mode7_test:
    lda #1 ; add 1 to set FX tilemap size to 8x8
    sta VERA_FX_MAPBASE
 
-   lda #%00000110    ; DCSEL=3, ADDRSEL=0
-   sta VERA_ctrl
-   stz VERA_FX_X_INC_L
-   lda #1 ; incrementing x by 1 each time 
-   sta VERA_FX_X_INC_H
-   stz VERA_FX_Y_INC_L
-   stz VERA_FX_Y_INC_H
-
-   ldx #0
+   ldy #0
    @draw_row:
     lda #%00000110  ; DCSEL=3, ADDRSEL=0
     sta VERA_ctrl
-    lda ZP_PTR+2
-    sta VERA_addr_bank
-    lda ZP_PTR+1
-    sta VERA_addr_high    
+
+   ;  set to draw this row, setup pointer to next row
+    clc
     lda ZP_PTR
     sta VERA_addr_low
-
-    clc
-    lda ZP_PTR+3
-    adc ZP_PTR+5
-    sta VERA_FX_X_INC_L
-    sta ZP_PTR+3 
-    lda ZP_PTR+4
-    adc ZP_PTR+6
-    sta VERA_FX_X_INC_H
-    sta ZP_PTR+4
-    lda ZP_PTR+5
-    adc #1
-    sta ZP_PTR+5
-    lda ZP_PTR+6
-    adc #0
-    sta ZP_PTR+6
-
-    lda ZP_PTR+5
-    lda #%00001001   ; DCSEL=4, addrsel=0
-    sta VERA_ctrl
-
-    lda ZP_PTR+7
-    dec a 
-    sta ZP_PTR+7
-    ;lsr 
-    sta VERA_FX_X_POS_L
-    stz VERA_FX_X_POS_H
-    stx VERA_FX_Y_POS_L
-    stz VERA_FX_Y_POS_H
-    ldy #160
-    @draw_2_pixel:
-        lda VERA_data1
-        sta VERA_data0
-        lda VERA_data1
-        sta VERA_data0
-        dey
-        bne @draw_2_pixel
-    clc
-    lda ZP_PTR
     adc #64
     sta ZP_PTR
     lda ZP_PTR+1
+    sta VERA_addr_high    
     adc #1
     sta ZP_PTR+1
     lda ZP_PTR+2
+    sta VERA_addr_bank
     adc #0
     sta ZP_PTR+2
-    inx 
-    cpx #60
-    bne @draw_row
-   stz VERA_ctrl ; clear fX mode
+    ; set X increments
+    lda (ZP_PTR+3),y
+    sta VERA_FX_X_INC_H
+    iny                   ; y+1
+    lda (ZP_PTR+3),y
+    sta VERA_FX_X_INC_L
+    iny                   ; y+2
+    ; set start positions
+    lda #%00001001   ; DCSEL=4, addrsel=1
+    sta VERA_ctrl
+    lda (ZP_PTR+3),y
+    sta VERA_FX_X_POS_L
+    iny                   ; y+3
+    stz VERA_FX_X_POS_H
+    lda (ZP_PTR+3),y
+    sta VERA_FX_Y_POS_L
+    iny                   ; y+4
+    stz VERA_FX_Y_POS_H
+    ldx #80
 
+    @draw_4_pixel:
+        lda VERA_data1
+        sta VERA_data0
+        lda VERA_data1
+        sta VERA_data0
+        lda VERA_data1
+        sta VERA_data0
+        lda VERA_data1
+        sta VERA_data0
+        dex
+        bne @draw_4_pixel
+    cpy #224 ; 56 lines after incrementing y 4 times each.. 
+    bne @draw_row
+   ; done drawing rows
+
+   stz VERA_ctrl ; clear fX mode
    jmp check_keyboard
 
 do_cleanup:
