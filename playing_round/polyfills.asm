@@ -1,4 +1,486 @@
-/*
+.org $080D
+.segment "STARTUP"
+.segment "INIT"
+.segment "ONCE"
+.segment "CODE"
+
+; just a quick test to try out filling polygons... 
+; will use mouse to select 3 points to color in for testing..
+; no double buffer, 320x240 8bit mode. 
+; cycle colors through palette just cuz.. 
+
+  jmp start
+
+; VERA
+VERA_addr_low     = $9F20
+VERA_addr_high    = $9F21
+VERA_addr_bank    = $9F22
+VERA_data0        = $9F23
+VERA_data1        = $9F24
+VERA_ctrl         = $9F25
+VERA_ien          = $9F26
+VERA_isr          = $9F27
+
+VERA_dc_video     = $9F29 ; DCSEL = 0
+;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable 
+; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+
+VERA_dc_hscale    = $9F2A
+VERA_dc_vscale    = $9F2B
+VERA_L0_config    = $9F2D
+;   7       6     5   4       3       2             1   0
+;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+;   0 - 32                  0 - 16    0 tiled       0   1bpp mono                                            
+;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+;   2 - 128                                         2   4bpp 16 color
+;   3 - 256                                         3   8bpp 256 color
+;   bitmap mode - tilebase points to bitmap data, mapbase not used
+;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+;   The palette offset (in 'H-Scroll (11:8)') mo  ; start of program
+  stz VERA_dc_video   ; disable display
+  lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+  sta VERA_dc_hscale
+  sta VERA_dc_vscale
+  lda #MODE_BITMAP_256BPP
+  sta VERA_L0_config 
+  lda #(VRAM_bitmap >> 9) ; 320 pixel wide bitmap
+
+VERA_L0_mapbase   = $9F2E
+VERA_L0_tilebase  = $9F2F
+;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+VERA_L1_config    = $9F34 
+VERA_L1_mapbase   = $9F35
+VERA_L1_tilebase  = $9F36
+VERA_L0_hscroll_h = $9F31
+
+; VRAM Addresses
+VRAM_layer1_map   = $1B000
+VRAM_layer0_map   = $00000
+
+VRAM_cursor_data  = $1F000
+VRAM_palette      = $1FA00      ;  
+VRAM_SPRITE_LIST  = $1FC00
+
+BITMAP_PAL_OFFSET = VERA_L0_hscroll_h
+
+DISPLAY_SCALE_FOUR    = 32
+DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+DISPLAY_SCALE_ONE     = 128 ; 640x480
+MODE_BITMAP_256BPP = $07
+MODE_BITMAP_16BPP  = $06
+LAYER0_ONLY       = $11
+LAYER0SPRITES_ENABLE = $51
+LAYER01SPRITES_ENABLE = $71
+SPRITES_ONLY = $41
+VRAM_bitmap       = $00000
+
+VRAM_INCREMENT_1 = $10
+VRAM_INCREMENT_2 = $20
+VRAM_INCREMENT_4 = $30
+VRAM_INCREMENT_8 = $40
+VRAM_INCREMENT_16 = $50
+VRAM_INCREMENT_32 = $60
+VRAM_INCREMENT_64 = $70
+VRAM_INCREMENT_128 = $80
+VRAM_INCREMENT_256 = $90
+VRAM_INCREMENT_512 = $A0
+VRAM_INCREMENT_40 = $B0 
+VRAM_INCREMENT_80 = $C0
+VRAM_INCREMENT_160 = $D0 
+VRAM_INCREMENT_320 = $E0
+VRAM_INCREMENT_640 = $F0 
+
+
+; DCSEL = 2
+VERA_FX_CTRL    = $9F29
+VERA_FX_TILEBASE = $9F2A
+VERA_FX_MAPBASE = $9F2B
+
+
+; DCSEL = 3
+VERA_FX_X_INC_L = $9F29
+VERA_FX_X_INC_H = $9F2A
+VERA_FX_Y_INC_L = $9F2B
+VERA_FX_Y_INC_H = $9F2C
+
+; DCSEL = 4
+VERA_FX_X_POS_L = $9F29
+VERA_FX_X_POS_H = $9F2A
+VERA_FX_Y_POS_L = $9F2B
+VERA_FX_Y_POS_H = $9F2C
+
+VSYNC_BIT         = $01
+
+cursor_sprite:
+  ;     0   1     2   3    4    5     6     7   8   9     A    B    C     D   E    F
+  .byte   0,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,   0,   0,   0,   0 
+  .byte  24, 143, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143, 143,  24,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+  .byte  24, 143, 143,  24,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0
+  .byte  24, 143,  24,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0
+  .byte  24,  24,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0
+  .byte  24,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0
+  .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0
+  .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24
+  .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143,  24
+  .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24,  24,  24 ; 16x16=256 bytes
+
+marker_sprite_a:
+  .byte 143, 143, 143, 143, 143, 143, 143, 143
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+  .byte 143,   0,   0,   0,   0,   0,   0,   0
+marker_sprite_b:
+  .byte 1, 1, 1, 1, 1, 1, 1, 1
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+  .byte 1,   0,   0,   0,   0,   0,   0,   0
+marker_sprite_c:
+  .byte 157, 157, 157, 157, 157, 157, 157, 157
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+  .byte 157,   0,   0,   0,   0,   0,   0,   0
+
+; Kernal
+CHROUT            = $FFD2
+GETIN             = $FFE4
+CINT              = $FF81
+MOUSE_CONFIG      = $FF68
+MOUSE_GET         = $FF6B
+MOUSE_SCAN        = $FF71
+; RAM Interrupt Vectors
+IRQVec            = $0314
+
+; global data
+
+default_irq_vector:  .addr 0
+VSYNC_counter:       .byte 1
+DONE_DONE:           .byte 0
+CLICK_BOUNCE:        .byte 0
+CLICK_MODE:          .byte 0
+CURRENT_COLOR:       .byte 0
+
+ZP_MOUSE = $22
+ZP_PTR = $27
+
+start:
+  ; start of program
+  stz VERA_dc_video   ; disable display
+
+  ; init vectors
+  lda IRQVec
+  sta default_irq_vector
+  lda IRQVec+1
+  sta default_irq_vector+1
+
+  lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+  sta VERA_dc_hscale
+  sta VERA_dc_vscale
+  lda #MODE_BITMAP_256BPP
+  sta VERA_L0_config 
+  stz VERA_L0_tilebase ; 320 pixel wide bitmap at top of memory
+ 
+
+  stz VERA_addr_low
+  lda #>VRAM_cursor_data
+  sta VERA_addr_high
+  lda #(VRAM_INCREMENT_1 | ^VRAM_cursor_data)
+  sta VERA_addr_bank
+
+  lda #<cursor_sprite ; low 
+  sta ZP_PTR ;
+  lda #>cursor_sprite ; high
+  sta ZP_PTR+1 ;
+  ldy 0 ;
+  stz VERA_data0
+  @cursor_data_loop:
+      lda (ZP_PTR),y
+      sta VERA_data0
+      iny 
+      bne @cursor_data_loop
+  ldy 0 ;
+  inc ZP_PTR+1
+  stz VERA_data0
+  @markers_loop:
+      lda (ZP_PTR),y
+      sta VERA_data0
+      iny 
+      bne @markers_loop
+
+  stz VERA_addr_low
+  lda #>VRAM_SPRITE_LIST
+  sta VERA_addr_high
+  lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+  sta VERA_addr_bank  
+  ; mouse pointer
+  lda #((VRAM_cursor_data >> 5) & $FF )
+  sta VERA_data0  ; low address
+  lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite 
+  sta VERA_data0 
+  stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+  stz VERA_data0 ; x high
+  stz VERA_data0 ; y low
+  stz VERA_data0 ; y high 
+  lda #$0C
+  sta VERA_data0 ; z-depth/flips
+  lda #$50
+  sta VERA_data0 ; sprite width/height
+  ; marker A 
+  lda #(((VRAM_cursor_data + 256) >> 5) & $FF )
+  sta VERA_data0  ; low address
+  lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite 
+  sta VERA_data0 
+  stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+  stz VERA_data0 ; x high
+  stz VERA_data0 ; y low
+  stz VERA_data0 ; y high 
+  lda #$0C
+  sta VERA_data0 ; z-depth/flips
+  stz VERA_data0 ; 8x8 sprite 
+
+  ; marker B 
+  lda #(((VRAM_cursor_data + 320) >> 5) & $FF )
+  sta VERA_data0  ; low address
+  lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite 
+  sta VERA_data0 
+  stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+  stz VERA_data0 ; x high
+  stz VERA_data0 ; y low
+  stz VERA_data0 ; y high 
+  lda #$0C
+  sta VERA_data0 ; z-depth/flips
+  stz VERA_data0 ; 8x8 sprite 
+
+  ; marker C 
+  lda #(((VRAM_cursor_data + 384) >> 5) & $FF )
+  sta VERA_data0  ; low address
+  lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite 
+  sta VERA_data0 
+  stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+  stz VERA_data0 ; x high
+  stz VERA_data0 ; y low
+  stz VERA_data0 ; y high 
+  lda #$0C
+  sta VERA_data0 ; z-depth/flips
+  stz VERA_data0 ; 8x8 sprite 
+
+  ; turn the mouse cursor on.. 
+  lda #$FF
+  jsr MOUSE_CONFIG
+  ; jsr wait_keypress
+
+  stz VERA_addr_low
+  stz VERA_addr_high
+  lda #VRAM_INCREMENT_1
+  sta VERA_addr_bank
+  ldx 0
+  @clear_VRAM_OUTER:
+    ldy 0
+    @clear_VRAM_inner:
+      stz VERA_data0
+      iny 
+      bne @clear_VRAM_inner
+    inx
+    bne @clear_VRAM_OUTER
+
+  lda #LAYER0SPRITES_ENABLE
+  ;lda #SPRITES_ONLY
+  sta VERA_dc_video
+
+  ; jsr wait_keypress
+
+  ; overwrite RAM IRQ vector with custom handler address
+  sei ; disable IRQ while vector is changing
+  lda #<custom_irq_handler
+  sta IRQVec
+  lda #>custom_irq_handler
+  sta IRQVec+1
+  lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+  sta VERA_ien
+  cli ; enable IRQ now that vector is properly set
+   stz VSYNC_counter
+
+  ; jsr wait_keypress
+
+ENDLESS_LOOP:
+
+   wai 
+   lda VSYNC_counter
+   beq ENDLESS_LOOP
+   stz VSYNC_counter
+   jsr DO_CLICK_MODE
+   jsr GETIN
+   beq ENDLESS_LOOP
+
+do_cleanup:
+   ; restore default IRQ vector
+   sei
+   lda default_irq_vector
+   sta IRQVec
+   lda default_irq_vector+1
+   sta IRQVec+1
+   cli   
+   jsr CINT
+   rts
+
+wait_keypress:
+   wai
+   jsr GETIN
+   beq wait_keypress
+   rts
+
+custom_irq_handler:
+   lda VERA_isr
+   and #VSYNC_BIT
+   beq @continue ; non-VSYNC IRQ, no tick update
+   inc VSYNC_counter
+   ;jmp (default_irq_vector)
+
+@check_mouse:
+   ;jsr MOUSE_SCAN
+   ldx #ZP_MOUSE
+   jsr MOUSE_GET
+   sta ZP_MOUSE+4
+@continue:
+   ; continue to default IRQ handler
+   jmp (default_irq_vector)
+   ; RTI will happen after jump
+
+
+DO_CLICK_MODE:
+   lda CLICK_BOUNCE
+   beq @do_check_click
+   lda ZP_MOUSE+4
+   bne @done
+   dec CLICK_BOUNCE
+  @done:
+    rts
+@do_check_click: 
+   lda ZP_MOUSE+4
+   bne @clickmode_check_a
+   rts
+@clickmode_check_a:
+   lda #2
+   sta CLICK_BOUNCE
+   lda CLICK_MODE
+   bne @clickmode_check_b
+   lda #1
+   sta CLICK_MODE
+   lda #10
+   sta VERA_addr_low
+   lda #>VRAM_SPRITE_LIST
+   sta VERA_addr_high
+   lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+   sta VERA_addr_bank  
+   lda ZP_MOUSE
+   sta ZP_PTR
+   sta VERA_data0
+   lda ZP_MOUSE+1
+   sta ZP_PTR+1
+   sta VERA_data0
+   lda ZP_MOUSE+2
+   sta ZP_PTR+2
+   sta VERA_data0
+   lda ZP_MOUSE+3
+   sta ZP_PTR+3
+   sta VERA_data0
+   rts 
+  @clickmode_check_b:
+   cmp #1 
+   bne @clickmode_check_c
+   lda #2
+   sta CLICK_MODE
+   lda #18
+   sta VERA_addr_low
+   lda #>VRAM_SPRITE_LIST
+   sta VERA_addr_high
+   lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+   sta VERA_addr_bank  
+   lda ZP_MOUSE
+   sta ZP_PTR+4
+   sta VERA_data0
+
+   lda ZP_MOUSE+1
+   sta ZP_PTR+5
+   sta VERA_data0
+
+   lda ZP_MOUSE+2
+   sta ZP_PTR+6
+   sta VERA_data0
+
+   lda ZP_MOUSE+3
+   sta ZP_PTR+7
+   sta VERA_data0
+   rts 
+  @clickmode_check_c:
+   stz CLICK_MODE
+   lda #26
+   sta VERA_addr_low
+   lda #>VRAM_SPRITE_LIST
+   sta VERA_addr_high
+   lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+   sta VERA_addr_bank  
+   lda ZP_MOUSE
+   sta ZP_PTR+8
+   sta VERA_data0
+   lda ZP_MOUSE+1
+   sta ZP_PTR+9
+   sta VERA_data0
+   lda ZP_MOUSE+2
+   sta ZP_PTR+10
+   sta VERA_data0
+   lda ZP_MOUSE+3
+   sta ZP_PTR+11
+   sta VERA_data0
+   jsr DO_POLYGON 
+   rts 
+
+DO_POLYGON:
+  stz VERA_addr_low
+  stz VERA_addr_high
+  lda #VRAM_INCREMENT_64
+  sta VERA_addr_bank
+  lda CURRENT_COLOR
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  sta VERA_data0
+  inc CURRENT_COLOR
+  rts
+
+
+.end
+/
+*
 given polygon with 8bit screen verts in ZP locations X0,X1,X2,Y0,Y1,Y2
 
 pushing to ZP locations TOP_X,TOP_Y,LEFT_X,RIGHT_X,MID_Y,BOTTOM_Y

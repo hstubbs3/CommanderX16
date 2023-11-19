@@ -1,0 +1,541 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : polyfills.asm
+Current file: polyfills.asm
+
+000000r 1               .org $080D
+00080D  1               .segment "STARTUP"
+00080D  1               .segment "INIT"
+00080D  1               .segment "ONCE"
+00080D  1               .segment "CODE"
+00080D  1               
+00080D  1               ; just a quick test to try out filling polygons...
+00080D  1               ; will use mouse to select 3 points to color in for testing..
+00080D  1               ; no double buffer, 320x240 8bit mode.
+00080D  1               ; cycle colors through palette just cuz..
+00080D  1               
+00080D  1  4C E9 09       jmp start
+000810  1               
+000810  1               ; VERA
+000810  1               VERA_addr_low     = $9F20
+000810  1               VERA_addr_high    = $9F21
+000810  1               VERA_addr_bank    = $9F22
+000810  1               VERA_data0        = $9F23
+000810  1               VERA_data1        = $9F24
+000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_ien          = $9F26
+000810  1               VERA_isr          = $9F27
+000810  1               
+000810  1               VERA_dc_video     = $9F29 ; DCSEL = 0
+000810  1               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+000810  1               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+000810  1               
+000810  1               VERA_dc_hscale    = $9F2A
+000810  1               VERA_dc_vscale    = $9F2B
+000810  1               VERA_L0_config    = $9F2D
+000810  1               ;   7       6     5   4       3       2             1   0
+000810  1               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+000810  1               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+000810  1               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+000810  1               ;   2 - 128                                         2   4bpp 16 color
+000810  1               ;   3 - 256                                         3   8bpp 256 color
+000810  1               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+000810  1               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+000810  1               ;   The palette offset (in 'H-Scroll (11:8)') mo  ; start of program
+000810  1  9C 29 9F       stz VERA_dc_video   ; disable display
+000813  1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+000815  1  8D 2A 9F       sta VERA_dc_hscale
+000818  1  8D 2B 9F       sta VERA_dc_vscale
+00081B  1  A9 07          lda #MODE_BITMAP_256BPP
+00081D  1  8D 2D 9F       sta VERA_L0_config
+000820  1  A9 00          lda #(VRAM_bitmap >> 9) ; 320 pixel wide bitmap
+000822  1               
+000822  1               VERA_L0_mapbase   = $9F2E
+000822  1               VERA_L0_tilebase  = $9F2F
+000822  1               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+000822  1               VERA_L1_config    = $9F34
+000822  1               VERA_L1_mapbase   = $9F35
+000822  1               VERA_L1_tilebase  = $9F36
+000822  1               VERA_L0_hscroll_h = $9F31
+000822  1               
+000822  1               ; VRAM Addresses
+000822  1               VRAM_layer1_map   = $1B000
+000822  1               VRAM_layer0_map   = $00000
+000822  1               
+000822  1               VRAM_cursor_data  = $1F000
+000822  1               VRAM_palette      = $1FA00      ;
+000822  1               VRAM_SPRITE_LIST  = $1FC00
+000822  1               
+000822  1               BITMAP_PAL_OFFSET = VERA_L0_hscroll_h
+000822  1               
+000822  1               DISPLAY_SCALE_FOUR    = 32
+000822  1               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+000822  1               DISPLAY_SCALE_ONE     = 128 ; 640x480
+000822  1               MODE_BITMAP_256BPP = $07
+000822  1               MODE_BITMAP_16BPP  = $06
+000822  1               LAYER0_ONLY       = $11
+000822  1               LAYER0SPRITES_ENABLE = $51
+000822  1               LAYER01SPRITES_ENABLE = $71
+000822  1               SPRITES_ONLY = $41
+000822  1               VRAM_bitmap       = $00000
+000822  1               
+000822  1               VRAM_INCREMENT_1 = $10
+000822  1               VRAM_INCREMENT_2 = $20
+000822  1               VRAM_INCREMENT_4 = $30
+000822  1               VRAM_INCREMENT_8 = $40
+000822  1               VRAM_INCREMENT_16 = $50
+000822  1               VRAM_INCREMENT_32 = $60
+000822  1               VRAM_INCREMENT_64 = $70
+000822  1               VRAM_INCREMENT_128 = $80
+000822  1               VRAM_INCREMENT_256 = $90
+000822  1               VRAM_INCREMENT_512 = $A0
+000822  1               VRAM_INCREMENT_40 = $B0
+000822  1               VRAM_INCREMENT_80 = $C0
+000822  1               VRAM_INCREMENT_160 = $D0
+000822  1               VRAM_INCREMENT_320 = $E0
+000822  1               VRAM_INCREMENT_640 = $F0
+000822  1               
+000822  1               
+000822  1               ; DCSEL = 2
+000822  1               VERA_FX_CTRL    = $9F29
+000822  1               VERA_FX_TILEBASE = $9F2A
+000822  1               VERA_FX_MAPBASE = $9F2B
+000822  1               
+000822  1               
+000822  1               ; DCSEL = 3
+000822  1               VERA_FX_X_INC_L = $9F29
+000822  1               VERA_FX_X_INC_H = $9F2A
+000822  1               VERA_FX_Y_INC_L = $9F2B
+000822  1               VERA_FX_Y_INC_H = $9F2C
+000822  1               
+000822  1               ; DCSEL = 4
+000822  1               VERA_FX_X_POS_L = $9F29
+000822  1               VERA_FX_X_POS_H = $9F2A
+000822  1               VERA_FX_Y_POS_L = $9F2B
+000822  1               VERA_FX_Y_POS_H = $9F2C
+000822  1               
+000822  1               VSYNC_BIT         = $01
+000822  1               
+000822  1               cursor_sprite:
+000822  1                 ;     0   1     2   3    4    5     6     7   8   9     A    B    C     D   E    F
+000822  1  00 18 18 18    .byte   0,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,   0,   0,   0,   0
+000826  1  18 18 18 18  
+00082A  1  18 18 18 18  
+000832  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0
+000836  1  8F 8F 8F 8F  
+00083A  1  8F 8F 18 00  
+000842  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+000846  1  8F 8F 8F 8F  
+00084A  1  8F 18 00 00  
+000852  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+000856  1  8F 8F 8F 8F  
+00085A  1  18 00 00 00  
+000862  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+000866  1  8F 8F 8F 18  
+00086A  1  00 00 00 00  
+000872  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+000876  1  8F 8F 8F 18  
+00087A  1  00 00 00 00  
+000882  1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+000886  1  8F 8F 8F 8F  
+00088A  1  18 00 00 00  
+000892  1  18 8F 8F 8F    .byte  24, 143, 143, 143,  24,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+000896  1  18 18 8F 8F  
+00089A  1  8F 18 00 00  
+0008A2  1  18 8F 8F 18    .byte  24, 143, 143,  24,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0
+0008A6  1  00 00 18 8F  
+0008AA  1  8F 8F 18 00  
+0008B2  1  18 8F 18 00    .byte  24, 143,  24,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0
+0008B6  1  00 00 00 18  
+0008BA  1  8F 8F 8F 18  
+0008C2  1  18 18 00 00    .byte  24,  24,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0
+0008C6  1  00 00 00 00  
+0008CA  1  18 8F 8F 8F  
+0008D2  1  18 00 00 00    .byte  24,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0
+0008D6  1  00 00 00 00  
+0008DA  1  00 18 8F 8F  
+0008E2  1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0
+0008E6  1  00 00 00 00  
+0008EA  1  00 00 18 8F  
+0008F2  1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24
+0008F6  1  00 00 00 00  
+0008FA  1  00 00 00 18  
+000902  1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143,  24
+000906  1  00 00 00 00  
+00090A  1  00 00 00 00  
+000912  1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24,  24,  24 ; 16x16=256 bytes
+000916  1  00 00 00 00  
+00091A  1  00 00 00 00  
+000922  1               
+000922  1               marker_sprite_a:
+000922  1  8F 8F 8F 8F    .byte 143, 143, 143, 143, 143, 143, 143, 143
+000926  1  8F 8F 8F 8F  
+00092A  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00092E  1  00 00 00 00  
+000932  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000936  1  00 00 00 00  
+00093A  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00093E  1  00 00 00 00  
+000942  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000946  1  00 00 00 00  
+00094A  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00094E  1  00 00 00 00  
+000952  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000956  1  00 00 00 00  
+00095A  1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00095E  1  00 00 00 00  
+000962  1               marker_sprite_b:
+000962  1  01 01 01 01    .byte 1, 1, 1, 1, 1, 1, 1, 1
+000966  1  01 01 01 01  
+00096A  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00096E  1  00 00 00 00  
+000972  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000976  1  00 00 00 00  
+00097A  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00097E  1  00 00 00 00  
+000982  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000986  1  00 00 00 00  
+00098A  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00098E  1  00 00 00 00  
+000992  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000996  1  00 00 00 00  
+00099A  1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00099E  1  00 00 00 00  
+0009A2  1               marker_sprite_c:
+0009A2  1  9D 9D 9D 9D    .byte 157, 157, 157, 157, 157, 157, 157, 157
+0009A6  1  9D 9D 9D 9D  
+0009AA  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009AE  1  00 00 00 00  
+0009B2  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009B6  1  00 00 00 00  
+0009BA  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009BE  1  00 00 00 00  
+0009C2  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009C6  1  00 00 00 00  
+0009CA  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009CE  1  00 00 00 00  
+0009D2  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009D6  1  00 00 00 00  
+0009DA  1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0009DE  1  00 00 00 00  
+0009E2  1               
+0009E2  1               ; Kernal
+0009E2  1               CHROUT            = $FFD2
+0009E2  1               GETIN             = $FFE4
+0009E2  1               CINT              = $FF81
+0009E2  1               MOUSE_CONFIG      = $FF68
+0009E2  1               MOUSE_GET         = $FF6B
+0009E2  1               MOUSE_SCAN        = $FF71
+0009E2  1               ; RAM Interrupt Vectors
+0009E2  1               IRQVec            = $0314
+0009E2  1               
+0009E2  1               ; global data
+0009E2  1               
+0009E2  1  00 00        default_irq_vector:  .addr 0
+0009E4  1  01           VSYNC_counter:       .byte 1
+0009E5  1  00           DONE_DONE:           .byte 0
+0009E6  1  00           CLICK_BOUNCE:        .byte 0
+0009E7  1  00           CLICK_MODE:          .byte 0
+0009E8  1  00           CURRENT_COLOR:       .byte 0
+0009E9  1               
+0009E9  1               ZP_MOUSE = $22
+0009E9  1               ZP_PTR = $27
+0009E9  1               
+0009E9  1               start:
+0009E9  1                 ; start of program
+0009E9  1  9C 29 9F       stz VERA_dc_video   ; disable display
+0009EC  1               
+0009EC  1                 ; init vectors
+0009EC  1  AD 14 03       lda IRQVec
+0009EF  1  8D E2 09       sta default_irq_vector
+0009F2  1  AD 15 03       lda IRQVec+1
+0009F5  1  8D E3 09       sta default_irq_vector+1
+0009F8  1               
+0009F8  1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+0009FA  1  8D 2A 9F       sta VERA_dc_hscale
+0009FD  1  8D 2B 9F       sta VERA_dc_vscale
+000A00  1  A9 07          lda #MODE_BITMAP_256BPP
+000A02  1  8D 2D 9F       sta VERA_L0_config
+000A05  1  9C 2F 9F       stz VERA_L0_tilebase ; 320 pixel wide bitmap at top of memory
+000A08  1               
+000A08  1               
+000A08  1  9C 20 9F       stz VERA_addr_low
+000A0B  1  A9 F0          lda #>VRAM_cursor_data
+000A0D  1  8D 21 9F       sta VERA_addr_high
+000A10  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_cursor_data)
+000A12  1  8D 22 9F       sta VERA_addr_bank
+000A15  1               
+000A15  1  A9 22          lda #<cursor_sprite ; low
+000A17  1  85 27          sta ZP_PTR ;
+000A19  1  A9 08          lda #>cursor_sprite ; high
+000A1B  1  85 28          sta ZP_PTR+1 ;
+000A1D  1  A4 00          ldy 0 ;
+000A1F  1  9C 23 9F       stz VERA_data0
+000A22  1                 @cursor_data_loop:
+000A22  1  B1 27              lda (ZP_PTR),y
+000A24  1  8D 23 9F           sta VERA_data0
+000A27  1  C8                 iny
+000A28  1  D0 F8              bne @cursor_data_loop
+000A2A  1  A4 00          ldy 0 ;
+000A2C  1  E6 28          inc ZP_PTR+1
+000A2E  1  9C 23 9F       stz VERA_data0
+000A31  1                 @markers_loop:
+000A31  1  B1 27              lda (ZP_PTR),y
+000A33  1  8D 23 9F           sta VERA_data0
+000A36  1  C8                 iny
+000A37  1  D0 F8              bne @markers_loop
+000A39  1               
+000A39  1  9C 20 9F       stz VERA_addr_low
+000A3C  1  A9 FC          lda #>VRAM_SPRITE_LIST
+000A3E  1  8D 21 9F       sta VERA_addr_high
+000A41  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000A43  1  8D 22 9F       sta VERA_addr_bank
+000A46  1                 ; mouse pointer
+000A46  1  A9 80          lda #((VRAM_cursor_data >> 5) & $FF )
+000A48  1  8D 23 9F       sta VERA_data0  ; low address
+000A4B  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000A4D  1  8D 23 9F       sta VERA_data0
+000A50  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000A53  1  9C 23 9F       stz VERA_data0 ; x high
+000A56  1  9C 23 9F       stz VERA_data0 ; y low
+000A59  1  9C 23 9F       stz VERA_data0 ; y high
+000A5C  1  A9 0C          lda #$0C
+000A5E  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000A61  1  A9 50          lda #$50
+000A63  1  8D 23 9F       sta VERA_data0 ; sprite width/height
+000A66  1                 ; marker A
+000A66  1  A9 88          lda #(((VRAM_cursor_data + 256) >> 5) & $FF )
+000A68  1  8D 23 9F       sta VERA_data0  ; low address
+000A6B  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000A6D  1  8D 23 9F       sta VERA_data0
+000A70  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000A73  1  9C 23 9F       stz VERA_data0 ; x high
+000A76  1  9C 23 9F       stz VERA_data0 ; y low
+000A79  1  9C 23 9F       stz VERA_data0 ; y high
+000A7C  1  A9 0C          lda #$0C
+000A7E  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000A81  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000A84  1               
+000A84  1                 ; marker B
+000A84  1  A9 8A          lda #(((VRAM_cursor_data + 320) >> 5) & $FF )
+000A86  1  8D 23 9F       sta VERA_data0  ; low address
+000A89  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000A8B  1  8D 23 9F       sta VERA_data0
+000A8E  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000A91  1  9C 23 9F       stz VERA_data0 ; x high
+000A94  1  9C 23 9F       stz VERA_data0 ; y low
+000A97  1  9C 23 9F       stz VERA_data0 ; y high
+000A9A  1  A9 0C          lda #$0C
+000A9C  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000A9F  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000AA2  1               
+000AA2  1                 ; marker C
+000AA2  1  A9 8C          lda #(((VRAM_cursor_data + 384) >> 5) & $FF )
+000AA4  1  8D 23 9F       sta VERA_data0  ; low address
+000AA7  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000AA9  1  8D 23 9F       sta VERA_data0
+000AAC  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000AAF  1  9C 23 9F       stz VERA_data0 ; x high
+000AB2  1  9C 23 9F       stz VERA_data0 ; y low
+000AB5  1  9C 23 9F       stz VERA_data0 ; y high
+000AB8  1  A9 0C          lda #$0C
+000ABA  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000ABD  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000AC0  1               
+000AC0  1                 ; turn the mouse cursor on..
+000AC0  1  A9 FF          lda #$FF
+000AC2  1  20 68 FF       jsr MOUSE_CONFIG
+000AC5  1                 ; jsr wait_keypress
+000AC5  1               
+000AC5  1  9C 20 9F       stz VERA_addr_low
+000AC8  1  9C 21 9F       stz VERA_addr_high
+000ACB  1  A9 10          lda #VRAM_INCREMENT_1
+000ACD  1  8D 22 9F       sta VERA_addr_bank
+000AD0  1  A6 00          ldx 0
+000AD2  1                 @clear_VRAM_OUTER:
+000AD2  1  A4 00            ldy 0
+000AD4  1                   @clear_VRAM_inner:
+000AD4  1  9C 23 9F           stz VERA_data0
+000AD7  1  C8                 iny
+000AD8  1  D0 FA              bne @clear_VRAM_inner
+000ADA  1  E8               inx
+000ADB  1  D0 F5            bne @clear_VRAM_OUTER
+000ADD  1               
+000ADD  1  A9 51          lda #LAYER0SPRITES_ENABLE
+000ADF  1                 ;lda #SPRITES_ONLY
+000ADF  1  8D 29 9F       sta VERA_dc_video
+000AE2  1               
+000AE2  1                 ; jsr wait_keypress
+000AE2  1               
+000AE2  1                 ; overwrite RAM IRQ vector with custom handler address
+000AE2  1  78             sei ; disable IRQ while vector is changing
+000AE3  1  A9 20          lda #<custom_irq_handler
+000AE5  1  8D 14 03       sta IRQVec
+000AE8  1  A9 0B          lda #>custom_irq_handler
+000AEA  1  8D 15 03       sta IRQVec+1
+000AED  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000AEF  1  8D 26 9F       sta VERA_ien
+000AF2  1  58             cli ; enable IRQ now that vector is properly set
+000AF3  1  9C E4 09        stz VSYNC_counter
+000AF6  1               
+000AF6  1                 ; jsr wait_keypress
+000AF6  1               
+000AF6  1               ENDLESS_LOOP:
+000AF6  1               
+000AF6  1  CB              wai
+000AF7  1  AD E4 09        lda VSYNC_counter
+000AFA  1  F0 FA           beq ENDLESS_LOOP
+000AFC  1  9C E4 09        stz VSYNC_counter
+000AFF  1  20 34 0B        jsr DO_CLICK_MODE
+000B02  1  20 E4 FF        jsr GETIN
+000B05  1  F0 EF           beq ENDLESS_LOOP
+000B07  1               
+000B07  1               do_cleanup:
+000B07  1                  ; restore default IRQ vector
+000B07  1  78              sei
+000B08  1  AD E2 09        lda default_irq_vector
+000B0B  1  8D 14 03        sta IRQVec
+000B0E  1  AD E3 09        lda default_irq_vector+1
+000B11  1  8D 15 03        sta IRQVec+1
+000B14  1  58              cli
+000B15  1  20 81 FF        jsr CINT
+000B18  1  60              rts
+000B19  1               
+000B19  1               wait_keypress:
+000B19  1  CB              wai
+000B1A  1  20 E4 FF        jsr GETIN
+000B1D  1  F0 FA           beq wait_keypress
+000B1F  1  60              rts
+000B20  1               
+000B20  1               custom_irq_handler:
+000B20  1  AD 27 9F        lda VERA_isr
+000B23  1  29 01           and #VSYNC_BIT
+000B25  1  F0 0A           beq @continue ; non-VSYNC IRQ, no tick update
+000B27  1  EE E4 09        inc VSYNC_counter
+000B2A  1                  ;jmp (default_irq_vector)
+000B2A  1               
+000B2A  1               @check_mouse:
+000B2A  1                  ;jsr MOUSE_SCAN
+000B2A  1  A2 22           ldx #ZP_MOUSE
+000B2C  1  20 6B FF        jsr MOUSE_GET
+000B2F  1  85 26           sta ZP_MOUSE+4
+000B31  1               @continue:
+000B31  1                  ; continue to default IRQ handler
+000B31  1  6C E2 09        jmp (default_irq_vector)
+000B34  1                  ; RTI will happen after jump
+000B34  1               
+000B34  1               
+000B34  1               DO_CLICK_MODE:
+000B34  1  AD E6 09        lda CLICK_BOUNCE
+000B37  1  F0 08           beq @do_check_click
+000B39  1  A5 26           lda ZP_MOUSE+4
+000B3B  1  D0 03           bne @done
+000B3D  1  CE E6 09        dec CLICK_BOUNCE
+000B40  1                 @done:
+000B40  1  60               rts
+000B41  1               @do_check_click:
+000B41  1  A5 26           lda ZP_MOUSE+4
+000B43  1  D0 01           bne @clickmode_check_a
+000B45  1  60              rts
+000B46  1               @clickmode_check_a:
+000B46  1  A9 02           lda #2
+000B48  1  8D E6 09        sta CLICK_BOUNCE
+000B4B  1  AD E7 09        lda CLICK_MODE
+000B4E  1  D0 31           bne @clickmode_check_b
+000B50  1  A9 01           lda #1
+000B52  1  8D E7 09        sta CLICK_MODE
+000B55  1  A9 0A           lda #10
+000B57  1  8D 20 9F        sta VERA_addr_low
+000B5A  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000B5C  1  8D 21 9F        sta VERA_addr_high
+000B5F  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000B61  1  8D 22 9F        sta VERA_addr_bank
+000B64  1  A5 22           lda ZP_MOUSE
+000B66  1  85 27           sta ZP_PTR
+000B68  1  8D 23 9F        sta VERA_data0
+000B6B  1  A5 23           lda ZP_MOUSE+1
+000B6D  1  85 28           sta ZP_PTR+1
+000B6F  1  8D 23 9F        sta VERA_data0
+000B72  1  A5 24           lda ZP_MOUSE+2
+000B74  1  85 29           sta ZP_PTR+2
+000B76  1  8D 23 9F        sta VERA_data0
+000B79  1  A5 25           lda ZP_MOUSE+3
+000B7B  1  85 2A           sta ZP_PTR+3
+000B7D  1  8D 23 9F        sta VERA_data0
+000B80  1  60              rts
+000B81  1                 @clickmode_check_b:
+000B81  1  C9 01           cmp #1
+000B83  1  D0 31           bne @clickmode_check_c
+000B85  1  A9 02           lda #2
+000B87  1  8D E7 09        sta CLICK_MODE
+000B8A  1  A9 12           lda #18
+000B8C  1  8D 20 9F        sta VERA_addr_low
+000B8F  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000B91  1  8D 21 9F        sta VERA_addr_high
+000B94  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000B96  1  8D 22 9F        sta VERA_addr_bank
+000B99  1  A5 22           lda ZP_MOUSE
+000B9B  1  85 2B           sta ZP_PTR+4
+000B9D  1  8D 23 9F        sta VERA_data0
+000BA0  1               
+000BA0  1  A5 23           lda ZP_MOUSE+1
+000BA2  1  85 2C           sta ZP_PTR+5
+000BA4  1  8D 23 9F        sta VERA_data0
+000BA7  1               
+000BA7  1  A5 24           lda ZP_MOUSE+2
+000BA9  1  85 2D           sta ZP_PTR+6
+000BAB  1  8D 23 9F        sta VERA_data0
+000BAE  1               
+000BAE  1  A5 25           lda ZP_MOUSE+3
+000BB0  1  85 2E           sta ZP_PTR+7
+000BB2  1  8D 23 9F        sta VERA_data0
+000BB5  1  60              rts
+000BB6  1                 @clickmode_check_c:
+000BB6  1  9C E7 09        stz CLICK_MODE
+000BB9  1  A9 1A           lda #26
+000BBB  1  8D 20 9F        sta VERA_addr_low
+000BBE  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000BC0  1  8D 21 9F        sta VERA_addr_high
+000BC3  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000BC5  1  8D 22 9F        sta VERA_addr_bank
+000BC8  1  A5 22           lda ZP_MOUSE
+000BCA  1  85 2F           sta ZP_PTR+8
+000BCC  1  8D 23 9F        sta VERA_data0
+000BCF  1  A5 23           lda ZP_MOUSE+1
+000BD1  1  85 30           sta ZP_PTR+9
+000BD3  1  8D 23 9F        sta VERA_data0
+000BD6  1  A5 24           lda ZP_MOUSE+2
+000BD8  1  85 31           sta ZP_PTR+10
+000BDA  1  8D 23 9F        sta VERA_data0
+000BDD  1  A5 25           lda ZP_MOUSE+3
+000BDF  1  85 32           sta ZP_PTR+11
+000BE1  1  8D 23 9F        sta VERA_data0
+000BE4  1  20 E8 0B        jsr DO_POLYGON
+000BE7  1  60              rts
+000BE8  1               
+000BE8  1               DO_POLYGON:
+000BE8  1  9C 20 9F       stz VERA_addr_low
+000BEB  1  9C 21 9F       stz VERA_addr_high
+000BEE  1  A9 70          lda #VRAM_INCREMENT_64
+000BF0  1  8D 22 9F       sta VERA_addr_bank
+000BF3  1  AD E8 09       lda CURRENT_COLOR
+000BF6  1  8D 23 9F       sta VERA_data0
+000BF9  1  8D 23 9F       sta VERA_data0
+000BFC  1  8D 23 9F       sta VERA_data0
+000BFF  1  8D 23 9F       sta VERA_data0
+000C02  1  8D 23 9F       sta VERA_data0
+000C05  1  8D 23 9F       sta VERA_data0
+000C08  1  8D 23 9F       sta VERA_data0
+000C0B  1  8D 23 9F       sta VERA_data0
+000C0E  1  8D 23 9F       sta VERA_data0
+000C11  1  8D 23 9F       sta VERA_data0
+000C14  1  8D 23 9F       sta VERA_data0
+000C17  1  8D 23 9F       sta VERA_data0
+000C1A  1  8D 23 9F       sta VERA_data0
+000C1D  1  8D 23 9F       sta VERA_data0
+000C20  1  8D 23 9F       sta VERA_data0
+000C23  1  8D 23 9F       sta VERA_data0
+000C26  1  EE E8 09       inc CURRENT_COLOR
+000C29  1  60             rts
+000C2A  1               
+000C2A  1               
+000C2A  1               .end

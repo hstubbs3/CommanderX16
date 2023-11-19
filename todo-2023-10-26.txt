@@ -278,6 +278,26 @@ TODO 	output some text or something on layer 1 as overlay...80
 		switching texture to have full lines..
 1140 	OK that is clearer.. committing before moving on .. 
 
+2023/11/19
+0700 	actually spent several hours yesterday looking into the polygon filler thing.. want to play with that some and
+		perhaps do some quick / simple 3D stuff.. 
+		firstly, would need lookup table for 1/x for values through 256.. this would get multiplied by signed X value later
+		to get slope... for screen 256 wide, range +/- 255 ... so starts life as s8 value ...
+		x/y increments on the FX are ms5.9 values..  and are actually 1/2 the increment/decrement because applied twice..
+		so need table for 1/(y*2) .. 
+		if the lookup table for 1/(y*2) for (0-255) ... 1/(2-510) .. as min(2^15-1,2^16/(2-510)) .. 
+		0.5 becomes 32767 - 255 127 .. s5.9 for .5 would be 256 - 0 1 .. just shy of half.. so options are  
+		A ) use 512=1 , then increment is 01 of the multiplication 
+		B ) use 65536=1 with the cap at 32767 .. increment is 12 shifted left once.. 
+
+		option A) could allow for 1byte table where .5 = 255 .. would fail completely at y>128 .. probably not very good for y>16 frankly
+		at the least can just set 1 if y>=64
+
+1135 	OK should stop here for now.. under playing_round, the polyfills.asm has mouse pointer working, debounce, and is setup
+		for doing triangles between random locations on screen... for now it just marks them but hey, progress? 
+
+
+
 
 TODO 	mode7 style for floors / ceiling rendering
 
