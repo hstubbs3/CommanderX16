@@ -296,7 +296,35 @@ TODO 	output some text or something on layer 1 as overlay...80
 1135 	OK should stop here for now.. under playing_round, the polyfills.asm has mouse pointer working, debounce, and is setup
 		for doing triangles between random locations on screen... for now it just marks them but hey, progress? 
 
+2023/11/20
+0755 	getting back at it.. time to write some polygon filling codez ... 
+1240 	OK, need break... have setup for increments calculated for one type of polygon.. ~450 cycles setup worse case,
+		that should include the setups for actually doing the fill as well.. 
+		in that case, doing 8bit pixel-by-pixel <5 cycles / pixel... 
+		
+		posted question to the forum about poly fill and write cache.. could mean getting poly fill down to ~5 cycles for 4 pixels
+		25% of doing it the other way... 
 
+1310	so 256 polys ... half get culled at <100 cycles each.. so ~12k cycles processing dud polys ...
+		450*128=~57k cycles .. ~70k cycles + drawing.. if total pixel output with overdraw is about 64x128 .. say 8k pixels..
+	 	~40k cycles drawing .. ~110k cycles for the entire object ... 
+	 	and this isn't even considering transforming points to screen space, which would still need to be done...
+	 	targeting 20 fps for a fighting game, 400k cycles/frame ...
+	 	mode7 or polyfilled floor say takes up 192x128 pixels on screen.. if the bg layer is 16 color but use 8bit affine helper,
+	 	24,576 pixels using the cache write to do 8 at a time at cost of 20 per 8 .. 60k cycles .. sound and logic stuffs
+	 	squeeze into ~40k would mean ~40k per fighter per frame for vertex transforms.. 
+	 	256 verts within 40k would need to be ~157 cycles or less per transformed vert...  
+
+	 	for like humanoid character, need something like 16 parts.. if those are just cubes, each is 12 triangles = 192 polys
+
+1335 	feels on the edge of doable for simple fighting game... potentially could be improved using sprites / caching to do less
+		overall rendering?
+		going to 16 color for the fighters would make poly fill take half the time... and that is horrible worse case char 
+		shouldn't occupy that much space, maybe total draw should be closer to 4k pixels... so 10k for drawing, 80k + transform
+		70k cycles to transform, closer to 300 cycles per transformed vert probably about right..
+
+		also even if 256 triangles, cube has 12 tris but only has 8 verts . icosphere is 20 verts and 20 edges though.. so it can vary. 
+		but in general if polys > verts, that helps transform logic as well.
 
 
 TODO 	mode7 style for floors / ceiling rendering

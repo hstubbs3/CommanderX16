@@ -17,7 +17,14 @@ VERA_addr_high    = $9F21
 VERA_addr_bank    = $9F22
 VERA_data0        = $9F23
 VERA_data1        = $9F24
-VERA_ctrl         = $9F25
+VERA_ctrl         = $9F25 ; RESET | 6 bits DCSEL | addrsel
+VERA_DCSEL0_ADDR0 = $00
+VERA_DCSEL2_ADDR0 = $04
+VERA_DCSEL3_ADDR0 = $06
+VERA_DCSEL4_ADDR0 = $08
+VERA_DCSEL5_ADDR0 = $0A
+VERA_DCSEL6_ADDR0 = $0C
+
 VERA_ien          = $9F26
 VERA_isr          = $9F27
 
@@ -57,7 +64,9 @@ VERA_L0_hscroll_h = $9F31
 VRAM_layer1_map   = $1B000
 VRAM_layer0_map   = $00000
 
-VRAM_cursor_data  = $1F000
+; 124k + 
+VRAM_cursor_data  = $1F000      ; using through $1F1C0 only
+VRAM_MATH_SCRATCH = $1F200      ; 2K of scratch = 512 multiplies
 VRAM_palette      = $1FA00      ;  
 VRAM_SPRITE_LIST  = $1FC00
 
@@ -95,7 +104,8 @@ VRAM_INCREMENT_640 = $F0
 VERA_FX_CTRL    = $9F29
 VERA_FX_TILEBASE = $9F2A
 VERA_FX_MAPBASE = $9F2B
-
+VERA_FX_MULT = $9F2C
+FX_MULTIPLY_ENABLE = $10
 
 ; DCSEL = 3
 VERA_FX_X_INC_L = $9F29
@@ -108,6 +118,12 @@ VERA_FX_X_POS_L = $9F29
 VERA_FX_X_POS_H = $9F2A
 VERA_FX_Y_POS_L = $9F2B
 VERA_FX_Y_POS_H = $9F2C
+
+; DCSEL = 6
+VERA_FX_CACHE_L = $9F29  ; write only.. read here will reset accumulator!
+VERA_FX_CACHE_M = $9F2A  ; write only.. read triggers accumulate
+VERA_FX_CACHE_H = $9F2B  ; write only
+VERA_FX_CACHE_U = $9F2C  ; write only
 
 VSYNC_BIT         = $01
 
@@ -178,7 +194,157 @@ CLICK_MODE:          .byte 0
 CURRENT_COLOR:       .byte 0
 
 ZP_MOUSE = $22
-ZP_PTR = $27
+ZP_PTR = $27    ;   lowest left available to user
+ZP_SCRATCH = $1F ;  highest Available to the user .. hopefully this doesn't hit ZP_PTR whatever you are doing...
+
+
+VERA_SET_MULTIPLY = $10
+VERA_RESET_ACCUMULATOR = $80
+
+set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each .. 
+  ; set addr1
+  ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
+  sty VERA_ctrl   ; 4
+  ldx #(VRAM_INCREMENT_4 | ^VRAM_MATH_SCRATCH)  ; 6
+  stx VERA_addr_bank ;  10
+  lda #>VRAM_MATH_SCRATCH ; 12
+  sta VERA_addr_high ;  16
+  stz VERA_addr_low ; 20
+  ; set addr0
+  ldy #VERA_DCSEL2_ADDR0 ; set DCSEL =2 and addrsel to 0 
+  sty VERA_ctrl
+  stx VERA_addr_bank
+  sta VERA_addr_high
+  lda #1  ; we want bytes 1,2 of each multiply.. 
+  sta VERA_addr_low 
+  ; set multiply    42
+  lda #(VERA_SET_MULTIPLY | VERA_RESET_ACCUMULATOR)  ; set multiply mode
+  sta VERA_FX_MULT ;  48
+  lda #$48  ; enable cache writes and 16-bit hop
+  sta VERA_FX_CTRL ; 54
+  lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
+  sta VERA_ctrl ; 60
+  rts ; 6?  so 66?
+
+; FX should already be setup for multiply diff y is unsigned byte!
+.macro calc_x_over_y_halved ; diff y in y, sets VERA_FX_CACHE_L/M .. HU should get set for X diff to multiply.. xdiff assumed positive here...
+  ; correct for 3+, 2 is close ... 0/1 borked. 
+  ; returns x_inc in x,a ( x is low byte, a is high byte )
+  ; 
+  .local done_calced
+    lda ONE_OVER_X_HALVED_LOOKUPS_LOW,y ; abs,y 4   11
+    sta VERA_FX_CACHE_L ; 4   15
+    lda ONE_OVER_X_HALVED_LOOKUPS_HIGH,y ; 4  19
+    sta VERA_FX_CACHE_M ; 4 23 
+    sta VERA_data1 ; 4  27  do the maths .. now read DATA0 twice to get result
+    ldx VERA_data0 ; 4  31  get the low byte
+    lda VERA_data0 ; 4  35  get the high byte 
+    cmp #64  ;  2   37
+    BMI done_calced  ; 2 39
+    tay ; 2   41
+    lda X_INC_H_TABLE,y ; 4   45 <- note, we're only fixing up inc_h here... 
+    cmp #193 ; 2  47
+    BPL done_calced ; 2   49 <- was negative so only little adjustment needed
+    ldx X_INC_L_TABLE,y ; 4   53  <- fix low byte for 32x'd 
+  done_calced: ;  40/50/54
+.endmacro 
+
+; x0,y0 through x2,y2 are each 2 bytes residing at ZP_PTR[:12]
+; will only draw polygon with clockwise winding - so backface culling... ok 
+DO_POLYGON:
+    set_vera_for_single_multiplies ;  60+... jsr = 20 .. rts = 60 ! ooooo.. wow.. ok 
+
+    ; first need to identify top most vertex
+    lda ZP_PTR+2  ; 3   3   ZP_PTR+2/3 is y0 .. y>255 is invalid! so only need compare low bytes
+    cmp ZP_PTR+6  ; 3   6   ZP_PTR+6/7 is y1 
+    BMI @poly01_   ; 2   8
+    BEQ @poly01_equaly ; 2  10
+  @poly_10_: ;  10  a is y0
+      cmp ZP_PTR+10 ; 3   13  ZP_PTR+10/11 is y2
+      BMI @poly_102_ ; 2  15
+      BEQ @poly_1_02_ ; 2 17
+  @poly_12_0_: ; 17   need to sort 12 in y 
+      lda ZP_PTR+6 ; 3  20
+      cmp ZP_PTR+10 ; 3   23
+      BMI @poly_120_ ; 2  25 y order established.  
+      BEQ @poly_1e20_ ; 2  27 flat topped check winding 1->2
+  @poly_210_ : ;  27  check x1<=x0 .. if x1>x0 exit.. 
+      sec ;  2  29
+      lda ZP_PTR ; 3  32  load x0L
+      sbc ZP_PTR+4 ; 3 35 sub x1l 
+      sta VERA_FX_CACHE_H ; 4  39
+      lda ZP_PTR+1 ; 3  42 load X0H 
+      sbc ZP_PTR+5 ; 3  45 sub x1H 
+      bpl @poly_210_ok ; 2  47  winding checked
+      rts 
+    @poly_210_ok: ; 48
+      sta VERA_FX_CACHE_U ; 4   52 
+      ; calc y diff at bottom .. borrow is clear here.. so carry is already set
+      lda ZP_PTR+2 ; 3  55  y0
+      sbc ZP_PTR+6 ; 3  58  y1 ... is already known this is positive
+      sta ZP_SCRATCH ; 3  61  ZP_SCRATCH = num bottom lines 
+      tay ; 2   63  macro expects y in y.. 
+      ; ZP_SCRATCH-4/3 - bottom left x_inc
+      ; ZP_SCRATCH-2/1 - bottom right x_inc
+      ; ZP_SCRATCH-0   - num bottom lines
+      calc_x_over_y_halved ; ~48 53 worse case  ~116  a is x inc h, x is low byte 
+      sta ZP_SCRATCH-3 ; 3  119   ZP_SCRATCH-3 = bottom left x_inc h 
+      stx ZP_SCRATCH-4 ; 3  122   ZP_SCRATCH-4 = bottom left x_inc l 
+      sec ; 2   124
+      lda ZP_PTR+2 ; 3  127   y0 
+      sbc ZP_PTR+10 ; 3 130   y2
+      tay ; 2 132
+      lda ZP_PTR ; 3  135   x0l 
+      sbc ZP_PTR+8 ; 3 138  x2l 
+      sta VERA_FX_CACHE_H ; 4 142
+      lda ZP_PTR+1 ; 3  145   x0h
+      sbc ZP_PTR+9 ; 3  148   x2h
+      sta VERA_FX_CACHE_U ; 4   152
+      calc_x_over_y_halved ; 53   205
+      sta ZP_SCRATCH-1 ; 3  208   stash right x-increment to bottom/right
+      stx ZP_SCRATCH-2 ; 3  211   
+      sta ZP_SCRATCH-6 ; 3  214   stash right x-increment for top/right
+      stx ZP_SCRATCH-7 ; 3  217   
+      ; calc top left x-increment 
+      sec ; 2   219
+      lda ZP_PTR+6 ; 3  222   y1
+      sbc ZP_PTR+10 ; 3  225   y2
+      ; ZP_SCRATCH-12/11 start_x
+      ; ZP_SCRATCH-10   start_y
+      ; ZP_SCRATCH-9/8  top left x_inc
+      ; ZP_SCRATCH-7/6  top right x_inc
+      ; ZP_SCRATCH-5 - num top lines      
+      sta ZP_SCRATCH-5 ; 3  228   num top lines 
+      tay ; 2  230
+      lda ZP_PTR+4 ; 3  233   x1l
+      sbc ZP_PTR+8 ; 3  266   x2l
+      sta VERA_FX_CACHE_H ; 4   270
+      lda ZP_PTR+5 ; 3  273 x1h
+      sbc ZP_PTR+9 ; 3  276   x2h 
+      calc_x_over_y_halved ; 53   329
+      sta ZP_SCRATCH-8 ; 3  332   stash top left x-increment
+      stx ZP_SCRATCH-9 ; 3  335
+      lda ZP_PTR+10 ; 3   338   y2
+      sta ZP_SCRATCH-10 ; 3 341 start y
+      lda ZP_PTR+9 ; 3  344   
+      sta ZP_SCRATCH-11 ; 3 347 start x H 
+      lda ZP_PTR+8 ; 3 350
+      sta ZP_SCRATCH-12 ; 3 353 start X L 
+      jmp POLYGON_DO_TOP_FILL ; 6   359
+  @poly01_: ; 9 
+  @poly01_equaly: ; 12 01 is flat top or bottom?
+  @poly_102_: ; 16  check x0<x2 
+  @poly_1_02_ ; 18  flat bottomed, check x0<x2
+  @poly_120_: ; 26  y order established. check x0<x2 
+  @poly_1e20_: ; 28 flat topped, check x1<x2
+
+DONE_POLYGON:
+  inc CURRENT_COLOR ; 6
+  rts
+
+POLYGON_DO_TOP_FILL:
+POLYGON_SWAP_DO_BOTTOM_FILL:
+  jmp DONE_POLYGON
 
 start:
   ; start of program
@@ -452,7 +618,7 @@ DO_CLICK_MODE:
    jsr DO_POLYGON 
    rts 
 
-DO_POLYGON:
+DO_POLYGON_OLD:
   stz VERA_addr_low
   stz VERA_addr_high
   lda #VRAM_INCREMENT_64
@@ -477,8 +643,30 @@ DO_POLYGON:
   inc CURRENT_COLOR
   rts
 
+; put the lookups at top of available memory.. mainly is to align
+.res $09B00-* ;  we have from 
+ONE_OVER_X_HALVED_LOOKUPS_LOW:
+.include "one_over_8bit_halved_17_15_low.inc"
+
+.res $09C00-* ;  we have from 
+ONE_OVER_X_HALVED_LOOKUPS_HIGH:
+.include "one_over_8bit_halved_17_15_high.inc"
+
+.res $09D00-* ;  we have from 
+X_INC_H_TABLE:
+.include "x_inch_h_32x.inc"
+
+.res $09E00-* ;  we have from 
+X_INC_H_TABLE:
+.include "x_inch_l_32x.inc"
 
 .end
+
+
+
+
+
+
 /
 *
 given polygon with 8bit screen verts in ZP locations X0,X1,X2,Y0,Y1,Y2
