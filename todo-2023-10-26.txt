@@ -326,7 +326,53 @@ TODO 	output some text or something on layer 1 as overlay...80
 		also even if 256 triangles, cube has 12 tris but only has 8 verts . icosphere is 20 verts and 20 edges though.. so it can vary. 
 		but in general if polys > verts, that helps transform logic as well.
 
+1340 	worse case for using cache writes with polyfill is need either ignore start_X offset for each line and just whack 4 or 8
+		pixel fills at a time... the 4bit case turning into 4 cycles for 8 pixels .. .5 cycles / pixel... actual drawing would be cheap
+		or do read addr1 low address and do jump to routine based on mod 4 of low and mod4 of start+fill_length ;; 
+		but that only leaves 16 possibilities.. and a little manipulation only affects first cache write.. 
+		;	trigger the increment for the line.. 
+		;	get the fill length.. only do the rest of this if fill length >=16 px ...
+		BPL skip_write_cache ; 2 	2
+		lda #DCSEL_3|addr1 ; 2  	4
+		sta vera_ctrl ; 	4  		8
+		ldy vera_addr_low ; 4  		12
+		lda absolute,y ; 	4 		16 	;	fetch initial nibble mask
+		sta data1 ; 	4 			20 	; 	first <=8 pixels filled.. figure out what missing later... 
+		lda #$ff ; 2 				22  ;
+		sta data1 ; 4 				26
+		ldx fill_length_h ; 4 		30
+		jmp (absolute,x) ; 	6 		36 	jump to address in jump table... is 16 pixels at a time, 4 cycles per 8 per cache write.. 
 
+		so for 320 pixel wide screen.. already covered 16.. 304 left..at most 38 cache writes remaining. 
+		3 bytes for opcode + address per cache write - so 39*2 byte jump table to 114 bytes executing code = 192 bytes total of code.
+		for 16+ length -  will always draw at least 9 pixel before the jump.. worse case here then is 
+		36 cycles for 9 pixels = 4 cycles / pixel... 
+		for 256 wide line, 240/8=30 cache writes.. 36+120=156 cycles ~.6 ?
+		128 	112/8=14 	36+52=88 	~0.7
+		 64 	 48/8= 6 	36+24=60 	~1.0
+		 32 	 16/8= 2 	36+ 8=44 	~1.4
+		 16 	 ..... 		36+ 0=36 	~2.3
+
+		versus cheesing it for 2 cycles per + loops / jumps .. 
+1430 	OK need break!!
+
+
+2023/11/21
+0800 	OK... want to finish up polyfills.asm, at least 1 variety of poly ..
+0850 	mouse is being finicky today, not doing whole screen... 
+		working ok in basic, just not within my program.. 
+		Y is ok.. X is being limited.. 
+		seems my call to mouse config isn't working... 
+
+0915 	when it does run, clicking a few times is corrupting something.. 
+0925		ok.. ZP_SCRATCH was bad value.. set properly to $7F now .. 
+0930 	should focus on NOAH3Dx16, will figure out the mouse code eventually... need to go register car anyway..
+
+1055 	ok getting back to stuff.. go to some sort of clean state and re-add functionality..
+		commit this mess... 
+		 
+
+TODO 	troubleshoot polyfills.asm / mouse issue
 TODO 	mode7 style for floors / ceiling rendering
 
 TODO 	distance lighting/fog - would require reducing needed palette to 16-64 colors .. would be amazed if there's over

@@ -195,13 +195,13 @@ CURRENT_COLOR:       .byte 0
 
 ZP_MOUSE = $22
 ZP_PTR = $27    ;   lowest left available to user
-ZP_SCRATCH = $1F ;  highest Available to the user .. hopefully this doesn't hit ZP_PTR whatever you are doing...
+ZP_SCRATCH = $7F ;  highest Available to the user .. hopefully this doesn't hit ZP_PTR whatever you are doing...
 
 
 VERA_SET_MULTIPLY = $10
 VERA_RESET_ACCUMULATOR = $80
 
-set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each .. 
+.macro set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each .. 
   ; set addr1
   ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
   sty VERA_ctrl   ; 4
@@ -224,7 +224,7 @@ set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each ..
   sta VERA_FX_CTRL ; 54
   lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
   sta VERA_ctrl ; 60
-  rts ; 6?  so 66?
+.endmacro 
 
 ; FX should already be setup for multiply diff y is unsigned byte!
 .macro calc_x_over_y_halved ; diff y in y, sets VERA_FX_CACHE_L/M .. HU should get set for X diff to multiply.. xdiff assumed positive here...
@@ -276,7 +276,13 @@ DO_POLYGON:
       lda ZP_PTR+1 ; 3  42 load X0H 
       sbc ZP_PTR+5 ; 3  45 sub x1H 
       bpl @poly_210_ok ; 2  47  winding checked
-      rts 
+      rts ; 60
+  @poly01_: ; 9 
+  @poly01_equaly: ; 12 01 is flat top or bottom?
+  @poly_102_: ; 16  check x0<x2 
+  @poly_1_02_: ; 18  flat bottomed, check x0<x2
+  @poly_120_: ; 26  y order established. check x0<x2 
+  @poly_1e20_: ; 28 flat topped, check x1<x2
     @poly_210_ok: ; 48
       sta VERA_FX_CACHE_U ; 4   52 
       ; calc y diff at bottom .. borrow is clear here.. so carry is already set
@@ -309,8 +315,8 @@ DO_POLYGON:
       sec ; 2   219
       lda ZP_PTR+6 ; 3  222   y1
       sbc ZP_PTR+10 ; 3  225   y2
-      ; ZP_SCRATCH-12/11 start_x
-      ; ZP_SCRATCH-10   start_y
+      ; ZP_SCRATCH-12   start_y
+      ; ZP_SCRATCH-11/10 start_x
       ; ZP_SCRATCH-9/8  top left x_inc
       ; ZP_SCRATCH-7/6  top right x_inc
       ; ZP_SCRATCH-5 - num top lines      
@@ -325,29 +331,27 @@ DO_POLYGON:
       sta ZP_SCRATCH-8 ; 3  332   stash top left x-increment
       stx ZP_SCRATCH-9 ; 3  335
       lda ZP_PTR+10 ; 3   338   y2
-      sta ZP_SCRATCH-10 ; 3 341 start y
+      sta ZP_SCRATCH-12 ; 3 341 start y
       lda ZP_PTR+9 ; 3  344   
-      sta ZP_SCRATCH-11 ; 3 347 start x H 
+      sta ZP_SCRATCH-10 ; 3 347 start x H 
       lda ZP_PTR+8 ; 3 350
-      sta ZP_SCRATCH-12 ; 3 353 start X L 
+      sta ZP_SCRATCH-11 ; 3 353 start X L 
       jmp POLYGON_DO_TOP_FILL ; 6   359
-  @poly01_: ; 9 
-  @poly01_equaly: ; 12 01 is flat top or bottom?
-  @poly_102_: ; 16  check x0<x2 
-  @poly_1_02_ ; 18  flat bottomed, check x0<x2
-  @poly_120_: ; 26  y order established. check x0<x2 
-  @poly_1e20_: ; 28 flat topped, check x1<x2
+
+
+POLYGON_DO_TOP_FILL:
+    lda #VERA_DCSEL2_ADDR0 ;  get back to DCSEL2 so we can set polyfill mode
+    sta VERA_ctrl
+    
+POLYGON_SWAP_DO_BOTTOM_FILL:
 
 DONE_POLYGON:
   inc CURRENT_COLOR ; 6
   rts
 
-POLYGON_DO_TOP_FILL:
-POLYGON_SWAP_DO_BOTTOM_FILL:
-  jmp DONE_POLYGON
-
 start:
   ; start of program
+
   stz VERA_dc_video   ; disable display
 
   ; init vectors
@@ -358,6 +362,7 @@ start:
 
   lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
   sta VERA_dc_hscale
+  lda #54 ; setting up a 320x200 screen.. 
   sta VERA_dc_vscale
   lda #MODE_BITMAP_256BPP
   sta VERA_L0_config 
@@ -447,31 +452,6 @@ start:
   sta VERA_data0 ; z-depth/flips
   stz VERA_data0 ; 8x8 sprite 
 
-  ; turn the mouse cursor on.. 
-  lda #$FF
-  jsr MOUSE_CONFIG
-  ; jsr wait_keypress
-
-  stz VERA_addr_low
-  stz VERA_addr_high
-  lda #VRAM_INCREMENT_1
-  sta VERA_addr_bank
-  ldx 0
-  @clear_VRAM_OUTER:
-    ldy 0
-    @clear_VRAM_inner:
-      stz VERA_data0
-      iny 
-      bne @clear_VRAM_inner
-    inx
-    bne @clear_VRAM_OUTER
-
-  lda #LAYER0SPRITES_ENABLE
-  ;lda #SPRITES_ONLY
-  sta VERA_dc_video
-
-  ; jsr wait_keypress
-
   ; overwrite RAM IRQ vector with custom handler address
   sei ; disable IRQ while vector is changing
   lda #<custom_irq_handler
@@ -482,6 +462,38 @@ start:
   sta VERA_ien
   cli ; enable IRQ now that vector is properly set
    stz VSYNC_counter
+
+
+
+
+  ; turn the mouse cursor on.. 
+  lda #$FF
+  jsr MOUSE_CONFIG
+
+  stz VERA_addr_low
+  stz VERA_addr_high
+  lda #VRAM_INCREMENT_1
+  sta VERA_addr_bank
+  ldx #250  ; clear 250*256 bytes - 320x200 exactly.. 
+  @clear_VRAM_OUTER:
+    ldy #0
+    @clear_VRAM_inner:
+      stz VERA_data0  
+      iny 
+      bne @clear_VRAM_inner
+    dex
+    bne @clear_VRAM_OUTER
+  @mark_line_201_:
+    sty VERA_data0
+    iny 
+    bne @mark_line_201_
+
+  ;enable video
+  lda #LAYER0SPRITES_ENABLE
+  ;lda #SPRITES_ONLY
+  sta VERA_dc_video
+
+  ; jsr wait_keypress
 
   ; jsr wait_keypress
 
@@ -513,6 +525,7 @@ wait_keypress:
    rts
 
 custom_irq_handler:
+
    lda VERA_isr
    and #VSYNC_BIT
    beq @continue ; non-VSYNC IRQ, no tick update
@@ -615,50 +628,22 @@ DO_CLICK_MODE:
    lda ZP_MOUSE+3
    sta ZP_PTR+11
    sta VERA_data0
-   jsr DO_POLYGON 
+   jmp DO_POLYGON 
    rts 
 
-DO_POLYGON_OLD:
-  stz VERA_addr_low
-  stz VERA_addr_high
-  lda #VRAM_INCREMENT_64
-  sta VERA_addr_bank
-  lda CURRENT_COLOR
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  sta VERA_data0
-  inc CURRENT_COLOR
-  rts
 
-; put the lookups at top of available memory.. mainly is to align
-.res $09B00-* ;  we have from 
+.res $09000-*
 ONE_OVER_X_HALVED_LOOKUPS_LOW:
 .include "one_over_8bit_halved_17_15_low.inc"
 
-.res $09C00-* ;  we have from 
 ONE_OVER_X_HALVED_LOOKUPS_HIGH:
 .include "one_over_8bit_halved_17_15_high.inc"
 
-.res $09D00-* ;  we have from 
 X_INC_H_TABLE:
-.include "x_inch_h_32x.inc"
+.include "x_inc_h_32x.inc"
 
-.res $09E00-* ;  we have from 
-X_INC_H_TABLE:
-.include "x_inch_l_32x.inc"
+X_INC_L_TABLE:
+.include "x_inc_l_32x.inc"
 
 .end
 

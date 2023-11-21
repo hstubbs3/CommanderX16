@@ -13,7 +13,7 @@ Current file: polyfills.asm
 00080D  1               ; no double buffer, 320x240 8bit mode.
 00080D  1               ; cycle colors through palette just cuz..
 00080D  1               
-00080D  1  4C E9 09       jmp start
+00080D  1  4C 04 0B       jmp start
 000810  1               
 000810  1               ; VERA
 000810  1               VERA_addr_low     = $9F20
@@ -21,7 +21,14 @@ Current file: polyfills.asm
 000810  1               VERA_addr_bank    = $9F22
 000810  1               VERA_data0        = $9F23
 000810  1               VERA_data1        = $9F24
-000810  1               VERA_ctrl         = $9F25
+000810  1               VERA_ctrl         = $9F25 ; RESET | 6 bits DCSEL | addrsel
+000810  1               VERA_DCSEL0_ADDR0 = $00
+000810  1               VERA_DCSEL2_ADDR0 = $04
+000810  1               VERA_DCSEL3_ADDR0 = $06
+000810  1               VERA_DCSEL4_ADDR0 = $08
+000810  1               VERA_DCSEL5_ADDR0 = $0A
+000810  1               VERA_DCSEL6_ADDR0 = $0C
+000810  1               
 000810  1               VERA_ien          = $9F26
 000810  1               VERA_isr          = $9F27
 000810  1               
@@ -61,7 +68,9 @@ Current file: polyfills.asm
 000822  1               VRAM_layer1_map   = $1B000
 000822  1               VRAM_layer0_map   = $00000
 000822  1               
-000822  1               VRAM_cursor_data  = $1F000
+000822  1               ; 124k +
+000822  1               VRAM_cursor_data  = $1F000      ; using through $1F1C0 only
+000822  1               VRAM_MATH_SCRATCH = $1F200      ; 2K of scratch = 512 multiplies
 000822  1               VRAM_palette      = $1FA00      ;
 000822  1               VRAM_SPRITE_LIST  = $1FC00
 000822  1               
@@ -99,7 +108,8 @@ Current file: polyfills.asm
 000822  1               VERA_FX_CTRL    = $9F29
 000822  1               VERA_FX_TILEBASE = $9F2A
 000822  1               VERA_FX_MAPBASE = $9F2B
-000822  1               
+000822  1               VERA_FX_MULT = $9F2C
+000822  1               FX_MULTIPLY_ENABLE = $10
 000822  1               
 000822  1               ; DCSEL = 3
 000822  1               VERA_FX_X_INC_L = $9F29
@@ -112,6 +122,12 @@ Current file: polyfills.asm
 000822  1               VERA_FX_X_POS_H = $9F2A
 000822  1               VERA_FX_Y_POS_L = $9F2B
 000822  1               VERA_FX_Y_POS_H = $9F2C
+000822  1               
+000822  1               ; DCSEL = 6
+000822  1               VERA_FX_CACHE_L = $9F29  ; write only.. read here will reset accumulator!
+000822  1               VERA_FX_CACHE_M = $9F2A  ; write only.. read triggers accumulate
+000822  1               VERA_FX_CACHE_H = $9F2B  ; write only
+000822  1               VERA_FX_CACHE_U = $9F2C  ; write only
 000822  1               
 000822  1               VSYNC_BIT         = $01
 000822  1               
@@ -238,304 +254,1497 @@ Current file: polyfills.asm
 0009E8  1  00           CURRENT_COLOR:       .byte 0
 0009E9  1               
 0009E9  1               ZP_MOUSE = $22
-0009E9  1               ZP_PTR = $27
+0009E9  1               ZP_PTR = $27    ;   lowest left available to user
+0009E9  1               ZP_SCRATCH = $7F ;  highest Available to the user .. hopefully this doesn't hit ZP_PTR whatever you are doing...
 0009E9  1               
-0009E9  1               start:
-0009E9  1                 ; start of program
-0009E9  1  9C 29 9F       stz VERA_dc_video   ; disable display
-0009EC  1               
-0009EC  1                 ; init vectors
-0009EC  1  AD 14 03       lda IRQVec
-0009EF  1  8D E2 09       sta default_irq_vector
-0009F2  1  AD 15 03       lda IRQVec+1
-0009F5  1  8D E3 09       sta default_irq_vector+1
-0009F8  1               
-0009F8  1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
-0009FA  1  8D 2A 9F       sta VERA_dc_hscale
-0009FD  1  8D 2B 9F       sta VERA_dc_vscale
-000A00  1  A9 07          lda #MODE_BITMAP_256BPP
-000A02  1  8D 2D 9F       sta VERA_L0_config
-000A05  1  9C 2F 9F       stz VERA_L0_tilebase ; 320 pixel wide bitmap at top of memory
-000A08  1               
-000A08  1               
-000A08  1  9C 20 9F       stz VERA_addr_low
-000A0B  1  A9 F0          lda #>VRAM_cursor_data
-000A0D  1  8D 21 9F       sta VERA_addr_high
-000A10  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_cursor_data)
-000A12  1  8D 22 9F       sta VERA_addr_bank
-000A15  1               
-000A15  1  A9 22          lda #<cursor_sprite ; low
-000A17  1  85 27          sta ZP_PTR ;
-000A19  1  A9 08          lda #>cursor_sprite ; high
-000A1B  1  85 28          sta ZP_PTR+1 ;
-000A1D  1  A4 00          ldy 0 ;
-000A1F  1  9C 23 9F       stz VERA_data0
-000A22  1                 @cursor_data_loop:
-000A22  1  B1 27              lda (ZP_PTR),y
-000A24  1  8D 23 9F           sta VERA_data0
-000A27  1  C8                 iny
-000A28  1  D0 F8              bne @cursor_data_loop
-000A2A  1  A4 00          ldy 0 ;
-000A2C  1  E6 28          inc ZP_PTR+1
-000A2E  1  9C 23 9F       stz VERA_data0
-000A31  1                 @markers_loop:
-000A31  1  B1 27              lda (ZP_PTR),y
-000A33  1  8D 23 9F           sta VERA_data0
-000A36  1  C8                 iny
-000A37  1  D0 F8              bne @markers_loop
-000A39  1               
-000A39  1  9C 20 9F       stz VERA_addr_low
-000A3C  1  A9 FC          lda #>VRAM_SPRITE_LIST
-000A3E  1  8D 21 9F       sta VERA_addr_high
-000A41  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
-000A43  1  8D 22 9F       sta VERA_addr_bank
-000A46  1                 ; mouse pointer
-000A46  1  A9 80          lda #((VRAM_cursor_data >> 5) & $FF )
-000A48  1  8D 23 9F       sta VERA_data0  ; low address
-000A4B  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
-000A4D  1  8D 23 9F       sta VERA_data0
-000A50  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
-000A53  1  9C 23 9F       stz VERA_data0 ; x high
-000A56  1  9C 23 9F       stz VERA_data0 ; y low
-000A59  1  9C 23 9F       stz VERA_data0 ; y high
-000A5C  1  A9 0C          lda #$0C
-000A5E  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
-000A61  1  A9 50          lda #$50
-000A63  1  8D 23 9F       sta VERA_data0 ; sprite width/height
-000A66  1                 ; marker A
-000A66  1  A9 88          lda #(((VRAM_cursor_data + 256) >> 5) & $FF )
-000A68  1  8D 23 9F       sta VERA_data0  ; low address
-000A6B  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
-000A6D  1  8D 23 9F       sta VERA_data0
-000A70  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
-000A73  1  9C 23 9F       stz VERA_data0 ; x high
-000A76  1  9C 23 9F       stz VERA_data0 ; y low
-000A79  1  9C 23 9F       stz VERA_data0 ; y high
-000A7C  1  A9 0C          lda #$0C
-000A7E  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
-000A81  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
-000A84  1               
-000A84  1                 ; marker B
-000A84  1  A9 8A          lda #(((VRAM_cursor_data + 320) >> 5) & $FF )
-000A86  1  8D 23 9F       sta VERA_data0  ; low address
-000A89  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
-000A8B  1  8D 23 9F       sta VERA_data0
-000A8E  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
-000A91  1  9C 23 9F       stz VERA_data0 ; x high
-000A94  1  9C 23 9F       stz VERA_data0 ; y low
-000A97  1  9C 23 9F       stz VERA_data0 ; y high
-000A9A  1  A9 0C          lda #$0C
-000A9C  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
-000A9F  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
-000AA2  1               
-000AA2  1                 ; marker C
-000AA2  1  A9 8C          lda #(((VRAM_cursor_data + 384) >> 5) & $FF )
-000AA4  1  8D 23 9F       sta VERA_data0  ; low address
-000AA7  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
-000AA9  1  8D 23 9F       sta VERA_data0
-000AAC  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
-000AAF  1  9C 23 9F       stz VERA_data0 ; x high
-000AB2  1  9C 23 9F       stz VERA_data0 ; y low
-000AB5  1  9C 23 9F       stz VERA_data0 ; y high
-000AB8  1  A9 0C          lda #$0C
-000ABA  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
-000ABD  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
-000AC0  1               
-000AC0  1                 ; turn the mouse cursor on..
-000AC0  1  A9 FF          lda #$FF
-000AC2  1  20 68 FF       jsr MOUSE_CONFIG
-000AC5  1                 ; jsr wait_keypress
-000AC5  1               
-000AC5  1  9C 20 9F       stz VERA_addr_low
-000AC8  1  9C 21 9F       stz VERA_addr_high
-000ACB  1  A9 10          lda #VRAM_INCREMENT_1
-000ACD  1  8D 22 9F       sta VERA_addr_bank
-000AD0  1  A6 00          ldx 0
-000AD2  1                 @clear_VRAM_OUTER:
-000AD2  1  A4 00            ldy 0
-000AD4  1                   @clear_VRAM_inner:
-000AD4  1  9C 23 9F           stz VERA_data0
-000AD7  1  C8                 iny
-000AD8  1  D0 FA              bne @clear_VRAM_inner
-000ADA  1  E8               inx
-000ADB  1  D0 F5            bne @clear_VRAM_OUTER
-000ADD  1               
-000ADD  1  A9 51          lda #LAYER0SPRITES_ENABLE
-000ADF  1                 ;lda #SPRITES_ONLY
-000ADF  1  8D 29 9F       sta VERA_dc_video
-000AE2  1               
-000AE2  1                 ; jsr wait_keypress
-000AE2  1               
-000AE2  1                 ; overwrite RAM IRQ vector with custom handler address
-000AE2  1  78             sei ; disable IRQ while vector is changing
-000AE3  1  A9 20          lda #<custom_irq_handler
-000AE5  1  8D 14 03       sta IRQVec
-000AE8  1  A9 0B          lda #>custom_irq_handler
-000AEA  1  8D 15 03       sta IRQVec+1
-000AED  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
-000AEF  1  8D 26 9F       sta VERA_ien
-000AF2  1  58             cli ; enable IRQ now that vector is properly set
-000AF3  1  9C E4 09        stz VSYNC_counter
-000AF6  1               
-000AF6  1                 ; jsr wait_keypress
-000AF6  1               
-000AF6  1               ENDLESS_LOOP:
-000AF6  1               
-000AF6  1  CB              wai
-000AF7  1  AD E4 09        lda VSYNC_counter
-000AFA  1  F0 FA           beq ENDLESS_LOOP
-000AFC  1  9C E4 09        stz VSYNC_counter
-000AFF  1  20 34 0B        jsr DO_CLICK_MODE
-000B02  1  20 E4 FF        jsr GETIN
-000B05  1  F0 EF           beq ENDLESS_LOOP
+0009E9  1               
+0009E9  1               VERA_SET_MULTIPLY = $10
+0009E9  1               VERA_RESET_ACCUMULATOR = $80
+0009E9  1               
+0009E9  1               .macro set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each ..
+0009E9  1                 ; set addr1
+0009E9  1                 ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
+0009E9  1                 sty VERA_ctrl   ; 4
+0009E9  1                 ldx #(VRAM_INCREMENT_4 | ^VRAM_MATH_SCRATCH)  ; 6
+0009E9  1                 stx VERA_addr_bank ;  10
+0009E9  1                 lda #>VRAM_MATH_SCRATCH ; 12
+0009E9  1                 sta VERA_addr_high ;  16
+0009E9  1                 stz VERA_addr_low ; 20
+0009E9  1                 ; set addr0
+0009E9  1                 ldy #VERA_DCSEL2_ADDR0 ; set DCSEL =2 and addrsel to 0
+0009E9  1                 sty VERA_ctrl
+0009E9  1                 stx VERA_addr_bank
+0009E9  1                 sta VERA_addr_high
+0009E9  1                 lda #1  ; we want bytes 1,2 of each multiply..
+0009E9  1                 sta VERA_addr_low
+0009E9  1                 ; set multiply    42
+0009E9  1                 lda #(VERA_SET_MULTIPLY | VERA_RESET_ACCUMULATOR)  ; set multiply mode
+0009E9  1                 sta VERA_FX_MULT ;  48
+0009E9  1                 lda #$48  ; enable cache writes and 16-bit hop
+0009E9  1                 sta VERA_FX_CTRL ; 54
+0009E9  1                 lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
+0009E9  1                 sta VERA_ctrl ; 60
+0009E9  1               .endmacro
+0009E9  1               
+0009E9  1               ; FX should already be setup for multiply diff y is unsigned byte!
+0009E9  1               .macro calc_x_over_y_halved ; diff y in y, sets VERA_FX_CACHE_L/M .. HU should get set for X diff to multiply.. xdiff assumed positive here...
+0009E9  1                 ; correct for 3+, 2 is close ... 0/1 borked.
+0009E9  1                 ; returns x_inc in x,a ( x is low byte, a is high byte )
+0009E9  1                 ;
+0009E9  1                 .local done_calced
+0009E9  1                   lda ONE_OVER_X_HALVED_LOOKUPS_LOW,y ; abs,y 4   11
+0009E9  1                   sta VERA_FX_CACHE_L ; 4   15
+0009E9  1                   lda ONE_OVER_X_HALVED_LOOKUPS_HIGH,y ; 4  19
+0009E9  1                   sta VERA_FX_CACHE_M ; 4 23
+0009E9  1                   sta VERA_data1 ; 4  27  do the maths .. now read DATA0 twice to get result
+0009E9  1                   ldx VERA_data0 ; 4  31  get the low byte
+0009E9  1                   lda VERA_data0 ; 4  35  get the high byte
+0009E9  1                   cmp #64  ;  2   37
+0009E9  1                   BMI done_calced  ; 2 39
+0009E9  1                   tay ; 2   41
+0009E9  1                   lda X_INC_H_TABLE,y ; 4   45 <- note, we're only fixing up inc_h here...
+0009E9  1                   cmp #193 ; 2  47
+0009E9  1                   BPL done_calced ; 2   49 <- was negative so only little adjustment needed
+0009E9  1                   ldx X_INC_L_TABLE,y ; 4   53  <- fix low byte for 32x'd
+0009E9  1                 done_calced: ;  40/50/54
+0009E9  1               .endmacro
+0009E9  1               
+0009E9  1               ; x0,y0 through x2,y2 are each 2 bytes residing at ZP_PTR[:12]
+0009E9  1               ; will only draw polygon with clockwise winding - so backface culling... ok
+0009E9  1               DO_POLYGON:
+0009E9  1  A0 05 8C 25      set_vera_for_single_multiplies ;  60+... jsr = 20 .. rts = 60 ! ooooo.. wow.. ok
+0009ED  1  9F A2 31 8E  
+0009F1  1  22 9F A9 F2  
+000A1A  1               
+000A1A  1                   ; first need to identify top most vertex
+000A1A  1  A5 29            lda ZP_PTR+2  ; 3   3   ZP_PTR+2/3 is y0 .. y>255 is invalid! so only need compare low bytes
+000A1C  1  C5 2D            cmp ZP_PTR+6  ; 3   6   ZP_PTR+6/7 is y1
+000A1E  1  30 1F            BMI @poly01_   ; 2   8
+000A20  1  F0 1D            BEQ @poly01_equaly ; 2  10
+000A22  1                 @poly_10_: ;  10  a is y0
+000A22  1  C5 31              cmp ZP_PTR+10 ; 3   13  ZP_PTR+10/11 is y2
+000A24  1  30 19              BMI @poly_102_ ; 2  15
+000A26  1  F0 17              BEQ @poly_1_02_ ; 2 17
+000A28  1                 @poly_12_0_: ; 17   need to sort 12 in y
+000A28  1  A5 2D              lda ZP_PTR+6 ; 3  20
+000A2A  1  C5 31              cmp ZP_PTR+10 ; 3   23
+000A2C  1  30 11              BMI @poly_120_ ; 2  25 y order established.
+000A2E  1  F0 0F              BEQ @poly_1e20_ ; 2  27 flat topped check winding 1->2
+000A30  1                 @poly_210_ : ;  27  check x1<=x0 .. if x1>x0 exit..
+000A30  1  38                 sec ;  2  29
+000A31  1  A5 27              lda ZP_PTR ; 3  32  load x0L
+000A33  1  E5 2B              sbc ZP_PTR+4 ; 3 35 sub x1l
+000A35  1  8D 2B 9F           sta VERA_FX_CACHE_H ; 4  39
+000A38  1  A5 28              lda ZP_PTR+1 ; 3  42 load X0H
+000A3A  1  E5 2C              sbc ZP_PTR+5 ; 3  45 sub x1H
+000A3C  1  10 01              bpl @poly_210_ok ; 2  47  winding checked
+000A3E  1  60                 rts ; 60
+000A3F  1                 @poly01_: ; 9
+000A3F  1                 @poly01_equaly: ; 12 01 is flat top or bottom?
+000A3F  1                 @poly_102_: ; 16  check x0<x2
+000A3F  1                 @poly_1_02_: ; 18  flat bottomed, check x0<x2
+000A3F  1                 @poly_120_: ; 26  y order established. check x0<x2
+000A3F  1                 @poly_1e20_: ; 28 flat topped, check x1<x2
+000A3F  1                   @poly_210_ok: ; 48
+000A3F  1  8D 2C 9F           sta VERA_FX_CACHE_U ; 4   52
+000A42  1                     ; calc y diff at bottom .. borrow is clear here.. so carry is already set
+000A42  1  A5 29              lda ZP_PTR+2 ; 3  55  y0
+000A44  1  E5 2D              sbc ZP_PTR+6 ; 3  58  y1 ... is already known this is positive
+000A46  1  85 7F              sta ZP_SCRATCH ; 3  61  ZP_SCRATCH = num bottom lines
+000A48  1  A8                 tay ; 2   63  macro expects y in y..
+000A49  1                     ; ZP_SCRATCH-4/3 - bottom left x_inc
+000A49  1                     ; ZP_SCRATCH-2/1 - bottom right x_inc
+000A49  1                     ; ZP_SCRATCH-0   - num bottom lines
+000A49  1  B9 00 90 8D        calc_x_over_y_halved ; ~48 53 worse case  ~116  a is x inc h, x is low byte
+000A4D  1  29 9F B9 00  
+000A51  1  91 8D 2A 9F  
+000A6D  1  85 7C              sta ZP_SCRATCH-3 ; 3  119   ZP_SCRATCH-3 = bottom left x_inc h
+000A6F  1  86 7B              stx ZP_SCRATCH-4 ; 3  122   ZP_SCRATCH-4 = bottom left x_inc l
+000A71  1  38                 sec ; 2   124
+000A72  1  A5 29              lda ZP_PTR+2 ; 3  127   y0
+000A74  1  E5 31              sbc ZP_PTR+10 ; 3 130   y2
+000A76  1  A8                 tay ; 2 132
+000A77  1  A5 27              lda ZP_PTR ; 3  135   x0l
+000A79  1  E5 2F              sbc ZP_PTR+8 ; 3 138  x2l
+000A7B  1  8D 2B 9F           sta VERA_FX_CACHE_H ; 4 142
+000A7E  1  A5 28              lda ZP_PTR+1 ; 3  145   x0h
+000A80  1  E5 30              sbc ZP_PTR+9 ; 3  148   x2h
+000A82  1  8D 2C 9F           sta VERA_FX_CACHE_U ; 4   152
+000A85  1  B9 00 90 8D        calc_x_over_y_halved ; 53   205
+000A89  1  29 9F B9 00  
+000A8D  1  91 8D 2A 9F  
+000AA9  1  85 7E              sta ZP_SCRATCH-1 ; 3  208   stash right x-increment to bottom/right
+000AAB  1  86 7D              stx ZP_SCRATCH-2 ; 3  211
+000AAD  1  85 79              sta ZP_SCRATCH-6 ; 3  214   stash right x-increment for top/right
+000AAF  1  86 78              stx ZP_SCRATCH-7 ; 3  217
+000AB1  1                     ; calc top left x-increment
+000AB1  1  38                 sec ; 2   219
+000AB2  1  A5 2D              lda ZP_PTR+6 ; 3  222   y1
+000AB4  1  E5 31              sbc ZP_PTR+10 ; 3  225   y2
+000AB6  1                     ; ZP_SCRATCH-12   start_y
+000AB6  1                     ; ZP_SCRATCH-11/10 start_x
+000AB6  1                     ; ZP_SCRATCH-9/8  top left x_inc
+000AB6  1                     ; ZP_SCRATCH-7/6  top right x_inc
+000AB6  1                     ; ZP_SCRATCH-5 - num top lines
+000AB6  1  85 7A              sta ZP_SCRATCH-5 ; 3  228   num top lines
+000AB8  1  A8                 tay ; 2  230
+000AB9  1  A5 2B              lda ZP_PTR+4 ; 3  233   x1l
+000ABB  1  E5 2F              sbc ZP_PTR+8 ; 3  266   x2l
+000ABD  1  8D 2B 9F           sta VERA_FX_CACHE_H ; 4   270
+000AC0  1  A5 2C              lda ZP_PTR+5 ; 3  273 x1h
+000AC2  1  E5 30              sbc ZP_PTR+9 ; 3  276   x2h
+000AC4  1  B9 00 90 8D        calc_x_over_y_halved ; 53   329
+000AC8  1  29 9F B9 00  
+000ACC  1  91 8D 2A 9F  
+000AE8  1  85 77              sta ZP_SCRATCH-8 ; 3  332   stash top left x-increment
+000AEA  1  86 76              stx ZP_SCRATCH-9 ; 3  335
+000AEC  1  A5 31              lda ZP_PTR+10 ; 3   338   y2
+000AEE  1  85 73              sta ZP_SCRATCH-12 ; 3 341 start y
+000AF0  1  A5 30              lda ZP_PTR+9 ; 3  344
+000AF2  1  85 75              sta ZP_SCRATCH-10 ; 3 347 start x H
+000AF4  1  A5 2F              lda ZP_PTR+8 ; 3 350
+000AF6  1  85 74              sta ZP_SCRATCH-11 ; 3 353 start X L
+000AF8  1  4C FB 0A           jmp POLYGON_DO_TOP_FILL ; 6   359
+000AFB  1               
+000AFB  1               
+000AFB  1               POLYGON_DO_TOP_FILL:
+000AFB  1  A9 04            lda #VERA_DCSEL2_ADDR0 ;  get back to DCSEL2 so we can set polyfill mode
+000AFD  1  8D 25 9F         sta VERA_ctrl
+000B00  1               
+000B00  1               POLYGON_SWAP_DO_BOTTOM_FILL:
+000B00  1               
+000B00  1               DONE_POLYGON:
+000B00  1  EE E8 09       inc CURRENT_COLOR ; 6
+000B03  1  60             rts
+000B04  1               
+000B04  1               start:
+000B04  1                 ; start of program
+000B04  1               
+000B04  1  9C 29 9F       stz VERA_dc_video   ; disable display
 000B07  1               
-000B07  1               do_cleanup:
-000B07  1                  ; restore default IRQ vector
-000B07  1  78              sei
-000B08  1  AD E2 09        lda default_irq_vector
-000B0B  1  8D 14 03        sta IRQVec
-000B0E  1  AD E3 09        lda default_irq_vector+1
-000B11  1  8D 15 03        sta IRQVec+1
-000B14  1  58              cli
-000B15  1  20 81 FF        jsr CINT
-000B18  1  60              rts
-000B19  1               
-000B19  1               wait_keypress:
-000B19  1  CB              wai
-000B1A  1  20 E4 FF        jsr GETIN
-000B1D  1  F0 FA           beq wait_keypress
-000B1F  1  60              rts
-000B20  1               
-000B20  1               custom_irq_handler:
-000B20  1  AD 27 9F        lda VERA_isr
-000B23  1  29 01           and #VSYNC_BIT
-000B25  1  F0 0A           beq @continue ; non-VSYNC IRQ, no tick update
-000B27  1  EE E4 09        inc VSYNC_counter
-000B2A  1                  ;jmp (default_irq_vector)
-000B2A  1               
-000B2A  1               @check_mouse:
-000B2A  1                  ;jsr MOUSE_SCAN
-000B2A  1  A2 22           ldx #ZP_MOUSE
-000B2C  1  20 6B FF        jsr MOUSE_GET
-000B2F  1  85 26           sta ZP_MOUSE+4
-000B31  1               @continue:
-000B31  1                  ; continue to default IRQ handler
-000B31  1  6C E2 09        jmp (default_irq_vector)
-000B34  1                  ; RTI will happen after jump
-000B34  1               
-000B34  1               
-000B34  1               DO_CLICK_MODE:
-000B34  1  AD E6 09        lda CLICK_BOUNCE
-000B37  1  F0 08           beq @do_check_click
-000B39  1  A5 26           lda ZP_MOUSE+4
-000B3B  1  D0 03           bne @done
-000B3D  1  CE E6 09        dec CLICK_BOUNCE
-000B40  1                 @done:
-000B40  1  60               rts
-000B41  1               @do_check_click:
-000B41  1  A5 26           lda ZP_MOUSE+4
-000B43  1  D0 01           bne @clickmode_check_a
-000B45  1  60              rts
-000B46  1               @clickmode_check_a:
-000B46  1  A9 02           lda #2
-000B48  1  8D E6 09        sta CLICK_BOUNCE
-000B4B  1  AD E7 09        lda CLICK_MODE
-000B4E  1  D0 31           bne @clickmode_check_b
-000B50  1  A9 01           lda #1
-000B52  1  8D E7 09        sta CLICK_MODE
-000B55  1  A9 0A           lda #10
-000B57  1  8D 20 9F        sta VERA_addr_low
-000B5A  1  A9 FC           lda #>VRAM_SPRITE_LIST
-000B5C  1  8D 21 9F        sta VERA_addr_high
-000B5F  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
-000B61  1  8D 22 9F        sta VERA_addr_bank
-000B64  1  A5 22           lda ZP_MOUSE
-000B66  1  85 27           sta ZP_PTR
-000B68  1  8D 23 9F        sta VERA_data0
-000B6B  1  A5 23           lda ZP_MOUSE+1
-000B6D  1  85 28           sta ZP_PTR+1
-000B6F  1  8D 23 9F        sta VERA_data0
-000B72  1  A5 24           lda ZP_MOUSE+2
-000B74  1  85 29           sta ZP_PTR+2
-000B76  1  8D 23 9F        sta VERA_data0
-000B79  1  A5 25           lda ZP_MOUSE+3
-000B7B  1  85 2A           sta ZP_PTR+3
-000B7D  1  8D 23 9F        sta VERA_data0
-000B80  1  60              rts
-000B81  1                 @clickmode_check_b:
-000B81  1  C9 01           cmp #1
-000B83  1  D0 31           bne @clickmode_check_c
-000B85  1  A9 02           lda #2
-000B87  1  8D E7 09        sta CLICK_MODE
-000B8A  1  A9 12           lda #18
-000B8C  1  8D 20 9F        sta VERA_addr_low
-000B8F  1  A9 FC           lda #>VRAM_SPRITE_LIST
-000B91  1  8D 21 9F        sta VERA_addr_high
-000B94  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
-000B96  1  8D 22 9F        sta VERA_addr_bank
-000B99  1  A5 22           lda ZP_MOUSE
-000B9B  1  85 2B           sta ZP_PTR+4
-000B9D  1  8D 23 9F        sta VERA_data0
-000BA0  1               
-000BA0  1  A5 23           lda ZP_MOUSE+1
-000BA2  1  85 2C           sta ZP_PTR+5
-000BA4  1  8D 23 9F        sta VERA_data0
-000BA7  1               
-000BA7  1  A5 24           lda ZP_MOUSE+2
-000BA9  1  85 2D           sta ZP_PTR+6
-000BAB  1  8D 23 9F        sta VERA_data0
-000BAE  1               
-000BAE  1  A5 25           lda ZP_MOUSE+3
-000BB0  1  85 2E           sta ZP_PTR+7
-000BB2  1  8D 23 9F        sta VERA_data0
-000BB5  1  60              rts
-000BB6  1                 @clickmode_check_c:
-000BB6  1  9C E7 09        stz CLICK_MODE
-000BB9  1  A9 1A           lda #26
-000BBB  1  8D 20 9F        sta VERA_addr_low
-000BBE  1  A9 FC           lda #>VRAM_SPRITE_LIST
-000BC0  1  8D 21 9F        sta VERA_addr_high
-000BC3  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
-000BC5  1  8D 22 9F        sta VERA_addr_bank
-000BC8  1  A5 22           lda ZP_MOUSE
-000BCA  1  85 2F           sta ZP_PTR+8
-000BCC  1  8D 23 9F        sta VERA_data0
-000BCF  1  A5 23           lda ZP_MOUSE+1
-000BD1  1  85 30           sta ZP_PTR+9
-000BD3  1  8D 23 9F        sta VERA_data0
-000BD6  1  A5 24           lda ZP_MOUSE+2
-000BD8  1  85 31           sta ZP_PTR+10
-000BDA  1  8D 23 9F        sta VERA_data0
-000BDD  1  A5 25           lda ZP_MOUSE+3
-000BDF  1  85 32           sta ZP_PTR+11
-000BE1  1  8D 23 9F        sta VERA_data0
-000BE4  1  20 E8 0B        jsr DO_POLYGON
-000BE7  1  60              rts
-000BE8  1               
-000BE8  1               DO_POLYGON:
-000BE8  1  9C 20 9F       stz VERA_addr_low
-000BEB  1  9C 21 9F       stz VERA_addr_high
-000BEE  1  A9 70          lda #VRAM_INCREMENT_64
-000BF0  1  8D 22 9F       sta VERA_addr_bank
-000BF3  1  AD E8 09       lda CURRENT_COLOR
-000BF6  1  8D 23 9F       sta VERA_data0
-000BF9  1  8D 23 9F       sta VERA_data0
-000BFC  1  8D 23 9F       sta VERA_data0
-000BFF  1  8D 23 9F       sta VERA_data0
-000C02  1  8D 23 9F       sta VERA_data0
-000C05  1  8D 23 9F       sta VERA_data0
-000C08  1  8D 23 9F       sta VERA_data0
-000C0B  1  8D 23 9F       sta VERA_data0
-000C0E  1  8D 23 9F       sta VERA_data0
-000C11  1  8D 23 9F       sta VERA_data0
-000C14  1  8D 23 9F       sta VERA_data0
-000C17  1  8D 23 9F       sta VERA_data0
-000C1A  1  8D 23 9F       sta VERA_data0
-000C1D  1  8D 23 9F       sta VERA_data0
-000C20  1  8D 23 9F       sta VERA_data0
-000C23  1  8D 23 9F       sta VERA_data0
-000C26  1  EE E8 09       inc CURRENT_COLOR
-000C29  1  60             rts
+000B07  1                 ; init vectors
+000B07  1  AD 14 03       lda IRQVec
+000B0A  1  8D E2 09       sta default_irq_vector
+000B0D  1  AD 15 03       lda IRQVec+1
+000B10  1  8D E3 09       sta default_irq_vector+1
+000B13  1               
+000B13  1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+000B15  1  8D 2A 9F       sta VERA_dc_hscale
+000B18  1  A9 36          lda #54 ; setting up a 320x200 screen..
+000B1A  1  8D 2B 9F       sta VERA_dc_vscale
+000B1D  1  A9 07          lda #MODE_BITMAP_256BPP
+000B1F  1  8D 2D 9F       sta VERA_L0_config
+000B22  1  9C 2F 9F       stz VERA_L0_tilebase ; 320 pixel wide bitmap at top of memory
+000B25  1               
+000B25  1               
+000B25  1  9C 20 9F       stz VERA_addr_low
+000B28  1  A9 F0          lda #>VRAM_cursor_data
+000B2A  1  8D 21 9F       sta VERA_addr_high
+000B2D  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_cursor_data)
+000B2F  1  8D 22 9F       sta VERA_addr_bank
+000B32  1               
+000B32  1  A9 22          lda #<cursor_sprite ; low
+000B34  1  85 27          sta ZP_PTR ;
+000B36  1  A9 08          lda #>cursor_sprite ; high
+000B38  1  85 28          sta ZP_PTR+1 ;
+000B3A  1  A4 00          ldy 0 ;
+000B3C  1  9C 23 9F       stz VERA_data0
+000B3F  1                 @cursor_data_loop:
+000B3F  1  B1 27              lda (ZP_PTR),y
+000B41  1  8D 23 9F           sta VERA_data0
+000B44  1  C8                 iny
+000B45  1  D0 F8              bne @cursor_data_loop
+000B47  1  A4 00          ldy 0 ;
+000B49  1  E6 28          inc ZP_PTR+1
+000B4B  1  9C 23 9F       stz VERA_data0
+000B4E  1                 @markers_loop:
+000B4E  1  B1 27              lda (ZP_PTR),y
+000B50  1  8D 23 9F           sta VERA_data0
+000B53  1  C8                 iny
+000B54  1  D0 F8              bne @markers_loop
+000B56  1               
+000B56  1  9C 20 9F       stz VERA_addr_low
+000B59  1  A9 FC          lda #>VRAM_SPRITE_LIST
+000B5B  1  8D 21 9F       sta VERA_addr_high
+000B5E  1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000B60  1  8D 22 9F       sta VERA_addr_bank
+000B63  1                 ; mouse pointer
+000B63  1  A9 80          lda #((VRAM_cursor_data >> 5) & $FF )
+000B65  1  8D 23 9F       sta VERA_data0  ; low address
+000B68  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000B6A  1  8D 23 9F       sta VERA_data0
+000B6D  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000B70  1  9C 23 9F       stz VERA_data0 ; x high
+000B73  1  9C 23 9F       stz VERA_data0 ; y low
+000B76  1  9C 23 9F       stz VERA_data0 ; y high
+000B79  1  A9 0C          lda #$0C
+000B7B  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000B7E  1  A9 50          lda #$50
+000B80  1  8D 23 9F       sta VERA_data0 ; sprite width/height
+000B83  1                 ; marker A
+000B83  1  A9 88          lda #(((VRAM_cursor_data + 256) >> 5) & $FF )
+000B85  1  8D 23 9F       sta VERA_data0  ; low address
+000B88  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000B8A  1  8D 23 9F       sta VERA_data0
+000B8D  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000B90  1  9C 23 9F       stz VERA_data0 ; x high
+000B93  1  9C 23 9F       stz VERA_data0 ; y low
+000B96  1  9C 23 9F       stz VERA_data0 ; y high
+000B99  1  A9 0C          lda #$0C
+000B9B  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000B9E  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000BA1  1               
+000BA1  1                 ; marker B
+000BA1  1  A9 8A          lda #(((VRAM_cursor_data + 320) >> 5) & $FF )
+000BA3  1  8D 23 9F       sta VERA_data0  ; low address
+000BA6  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000BA8  1  8D 23 9F       sta VERA_data0
+000BAB  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000BAE  1  9C 23 9F       stz VERA_data0 ; x high
+000BB1  1  9C 23 9F       stz VERA_data0 ; y low
+000BB4  1  9C 23 9F       stz VERA_data0 ; y high
+000BB7  1  A9 0C          lda #$0C
+000BB9  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000BBC  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000BBF  1               
+000BBF  1                 ; marker C
+000BBF  1  A9 8C          lda #(((VRAM_cursor_data + 384) >> 5) & $FF )
+000BC1  1  8D 23 9F       sta VERA_data0  ; low address
+000BC4  1  A9 8F          lda #($80 | (VRAM_cursor_data >> 13)) ; high address, 8bit sprite
+000BC6  1  8D 23 9F       sta VERA_data0
+000BC9  1  9C 23 9F       stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+000BCC  1  9C 23 9F       stz VERA_data0 ; x high
+000BCF  1  9C 23 9F       stz VERA_data0 ; y low
+000BD2  1  9C 23 9F       stz VERA_data0 ; y high
+000BD5  1  A9 0C          lda #$0C
+000BD7  1  8D 23 9F       sta VERA_data0 ; z-depth/flips
+000BDA  1  9C 23 9F       stz VERA_data0 ; 8x8 sprite
+000BDD  1               
+000BDD  1                 ; overwrite RAM IRQ vector with custom handler address
+000BDD  1  78             sei ; disable IRQ while vector is changing
+000BDE  1  A9 43          lda #<custom_irq_handler
+000BE0  1  8D 14 03       sta IRQVec
+000BE3  1  A9 0C          lda #>custom_irq_handler
+000BE5  1  8D 15 03       sta IRQVec+1
+000BE8  1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000BEA  1  8D 26 9F       sta VERA_ien
+000BED  1  58             cli ; enable IRQ now that vector is properly set
+000BEE  1  9C E4 09        stz VSYNC_counter
+000BF1  1               
+000BF1  1               
+000BF1  1               
+000BF1  1               
+000BF1  1                 ; turn the mouse cursor on..
+000BF1  1  A9 FF          lda #$FF
+000BF3  1  20 68 FF       jsr MOUSE_CONFIG
+000BF6  1               
+000BF6  1  9C 20 9F       stz VERA_addr_low
+000BF9  1  9C 21 9F       stz VERA_addr_high
+000BFC  1  A9 10          lda #VRAM_INCREMENT_1
+000BFE  1  8D 22 9F       sta VERA_addr_bank
+000C01  1  A2 FA          ldx #250  ; clear 250*256 bytes - 320x200 exactly..
+000C03  1                 @clear_VRAM_OUTER:
+000C03  1  A0 00            ldy #0
+000C05  1                   @clear_VRAM_inner:
+000C05  1  9C 23 9F           stz VERA_data0
+000C08  1  C8                 iny
+000C09  1  D0 FA              bne @clear_VRAM_inner
+000C0B  1  CA               dex
+000C0C  1  D0 F5            bne @clear_VRAM_OUTER
+000C0E  1                 @mark_line_201_:
+000C0E  1  8C 23 9F         sty VERA_data0
+000C11  1  C8               iny
+000C12  1  D0 FA            bne @mark_line_201_
+000C14  1               
+000C14  1                 ;enable video
+000C14  1  A9 51          lda #LAYER0SPRITES_ENABLE
+000C16  1                 ;lda #SPRITES_ONLY
+000C16  1  8D 29 9F       sta VERA_dc_video
+000C19  1               
+000C19  1                 ; jsr wait_keypress
+000C19  1               
+000C19  1                 ; jsr wait_keypress
+000C19  1               
+000C19  1               ENDLESS_LOOP:
+000C19  1               
+000C19  1  CB              wai
+000C1A  1  AD E4 09        lda VSYNC_counter
+000C1D  1  F0 FA           beq ENDLESS_LOOP
+000C1F  1  9C E4 09        stz VSYNC_counter
+000C22  1  20 57 0C        jsr DO_CLICK_MODE
+000C25  1  20 E4 FF        jsr GETIN
+000C28  1  F0 EF           beq ENDLESS_LOOP
 000C2A  1               
-000C2A  1               
-000C2A  1               .end
+000C2A  1               do_cleanup:
+000C2A  1                  ; restore default IRQ vector
+000C2A  1  78              sei
+000C2B  1  AD E2 09        lda default_irq_vector
+000C2E  1  8D 14 03        sta IRQVec
+000C31  1  AD E3 09        lda default_irq_vector+1
+000C34  1  8D 15 03        sta IRQVec+1
+000C37  1  58              cli
+000C38  1  20 81 FF        jsr CINT
+000C3B  1  60              rts
+000C3C  1               
+000C3C  1               wait_keypress:
+000C3C  1  CB              wai
+000C3D  1  20 E4 FF        jsr GETIN
+000C40  1  F0 FA           beq wait_keypress
+000C42  1  60              rts
+000C43  1               
+000C43  1               custom_irq_handler:
+000C43  1               
+000C43  1  AD 27 9F        lda VERA_isr
+000C46  1  29 01           and #VSYNC_BIT
+000C48  1  F0 0A           beq @continue ; non-VSYNC IRQ, no tick update
+000C4A  1  EE E4 09        inc VSYNC_counter
+000C4D  1                  ;jmp (default_irq_vector)
+000C4D  1               
+000C4D  1               @check_mouse:
+000C4D  1                  ;jsr MOUSE_SCAN
+000C4D  1  A2 22           ldx #ZP_MOUSE
+000C4F  1  20 6B FF        jsr MOUSE_GET
+000C52  1  85 26           sta ZP_MOUSE+4
+000C54  1               @continue:
+000C54  1                  ; continue to default IRQ handler
+000C54  1  6C E2 09        jmp (default_irq_vector)
+000C57  1                  ; RTI will happen after jump
+000C57  1               
+000C57  1               
+000C57  1               DO_CLICK_MODE:
+000C57  1  AD E6 09        lda CLICK_BOUNCE
+000C5A  1  F0 08           beq @do_check_click
+000C5C  1  A5 26           lda ZP_MOUSE+4
+000C5E  1  D0 03           bne @done
+000C60  1  CE E6 09        dec CLICK_BOUNCE
+000C63  1                 @done:
+000C63  1  60               rts
+000C64  1               @do_check_click:
+000C64  1  A5 26           lda ZP_MOUSE+4
+000C66  1  D0 01           bne @clickmode_check_a
+000C68  1  60              rts
+000C69  1               @clickmode_check_a:
+000C69  1  A9 02           lda #2
+000C6B  1  8D E6 09        sta CLICK_BOUNCE
+000C6E  1  AD E7 09        lda CLICK_MODE
+000C71  1  D0 31           bne @clickmode_check_b
+000C73  1  A9 01           lda #1
+000C75  1  8D E7 09        sta CLICK_MODE
+000C78  1  A9 0A           lda #10
+000C7A  1  8D 20 9F        sta VERA_addr_low
+000C7D  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000C7F  1  8D 21 9F        sta VERA_addr_high
+000C82  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000C84  1  8D 22 9F        sta VERA_addr_bank
+000C87  1  A5 22           lda ZP_MOUSE
+000C89  1  85 27           sta ZP_PTR
+000C8B  1  8D 23 9F        sta VERA_data0
+000C8E  1  A5 23           lda ZP_MOUSE+1
+000C90  1  85 28           sta ZP_PTR+1
+000C92  1  8D 23 9F        sta VERA_data0
+000C95  1  A5 24           lda ZP_MOUSE+2
+000C97  1  85 29           sta ZP_PTR+2
+000C99  1  8D 23 9F        sta VERA_data0
+000C9C  1  A5 25           lda ZP_MOUSE+3
+000C9E  1  85 2A           sta ZP_PTR+3
+000CA0  1  8D 23 9F        sta VERA_data0
+000CA3  1  60              rts
+000CA4  1                 @clickmode_check_b:
+000CA4  1  C9 01           cmp #1
+000CA6  1  D0 31           bne @clickmode_check_c
+000CA8  1  A9 02           lda #2
+000CAA  1  8D E7 09        sta CLICK_MODE
+000CAD  1  A9 12           lda #18
+000CAF  1  8D 20 9F        sta VERA_addr_low
+000CB2  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000CB4  1  8D 21 9F        sta VERA_addr_high
+000CB7  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000CB9  1  8D 22 9F        sta VERA_addr_bank
+000CBC  1  A5 22           lda ZP_MOUSE
+000CBE  1  85 2B           sta ZP_PTR+4
+000CC0  1  8D 23 9F        sta VERA_data0
+000CC3  1               
+000CC3  1  A5 23           lda ZP_MOUSE+1
+000CC5  1  85 2C           sta ZP_PTR+5
+000CC7  1  8D 23 9F        sta VERA_data0
+000CCA  1               
+000CCA  1  A5 24           lda ZP_MOUSE+2
+000CCC  1  85 2D           sta ZP_PTR+6
+000CCE  1  8D 23 9F        sta VERA_data0
+000CD1  1               
+000CD1  1  A5 25           lda ZP_MOUSE+3
+000CD3  1  85 2E           sta ZP_PTR+7
+000CD5  1  8D 23 9F        sta VERA_data0
+000CD8  1  60              rts
+000CD9  1                 @clickmode_check_c:
+000CD9  1  9C E7 09        stz CLICK_MODE
+000CDC  1  A9 1A           lda #26
+000CDE  1  8D 20 9F        sta VERA_addr_low
+000CE1  1  A9 FC           lda #>VRAM_SPRITE_LIST
+000CE3  1  8D 21 9F        sta VERA_addr_high
+000CE6  1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000CE8  1  8D 22 9F        sta VERA_addr_bank
+000CEB  1  A5 22           lda ZP_MOUSE
+000CED  1  85 2F           sta ZP_PTR+8
+000CEF  1  8D 23 9F        sta VERA_data0
+000CF2  1  A5 23           lda ZP_MOUSE+1
+000CF4  1  85 30           sta ZP_PTR+9
+000CF6  1  8D 23 9F        sta VERA_data0
+000CF9  1  A5 24           lda ZP_MOUSE+2
+000CFB  1  85 31           sta ZP_PTR+10
+000CFD  1  8D 23 9F        sta VERA_data0
+000D00  1  A5 25           lda ZP_MOUSE+3
+000D02  1  85 32           sta ZP_PTR+11
+000D04  1  8D 23 9F        sta VERA_data0
+000D07  1  4C E9 09        jmp DO_POLYGON
+000D0A  1  60              rts
+000D0B  1               
+000D0B  1               
+000D0B  1  xx xx xx xx  .res $09000-*
+000D0F  1  xx xx xx xx  
+000D13  1  xx xx xx xx  
+009000  1               ONE_OVER_X_HALVED_LOOKUPS_LOW:
+009000  1               .include "one_over_8bit_halved_17_15_low.inc"
+009000  2               ; low bytes of lookup for 1/(2*x) for doing x_increments for poly filler ... 0,1,2 are mucked use constants instead...
+009000  2  FF             .byte  255
+009001  2  FF             .byte  255
+009002  2  FF             .byte  255
+009003  2  55             .byte  85
+009004  2  00             .byte  0
+009005  2  33             .byte  51
+009006  2  AA             .byte  170
+009007  2  92             .byte  146
+009008  2  00             .byte  0
+009009  2  71             .byte  113
+00900A  2  99             .byte  153
+00900B  2  45             .byte  69
+00900C  2  55             .byte  85
+00900D  2  B1             .byte  177
+00900E  2  49             .byte  73
+00900F  2  11             .byte  17
+009010  2  00             .byte  0
+009011  2  0F             .byte  15
+009012  2  38             .byte  56
+009013  2  79             .byte  121
+009014  2  CC             .byte  204
+009015  2  30             .byte  48
+009016  2  A2             .byte  162
+009017  2  21             .byte  33
+009018  2  AA             .byte  170
+009019  2  3D             .byte  61
+00901A  2  D8             .byte  216
+00901B  2  7B             .byte  123
+00901C  2  24             .byte  36
+00901D  2  D3             .byte  211
+00901E  2  88             .byte  136
+00901F  2  42             .byte  66
+009020  2  00             .byte  0
+009021  2  C1             .byte  193
+009022  2  87             .byte  135
+009023  2  50             .byte  80
+009024  2  1C             .byte  28
+009025  2  EB             .byte  235
+009026  2  BC             .byte  188
+009027  2  90             .byte  144
+009028  2  66             .byte  102
+009029  2  3E             .byte  62
+00902A  2  18             .byte  24
+00902B  2  F4             .byte  244
+00902C  2  D1             .byte  209
+00902D  2  B0             .byte  176
+00902E  2  90             .byte  144
+00902F  2  72             .byte  114
+009030  2  55             .byte  85
+009031  2  39             .byte  57
+009032  2  1E             .byte  30
+009033  2  05             .byte  5
+009034  2  EC             .byte  236
+009035  2  D4             .byte  212
+009036  2  BD             .byte  189
+009037  2  A7             .byte  167
+009038  2  92             .byte  146
+009039  2  7D             .byte  125
+00903A  2  69             .byte  105
+00903B  2  56             .byte  86
+00903C  2  44             .byte  68
+00903D  2  32             .byte  50
+00903E  2  21             .byte  33
+00903F  2  10             .byte  16
+009040  2  00             .byte  0
+009041  2  F0             .byte  240
+009042  2  E0             .byte  224
+009043  2  D2             .byte  210
+009044  2  C3             .byte  195
+009045  2  B5             .byte  181
+009046  2  A8             .byte  168
+009047  2  9B             .byte  155
+009048  2  8E             .byte  142
+009049  2  81             .byte  129
+00904A  2  75             .byte  117
+00904B  2  69             .byte  105
+00904C  2  5E             .byte  94
+00904D  2  53             .byte  83
+00904E  2  48             .byte  72
+00904F  2  3D             .byte  61
+009050  2  33             .byte  51
+009051  2  29             .byte  41
+009052  2  1F             .byte  31
+009053  2  15             .byte  21
+009054  2  0C             .byte  12
+009055  2  03             .byte  3
+009056  2  FA             .byte  250
+009057  2  F1             .byte  241
+009058  2  E8             .byte  232
+009059  2  E0             .byte  224
+00905A  2  D8             .byte  216
+00905B  2  D0             .byte  208
+00905C  2  C8             .byte  200
+00905D  2  C0             .byte  192
+00905E  2  B9             .byte  185
+00905F  2  B1             .byte  177
+009060  2  AA             .byte  170
+009061  2  A3             .byte  163
+009062  2  9C             .byte  156
+009063  2  95             .byte  149
+009064  2  8F             .byte  143
+009065  2  88             .byte  136
+009066  2  82             .byte  130
+009067  2  7C             .byte  124
+009068  2  76             .byte  118
+009069  2  70             .byte  112
+00906A  2  6A             .byte  106
+00906B  2  64             .byte  100
+00906C  2  5E             .byte  94
+00906D  2  59             .byte  89
+00906E  2  53             .byte  83
+00906F  2  4E             .byte  78
+009070  2  49             .byte  73
+009071  2  43             .byte  67
+009072  2  3E             .byte  62
+009073  2  39             .byte  57
+009074  2  34             .byte  52
+009075  2  30             .byte  48
+009076  2  2B             .byte  43
+009077  2  26             .byte  38
+009078  2  22             .byte  34
+009079  2  1D             .byte  29
+00907A  2  19             .byte  25
+00907B  2  14             .byte  20
+00907C  2  10             .byte  16
+00907D  2  0C             .byte  12
+00907E  2  08             .byte  8
+00907F  2  04             .byte  4
+009080  2  00             .byte  0
+009081  2  FC             .byte  252
+009082  2  F8             .byte  248
+009083  2  F4             .byte  244
+009084  2  F0             .byte  240
+009085  2  EC             .byte  236
+009086  2  E9             .byte  233
+009087  2  E5             .byte  229
+009088  2  E1             .byte  225
+009089  2  DE             .byte  222
+00908A  2  DA             .byte  218
+00908B  2  D7             .byte  215
+00908C  2  D4             .byte  212
+00908D  2  D0             .byte  208
+00908E  2  CD             .byte  205
+00908F  2  CA             .byte  202
+009090  2  C7             .byte  199
+009091  2  C3             .byte  195
+009092  2  C0             .byte  192
+009093  2  BD             .byte  189
+009094  2  BA             .byte  186
+009095  2  B7             .byte  183
+009096  2  B4             .byte  180
+009097  2  B2             .byte  178
+009098  2  AF             .byte  175
+009099  2  AC             .byte  172
+00909A  2  A9             .byte  169
+00909B  2  A6             .byte  166
+00909C  2  A4             .byte  164
+00909D  2  A1             .byte  161
+00909E  2  9E             .byte  158
+00909F  2  9C             .byte  156
+0090A0  2  99             .byte  153
+0090A1  2  97             .byte  151
+0090A2  2  94             .byte  148
+0090A3  2  92             .byte  146
+0090A4  2  8F             .byte  143
+0090A5  2  8D             .byte  141
+0090A6  2  8A             .byte  138
+0090A7  2  88             .byte  136
+0090A8  2  86             .byte  134
+0090A9  2  83             .byte  131
+0090AA  2  81             .byte  129
+0090AB  2  7F             .byte  127
+0090AC  2  7D             .byte  125
+0090AD  2  7A             .byte  122
+0090AE  2  78             .byte  120
+0090AF  2  76             .byte  118
+0090B0  2  74             .byte  116
+0090B1  2  72             .byte  114
+0090B2  2  70             .byte  112
+0090B3  2  6E             .byte  110
+0090B4  2  6C             .byte  108
+0090B5  2  6A             .byte  106
+0090B6  2  68             .byte  104
+0090B7  2  66             .byte  102
+0090B8  2  64             .byte  100
+0090B9  2  62             .byte  98
+0090BA  2  60             .byte  96
+0090BB  2  5E             .byte  94
+0090BC  2  5C             .byte  92
+0090BD  2  5A             .byte  90
+0090BE  2  58             .byte  88
+0090BF  2  57             .byte  87
+0090C0  2  55             .byte  85
+0090C1  2  53             .byte  83
+0090C2  2  51             .byte  81
+0090C3  2  50             .byte  80
+0090C4  2  4E             .byte  78
+0090C5  2  4C             .byte  76
+0090C6  2  4A             .byte  74
+0090C7  2  49             .byte  73
+0090C8  2  47             .byte  71
+0090C9  2  46             .byte  70
+0090CA  2  44             .byte  68
+0090CB  2  42             .byte  66
+0090CC  2  41             .byte  65
+0090CD  2  3F             .byte  63
+0090CE  2  3E             .byte  62
+0090CF  2  3C             .byte  60
+0090D0  2  3B             .byte  59
+0090D1  2  39             .byte  57
+0090D2  2  38             .byte  56
+0090D3  2  36             .byte  54
+0090D4  2  35             .byte  53
+0090D5  2  33             .byte  51
+0090D6  2  32             .byte  50
+0090D7  2  30             .byte  48
+0090D8  2  2F             .byte  47
+0090D9  2  2E             .byte  46
+0090DA  2  2C             .byte  44
+0090DB  2  2B             .byte  43
+0090DC  2  29             .byte  41
+0090DD  2  28             .byte  40
+0090DE  2  27             .byte  39
+0090DF  2  25             .byte  37
+0090E0  2  24             .byte  36
+0090E1  2  23             .byte  35
+0090E2  2  21             .byte  33
+0090E3  2  20             .byte  32
+0090E4  2  1F             .byte  31
+0090E5  2  1E             .byte  30
+0090E6  2  1C             .byte  28
+0090E7  2  1B             .byte  27
+0090E8  2  1A             .byte  26
+0090E9  2  19             .byte  25
+0090EA  2  18             .byte  24
+0090EB  2  16             .byte  22
+0090EC  2  15             .byte  21
+0090ED  2  14             .byte  20
+0090EE  2  13             .byte  19
+0090EF  2  12             .byte  18
+0090F0  2  11             .byte  17
+0090F1  2  0F             .byte  15
+0090F2  2  0E             .byte  14
+0090F3  2  0D             .byte  13
+0090F4  2  0C             .byte  12
+0090F5  2  0B             .byte  11
+0090F6  2  0A             .byte  10
+0090F7  2  09             .byte  9
+0090F8  2  08             .byte  8
+0090F9  2  07             .byte  7
+0090FA  2  06             .byte  6
+0090FB  2  05             .byte  5
+0090FC  2  04             .byte  4
+0090FD  2  03             .byte  3
+0090FE  2  02             .byte  2
+0090FF  2  01             .byte  1
+009100  2               
+009100  1               
+009100  1               ONE_OVER_X_HALVED_LOOKUPS_HIGH:
+009100  1               .include "one_over_8bit_halved_17_15_high.inc"
+009100  2               ; high bytes of lookup for 1/(2*x) for doing x_increments for poly filler ... 0,1,2 are mucked use constants instead...
+009100  2  7F             .byte  127
+009101  2  7F             .byte  127
+009102  2  7F             .byte  127
+009103  2  55             .byte  85
+009104  2  40             .byte  64
+009105  2  33             .byte  51
+009106  2  2A             .byte  42
+009107  2  24             .byte  36
+009108  2  20             .byte  32
+009109  2  1C             .byte  28
+00910A  2  19             .byte  25
+00910B  2  17             .byte  23
+00910C  2  15             .byte  21
+00910D  2  13             .byte  19
+00910E  2  12             .byte  18
+00910F  2  11             .byte  17
+009110  2  10             .byte  16
+009111  2  0F             .byte  15
+009112  2  0E             .byte  14
+009113  2  0D             .byte  13
+009114  2  0C             .byte  12
+009115  2  0C             .byte  12
+009116  2  0B             .byte  11
+009117  2  0B             .byte  11
+009118  2  0A             .byte  10
+009119  2  0A             .byte  10
+00911A  2  09             .byte  9
+00911B  2  09             .byte  9
+00911C  2  09             .byte  9
+00911D  2  08             .byte  8
+00911E  2  08             .byte  8
+00911F  2  08             .byte  8
+009120  2  08             .byte  8
+009121  2  07             .byte  7
+009122  2  07             .byte  7
+009123  2  07             .byte  7
+009124  2  07             .byte  7
+009125  2  06             .byte  6
+009126  2  06             .byte  6
+009127  2  06             .byte  6
+009128  2  06             .byte  6
+009129  2  06             .byte  6
+00912A  2  06             .byte  6
+00912B  2  05             .byte  5
+00912C  2  05             .byte  5
+00912D  2  05             .byte  5
+00912E  2  05             .byte  5
+00912F  2  05             .byte  5
+009130  2  05             .byte  5
+009131  2  05             .byte  5
+009132  2  05             .byte  5
+009133  2  05             .byte  5
+009134  2  04             .byte  4
+009135  2  04             .byte  4
+009136  2  04             .byte  4
+009137  2  04             .byte  4
+009138  2  04             .byte  4
+009139  2  04             .byte  4
+00913A  2  04             .byte  4
+00913B  2  04             .byte  4
+00913C  2  04             .byte  4
+00913D  2  04             .byte  4
+00913E  2  04             .byte  4
+00913F  2  04             .byte  4
+009140  2  04             .byte  4
+009141  2  03             .byte  3
+009142  2  03             .byte  3
+009143  2  03             .byte  3
+009144  2  03             .byte  3
+009145  2  03             .byte  3
+009146  2  03             .byte  3
+009147  2  03             .byte  3
+009148  2  03             .byte  3
+009149  2  03             .byte  3
+00914A  2  03             .byte  3
+00914B  2  03             .byte  3
+00914C  2  03             .byte  3
+00914D  2  03             .byte  3
+00914E  2  03             .byte  3
+00914F  2  03             .byte  3
+009150  2  03             .byte  3
+009151  2  03             .byte  3
+009152  2  03             .byte  3
+009153  2  03             .byte  3
+009154  2  03             .byte  3
+009155  2  03             .byte  3
+009156  2  02             .byte  2
+009157  2  02             .byte  2
+009158  2  02             .byte  2
+009159  2  02             .byte  2
+00915A  2  02             .byte  2
+00915B  2  02             .byte  2
+00915C  2  02             .byte  2
+00915D  2  02             .byte  2
+00915E  2  02             .byte  2
+00915F  2  02             .byte  2
+009160  2  02             .byte  2
+009161  2  02             .byte  2
+009162  2  02             .byte  2
+009163  2  02             .byte  2
+009164  2  02             .byte  2
+009165  2  02             .byte  2
+009166  2  02             .byte  2
+009167  2  02             .byte  2
+009168  2  02             .byte  2
+009169  2  02             .byte  2
+00916A  2  02             .byte  2
+00916B  2  02             .byte  2
+00916C  2  02             .byte  2
+00916D  2  02             .byte  2
+00916E  2  02             .byte  2
+00916F  2  02             .byte  2
+009170  2  02             .byte  2
+009171  2  02             .byte  2
+009172  2  02             .byte  2
+009173  2  02             .byte  2
+009174  2  02             .byte  2
+009175  2  02             .byte  2
+009176  2  02             .byte  2
+009177  2  02             .byte  2
+009178  2  02             .byte  2
+009179  2  02             .byte  2
+00917A  2  02             .byte  2
+00917B  2  02             .byte  2
+00917C  2  02             .byte  2
+00917D  2  02             .byte  2
+00917E  2  02             .byte  2
+00917F  2  02             .byte  2
+009180  2  02             .byte  2
+009181  2  01             .byte  1
+009182  2  01             .byte  1
+009183  2  01             .byte  1
+009184  2  01             .byte  1
+009185  2  01             .byte  1
+009186  2  01             .byte  1
+009187  2  01             .byte  1
+009188  2  01             .byte  1
+009189  2  01             .byte  1
+00918A  2  01             .byte  1
+00918B  2  01             .byte  1
+00918C  2  01             .byte  1
+00918D  2  01             .byte  1
+00918E  2  01             .byte  1
+00918F  2  01             .byte  1
+009190  2  01             .byte  1
+009191  2  01             .byte  1
+009192  2  01             .byte  1
+009193  2  01             .byte  1
+009194  2  01             .byte  1
+009195  2  01             .byte  1
+009196  2  01             .byte  1
+009197  2  01             .byte  1
+009198  2  01             .byte  1
+009199  2  01             .byte  1
+00919A  2  01             .byte  1
+00919B  2  01             .byte  1
+00919C  2  01             .byte  1
+00919D  2  01             .byte  1
+00919E  2  01             .byte  1
+00919F  2  01             .byte  1
+0091A0  2  01             .byte  1
+0091A1  2  01             .byte  1
+0091A2  2  01             .byte  1
+0091A3  2  01             .byte  1
+0091A4  2  01             .byte  1
+0091A5  2  01             .byte  1
+0091A6  2  01             .byte  1
+0091A7  2  01             .byte  1
+0091A8  2  01             .byte  1
+0091A9  2  01             .byte  1
+0091AA  2  01             .byte  1
+0091AB  2  01             .byte  1
+0091AC  2  01             .byte  1
+0091AD  2  01             .byte  1
+0091AE  2  01             .byte  1
+0091AF  2  01             .byte  1
+0091B0  2  01             .byte  1
+0091B1  2  01             .byte  1
+0091B2  2  01             .byte  1
+0091B3  2  01             .byte  1
+0091B4  2  01             .byte  1
+0091B5  2  01             .byte  1
+0091B6  2  01             .byte  1
+0091B7  2  01             .byte  1
+0091B8  2  01             .byte  1
+0091B9  2  01             .byte  1
+0091BA  2  01             .byte  1
+0091BB  2  01             .byte  1
+0091BC  2  01             .byte  1
+0091BD  2  01             .byte  1
+0091BE  2  01             .byte  1
+0091BF  2  01             .byte  1
+0091C0  2  01             .byte  1
+0091C1  2  01             .byte  1
+0091C2  2  01             .byte  1
+0091C3  2  01             .byte  1
+0091C4  2  01             .byte  1
+0091C5  2  01             .byte  1
+0091C6  2  01             .byte  1
+0091C7  2  01             .byte  1
+0091C8  2  01             .byte  1
+0091C9  2  01             .byte  1
+0091CA  2  01             .byte  1
+0091CB  2  01             .byte  1
+0091CC  2  01             .byte  1
+0091CD  2  01             .byte  1
+0091CE  2  01             .byte  1
+0091CF  2  01             .byte  1
+0091D0  2  01             .byte  1
+0091D1  2  01             .byte  1
+0091D2  2  01             .byte  1
+0091D3  2  01             .byte  1
+0091D4  2  01             .byte  1
+0091D5  2  01             .byte  1
+0091D6  2  01             .byte  1
+0091D7  2  01             .byte  1
+0091D8  2  01             .byte  1
+0091D9  2  01             .byte  1
+0091DA  2  01             .byte  1
+0091DB  2  01             .byte  1
+0091DC  2  01             .byte  1
+0091DD  2  01             .byte  1
+0091DE  2  01             .byte  1
+0091DF  2  01             .byte  1
+0091E0  2  01             .byte  1
+0091E1  2  01             .byte  1
+0091E2  2  01             .byte  1
+0091E3  2  01             .byte  1
+0091E4  2  01             .byte  1
+0091E5  2  01             .byte  1
+0091E6  2  01             .byte  1
+0091E7  2  01             .byte  1
+0091E8  2  01             .byte  1
+0091E9  2  01             .byte  1
+0091EA  2  01             .byte  1
+0091EB  2  01             .byte  1
+0091EC  2  01             .byte  1
+0091ED  2  01             .byte  1
+0091EE  2  01             .byte  1
+0091EF  2  01             .byte  1
+0091F0  2  01             .byte  1
+0091F1  2  01             .byte  1
+0091F2  2  01             .byte  1
+0091F3  2  01             .byte  1
+0091F4  2  01             .byte  1
+0091F5  2  01             .byte  1
+0091F6  2  01             .byte  1
+0091F7  2  01             .byte  1
+0091F8  2  01             .byte  1
+0091F9  2  01             .byte  1
+0091FA  2  01             .byte  1
+0091FB  2  01             .byte  1
+0091FC  2  01             .byte  1
+0091FD  2  01             .byte  1
+0091FE  2  01             .byte  1
+0091FF  2  01             .byte  1
+009200  2               
+009200  1               
+009200  1               X_INC_H_TABLE:
+009200  1               .include "x_inc_h_32x.inc"
+009200  2               ; if x_increment high comes back >63, needs adjusted.. 32x and/or neg
+009200  2  00             .byte  0
+009201  2  01             .byte  1
+009202  2  02             .byte  2
+009203  2  03             .byte  3
+009204  2  04             .byte  4
+009205  2  05             .byte  5
+009206  2  06             .byte  6
+009207  2  07             .byte  7
+009208  2  08             .byte  8
+009209  2  09             .byte  9
+00920A  2  0A             .byte  10
+00920B  2  0B             .byte  11
+00920C  2  0C             .byte  12
+00920D  2  0D             .byte  13
+00920E  2  0E             .byte  14
+00920F  2  0F             .byte  15
+009210  2  10             .byte  16
+009211  2  11             .byte  17
+009212  2  12             .byte  18
+009213  2  13             .byte  19
+009214  2  14             .byte  20
+009215  2  15             .byte  21
+009216  2  16             .byte  22
+009217  2  17             .byte  23
+009218  2  18             .byte  24
+009219  2  19             .byte  25
+00921A  2  1A             .byte  26
+00921B  2  1B             .byte  27
+00921C  2  1C             .byte  28
+00921D  2  1D             .byte  29
+00921E  2  1E             .byte  30
+00921F  2  1F             .byte  31
+009220  2  20             .byte  32
+009221  2  21             .byte  33
+009222  2  22             .byte  34
+009223  2  23             .byte  35
+009224  2  24             .byte  36
+009225  2  25             .byte  37
+009226  2  26             .byte  38
+009227  2  27             .byte  39
+009228  2  28             .byte  40
+009229  2  29             .byte  41
+00922A  2  2A             .byte  42
+00922B  2  2B             .byte  43
+00922C  2  2C             .byte  44
+00922D  2  2D             .byte  45
+00922E  2  2E             .byte  46
+00922F  2  2F             .byte  47
+009230  2  30             .byte  48
+009231  2  31             .byte  49
+009232  2  32             .byte  50
+009233  2  33             .byte  51
+009234  2  34             .byte  52
+009235  2  35             .byte  53
+009236  2  36             .byte  54
+009237  2  37             .byte  55
+009238  2  38             .byte  56
+009239  2  39             .byte  57
+00923A  2  3A             .byte  58
+00923B  2  3B             .byte  59
+00923C  2  3C             .byte  60
+00923D  2  3D             .byte  61
+00923E  2  3E             .byte  62
+00923F  2  3F             .byte  63
+009240  2  82             .byte  130
+009241  2  82             .byte  130
+009242  2  82             .byte  130
+009243  2  82             .byte  130
+009244  2  82             .byte  130
+009245  2  82             .byte  130
+009246  2  82             .byte  130
+009247  2  82             .byte  130
+009248  2  82             .byte  130
+009249  2  82             .byte  130
+00924A  2  82             .byte  130
+00924B  2  82             .byte  130
+00924C  2  82             .byte  130
+00924D  2  82             .byte  130
+00924E  2  82             .byte  130
+00924F  2  82             .byte  130
+009250  2  82             .byte  130
+009251  2  82             .byte  130
+009252  2  82             .byte  130
+009253  2  82             .byte  130
+009254  2  82             .byte  130
+009255  2  82             .byte  130
+009256  2  82             .byte  130
+009257  2  82             .byte  130
+009258  2  82             .byte  130
+009259  2  82             .byte  130
+00925A  2  82             .byte  130
+00925B  2  82             .byte  130
+00925C  2  82             .byte  130
+00925D  2  82             .byte  130
+00925E  2  82             .byte  130
+00925F  2  82             .byte  130
+009260  2  83             .byte  131
+009261  2  83             .byte  131
+009262  2  83             .byte  131
+009263  2  83             .byte  131
+009264  2  83             .byte  131
+009265  2  83             .byte  131
+009266  2  83             .byte  131
+009267  2  83             .byte  131
+009268  2  83             .byte  131
+009269  2  83             .byte  131
+00926A  2  83             .byte  131
+00926B  2  83             .byte  131
+00926C  2  83             .byte  131
+00926D  2  83             .byte  131
+00926E  2  83             .byte  131
+00926F  2  83             .byte  131
+009270  2  83             .byte  131
+009271  2  83             .byte  131
+009272  2  83             .byte  131
+009273  2  83             .byte  131
+009274  2  83             .byte  131
+009275  2  83             .byte  131
+009276  2  83             .byte  131
+009277  2  83             .byte  131
+009278  2  83             .byte  131
+009279  2  83             .byte  131
+00927A  2  83             .byte  131
+00927B  2  83             .byte  131
+00927C  2  83             .byte  131
+00927D  2  83             .byte  131
+00927E  2  83             .byte  131
+00927F  2  83             .byte  131
+009280  2  C4             .byte  196
+009281  2  C4             .byte  196
+009282  2  C4             .byte  196
+009283  2  C4             .byte  196
+009284  2  C4             .byte  196
+009285  2  C4             .byte  196
+009286  2  C4             .byte  196
+009287  2  C4             .byte  196
+009288  2  C4             .byte  196
+009289  2  C4             .byte  196
+00928A  2  C4             .byte  196
+00928B  2  C4             .byte  196
+00928C  2  C4             .byte  196
+00928D  2  C4             .byte  196
+00928E  2  C4             .byte  196
+00928F  2  C4             .byte  196
+009290  2  C4             .byte  196
+009291  2  C4             .byte  196
+009292  2  C4             .byte  196
+009293  2  C4             .byte  196
+009294  2  C4             .byte  196
+009295  2  C4             .byte  196
+009296  2  C4             .byte  196
+009297  2  C4             .byte  196
+009298  2  C4             .byte  196
+009299  2  C4             .byte  196
+00929A  2  C4             .byte  196
+00929B  2  C4             .byte  196
+00929C  2  C4             .byte  196
+00929D  2  C4             .byte  196
+00929E  2  C4             .byte  196
+00929F  2  C4             .byte  196
+0092A0  2  C3             .byte  195
+0092A1  2  C3             .byte  195
+0092A2  2  C3             .byte  195
+0092A3  2  C3             .byte  195
+0092A4  2  C3             .byte  195
+0092A5  2  C3             .byte  195
+0092A6  2  C3             .byte  195
+0092A7  2  C3             .byte  195
+0092A8  2  C3             .byte  195
+0092A9  2  C3             .byte  195
+0092AA  2  C3             .byte  195
+0092AB  2  C3             .byte  195
+0092AC  2  C3             .byte  195
+0092AD  2  C3             .byte  195
+0092AE  2  C3             .byte  195
+0092AF  2  C3             .byte  195
+0092B0  2  C3             .byte  195
+0092B1  2  C3             .byte  195
+0092B2  2  C3             .byte  195
+0092B3  2  C3             .byte  195
+0092B4  2  C3             .byte  195
+0092B5  2  C3             .byte  195
+0092B6  2  C3             .byte  195
+0092B7  2  C3             .byte  195
+0092B8  2  C3             .byte  195
+0092B9  2  C3             .byte  195
+0092BA  2  C3             .byte  195
+0092BB  2  C3             .byte  195
+0092BC  2  C3             .byte  195
+0092BD  2  C3             .byte  195
+0092BE  2  C3             .byte  195
+0092BF  2  C3             .byte  195
+0092C0  2  C2             .byte  194
+0092C1  2  7F             .byte  127
+0092C2  2  7E             .byte  126
+0092C3  2  7D             .byte  125
+0092C4  2  7C             .byte  124
+0092C5  2  7B             .byte  123
+0092C6  2  7A             .byte  122
+0092C7  2  79             .byte  121
+0092C8  2  78             .byte  120
+0092C9  2  77             .byte  119
+0092CA  2  76             .byte  118
+0092CB  2  75             .byte  117
+0092CC  2  74             .byte  116
+0092CD  2  73             .byte  115
+0092CE  2  72             .byte  114
+0092CF  2  71             .byte  113
+0092D0  2  70             .byte  112
+0092D1  2  6F             .byte  111
+0092D2  2  6E             .byte  110
+0092D3  2  6D             .byte  109
+0092D4  2  6C             .byte  108
+0092D5  2  6B             .byte  107
+0092D6  2  6A             .byte  106
+0092D7  2  69             .byte  105
+0092D8  2  68             .byte  104
+0092D9  2  67             .byte  103
+0092DA  2  66             .byte  102
+0092DB  2  65             .byte  101
+0092DC  2  64             .byte  100
+0092DD  2  63             .byte  99
+0092DE  2  62             .byte  98
+0092DF  2  61             .byte  97
+0092E0  2  60             .byte  96
+0092E1  2  5F             .byte  95
+0092E2  2  5E             .byte  94
+0092E3  2  5D             .byte  93
+0092E4  2  5C             .byte  92
+0092E5  2  5B             .byte  91
+0092E6  2  5A             .byte  90
+0092E7  2  59             .byte  89
+0092E8  2  58             .byte  88
+0092E9  2  57             .byte  87
+0092EA  2  56             .byte  86
+0092EB  2  55             .byte  85
+0092EC  2  54             .byte  84
+0092ED  2  53             .byte  83
+0092EE  2  52             .byte  82
+0092EF  2  51             .byte  81
+0092F0  2  50             .byte  80
+0092F1  2  4F             .byte  79
+0092F2  2  4E             .byte  78
+0092F3  2  4D             .byte  77
+0092F4  2  4C             .byte  76
+0092F5  2  4B             .byte  75
+0092F6  2  4A             .byte  74
+0092F7  2  49             .byte  73
+0092F8  2  48             .byte  72
+0092F9  2  47             .byte  71
+0092FA  2  46             .byte  70
+0092FB  2  45             .byte  69
+0092FC  2  44             .byte  68
+0092FD  2  43             .byte  67
+0092FE  2  42             .byte  66
+0092FF  2  41             .byte  65
+009300  2               
+009300  1               
+009300  1               X_INC_L_TABLE:
+009300  1               .include "x_inc_l_32x.inc"
+009300  2               ; if x_increment high comes back >63, needs adjusted.. 32x and/or neg
+009300  2  00             .byte  0
+009301  2  00             .byte  0
+009302  2  00             .byte  0
+009303  2  00             .byte  0
+009304  2  00             .byte  0
+009305  2  00             .byte  0
+009306  2  00             .byte  0
+009307  2  00             .byte  0
+009308  2  00             .byte  0
+009309  2  00             .byte  0
+00930A  2  00             .byte  0
+00930B  2  00             .byte  0
+00930C  2  00             .byte  0
+00930D  2  00             .byte  0
+00930E  2  00             .byte  0
+00930F  2  00             .byte  0
+009310  2  00             .byte  0
+009311  2  00             .byte  0
+009312  2  00             .byte  0
+009313  2  00             .byte  0
+009314  2  00             .byte  0
+009315  2  00             .byte  0
+009316  2  00             .byte  0
+009317  2  00             .byte  0
+009318  2  00             .byte  0
+009319  2  00             .byte  0
+00931A  2  00             .byte  0
+00931B  2  00             .byte  0
+00931C  2  00             .byte  0
+00931D  2  00             .byte  0
+00931E  2  00             .byte  0
+00931F  2  00             .byte  0
+009320  2  00             .byte  0
+009321  2  00             .byte  0
+009322  2  00             .byte  0
+009323  2  00             .byte  0
+009324  2  00             .byte  0
+009325  2  00             .byte  0
+009326  2  00             .byte  0
+009327  2  00             .byte  0
+009328  2  00             .byte  0
+009329  2  00             .byte  0
+00932A  2  00             .byte  0
+00932B  2  00             .byte  0
+00932C  2  00             .byte  0
+00932D  2  00             .byte  0
+00932E  2  00             .byte  0
+00932F  2  00             .byte  0
+009330  2  00             .byte  0
+009331  2  00             .byte  0
+009332  2  00             .byte  0
+009333  2  00             .byte  0
+009334  2  00             .byte  0
+009335  2  00             .byte  0
+009336  2  00             .byte  0
+009337  2  00             .byte  0
+009338  2  00             .byte  0
+009339  2  00             .byte  0
+00933A  2  00             .byte  0
+00933B  2  00             .byte  0
+00933C  2  00             .byte  0
+00933D  2  00             .byte  0
+00933E  2  00             .byte  0
+00933F  2  00             .byte  0
+009340  2  00             .byte  0
+009341  2  08             .byte  8
+009342  2  10             .byte  16
+009343  2  18             .byte  24
+009344  2  20             .byte  32
+009345  2  28             .byte  40
+009346  2  30             .byte  48
+009347  2  38             .byte  56
+009348  2  40             .byte  64
+009349  2  48             .byte  72
+00934A  2  50             .byte  80
+00934B  2  58             .byte  88
+00934C  2  60             .byte  96
+00934D  2  68             .byte  104
+00934E  2  70             .byte  112
+00934F  2  78             .byte  120
+009350  2  80             .byte  128
+009351  2  88             .byte  136
+009352  2  90             .byte  144
+009353  2  98             .byte  152
+009354  2  A0             .byte  160
+009355  2  A8             .byte  168
+009356  2  B0             .byte  176
+009357  2  B8             .byte  184
+009358  2  C0             .byte  192
+009359  2  C8             .byte  200
+00935A  2  D0             .byte  208
+00935B  2  D8             .byte  216
+00935C  2  E0             .byte  224
+00935D  2  E8             .byte  232
+00935E  2  F0             .byte  240
+00935F  2  F8             .byte  248
+009360  2  00             .byte  0
+009361  2  08             .byte  8
+009362  2  10             .byte  16
+009363  2  18             .byte  24
+009364  2  20             .byte  32
+009365  2  28             .byte  40
+009366  2  30             .byte  48
+009367  2  38             .byte  56
+009368  2  40             .byte  64
+009369  2  48             .byte  72
+00936A  2  50             .byte  80
+00936B  2  58             .byte  88
+00936C  2  60             .byte  96
+00936D  2  68             .byte  104
+00936E  2  70             .byte  112
+00936F  2  78             .byte  120
+009370  2  80             .byte  128
+009371  2  88             .byte  136
+009372  2  90             .byte  144
+009373  2  98             .byte  152
+009374  2  A0             .byte  160
+009375  2  A8             .byte  168
+009376  2  B0             .byte  176
+009377  2  B8             .byte  184
+009378  2  C0             .byte  192
+009379  2  C8             .byte  200
+00937A  2  D0             .byte  208
+00937B  2  D8             .byte  216
+00937C  2  E0             .byte  224
+00937D  2  E8             .byte  232
+00937E  2  F0             .byte  240
+00937F  2  F8             .byte  248
+009380  2  00             .byte  0
+009381  2  08             .byte  8
+009382  2  10             .byte  16
+009383  2  18             .byte  24
+009384  2  20             .byte  32
+009385  2  28             .byte  40
+009386  2  30             .byte  48
+009387  2  38             .byte  56
+009388  2  40             .byte  64
+009389  2  48             .byte  72
+00938A  2  50             .byte  80
+00938B  2  58             .byte  88
+00938C  2  60             .byte  96
+00938D  2  68             .byte  104
+00938E  2  70             .byte  112
+00938F  2  78             .byte  120
+009390  2  80             .byte  128
+009391  2  88             .byte  136
+009392  2  90             .byte  144
+009393  2  98             .byte  152
+009394  2  A0             .byte  160
+009395  2  A8             .byte  168
+009396  2  B0             .byte  176
+009397  2  B8             .byte  184
+009398  2  C0             .byte  192
+009399  2  C8             .byte  200
+00939A  2  D0             .byte  208
+00939B  2  D8             .byte  216
+00939C  2  E0             .byte  224
+00939D  2  E8             .byte  232
+00939E  2  F0             .byte  240
+00939F  2  F8             .byte  248
+0093A0  2  00             .byte  0
+0093A1  2  08             .byte  8
+0093A2  2  10             .byte  16
+0093A3  2  18             .byte  24
+0093A4  2  20             .byte  32
+0093A5  2  28             .byte  40
+0093A6  2  30             .byte  48
+0093A7  2  38             .byte  56
+0093A8  2  40             .byte  64
+0093A9  2  48             .byte  72
+0093AA  2  50             .byte  80
+0093AB  2  58             .byte  88
+0093AC  2  60             .byte  96
+0093AD  2  68             .byte  104
+0093AE  2  70             .byte  112
+0093AF  2  78             .byte  120
+0093B0  2  80             .byte  128
+0093B1  2  88             .byte  136
+0093B2  2  90             .byte  144
+0093B3  2  98             .byte  152
+0093B4  2  A0             .byte  160
+0093B5  2  A8             .byte  168
+0093B6  2  B0             .byte  176
+0093B7  2  B8             .byte  184
+0093B8  2  C0             .byte  192
+0093B9  2  C8             .byte  200
+0093BA  2  D0             .byte  208
+0093BB  2  D8             .byte  216
+0093BC  2  E0             .byte  224
+0093BD  2  E8             .byte  232
+0093BE  2  F0             .byte  240
+0093BF  2  F8             .byte  248
+0093C0  2  00             .byte  0
+0093C1  2  00             .byte  0
+0093C2  2  00             .byte  0
+0093C3  2  00             .byte  0
+0093C4  2  00             .byte  0
+0093C5  2  00             .byte  0
+0093C6  2  00             .byte  0
+0093C7  2  00             .byte  0
+0093C8  2  00             .byte  0
+0093C9  2  00             .byte  0
+0093CA  2  00             .byte  0
+0093CB  2  00             .byte  0
+0093CC  2  00             .byte  0
+0093CD  2  00             .byte  0
+0093CE  2  00             .byte  0
+0093CF  2  00             .byte  0
+0093D0  2  00             .byte  0
+0093D1  2  00             .byte  0
+0093D2  2  00             .byte  0
+0093D3  2  00             .byte  0
+0093D4  2  00             .byte  0
+0093D5  2  00             .byte  0
+0093D6  2  00             .byte  0
+0093D7  2  00             .byte  0
+0093D8  2  00             .byte  0
+0093D9  2  00             .byte  0
+0093DA  2  00             .byte  0
+0093DB  2  00             .byte  0
+0093DC  2  00             .byte  0
+0093DD  2  00             .byte  0
+0093DE  2  00             .byte  0
+0093DF  2  00             .byte  0
+0093E0  2  00             .byte  0
+0093E1  2  00             .byte  0
+0093E2  2  00             .byte  0
+0093E3  2  00             .byte  0
+0093E4  2  00             .byte  0
+0093E5  2  00             .byte  0
+0093E6  2  00             .byte  0
+0093E7  2  00             .byte  0
+0093E8  2  00             .byte  0
+0093E9  2  00             .byte  0
+0093EA  2  00             .byte  0
+0093EB  2  00             .byte  0
+0093EC  2  00             .byte  0
+0093ED  2  00             .byte  0
+0093EE  2  00             .byte  0
+0093EF  2  00             .byte  0
+0093F0  2  00             .byte  0
+0093F1  2  00             .byte  0
+0093F2  2  00             .byte  0
+0093F3  2  00             .byte  0
+0093F4  2  00             .byte  0
+0093F5  2  00             .byte  0
+0093F6  2  00             .byte  0
+0093F7  2  00             .byte  0
+0093F8  2  00             .byte  0
+0093F9  2  00             .byte  0
+0093FA  2  00             .byte  0
+0093FB  2  00             .byte  0
+0093FC  2  00             .byte  0
+0093FD  2  00             .byte  0
+0093FE  2  00             .byte  0
+0093FF  2  00             .byte  0
+009400  2               
+009400  1               
+009400  1               .end
