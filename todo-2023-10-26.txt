@@ -370,9 +370,30 @@ TODO 	output some text or something on layer 1 as overlay...80
 
 1055 	ok getting back to stuff.. go to some sort of clean state and re-add functionality..
 		commit this mess... 
-		 
+1100  	starting from scratch with polyfills-001.asm
+		creating an hfs_x16.inc so I don't go too much crazier
+1230 	OK.... even just enabling mouse under basic am getting same weirdness now.. maybe really do just need reboot...
 
+1255 	OK... not sure why it is failing to write the cursor sprite to VRAM  
+1305 	battery running low.. 
+
+
+1620 	getting back at it .. 
+
+
+2023/11/22
+0840 	getting back at it - quick check in the web-based emulator, the mouse doesn't always track completely.. so isn't
+		issue with my code exactly.. ok... but still would like to get better arrangement for my code going forward,
+		especially with these LUTs that need to be page-aligned...
+
+		making a cx16-asm-hfs.cfg for cl65 to help establish what I want.. 
+0935 	OK I have hfs_x16_stub.inc to start a program, and then the other .inc, and that cx-asm-hfs.cfg which needs added 
+		to this project..
+		the cursor sprite loads Ok ... the data is all aligned.. life is good again? 
 TODO 	troubleshoot polyfills.asm / mouse issue
+2023/11/22 	0940 	DONE
+
+
 TODO 	mode7 style for floors / ceiling rendering
 
 TODO 	distance lighting/fog - would require reducing needed palette to 16-64 colors .. would be amazed if there's over

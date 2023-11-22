@@ -1,0 +1,1454 @@
+ca65 V2.19 - Git 8e6c0c1
+Main file   : polyfills-001.asm
+Current file: polyfills-001.asm
+
+000000r 1               .include "hfs_x16_stub.inc"
+000000r 2  4C rr rr       jmp INIT ;
+000003r 2               ; now we're at RAM address $0810 - there's 240 bytes from here to next page boundary.. code to load bank files could go here later...
+000003r 2               ; for now, want to be sure we end at page boundary
+000003r 2               HFS_DEBUG_PAD_ZONE:
+000003r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ; $0810 - $081F
+000007r 2  04 05 06 07  
+00000Br 2  08 09 0A 0B  
+000013r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0820 - $083F
+000017r 2  04 05 06 07  
+00001Br 2  08 09 0A 0B  
+000033r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0840 - $085F
+000037r 2  04 05 06 07  
+00003Br 2  08 09 0A 0B  
+000053r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0860 - $087F
+000057r 2  04 05 06 07  
+00005Br 2  08 09 0A 0B  
+000073r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0880 - $089F
+000077r 2  04 05 06 07  
+00007Br 2  08 09 0A 0B  
+000093r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08A0 - $08BF
+000097r 2  04 05 06 07  
+00009Br 2  08 09 0A 0B  
+0000B3r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08C0 - $08DF
+0000B7r 2  04 05 06 07  
+0000BBr 2  08 09 0A 0B  
+0000D3r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08E0 - $08FF
+0000D7r 2  04 05 06 07  
+0000DBr 2  08 09 0A 0B  
+0000F3r 2               
+0000F3r 2               ; actual calling file would start at page boundary if no functions in this file...
+0000F3r 2               
+0000F3r 1               
+0000F3r 1               ONE_OVER_X_HALVED_LOOKUPS_LOW:
+0000F3r 1               .include "one_over_8bit_halved_17_15_low.inc"
+0000F3r 2               ; low bytes of lookup for 1/(2*x) for doing x_increments for poly filler ... 0,1,2 are mucked use constants instead...
+0000F3r 2  FF             .byte  255
+0000F4r 2  FF             .byte  255
+0000F5r 2  FF             .byte  255
+0000F6r 2  55             .byte  85
+0000F7r 2  00             .byte  0
+0000F8r 2  33             .byte  51
+0000F9r 2  AA             .byte  170
+0000FAr 2  92             .byte  146
+0000FBr 2  00             .byte  0
+0000FCr 2  71             .byte  113
+0000FDr 2  99             .byte  153
+0000FEr 2  45             .byte  69
+0000FFr 2  55             .byte  85
+000100r 2  B1             .byte  177
+000101r 2  49             .byte  73
+000102r 2  11             .byte  17
+000103r 2  00             .byte  0
+000104r 2  0F             .byte  15
+000105r 2  38             .byte  56
+000106r 2  79             .byte  121
+000107r 2  CC             .byte  204
+000108r 2  30             .byte  48
+000109r 2  A2             .byte  162
+00010Ar 2  21             .byte  33
+00010Br 2  AA             .byte  170
+00010Cr 2  3D             .byte  61
+00010Dr 2  D8             .byte  216
+00010Er 2  7B             .byte  123
+00010Fr 2  24             .byte  36
+000110r 2  D3             .byte  211
+000111r 2  88             .byte  136
+000112r 2  42             .byte  66
+000113r 2  00             .byte  0
+000114r 2  C1             .byte  193
+000115r 2  87             .byte  135
+000116r 2  50             .byte  80
+000117r 2  1C             .byte  28
+000118r 2  EB             .byte  235
+000119r 2  BC             .byte  188
+00011Ar 2  90             .byte  144
+00011Br 2  66             .byte  102
+00011Cr 2  3E             .byte  62
+00011Dr 2  18             .byte  24
+00011Er 2  F4             .byte  244
+00011Fr 2  D1             .byte  209
+000120r 2  B0             .byte  176
+000121r 2  90             .byte  144
+000122r 2  72             .byte  114
+000123r 2  55             .byte  85
+000124r 2  39             .byte  57
+000125r 2  1E             .byte  30
+000126r 2  05             .byte  5
+000127r 2  EC             .byte  236
+000128r 2  D4             .byte  212
+000129r 2  BD             .byte  189
+00012Ar 2  A7             .byte  167
+00012Br 2  92             .byte  146
+00012Cr 2  7D             .byte  125
+00012Dr 2  69             .byte  105
+00012Er 2  56             .byte  86
+00012Fr 2  44             .byte  68
+000130r 2  32             .byte  50
+000131r 2  21             .byte  33
+000132r 2  10             .byte  16
+000133r 2  00             .byte  0
+000134r 2  F0             .byte  240
+000135r 2  E0             .byte  224
+000136r 2  D2             .byte  210
+000137r 2  C3             .byte  195
+000138r 2  B5             .byte  181
+000139r 2  A8             .byte  168
+00013Ar 2  9B             .byte  155
+00013Br 2  8E             .byte  142
+00013Cr 2  81             .byte  129
+00013Dr 2  75             .byte  117
+00013Er 2  69             .byte  105
+00013Fr 2  5E             .byte  94
+000140r 2  53             .byte  83
+000141r 2  48             .byte  72
+000142r 2  3D             .byte  61
+000143r 2  33             .byte  51
+000144r 2  29             .byte  41
+000145r 2  1F             .byte  31
+000146r 2  15             .byte  21
+000147r 2  0C             .byte  12
+000148r 2  03             .byte  3
+000149r 2  FA             .byte  250
+00014Ar 2  F1             .byte  241
+00014Br 2  E8             .byte  232
+00014Cr 2  E0             .byte  224
+00014Dr 2  D8             .byte  216
+00014Er 2  D0             .byte  208
+00014Fr 2  C8             .byte  200
+000150r 2  C0             .byte  192
+000151r 2  B9             .byte  185
+000152r 2  B1             .byte  177
+000153r 2  AA             .byte  170
+000154r 2  A3             .byte  163
+000155r 2  9C             .byte  156
+000156r 2  95             .byte  149
+000157r 2  8F             .byte  143
+000158r 2  88             .byte  136
+000159r 2  82             .byte  130
+00015Ar 2  7C             .byte  124
+00015Br 2  76             .byte  118
+00015Cr 2  70             .byte  112
+00015Dr 2  6A             .byte  106
+00015Er 2  64             .byte  100
+00015Fr 2  5E             .byte  94
+000160r 2  59             .byte  89
+000161r 2  53             .byte  83
+000162r 2  4E             .byte  78
+000163r 2  49             .byte  73
+000164r 2  43             .byte  67
+000165r 2  3E             .byte  62
+000166r 2  39             .byte  57
+000167r 2  34             .byte  52
+000168r 2  30             .byte  48
+000169r 2  2B             .byte  43
+00016Ar 2  26             .byte  38
+00016Br 2  22             .byte  34
+00016Cr 2  1D             .byte  29
+00016Dr 2  19             .byte  25
+00016Er 2  14             .byte  20
+00016Fr 2  10             .byte  16
+000170r 2  0C             .byte  12
+000171r 2  08             .byte  8
+000172r 2  04             .byte  4
+000173r 2  00             .byte  0
+000174r 2  FC             .byte  252
+000175r 2  F8             .byte  248
+000176r 2  F4             .byte  244
+000177r 2  F0             .byte  240
+000178r 2  EC             .byte  236
+000179r 2  E9             .byte  233
+00017Ar 2  E5             .byte  229
+00017Br 2  E1             .byte  225
+00017Cr 2  DE             .byte  222
+00017Dr 2  DA             .byte  218
+00017Er 2  D7             .byte  215
+00017Fr 2  D4             .byte  212
+000180r 2  D0             .byte  208
+000181r 2  CD             .byte  205
+000182r 2  CA             .byte  202
+000183r 2  C7             .byte  199
+000184r 2  C3             .byte  195
+000185r 2  C0             .byte  192
+000186r 2  BD             .byte  189
+000187r 2  BA             .byte  186
+000188r 2  B7             .byte  183
+000189r 2  B4             .byte  180
+00018Ar 2  B2             .byte  178
+00018Br 2  AF             .byte  175
+00018Cr 2  AC             .byte  172
+00018Dr 2  A9             .byte  169
+00018Er 2  A6             .byte  166
+00018Fr 2  A4             .byte  164
+000190r 2  A1             .byte  161
+000191r 2  9E             .byte  158
+000192r 2  9C             .byte  156
+000193r 2  99             .byte  153
+000194r 2  97             .byte  151
+000195r 2  94             .byte  148
+000196r 2  92             .byte  146
+000197r 2  8F             .byte  143
+000198r 2  8D             .byte  141
+000199r 2  8A             .byte  138
+00019Ar 2  88             .byte  136
+00019Br 2  86             .byte  134
+00019Cr 2  83             .byte  131
+00019Dr 2  81             .byte  129
+00019Er 2  7F             .byte  127
+00019Fr 2  7D             .byte  125
+0001A0r 2  7A             .byte  122
+0001A1r 2  78             .byte  120
+0001A2r 2  76             .byte  118
+0001A3r 2  74             .byte  116
+0001A4r 2  72             .byte  114
+0001A5r 2  70             .byte  112
+0001A6r 2  6E             .byte  110
+0001A7r 2  6C             .byte  108
+0001A8r 2  6A             .byte  106
+0001A9r 2  68             .byte  104
+0001AAr 2  66             .byte  102
+0001ABr 2  64             .byte  100
+0001ACr 2  62             .byte  98
+0001ADr 2  60             .byte  96
+0001AEr 2  5E             .byte  94
+0001AFr 2  5C             .byte  92
+0001B0r 2  5A             .byte  90
+0001B1r 2  58             .byte  88
+0001B2r 2  57             .byte  87
+0001B3r 2  55             .byte  85
+0001B4r 2  53             .byte  83
+0001B5r 2  51             .byte  81
+0001B6r 2  50             .byte  80
+0001B7r 2  4E             .byte  78
+0001B8r 2  4C             .byte  76
+0001B9r 2  4A             .byte  74
+0001BAr 2  49             .byte  73
+0001BBr 2  47             .byte  71
+0001BCr 2  46             .byte  70
+0001BDr 2  44             .byte  68
+0001BEr 2  42             .byte  66
+0001BFr 2  41             .byte  65
+0001C0r 2  3F             .byte  63
+0001C1r 2  3E             .byte  62
+0001C2r 2  3C             .byte  60
+0001C3r 2  3B             .byte  59
+0001C4r 2  39             .byte  57
+0001C5r 2  38             .byte  56
+0001C6r 2  36             .byte  54
+0001C7r 2  35             .byte  53
+0001C8r 2  33             .byte  51
+0001C9r 2  32             .byte  50
+0001CAr 2  30             .byte  48
+0001CBr 2  2F             .byte  47
+0001CCr 2  2E             .byte  46
+0001CDr 2  2C             .byte  44
+0001CEr 2  2B             .byte  43
+0001CFr 2  29             .byte  41
+0001D0r 2  28             .byte  40
+0001D1r 2  27             .byte  39
+0001D2r 2  25             .byte  37
+0001D3r 2  24             .byte  36
+0001D4r 2  23             .byte  35
+0001D5r 2  21             .byte  33
+0001D6r 2  20             .byte  32
+0001D7r 2  1F             .byte  31
+0001D8r 2  1E             .byte  30
+0001D9r 2  1C             .byte  28
+0001DAr 2  1B             .byte  27
+0001DBr 2  1A             .byte  26
+0001DCr 2  19             .byte  25
+0001DDr 2  18             .byte  24
+0001DEr 2  16             .byte  22
+0001DFr 2  15             .byte  21
+0001E0r 2  14             .byte  20
+0001E1r 2  13             .byte  19
+0001E2r 2  12             .byte  18
+0001E3r 2  11             .byte  17
+0001E4r 2  0F             .byte  15
+0001E5r 2  0E             .byte  14
+0001E6r 2  0D             .byte  13
+0001E7r 2  0C             .byte  12
+0001E8r 2  0B             .byte  11
+0001E9r 2  0A             .byte  10
+0001EAr 2  09             .byte  9
+0001EBr 2  08             .byte  8
+0001ECr 2  07             .byte  7
+0001EDr 2  06             .byte  6
+0001EEr 2  05             .byte  5
+0001EFr 2  04             .byte  4
+0001F0r 2  03             .byte  3
+0001F1r 2  02             .byte  2
+0001F2r 2  01             .byte  1
+0001F3r 2               
+0001F3r 1               ONE_OVER_X_HALVED_LOOKUPS_HIGH:
+0001F3r 1               .include "one_over_8bit_halved_17_15_high.inc"
+0001F3r 2               ; high bytes of lookup for 1/(2*x) for doing x_increments for poly filler ... 0,1,2 are mucked use constants instead...
+0001F3r 2  7F             .byte  127
+0001F4r 2  7F             .byte  127
+0001F5r 2  7F             .byte  127
+0001F6r 2  55             .byte  85
+0001F7r 2  40             .byte  64
+0001F8r 2  33             .byte  51
+0001F9r 2  2A             .byte  42
+0001FAr 2  24             .byte  36
+0001FBr 2  20             .byte  32
+0001FCr 2  1C             .byte  28
+0001FDr 2  19             .byte  25
+0001FEr 2  17             .byte  23
+0001FFr 2  15             .byte  21
+000200r 2  13             .byte  19
+000201r 2  12             .byte  18
+000202r 2  11             .byte  17
+000203r 2  10             .byte  16
+000204r 2  0F             .byte  15
+000205r 2  0E             .byte  14
+000206r 2  0D             .byte  13
+000207r 2  0C             .byte  12
+000208r 2  0C             .byte  12
+000209r 2  0B             .byte  11
+00020Ar 2  0B             .byte  11
+00020Br 2  0A             .byte  10
+00020Cr 2  0A             .byte  10
+00020Dr 2  09             .byte  9
+00020Er 2  09             .byte  9
+00020Fr 2  09             .byte  9
+000210r 2  08             .byte  8
+000211r 2  08             .byte  8
+000212r 2  08             .byte  8
+000213r 2  08             .byte  8
+000214r 2  07             .byte  7
+000215r 2  07             .byte  7
+000216r 2  07             .byte  7
+000217r 2  07             .byte  7
+000218r 2  06             .byte  6
+000219r 2  06             .byte  6
+00021Ar 2  06             .byte  6
+00021Br 2  06             .byte  6
+00021Cr 2  06             .byte  6
+00021Dr 2  06             .byte  6
+00021Er 2  05             .byte  5
+00021Fr 2  05             .byte  5
+000220r 2  05             .byte  5
+000221r 2  05             .byte  5
+000222r 2  05             .byte  5
+000223r 2  05             .byte  5
+000224r 2  05             .byte  5
+000225r 2  05             .byte  5
+000226r 2  05             .byte  5
+000227r 2  04             .byte  4
+000228r 2  04             .byte  4
+000229r 2  04             .byte  4
+00022Ar 2  04             .byte  4
+00022Br 2  04             .byte  4
+00022Cr 2  04             .byte  4
+00022Dr 2  04             .byte  4
+00022Er 2  04             .byte  4
+00022Fr 2  04             .byte  4
+000230r 2  04             .byte  4
+000231r 2  04             .byte  4
+000232r 2  04             .byte  4
+000233r 2  04             .byte  4
+000234r 2  03             .byte  3
+000235r 2  03             .byte  3
+000236r 2  03             .byte  3
+000237r 2  03             .byte  3
+000238r 2  03             .byte  3
+000239r 2  03             .byte  3
+00023Ar 2  03             .byte  3
+00023Br 2  03             .byte  3
+00023Cr 2  03             .byte  3
+00023Dr 2  03             .byte  3
+00023Er 2  03             .byte  3
+00023Fr 2  03             .byte  3
+000240r 2  03             .byte  3
+000241r 2  03             .byte  3
+000242r 2  03             .byte  3
+000243r 2  03             .byte  3
+000244r 2  03             .byte  3
+000245r 2  03             .byte  3
+000246r 2  03             .byte  3
+000247r 2  03             .byte  3
+000248r 2  03             .byte  3
+000249r 2  02             .byte  2
+00024Ar 2  02             .byte  2
+00024Br 2  02             .byte  2
+00024Cr 2  02             .byte  2
+00024Dr 2  02             .byte  2
+00024Er 2  02             .byte  2
+00024Fr 2  02             .byte  2
+000250r 2  02             .byte  2
+000251r 2  02             .byte  2
+000252r 2  02             .byte  2
+000253r 2  02             .byte  2
+000254r 2  02             .byte  2
+000255r 2  02             .byte  2
+000256r 2  02             .byte  2
+000257r 2  02             .byte  2
+000258r 2  02             .byte  2
+000259r 2  02             .byte  2
+00025Ar 2  02             .byte  2
+00025Br 2  02             .byte  2
+00025Cr 2  02             .byte  2
+00025Dr 2  02             .byte  2
+00025Er 2  02             .byte  2
+00025Fr 2  02             .byte  2
+000260r 2  02             .byte  2
+000261r 2  02             .byte  2
+000262r 2  02             .byte  2
+000263r 2  02             .byte  2
+000264r 2  02             .byte  2
+000265r 2  02             .byte  2
+000266r 2  02             .byte  2
+000267r 2  02             .byte  2
+000268r 2  02             .byte  2
+000269r 2  02             .byte  2
+00026Ar 2  02             .byte  2
+00026Br 2  02             .byte  2
+00026Cr 2  02             .byte  2
+00026Dr 2  02             .byte  2
+00026Er 2  02             .byte  2
+00026Fr 2  02             .byte  2
+000270r 2  02             .byte  2
+000271r 2  02             .byte  2
+000272r 2  02             .byte  2
+000273r 2  02             .byte  2
+000274r 2  01             .byte  1
+000275r 2  01             .byte  1
+000276r 2  01             .byte  1
+000277r 2  01             .byte  1
+000278r 2  01             .byte  1
+000279r 2  01             .byte  1
+00027Ar 2  01             .byte  1
+00027Br 2  01             .byte  1
+00027Cr 2  01             .byte  1
+00027Dr 2  01             .byte  1
+00027Er 2  01             .byte  1
+00027Fr 2  01             .byte  1
+000280r 2  01             .byte  1
+000281r 2  01             .byte  1
+000282r 2  01             .byte  1
+000283r 2  01             .byte  1
+000284r 2  01             .byte  1
+000285r 2  01             .byte  1
+000286r 2  01             .byte  1
+000287r 2  01             .byte  1
+000288r 2  01             .byte  1
+000289r 2  01             .byte  1
+00028Ar 2  01             .byte  1
+00028Br 2  01             .byte  1
+00028Cr 2  01             .byte  1
+00028Dr 2  01             .byte  1
+00028Er 2  01             .byte  1
+00028Fr 2  01             .byte  1
+000290r 2  01             .byte  1
+000291r 2  01             .byte  1
+000292r 2  01             .byte  1
+000293r 2  01             .byte  1
+000294r 2  01             .byte  1
+000295r 2  01             .byte  1
+000296r 2  01             .byte  1
+000297r 2  01             .byte  1
+000298r 2  01             .byte  1
+000299r 2  01             .byte  1
+00029Ar 2  01             .byte  1
+00029Br 2  01             .byte  1
+00029Cr 2  01             .byte  1
+00029Dr 2  01             .byte  1
+00029Er 2  01             .byte  1
+00029Fr 2  01             .byte  1
+0002A0r 2  01             .byte  1
+0002A1r 2  01             .byte  1
+0002A2r 2  01             .byte  1
+0002A3r 2  01             .byte  1
+0002A4r 2  01             .byte  1
+0002A5r 2  01             .byte  1
+0002A6r 2  01             .byte  1
+0002A7r 2  01             .byte  1
+0002A8r 2  01             .byte  1
+0002A9r 2  01             .byte  1
+0002AAr 2  01             .byte  1
+0002ABr 2  01             .byte  1
+0002ACr 2  01             .byte  1
+0002ADr 2  01             .byte  1
+0002AEr 2  01             .byte  1
+0002AFr 2  01             .byte  1
+0002B0r 2  01             .byte  1
+0002B1r 2  01             .byte  1
+0002B2r 2  01             .byte  1
+0002B3r 2  01             .byte  1
+0002B4r 2  01             .byte  1
+0002B5r 2  01             .byte  1
+0002B6r 2  01             .byte  1
+0002B7r 2  01             .byte  1
+0002B8r 2  01             .byte  1
+0002B9r 2  01             .byte  1
+0002BAr 2  01             .byte  1
+0002BBr 2  01             .byte  1
+0002BCr 2  01             .byte  1
+0002BDr 2  01             .byte  1
+0002BEr 2  01             .byte  1
+0002BFr 2  01             .byte  1
+0002C0r 2  01             .byte  1
+0002C1r 2  01             .byte  1
+0002C2r 2  01             .byte  1
+0002C3r 2  01             .byte  1
+0002C4r 2  01             .byte  1
+0002C5r 2  01             .byte  1
+0002C6r 2  01             .byte  1
+0002C7r 2  01             .byte  1
+0002C8r 2  01             .byte  1
+0002C9r 2  01             .byte  1
+0002CAr 2  01             .byte  1
+0002CBr 2  01             .byte  1
+0002CCr 2  01             .byte  1
+0002CDr 2  01             .byte  1
+0002CEr 2  01             .byte  1
+0002CFr 2  01             .byte  1
+0002D0r 2  01             .byte  1
+0002D1r 2  01             .byte  1
+0002D2r 2  01             .byte  1
+0002D3r 2  01             .byte  1
+0002D4r 2  01             .byte  1
+0002D5r 2  01             .byte  1
+0002D6r 2  01             .byte  1
+0002D7r 2  01             .byte  1
+0002D8r 2  01             .byte  1
+0002D9r 2  01             .byte  1
+0002DAr 2  01             .byte  1
+0002DBr 2  01             .byte  1
+0002DCr 2  01             .byte  1
+0002DDr 2  01             .byte  1
+0002DEr 2  01             .byte  1
+0002DFr 2  01             .byte  1
+0002E0r 2  01             .byte  1
+0002E1r 2  01             .byte  1
+0002E2r 2  01             .byte  1
+0002E3r 2  01             .byte  1
+0002E4r 2  01             .byte  1
+0002E5r 2  01             .byte  1
+0002E6r 2  01             .byte  1
+0002E7r 2  01             .byte  1
+0002E8r 2  01             .byte  1
+0002E9r 2  01             .byte  1
+0002EAr 2  01             .byte  1
+0002EBr 2  01             .byte  1
+0002ECr 2  01             .byte  1
+0002EDr 2  01             .byte  1
+0002EEr 2  01             .byte  1
+0002EFr 2  01             .byte  1
+0002F0r 2  01             .byte  1
+0002F1r 2  01             .byte  1
+0002F2r 2  01             .byte  1
+0002F3r 2               
+0002F3r 1               X_INC_H_TABLE:
+0002F3r 1               .include "x_inc_h_32x.inc"
+0002F3r 2               ; if x_increment high comes back >63, needs adjusted.. 32x and/or neg
+0002F3r 2  00             .byte  0
+0002F4r 2  01             .byte  1
+0002F5r 2  02             .byte  2
+0002F6r 2  03             .byte  3
+0002F7r 2  04             .byte  4
+0002F8r 2  05             .byte  5
+0002F9r 2  06             .byte  6
+0002FAr 2  07             .byte  7
+0002FBr 2  08             .byte  8
+0002FCr 2  09             .byte  9
+0002FDr 2  0A             .byte  10
+0002FEr 2  0B             .byte  11
+0002FFr 2  0C             .byte  12
+000300r 2  0D             .byte  13
+000301r 2  0E             .byte  14
+000302r 2  0F             .byte  15
+000303r 2  10             .byte  16
+000304r 2  11             .byte  17
+000305r 2  12             .byte  18
+000306r 2  13             .byte  19
+000307r 2  14             .byte  20
+000308r 2  15             .byte  21
+000309r 2  16             .byte  22
+00030Ar 2  17             .byte  23
+00030Br 2  18             .byte  24
+00030Cr 2  19             .byte  25
+00030Dr 2  1A             .byte  26
+00030Er 2  1B             .byte  27
+00030Fr 2  1C             .byte  28
+000310r 2  1D             .byte  29
+000311r 2  1E             .byte  30
+000312r 2  1F             .byte  31
+000313r 2  20             .byte  32
+000314r 2  21             .byte  33
+000315r 2  22             .byte  34
+000316r 2  23             .byte  35
+000317r 2  24             .byte  36
+000318r 2  25             .byte  37
+000319r 2  26             .byte  38
+00031Ar 2  27             .byte  39
+00031Br 2  28             .byte  40
+00031Cr 2  29             .byte  41
+00031Dr 2  2A             .byte  42
+00031Er 2  2B             .byte  43
+00031Fr 2  2C             .byte  44
+000320r 2  2D             .byte  45
+000321r 2  2E             .byte  46
+000322r 2  2F             .byte  47
+000323r 2  30             .byte  48
+000324r 2  31             .byte  49
+000325r 2  32             .byte  50
+000326r 2  33             .byte  51
+000327r 2  34             .byte  52
+000328r 2  35             .byte  53
+000329r 2  36             .byte  54
+00032Ar 2  37             .byte  55
+00032Br 2  38             .byte  56
+00032Cr 2  39             .byte  57
+00032Dr 2  3A             .byte  58
+00032Er 2  3B             .byte  59
+00032Fr 2  3C             .byte  60
+000330r 2  3D             .byte  61
+000331r 2  3E             .byte  62
+000332r 2  3F             .byte  63
+000333r 2  82             .byte  130
+000334r 2  82             .byte  130
+000335r 2  82             .byte  130
+000336r 2  82             .byte  130
+000337r 2  82             .byte  130
+000338r 2  82             .byte  130
+000339r 2  82             .byte  130
+00033Ar 2  82             .byte  130
+00033Br 2  82             .byte  130
+00033Cr 2  82             .byte  130
+00033Dr 2  82             .byte  130
+00033Er 2  82             .byte  130
+00033Fr 2  82             .byte  130
+000340r 2  82             .byte  130
+000341r 2  82             .byte  130
+000342r 2  82             .byte  130
+000343r 2  82             .byte  130
+000344r 2  82             .byte  130
+000345r 2  82             .byte  130
+000346r 2  82             .byte  130
+000347r 2  82             .byte  130
+000348r 2  82             .byte  130
+000349r 2  82             .byte  130
+00034Ar 2  82             .byte  130
+00034Br 2  82             .byte  130
+00034Cr 2  82             .byte  130
+00034Dr 2  82             .byte  130
+00034Er 2  82             .byte  130
+00034Fr 2  82             .byte  130
+000350r 2  82             .byte  130
+000351r 2  82             .byte  130
+000352r 2  82             .byte  130
+000353r 2  83             .byte  131
+000354r 2  83             .byte  131
+000355r 2  83             .byte  131
+000356r 2  83             .byte  131
+000357r 2  83             .byte  131
+000358r 2  83             .byte  131
+000359r 2  83             .byte  131
+00035Ar 2  83             .byte  131
+00035Br 2  83             .byte  131
+00035Cr 2  83             .byte  131
+00035Dr 2  83             .byte  131
+00035Er 2  83             .byte  131
+00035Fr 2  83             .byte  131
+000360r 2  83             .byte  131
+000361r 2  83             .byte  131
+000362r 2  83             .byte  131
+000363r 2  83             .byte  131
+000364r 2  83             .byte  131
+000365r 2  83             .byte  131
+000366r 2  83             .byte  131
+000367r 2  83             .byte  131
+000368r 2  83             .byte  131
+000369r 2  83             .byte  131
+00036Ar 2  83             .byte  131
+00036Br 2  83             .byte  131
+00036Cr 2  83             .byte  131
+00036Dr 2  83             .byte  131
+00036Er 2  83             .byte  131
+00036Fr 2  83             .byte  131
+000370r 2  83             .byte  131
+000371r 2  83             .byte  131
+000372r 2  83             .byte  131
+000373r 2  C4             .byte  196
+000374r 2  C4             .byte  196
+000375r 2  C4             .byte  196
+000376r 2  C4             .byte  196
+000377r 2  C4             .byte  196
+000378r 2  C4             .byte  196
+000379r 2  C4             .byte  196
+00037Ar 2  C4             .byte  196
+00037Br 2  C4             .byte  196
+00037Cr 2  C4             .byte  196
+00037Dr 2  C4             .byte  196
+00037Er 2  C4             .byte  196
+00037Fr 2  C4             .byte  196
+000380r 2  C4             .byte  196
+000381r 2  C4             .byte  196
+000382r 2  C4             .byte  196
+000383r 2  C4             .byte  196
+000384r 2  C4             .byte  196
+000385r 2  C4             .byte  196
+000386r 2  C4             .byte  196
+000387r 2  C4             .byte  196
+000388r 2  C4             .byte  196
+000389r 2  C4             .byte  196
+00038Ar 2  C4             .byte  196
+00038Br 2  C4             .byte  196
+00038Cr 2  C4             .byte  196
+00038Dr 2  C4             .byte  196
+00038Er 2  C4             .byte  196
+00038Fr 2  C4             .byte  196
+000390r 2  C4             .byte  196
+000391r 2  C4             .byte  196
+000392r 2  C4             .byte  196
+000393r 2  C3             .byte  195
+000394r 2  C3             .byte  195
+000395r 2  C3             .byte  195
+000396r 2  C3             .byte  195
+000397r 2  C3             .byte  195
+000398r 2  C3             .byte  195
+000399r 2  C3             .byte  195
+00039Ar 2  C3             .byte  195
+00039Br 2  C3             .byte  195
+00039Cr 2  C3             .byte  195
+00039Dr 2  C3             .byte  195
+00039Er 2  C3             .byte  195
+00039Fr 2  C3             .byte  195
+0003A0r 2  C3             .byte  195
+0003A1r 2  C3             .byte  195
+0003A2r 2  C3             .byte  195
+0003A3r 2  C3             .byte  195
+0003A4r 2  C3             .byte  195
+0003A5r 2  C3             .byte  195
+0003A6r 2  C3             .byte  195
+0003A7r 2  C3             .byte  195
+0003A8r 2  C3             .byte  195
+0003A9r 2  C3             .byte  195
+0003AAr 2  C3             .byte  195
+0003ABr 2  C3             .byte  195
+0003ACr 2  C3             .byte  195
+0003ADr 2  C3             .byte  195
+0003AEr 2  C3             .byte  195
+0003AFr 2  C3             .byte  195
+0003B0r 2  C3             .byte  195
+0003B1r 2  C3             .byte  195
+0003B2r 2  C3             .byte  195
+0003B3r 2  C2             .byte  194
+0003B4r 2  7F             .byte  127
+0003B5r 2  7E             .byte  126
+0003B6r 2  7D             .byte  125
+0003B7r 2  7C             .byte  124
+0003B8r 2  7B             .byte  123
+0003B9r 2  7A             .byte  122
+0003BAr 2  79             .byte  121
+0003BBr 2  78             .byte  120
+0003BCr 2  77             .byte  119
+0003BDr 2  76             .byte  118
+0003BEr 2  75             .byte  117
+0003BFr 2  74             .byte  116
+0003C0r 2  73             .byte  115
+0003C1r 2  72             .byte  114
+0003C2r 2  71             .byte  113
+0003C3r 2  70             .byte  112
+0003C4r 2  6F             .byte  111
+0003C5r 2  6E             .byte  110
+0003C6r 2  6D             .byte  109
+0003C7r 2  6C             .byte  108
+0003C8r 2  6B             .byte  107
+0003C9r 2  6A             .byte  106
+0003CAr 2  69             .byte  105
+0003CBr 2  68             .byte  104
+0003CCr 2  67             .byte  103
+0003CDr 2  66             .byte  102
+0003CEr 2  65             .byte  101
+0003CFr 2  64             .byte  100
+0003D0r 2  63             .byte  99
+0003D1r 2  62             .byte  98
+0003D2r 2  61             .byte  97
+0003D3r 2  60             .byte  96
+0003D4r 2  5F             .byte  95
+0003D5r 2  5E             .byte  94
+0003D6r 2  5D             .byte  93
+0003D7r 2  5C             .byte  92
+0003D8r 2  5B             .byte  91
+0003D9r 2  5A             .byte  90
+0003DAr 2  59             .byte  89
+0003DBr 2  58             .byte  88
+0003DCr 2  57             .byte  87
+0003DDr 2  56             .byte  86
+0003DEr 2  55             .byte  85
+0003DFr 2  54             .byte  84
+0003E0r 2  53             .byte  83
+0003E1r 2  52             .byte  82
+0003E2r 2  51             .byte  81
+0003E3r 2  50             .byte  80
+0003E4r 2  4F             .byte  79
+0003E5r 2  4E             .byte  78
+0003E6r 2  4D             .byte  77
+0003E7r 2  4C             .byte  76
+0003E8r 2  4B             .byte  75
+0003E9r 2  4A             .byte  74
+0003EAr 2  49             .byte  73
+0003EBr 2  48             .byte  72
+0003ECr 2  47             .byte  71
+0003EDr 2  46             .byte  70
+0003EEr 2  45             .byte  69
+0003EFr 2  44             .byte  68
+0003F0r 2  43             .byte  67
+0003F1r 2  42             .byte  66
+0003F2r 2  41             .byte  65
+0003F3r 2               
+0003F3r 1               X_INC_L_TABLE:
+0003F3r 1               .include "x_inc_l_32x.inc"
+0003F3r 2               ; if x_increment high comes back >63, needs adjusted.. 32x and/or neg
+0003F3r 2  00             .byte  0
+0003F4r 2  00             .byte  0
+0003F5r 2  00             .byte  0
+0003F6r 2  00             .byte  0
+0003F7r 2  00             .byte  0
+0003F8r 2  00             .byte  0
+0003F9r 2  00             .byte  0
+0003FAr 2  00             .byte  0
+0003FBr 2  00             .byte  0
+0003FCr 2  00             .byte  0
+0003FDr 2  00             .byte  0
+0003FEr 2  00             .byte  0
+0003FFr 2  00             .byte  0
+000400r 2  00             .byte  0
+000401r 2  00             .byte  0
+000402r 2  00             .byte  0
+000403r 2  00             .byte  0
+000404r 2  00             .byte  0
+000405r 2  00             .byte  0
+000406r 2  00             .byte  0
+000407r 2  00             .byte  0
+000408r 2  00             .byte  0
+000409r 2  00             .byte  0
+00040Ar 2  00             .byte  0
+00040Br 2  00             .byte  0
+00040Cr 2  00             .byte  0
+00040Dr 2  00             .byte  0
+00040Er 2  00             .byte  0
+00040Fr 2  00             .byte  0
+000410r 2  00             .byte  0
+000411r 2  00             .byte  0
+000412r 2  00             .byte  0
+000413r 2  00             .byte  0
+000414r 2  00             .byte  0
+000415r 2  00             .byte  0
+000416r 2  00             .byte  0
+000417r 2  00             .byte  0
+000418r 2  00             .byte  0
+000419r 2  00             .byte  0
+00041Ar 2  00             .byte  0
+00041Br 2  00             .byte  0
+00041Cr 2  00             .byte  0
+00041Dr 2  00             .byte  0
+00041Er 2  00             .byte  0
+00041Fr 2  00             .byte  0
+000420r 2  00             .byte  0
+000421r 2  00             .byte  0
+000422r 2  00             .byte  0
+000423r 2  00             .byte  0
+000424r 2  00             .byte  0
+000425r 2  00             .byte  0
+000426r 2  00             .byte  0
+000427r 2  00             .byte  0
+000428r 2  00             .byte  0
+000429r 2  00             .byte  0
+00042Ar 2  00             .byte  0
+00042Br 2  00             .byte  0
+00042Cr 2  00             .byte  0
+00042Dr 2  00             .byte  0
+00042Er 2  00             .byte  0
+00042Fr 2  00             .byte  0
+000430r 2  00             .byte  0
+000431r 2  00             .byte  0
+000432r 2  00             .byte  0
+000433r 2  00             .byte  0
+000434r 2  08             .byte  8
+000435r 2  10             .byte  16
+000436r 2  18             .byte  24
+000437r 2  20             .byte  32
+000438r 2  28             .byte  40
+000439r 2  30             .byte  48
+00043Ar 2  38             .byte  56
+00043Br 2  40             .byte  64
+00043Cr 2  48             .byte  72
+00043Dr 2  50             .byte  80
+00043Er 2  58             .byte  88
+00043Fr 2  60             .byte  96
+000440r 2  68             .byte  104
+000441r 2  70             .byte  112
+000442r 2  78             .byte  120
+000443r 2  80             .byte  128
+000444r 2  88             .byte  136
+000445r 2  90             .byte  144
+000446r 2  98             .byte  152
+000447r 2  A0             .byte  160
+000448r 2  A8             .byte  168
+000449r 2  B0             .byte  176
+00044Ar 2  B8             .byte  184
+00044Br 2  C0             .byte  192
+00044Cr 2  C8             .byte  200
+00044Dr 2  D0             .byte  208
+00044Er 2  D8             .byte  216
+00044Fr 2  E0             .byte  224
+000450r 2  E8             .byte  232
+000451r 2  F0             .byte  240
+000452r 2  F8             .byte  248
+000453r 2  00             .byte  0
+000454r 2  08             .byte  8
+000455r 2  10             .byte  16
+000456r 2  18             .byte  24
+000457r 2  20             .byte  32
+000458r 2  28             .byte  40
+000459r 2  30             .byte  48
+00045Ar 2  38             .byte  56
+00045Br 2  40             .byte  64
+00045Cr 2  48             .byte  72
+00045Dr 2  50             .byte  80
+00045Er 2  58             .byte  88
+00045Fr 2  60             .byte  96
+000460r 2  68             .byte  104
+000461r 2  70             .byte  112
+000462r 2  78             .byte  120
+000463r 2  80             .byte  128
+000464r 2  88             .byte  136
+000465r 2  90             .byte  144
+000466r 2  98             .byte  152
+000467r 2  A0             .byte  160
+000468r 2  A8             .byte  168
+000469r 2  B0             .byte  176
+00046Ar 2  B8             .byte  184
+00046Br 2  C0             .byte  192
+00046Cr 2  C8             .byte  200
+00046Dr 2  D0             .byte  208
+00046Er 2  D8             .byte  216
+00046Fr 2  E0             .byte  224
+000470r 2  E8             .byte  232
+000471r 2  F0             .byte  240
+000472r 2  F8             .byte  248
+000473r 2  00             .byte  0
+000474r 2  08             .byte  8
+000475r 2  10             .byte  16
+000476r 2  18             .byte  24
+000477r 2  20             .byte  32
+000478r 2  28             .byte  40
+000479r 2  30             .byte  48
+00047Ar 2  38             .byte  56
+00047Br 2  40             .byte  64
+00047Cr 2  48             .byte  72
+00047Dr 2  50             .byte  80
+00047Er 2  58             .byte  88
+00047Fr 2  60             .byte  96
+000480r 2  68             .byte  104
+000481r 2  70             .byte  112
+000482r 2  78             .byte  120
+000483r 2  80             .byte  128
+000484r 2  88             .byte  136
+000485r 2  90             .byte  144
+000486r 2  98             .byte  152
+000487r 2  A0             .byte  160
+000488r 2  A8             .byte  168
+000489r 2  B0             .byte  176
+00048Ar 2  B8             .byte  184
+00048Br 2  C0             .byte  192
+00048Cr 2  C8             .byte  200
+00048Dr 2  D0             .byte  208
+00048Er 2  D8             .byte  216
+00048Fr 2  E0             .byte  224
+000490r 2  E8             .byte  232
+000491r 2  F0             .byte  240
+000492r 2  F8             .byte  248
+000493r 2  00             .byte  0
+000494r 2  08             .byte  8
+000495r 2  10             .byte  16
+000496r 2  18             .byte  24
+000497r 2  20             .byte  32
+000498r 2  28             .byte  40
+000499r 2  30             .byte  48
+00049Ar 2  38             .byte  56
+00049Br 2  40             .byte  64
+00049Cr 2  48             .byte  72
+00049Dr 2  50             .byte  80
+00049Er 2  58             .byte  88
+00049Fr 2  60             .byte  96
+0004A0r 2  68             .byte  104
+0004A1r 2  70             .byte  112
+0004A2r 2  78             .byte  120
+0004A3r 2  80             .byte  128
+0004A4r 2  88             .byte  136
+0004A5r 2  90             .byte  144
+0004A6r 2  98             .byte  152
+0004A7r 2  A0             .byte  160
+0004A8r 2  A8             .byte  168
+0004A9r 2  B0             .byte  176
+0004AAr 2  B8             .byte  184
+0004ABr 2  C0             .byte  192
+0004ACr 2  C8             .byte  200
+0004ADr 2  D0             .byte  208
+0004AEr 2  D8             .byte  216
+0004AFr 2  E0             .byte  224
+0004B0r 2  E8             .byte  232
+0004B1r 2  F0             .byte  240
+0004B2r 2  F8             .byte  248
+0004B3r 2  00             .byte  0
+0004B4r 2  00             .byte  0
+0004B5r 2  00             .byte  0
+0004B6r 2  00             .byte  0
+0004B7r 2  00             .byte  0
+0004B8r 2  00             .byte  0
+0004B9r 2  00             .byte  0
+0004BAr 2  00             .byte  0
+0004BBr 2  00             .byte  0
+0004BCr 2  00             .byte  0
+0004BDr 2  00             .byte  0
+0004BEr 2  00             .byte  0
+0004BFr 2  00             .byte  0
+0004C0r 2  00             .byte  0
+0004C1r 2  00             .byte  0
+0004C2r 2  00             .byte  0
+0004C3r 2  00             .byte  0
+0004C4r 2  00             .byte  0
+0004C5r 2  00             .byte  0
+0004C6r 2  00             .byte  0
+0004C7r 2  00             .byte  0
+0004C8r 2  00             .byte  0
+0004C9r 2  00             .byte  0
+0004CAr 2  00             .byte  0
+0004CBr 2  00             .byte  0
+0004CCr 2  00             .byte  0
+0004CDr 2  00             .byte  0
+0004CEr 2  00             .byte  0
+0004CFr 2  00             .byte  0
+0004D0r 2  00             .byte  0
+0004D1r 2  00             .byte  0
+0004D2r 2  00             .byte  0
+0004D3r 2  00             .byte  0
+0004D4r 2  00             .byte  0
+0004D5r 2  00             .byte  0
+0004D6r 2  00             .byte  0
+0004D7r 2  00             .byte  0
+0004D8r 2  00             .byte  0
+0004D9r 2  00             .byte  0
+0004DAr 2  00             .byte  0
+0004DBr 2  00             .byte  0
+0004DCr 2  00             .byte  0
+0004DDr 2  00             .byte  0
+0004DEr 2  00             .byte  0
+0004DFr 2  00             .byte  0
+0004E0r 2  00             .byte  0
+0004E1r 2  00             .byte  0
+0004E2r 2  00             .byte  0
+0004E3r 2  00             .byte  0
+0004E4r 2  00             .byte  0
+0004E5r 2  00             .byte  0
+0004E6r 2  00             .byte  0
+0004E7r 2  00             .byte  0
+0004E8r 2  00             .byte  0
+0004E9r 2  00             .byte  0
+0004EAr 2  00             .byte  0
+0004EBr 2  00             .byte  0
+0004ECr 2  00             .byte  0
+0004EDr 2  00             .byte  0
+0004EEr 2  00             .byte  0
+0004EFr 2  00             .byte  0
+0004F0r 2  00             .byte  0
+0004F1r 2  00             .byte  0
+0004F2r 2  00             .byte  0
+0004F3r 2               
+0004F3r 1               
+0004F3r 1               cursor_sprite:
+0004F3r 1                 ;     0   1     2   3    4    5     6     7   8   9     A    B    C     D   E    F
+0004F3r 1  00 18 18 18    .byte   0,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,  24,   0,   0,   0,   0
+0004F7r 1  18 18 18 18  
+0004FBr 1  18 18 18 18  
+000503r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0
+000507r 1  8F 8F 8F 8F  
+00050Br 1  8F 8F 18 00  
+000513r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+000517r 1  8F 8F 8F 8F  
+00051Br 1  8F 18 00 00  
+000523r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+000527r 1  8F 8F 8F 8F  
+00052Br 1  18 00 00 00  
+000533r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+000537r 1  8F 8F 8F 18  
+00053Br 1  00 00 00 00  
+000543r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0,   0
+000547r 1  8F 8F 8F 18  
+00054Br 1  00 00 00 00  
+000553r 1  18 8F 8F 8F    .byte  24, 143, 143, 143, 143, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0,   0
+000557r 1  8F 8F 8F 8F  
+00055Br 1  18 00 00 00  
+000563r 1  18 8F 8F 8F    .byte  24, 143, 143, 143,  24,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0,   0
+000567r 1  18 18 8F 8F  
+00056Br 1  8F 18 00 00  
+000573r 1  18 8F 8F 18    .byte  24, 143, 143,  24,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0,   0
+000577r 1  00 00 18 8F  
+00057Br 1  8F 8F 18 00  
+000583r 1  18 8F 18 00    .byte  24, 143,  24,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0,   0
+000587r 1  00 00 00 18  
+00058Br 1  8F 8F 8F 18  
+000593r 1  18 18 00 00    .byte  24,  24,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0,   0
+000597r 1  00 00 00 00  
+00059Br 1  18 8F 8F 8F  
+0005A3r 1  18 00 00 00    .byte  24,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0,   0
+0005A7r 1  00 00 00 00  
+0005ABr 1  00 18 8F 8F  
+0005B3r 1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24,   0
+0005B7r 1  00 00 00 00  
+0005BBr 1  00 00 18 8F  
+0005C3r 1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143, 143,  24
+0005C7r 1  00 00 00 00  
+0005CBr 1  00 00 00 18  
+0005D3r 1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24, 143, 143,  24
+0005D7r 1  00 00 00 00  
+0005DBr 1  00 00 00 00  
+0005E3r 1  00 00 00 00    .byte   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,  24,  24,  24 ; 16x16=256 bytes
+0005E7r 1  00 00 00 00  
+0005EBr 1  00 00 00 00  
+0005F3r 1               
+0005F3r 1               marker_sprite_a:
+0005F3r 1  8F 8F 8F 8F    .byte 143, 143, 143, 143, 143, 143, 143, 143
+0005F7r 1  8F 8F 8F 8F  
+0005FBr 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+0005FFr 1  00 00 00 00  
+000603r 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000607r 1  00 00 00 00  
+00060Br 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00060Fr 1  00 00 00 00  
+000613r 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000617r 1  00 00 00 00  
+00061Br 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00061Fr 1  00 00 00 00  
+000623r 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+000627r 1  00 00 00 00  
+00062Br 1  8F 00 00 00    .byte 143,   0,   0,   0,   0,   0,   0,   0
+00062Fr 1  00 00 00 00  
+000633r 1               marker_sprite_b:
+000633r 1  01 01 01 01    .byte 1, 1, 1, 1, 1, 1, 1, 1
+000637r 1  01 01 01 01  
+00063Br 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00063Fr 1  00 00 00 00  
+000643r 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000647r 1  00 00 00 00  
+00064Br 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00064Fr 1  00 00 00 00  
+000653r 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000657r 1  00 00 00 00  
+00065Br 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00065Fr 1  00 00 00 00  
+000663r 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+000667r 1  00 00 00 00  
+00066Br 1  01 00 00 00    .byte 1,   0,   0,   0,   0,   0,   0,   0
+00066Fr 1  00 00 00 00  
+000673r 1               marker_sprite_c:
+000673r 1  9D 9D 9D 9D    .byte 157, 157, 157, 157, 157, 157, 157, 157
+000677r 1  9D 9D 9D 9D  
+00067Br 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+00067Fr 1  00 00 00 00  
+000683r 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+000687r 1  00 00 00 00  
+00068Br 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+00068Fr 1  00 00 00 00  
+000693r 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+000697r 1  00 00 00 00  
+00069Br 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+00069Fr 1  00 00 00 00  
+0006A3r 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0006A7r 1  00 00 00 00  
+0006ABr 1  9D 00 00 00    .byte 157,   0,   0,   0,   0,   0,   0,   0
+0006AFr 1  00 00 00 00  
+0006B3r 1               
+0006B3r 1               
+0006B3r 1               .include "hfs_x16.inc"
+0006B3r 2               
+0006B3r 2               ; VERA
+0006B3r 2               VERA_addr_low     = $9F20
+0006B3r 2               VERA_addr_high    = $9F21
+0006B3r 2               VERA_addr_bank    = $9F22
+0006B3r 2               VERA_data0        = $9F23
+0006B3r 2               VERA_data1        = $9F24
+0006B3r 2               VERA_ctrl         = $9F25 ; RESET | 6 bits DCSEL | addrsel
+0006B3r 2               VERA_DCSEL0_ADDR0 = $00
+0006B3r 2               VERA_DCSEL2_ADDR0 = $04
+0006B3r 2               VERA_DCSEL3_ADDR0 = $06
+0006B3r 2               VERA_DCSEL4_ADDR0 = $08
+0006B3r 2               VERA_DCSEL5_ADDR0 = $0A
+0006B3r 2               VERA_DCSEL6_ADDR0 = $0C
+0006B3r 2               
+0006B3r 2               VERA_ien          = $9F26
+0006B3r 2               VERA_isr          = $9F27
+0006B3r 2               
+0006B3r 2               VERA_dc_video     = $9F29 ; DCSEL = 0
+0006B3r 2               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+0006B3r 2               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+0006B3r 2               
+0006B3r 2               VERA_dc_hscale    = $9F2A
+0006B3r 2               VERA_dc_vscale    = $9F2B
+0006B3r 2               VERA_L0_config    = $9F2D
+0006B3r 2               ;   7       6     5   4       3       2             1   0
+0006B3r 2               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+0006B3r 2               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+0006B3r 2               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+0006B3r 2               ;   2 - 128                                         2   4bpp 16 color
+0006B3r 2               ;   3 - 256                                         3   8bpp 256 color
+0006B3r 2               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+0006B3r 2               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+0006B3r 2               ;   The palette offset (in 'H-Scroll (11:8)') mo  ; start of program
+0006B3r 2               VERA_L0_mapbase   = $9F2E
+0006B3r 2               VERA_L0_tilebase  = $9F2F
+0006B3r 2               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+0006B3r 2               VERA_L1_config    = $9F34
+0006B3r 2               VERA_L1_mapbase   = $9F35
+0006B3r 2               VERA_L1_tilebase  = $9F36
+0006B3r 2               VERA_L0_hscroll_h = $9F31
+0006B3r 2               
+0006B3r 2               ; VRAM addresses 124k+
+0006B3r 2               VRAM_MATH_SCRATCH = $1F100     ; ~4K of scratch = >900 multiplies
+0006B3r 2               VRAM_CURSOR_SPR   = $1F900 		; up to 16x16 bit sprite
+0006B3r 2               VRAM_palette      = $1FA00      ;
+0006B3r 2               VRAM_SPRITE_LIST  = $1FC00
+0006B3r 2               
+0006B3r 2               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+0006B3r 2               DISPLAY_SCALE_ONE     = 128 ; 640x480
+0006B3r 2               MODE_BITMAP_256BPP = $07
+0006B3r 2               MODE_BITMAP_16BPP  = $06
+0006B3r 2               LAYER0_ONLY       = $11
+0006B3r 2               LAYER0SPRITES_ENABLE = $51
+0006B3r 2               LAYER01SPRITES_ENABLE = $71
+0006B3r 2               SPRITES_ONLY = $41
+0006B3r 2               
+0006B3r 2               VRAM_INCREMENT_1 = $10
+0006B3r 2               VRAM_INCREMENT_2 = $20
+0006B3r 2               VRAM_INCREMENT_4 = $30
+0006B3r 2               VRAM_INCREMENT_8 = $40
+0006B3r 2               VRAM_INCREMENT_16 = $50
+0006B3r 2               VRAM_INCREMENT_32 = $60
+0006B3r 2               VRAM_INCREMENT_64 = $70
+0006B3r 2               VRAM_INCREMENT_128 = $80
+0006B3r 2               VRAM_INCREMENT_256 = $90
+0006B3r 2               VRAM_INCREMENT_512 = $A0
+0006B3r 2               VRAM_INCREMENT_40 = $B0
+0006B3r 2               VRAM_INCREMENT_80 = $C0
+0006B3r 2               VRAM_INCREMENT_160 = $D0
+0006B3r 2               VRAM_INCREMENT_320 = $E0
+0006B3r 2               VRAM_INCREMENT_640 = $F0
+0006B3r 2               
+0006B3r 2               
+0006B3r 2               ; DCSEL = 2
+0006B3r 2               VERA_FX_CTRL    = $9F29
+0006B3r 2               VERA_FX_TILEBASE = $9F2A
+0006B3r 2               VERA_FX_MAPBASE = $9F2B
+0006B3r 2               VERA_FX_MULT = $9F2C
+0006B3r 2               FX_MULTIPLY_ENABLE = $10
+0006B3r 2               
+0006B3r 2               ; DCSEL = 3
+0006B3r 2               VERA_FX_X_INC_L = $9F29
+0006B3r 2               VERA_FX_X_INC_H = $9F2A
+0006B3r 2               VERA_FX_Y_INC_L = $9F2B
+0006B3r 2               VERA_FX_Y_INC_H = $9F2C
+0006B3r 2               
+0006B3r 2               ; DCSEL = 4
+0006B3r 2               VERA_FX_X_POS_L = $9F29
+0006B3r 2               VERA_FX_X_POS_H = $9F2A
+0006B3r 2               VERA_FX_Y_POS_L = $9F2B
+0006B3r 2               VERA_FX_Y_POS_H = $9F2C
+0006B3r 2               
+0006B3r 2               ; DCSEL = 6
+0006B3r 2               VERA_FX_CACHE_L = $9F29  ; write only.. read here will reset accumulator!
+0006B3r 2               VERA_FX_CACHE_M = $9F2A  ; write only.. read triggers accumulate
+0006B3r 2               VERA_FX_CACHE_H = $9F2B  ; write only
+0006B3r 2               VERA_FX_CACHE_U = $9F2C  ; write only
+0006B3r 2               
+0006B3r 2               VSYNC_BIT         = $01
+0006B3r 2               
+0006B3r 2               ; Kernal
+0006B3r 2               CHROUT            = $FFD2
+0006B3r 2               GETIN             = $FFE4
+0006B3r 2               CINT              = $FF81
+0006B3r 2               CONSOLE_PUT_CHAR  = $FEDE
+0006B3r 2               MOUSE_CONFIG      = $FF68
+0006B3r 2               MOUSE_GET         = $FF6B
+0006B3r 2               MOUSE_SCAN        = $FF71
+0006B3r 2               
+0006B3r 2               ; RAM Interrupt Vectors
+0006B3r 2               IRQVec            = $0314
+0006B3r 2               
+0006B3r 2               ZP_PTR = $22
+0006B3r 2               
+0006B3r 2               VERA_SET_MULTIPLY = $10
+0006B3r 2               VERA_RESET_ACCUMULATOR = $80
+0006B3r 2               
+0006B3r 2               .macro set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each ..
+0006B3r 2                 ; set addr1
+0006B3r 2                 ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
+0006B3r 2                 sty VERA_ctrl   ; 4
+0006B3r 2                 ldx #(VRAM_INCREMENT_4 | ^VRAM_MATH_SCRATCH)  ; 6
+0006B3r 2                 stx VERA_addr_bank ;  10
+0006B3r 2                 lda #>VRAM_MATH_SCRATCH ; 12
+0006B3r 2                 sta VERA_addr_high ;  16
+0006B3r 2                 stz VERA_addr_low ; 20
+0006B3r 2                 ; set addr0
+0006B3r 2                 ldy #VERA_DCSEL2_ADDR0 ; set DCSEL =2 and addrsel to 0
+0006B3r 2                 sty VERA_ctrl
+0006B3r 2                 stx VERA_addr_bank
+0006B3r 2                 sta VERA_addr_high
+0006B3r 2                 lda #1  ; we want bytes 1,2 of each multiply..
+0006B3r 2                 sta VERA_addr_low
+0006B3r 2                 ; set multiply    42
+0006B3r 2                 lda #(VERA_SET_MULTIPLY | VERA_RESET_ACCUMULATOR)  ; set multiply mode
+0006B3r 2                 sta VERA_FX_MULT ;  48
+0006B3r 2                 lda #$48  ; enable cache writes and 16-bit hop
+0006B3r 2                 sta VERA_FX_CTRL ; 54
+0006B3r 2                 lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
+0006B3r 2                 sta VERA_ctrl ; 60
+0006B3r 2                 stz VERA_FX_CACHE_L
+0006B3r 2               .endmacro
+0006B3r 2               
+0006B3r 2               
+0006B3r 2               .macro wait_keypress
+0006B3r 2                 .local waity_wait
+0006B3r 2                 waity_wait:
+0006B3r 2                  wai
+0006B3r 2                  jsr GETIN
+0006B3r 2                  beq waity_wait
+0006B3r 2               .endmacro
+0006B3r 2               
+0006B3r 2               ENABLE_MOUSE_CURSOR:
+0006B3r 2               ; expect address of cursor sprite data in ZP_PTR like this -
+0006B3r 2               ; ZP_PTR+0/1 - address of data for mouse cursor
+0006B3r 2  A9 FF            lda #$FF
+0006B5r 2  20 68 FF         jsr MOUSE_CONFIG
+0006B8r 2                   ; configure sprite 0
+0006B8r 2  9C 20 9F         stz VERA_addr_low
+0006BBr 2  A9 FC            lda #>VRAM_SPRITE_LIST
+0006BDr 2  8D 21 9F         sta VERA_addr_high
+0006C0r 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+0006C2r 2  8D 22 9F         sta VERA_addr_bank
+0006C5r 2  A9 C8            lda #((VRAM_CURSOR_SPR >> 5) & $FF )
+0006C7r 2  8D 23 9F         sta VERA_data0
+0006CAr 2  A9 8F        	lda #($80 | (VRAM_CURSOR_SPR >> 13)) ; high address, 8bit sprite
+0006CCr 2  8D 23 9F     	sta VERA_data0
+0006CFr 2  9C 23 9F         stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+0006D2r 2  9C 23 9F         stz VERA_data0 ; x high
+0006D5r 2  9C 23 9F         stz VERA_data0 ; y low
+0006D8r 2  9C 23 9F         stz VERA_data0 ; y high
+0006DBr 2  A9 0C            lda #$0C
+0006DDr 2  8D 23 9F         sta VERA_data0 ; z-depth/flips
+0006E0r 2  A9 50            lda #$50 ; is 16/16 sprite, 8bit color / no offset
+0006E2r 2  8D 23 9F         sta VERA_data0 ; sprite width/height/palette.. a freed up now.
+0006E5r 2                   ; copy cursor image to sprite 0
+0006E5r 2  9C 20 9F         stz VERA_addr_low
+0006E8r 2  A9 F9            lda #>VRAM_CURSOR_SPR
+0006EAr 2  8D 21 9F         sta VERA_addr_high
+0006EDr 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_CURSOR_SPR)
+0006EFr 2  8D 22 9F         sta VERA_addr_bank
+0006F2r 2  A0 00            ldy #0
+0006F4r 2                 @cursor_data_loop:
+0006F4r 2  B1 22              lda (ZP_PTR),y
+0006F6r 2  8D 23 9F           sta VERA_data0
+0006F9r 2  C8                 iny
+0006FAr 2  D0 F8              bne @cursor_data_loop
+0006FCr 2  60             rts
+0006FDr 2               
+0006FDr 1               
+0006FDr 1               .macro calc_x_over_y_halved ; diff y in y, sets VERA_FX_CACHE_L/M .. HU should get set for X diff to multiply.. xdiff assumed positive here...
+0006FDr 1                 ; correct for 3+, 2 is close ... 0/1 borked.
+0006FDr 1                 ; returns x_inc in x,a ( x is low byte, a is high byte )
+0006FDr 1                 ;
+0006FDr 1                 .local done_calced
+0006FDr 1                   lda ONE_OVER_X_HALVED_LOOKUPS_LOW,y ; abs,y 4   11
+0006FDr 1                   sta VERA_FX_CACHE_L ; 4   15
+0006FDr 1                   lda ONE_OVER_X_HALVED_LOOKUPS_HIGH,y ; 4  19
+0006FDr 1                   sta VERA_FX_CACHE_M ; 4 23
+0006FDr 1                   sta VERA_data1 ; 4  27  do the maths .. now read DATA0 twice to get result
+0006FDr 1                   ldx VERA_data0 ; 4  31  get the low byte
+0006FDr 1                   lda VERA_data0 ; 4  35  get the high byte
+0006FDr 1                   cmp #64  ;  2   37
+0006FDr 1                   BMI done_calced  ; 2 39
+0006FDr 1                   tay ; 2   41
+0006FDr 1                   lda X_INC_H_TABLE,y ; 4   45 <- note, we're only fixing up inc_h here...
+0006FDr 1                   cmp #193 ; 2  47
+0006FDr 1                   BPL done_calced ; 2   49 <- was negative so only little adjustment needed
+0006FDr 1                   ldx X_INC_L_TABLE,y ; 4   53  <- fix low byte for 32x'd
+0006FDr 1                 done_calced: ;  40/50/54
+0006FDr 1               .endmacro
+0006FDr 1               
+0006FDr 1               
+0006FDr 1               ;	global data
+0006FDr 1  00 00        default_irq_vector:  .addr 0
+0006FFr 1  01           VSYNC_counter:       .byte 1
+000700r 1  00           DONE_DONE:           .byte 0
+000701r 1  00           CLICK_BOUNCE:        .byte 0
+000702r 1  00           CLICK_MODE:          .byte 0
+000703r 1  00           CURRENT_COLOR:       .byte 0
+000704r 1  DE AD BE EF  DEBUG_BUFFERA: 		 .byte $DE,$AD,$BE,$EF
+000708r 1  00 00 00 00  DEBUG_STUFF: 		 .byte 0,0,0,0
+00070Cr 1  DE AD BE EF  DEBUG_BUFFERB: 		 .byte $DE,$AD,$BE,$EF
+000710r 1               
+000710r 1               custom_irq_handler:
+000710r 1  AD 27 9F        lda VERA_isr
+000713r 1  29 01           and #VSYNC_BIT
+000715r 1  F0 03           beq @continue ; non-VSYNC IRQ, no tick update
+000717r 1  EE rr rr        inc VSYNC_counter
+00071Ar 1               @continue:
+00071Ar 1                  ; continue to default IRQ handler
+00071Ar 1  6C rr rr        jmp (default_irq_vector)
+00071Dr 1                  ; RTI will happen after jump
+00071Dr 1               
+00071Dr 1               INIT:
+00071Dr 1                 ; init vectors
+00071Dr 1  AD 14 03       lda IRQVec
+000720r 1  8D rr rr       sta default_irq_vector
+000723r 1  AD 15 03       lda IRQVec+1
+000726r 1  8D rr rr       sta default_irq_vector+1
+000729r 1               
+000729r 1  A9 rr          lda #<cursor_sprite
+00072Br 1  85 22          sta ZP_PTR
+00072Dr 1  8D rr rr       sta DEBUG_STUFF
+000730r 1  A9 rr          lda #>cursor_sprite
+000732r 1  85 23          sta ZP_PTR+1
+000734r 1  8D rr rr       sta DEBUG_STUFF+1
+000737r 1  20 rr rr       jsr ENABLE_MOUSE_CURSOR
+00073Ar 1               
+00073Ar 1  A9 71          lda #LAYER01SPRITES_ENABLE
+00073Cr 1  8D 29 9F       sta VERA_dc_video
+00073Fr 1               
+00073Fr 1               ENDLESS_LOOP:
+00073Fr 1  CB 20 E4 FF    wait_keypress
+000743r 1  F0 FA        
+000745r 1  F0 F8          beq ENDLESS_LOOP
+000747r 1               
+000747r 1               END:
+000747r 1                  ; restore default IRQ vector
+000747r 1  78              sei
+000748r 1  AD rr rr        lda default_irq_vector
+00074Br 1  8D 14 03        sta IRQVec
+00074Er 1  AD rr rr        lda default_irq_vector+1
+000751r 1  8D 15 03        sta IRQVec+1
+000754r 1  58              cli
+000755r 1  20 81 FF        jsr CINT
+000758r 1               
+000758r 1  60             rts
+000759r 1               
+000759r 1               
