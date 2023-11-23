@@ -2,37 +2,262 @@ ca65 V2.19 - Git 8e6c0c1
 Main file   : polyfills-001.asm
 Current file: polyfills-001.asm
 
-000000r 1               .include "hfs_x16_stub.inc"
-000000r 2  4C rr rr       jmp INIT ;
-000003r 2               ; now we're at RAM address $0810 - there's 240 bytes from here to next page boundary.. code to load bank files could go here later...
-000003r 2               ; for now, want to be sure we end at page boundary
-000003r 2               HFS_DEBUG_PAD_ZONE:
-000003r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 ; $0810 - $081F
-000007r 2  04 05 06 07  
-00000Br 2  08 09 0A 0B  
-000013r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0820 - $083F
-000017r 2  04 05 06 07  
-00001Br 2  08 09 0A 0B  
-000033r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0840 - $085F
-000037r 2  04 05 06 07  
-00003Br 2  08 09 0A 0B  
-000053r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0860 - $087F
-000057r 2  04 05 06 07  
-00005Br 2  08 09 0A 0B  
-000073r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $0880 - $089F
-000077r 2  04 05 06 07  
-00007Br 2  08 09 0A 0B  
-000093r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08A0 - $08BF
-000097r 2  04 05 06 07  
-00009Br 2  08 09 0A 0B  
-0000B3r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08C0 - $08DF
-0000B7r 2  04 05 06 07  
-0000BBr 2  08 09 0A 0B  
-0000D3r 2  00 01 02 03  .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,39,30,31 ; $08E0 - $08FF
-0000D7r 2  04 05 06 07  
-0000DBr 2  08 09 0A 0B  
-0000F3r 2               
-0000F3r 2               ; actual calling file would start at page boundary if no functions in this file...
+000000r 1               .include "hfs_x16_stub_debug_font.inc"
+000000r 2               ; now we're at RAM address $0810 - there's 240 bytes from here to next page boundary.. code to load bank files could go here later...
+000000r 2               ; for now, want to be sure we end at page boundary
+000000r 2               
+000000r 2               ;
+000000r 2               DECODE_DEBUG_FONT_TO_VRAM:  ; 080D debug font start at top of VRAM $0000 .. debug blank $10
+000000r 2  9C 29 9F       stz $9F29 ; 080D  3 bytes   clear DCSEL set addr 0
+000003r 2  9C 20 9F       stz $9F20 ; 0810  3 bytes     vera addr low
+000006r 2  9C 21 9F       stz $9F21 ; 0813  3 bytes     high
+000009r 2  A9 10          lda #$10  ; 0816  2 bytes     for increment
+00000Br 2  8D 22 9F       sta $9F22 ; 0818  3           bank
+00000Er 2  64 30          stz $30   ; 081B  2   zero low byte
+000010r 2  4A             lsr a  ; 081D  1
+000011r 2  85 31          sta $31   ; 081F  2
+000013r 2  A9 23          lda #$23   ; 0821  2 bytes     vera data0 is $9f23
+000015r 2  85 40          sta $40   ; 0823   2  ZP address
+000017r 2  A9 9F          lda #$9F  ; 0825  2
+000019r 2  85 41          sta $41   ; 0827  2   ;   ok writing from ($30) to ($40) using indirect ZP
+00001Br 2  A0 42          ldy #66 ; 081B  start of font data ..
+00001Dr 2                 @DECODE_DEBUG_FONT_TO_VRAM:
+00001Dr 2  A9 00              lda #0
+00001Fr 2  92 40              sta ($40) ; 081D 2 bytes.. top row of tile
+000021r 2  92 40              sta ($40) ; 039 2    row 6
+000023r 2  92 40              sta ($40) ; 083B 2    row 7
+000025r 2  A2 05              ldx #5 ; +2 bytes     83
+000027r 2                     @DECODE_DEBUG_FONT_TO_VRAM_INNER:
+000027r 2  B1 30                lda ($30),y ; 081F 2 ;    row 1
+000029r 2  92 40                sta ($40) ; 0821  2
+00002Br 2  C8                   iny ;     0823    1             -4 copies of this loop = -20    63
+00002Cr 2  CA                   dex ;   +1 byte     64
+00002Dr 2  D0 F8                bne @DECODE_DEBUG_FONT_TO_VRAM_INNER ; +2 bytes     66
+00002Fr 2  98                 tya
+000030r 2  D0 EB              bne @DECODE_DEBUG_FONT_TO_VRAM      ;   083E
+000032r 2  4C rr rr       jmp INIT ; 0840   3
+000035r 2               END_DEBUG_FONT_TO_VRAM: ; 0843  byte 67 ... 256-66 = 190/5 = up to 38 chars in the font, including blank.. 37 chars..
+000035r 2               ;   alpha + 0-9 = 36 chars.. so room for 1 more maybe
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               
+000035r 2               HFS_DEBUG_FONT_1BPP: ; is 8x5 font, 16*5=80 bytes hex digits 0-F ..
+000035r 2  3C           .byte %00111100 ; 0    0847     3C
+000036r 2  46           .byte %01000110 ; 46
+000037r 2  52           .byte %01010010 ; 52
+000038r 2  62           .byte %01100010 ; 62
+000039r 2  3C           .byte %00111100 ; 3C
+00003Ar 2  04           .byte %00000100 ; 1     084C
+00003Br 2  04           .byte %00000100
+00003Cr 2  04           .byte %00000100
+00003Dr 2  04           .byte %00000100
+00003Er 2  04           .byte %00000100
+00003Fr 2  3C           .byte %00111100 ; 2     0851
+000040r 2  42           .byte %01000010
+000041r 2  0C           .byte %00001100
+000042r 2  10           .byte %00010000
+000043r 2  7E           .byte %01111110
+000044r 2  3C           .byte %00111100 ; 3     0856
+000045r 2  42           .byte %01000010
+000046r 2  0C           .byte %00001100
+000047r 2  42           .byte %01000010
+000048r 2  3C           .byte %00111100
+000049r 2  42           .byte %01000010 ; 4     085b
+00004Ar 2  42           .byte %01000010
+00004Br 2  7E           .byte %01111110
+00004Cr 2  02           .byte %00000010
+00004Dr 2  02           .byte %00000010
+00004Er 2  7E           .byte %01111110 ; 5     0860
+00004Fr 2  40           .byte %01000000
+000050r 2  7C           .byte %01111100
+000051r 2  02           .byte %00000010
+000052r 2  3C           .byte %00111100
+000053r 2  3C           .byte %00111100 ; 6
+000054r 2  40           .byte %01000000
+000055r 2  78           .byte %01111000
+000056r 2  46           .byte %01000110
+000057r 2  3C           .byte %00111100
+000058r 2  3C           .byte %00111100 ; 7     0865
+000059r 2  04           .byte %00000100
+00005Ar 2  08           .byte %00001000
+00005Br 2  10           .byte %00010000
+00005Cr 2  10           .byte %00010000
+00005Dr 2  3C           .byte %00111100 ; 8     086a
+00005Er 2  42           .byte %01000010
+00005Fr 2  3C           .byte %00111100
+000060r 2  42           .byte %01000010
+000061r 2  3C           .byte %00111100
+000062r 2  3C           .byte %00111100 ; 9     086f
+000063r 2  42           .byte %01000010
+000064r 2  3E           .byte %00111110
+000065r 2  02           .byte %00000010
+000066r 2  02           .byte %00000010
+000067r 2  18           .byte %00011000 ; A     0874
+000068r 2  24           .byte %00100100
+000069r 2  7E           .byte %01111110
+00006Ar 2  42           .byte %01000010
+00006Br 2  42           .byte %01000010
+00006Cr 2  78           .byte %01111000 ; B     0879
+00006Dr 2  44           .byte %01000100
+00006Er 2  78           .byte %01111000
+00006Fr 2  46           .byte %01000110
+000070r 2  78           .byte %01111000
+000071r 2  3C           .byte %00111100 ; C     087e
+000072r 2  42           .byte %01000010
+000073r 2  40           .byte %01000000
+000074r 2  42           .byte %01000010
+000075r 2  3C           .byte %00111100
+000076r 2  78           .byte %01111000 ; D     0883
+000077r 2  44           .byte %01000100
+000078r 2  42           .byte %01000010
+000079r 2  44           .byte %01000100
+00007Ar 2  78           .byte %01111000
+00007Br 2  7E           .byte %01111110 ; E     0888
+00007Cr 2  40           .byte %01000000
+00007Dr 2  78           .byte %01111000
+00007Er 2  40           .byte %01000000
+00007Fr 2  7E           .byte %01111110
+000080r 2  7E           .byte %01111110 ; F     088d
+000081r 2  40           .byte %01000000
+000082r 2  78           .byte %01111000
+000083r 2  40           .byte %01000000
+000084r 2  40           .byte %01000000
+000085r 2  3E           .byte %00111110 ; G     0892
+000086r 2  40           .byte %01000000
+000087r 2  4E           .byte %01001110
+000088r 2  42           .byte %01000010
+000089r 2  3E           .byte %00111110
+00008Ar 2  42           .byte %01000010 ; H     0897
+00008Br 2  42           .byte %01000010
+00008Cr 2  7E           .byte %01111110
+00008Dr 2  42           .byte %01000010
+00008Er 2  42           .byte %01000010
+00008Fr 2  7E           .byte %01111110 ; I     089C
+000090r 2  10           .byte %00010000
+000091r 2  10           .byte %00010000
+000092r 2  10           .byte %00010000
+000093r 2  7E           .byte %01111110
+000094r 2  7E           .byte %01111110 ; J     08A1
+000095r 2  08           .byte %00001000
+000096r 2  08           .byte %00001000
+000097r 2  48           .byte %01001000
+000098r 2  30           .byte %00110000
+000099r 2  48           .byte %01001000 ; K     08A6
+00009Ar 2  50           .byte %01010000
+00009Br 2  70           .byte %01110000
+00009Cr 2  48           .byte %01001000
+00009Dr 2  44           .byte %01000100
+00009Er 2  40           .byte %01000000 ; L     08AB
+00009Fr 2  40           .byte %01000000
+0000A0r 2  40           .byte %01000000
+0000A1r 2  40           .byte %01000000
+0000A2r 2  7E           .byte %01111110
+0000A3r 2  66           .byte %01100110 ; M     08B0
+0000A4r 2  5A           .byte %01011010
+0000A5r 2  5A           .byte %01011010
+0000A6r 2  42           .byte %01000010
+0000A7r 2  42           .byte %01000010
+0000A8r 2  42           .byte %01000010 ; N     08B5
+0000A9r 2  62           .byte %01100010
+0000AAr 2  52           .byte %01010010
+0000ABr 2  4A           .byte %01001010
+0000ACr 2  46           .byte %01000110
+0000ADr 2  3C           .byte %00111100 ; O     08BA
+0000AEr 2  42           .byte %01000010
+0000AFr 2  42           .byte %01000010
+0000B0r 2  42           .byte %01000010
+0000B1r 2  3C           .byte %00111100
+0000B2r 2  7C           .byte %01111100 ; P     08BF
+0000B3r 2  42           .byte %01000010
+0000B4r 2  7C           .byte %01111100
+0000B5r 2  40           .byte %01000000
+0000B6r 2  40           .byte %01000000
+0000B7r 2  3C           .byte %00111100 ; Q     08C4
+0000B8r 2  42           .byte %01000010
+0000B9r 2  4A           .byte %01001010
+0000BAr 2  44           .byte %01000100
+0000BBr 2  3A           .byte %00111010
+0000BCr 2  7C           .byte %01111100 ; R     08C9
+0000BDr 2  46           .byte %01000110
+0000BEr 2  78           .byte %01111000
+0000BFr 2  44           .byte %01000100
+0000C0r 2  42           .byte %01000010
+0000C1r 2  3C           .byte %00111100 ; S     08CE
+0000C2r 2  62           .byte %01100010
+0000C3r 2  18           .byte %00011000
+0000C4r 2  46           .byte %01000110
+0000C5r 2  3C           .byte %00111100
+0000C6r 2  7E           .byte %01111110 ; T     08D3
+0000C7r 2  08           .byte %00001000
+0000C8r 2  08           .byte %00001000
+0000C9r 2  08           .byte %00001000
+0000CAr 2  08           .byte %00001000
+0000CBr 2  42           .byte %01000010 ; U     08D8
+0000CCr 2  42           .byte %01000010
+0000CDr 2  42           .byte %01000010
+0000CEr 2  46           .byte %01000110
+0000CFr 2  3A           .byte %00111010
+0000D0r 2  42           .byte %01000010 ; V     08DD
+0000D1r 2  42           .byte %01000010
+0000D2r 2  24           .byte %00100100
+0000D3r 2  24           .byte %00100100
+0000D4r 2  18           .byte %00011000
+0000D5r 2  42           .byte %01000010 ; W     08E2
+0000D6r 2  42           .byte %01000010
+0000D7r 2  5A           .byte %01011010
+0000D8r 2  5A           .byte %01011010
+0000D9r 2  24           .byte %00100100
+0000DAr 2  42           .byte %01000010 ; X     08E7
+0000DBr 2  24           .byte %00100100
+0000DCr 2  18           .byte %00011000
+0000DDr 2  24           .byte %00100100
+0000DEr 2  42           .byte %01000010
+0000DFr 2  42           .byte %01000010 ; Y     08EC
+0000E0r 2  24           .byte %00100100
+0000E1r 2  18           .byte %00011000
+0000E2r 2  10           .byte %00010000
+0000E3r 2  10           .byte %00010000
+0000E4r 2  7E           .byte %01111110 ; Z     08F1
+0000E5r 2  06           .byte %00000110
+0000E6r 2  18           .byte %00011000
+0000E7r 2  60           .byte %01100000
+0000E8r 2  7E           .byte %01111110
+0000E9r 2  00           .byte %00000000 ; space     08F6
+0000EAr 2  00           .byte %00000000
+0000EBr 2  00           .byte %00000000
+0000ECr 2  00           .byte %00000000
+0000EDr 2  00           .byte %00000000
+0000EEr 2  FF           .byte %11111111 ; filled
+0000EFr 2  FF           .byte %11111111
+0000F0r 2  FF           .byte %11111111
+0000F1r 2  FF           .byte %11111111
+0000F2r 2  FF           .byte %11111111
 0000F3r 2               
 0000F3r 1               
 0000F3r 1               ONE_OVER_X_HALVED_LOOKUPS_LOW:
@@ -1224,7 +1449,7 @@ Current file: polyfills-001.asm
 0006B3r 2               VERA_L0_hscroll_h = $9F31
 0006B3r 2               
 0006B3r 2               ; VRAM addresses 124k+
-0006B3r 2               VRAM_MATH_SCRATCH = $1F100     ; ~4K of scratch = >900 multiplies
+0006B3r 2               VRAM_MATH_SCRATCH = $1F000     ; 2K of scratch = 512 multiplies
 0006B3r 2               VRAM_CURSOR_SPR   = $1F900 		; up to 16x16 bit sprite
 0006B3r 2               VRAM_palette      = $1FA00      ;
 0006B3r 2               VRAM_SPRITE_LIST  = $1FC00
@@ -1406,6 +1631,26 @@ Current file: polyfills-001.asm
 000708r 1  00 00 00 00  DEBUG_STUFF: 		 .byte 0,0,0,0
 00070Cr 1  DE AD BE EF  DEBUG_BUFFERB: 		 .byte $DE,$AD,$BE,$EF
 000710r 1               
+000710r 1               ZP_MOUSE = ZP_PTR+32
+000710r 1               
+000710r 1               ;VRAM addresses - 124K+ reserved for stuffs
+000710r 1               VRAM_layer0_bitmap = $00000   ; note - first lines contain the debug font...
+000710r 1               VRAM_MARKER_A = 320*240
+000710r 1               VRAM_MARKER_B = VRAM_MARKER_A + 64
+000710r 1               VRAM_MARKER_C = VRAM_MARKER_B + 64
+000710r 1               
+000710r 1               VRAM_MARKER_A_X = VRAM_SPRITE_LIST+10
+000710r 1               VRAM_MARKER_A_Y = VRAM_SPRITE_LIST+12
+000710r 1               VRAM_MARKER_B_X = VRAM_SPRITE_LIST+18
+000710r 1               VRAM_MARKER_B_Y = VRAM_SPRITE_LIST+20
+000710r 1               VRAM_MARKER_C_X = VRAM_SPRITE_LIST+26
+000710r 1               VRAM_MARKER_C_Y = VRAM_SPRITE_LIST+28
+000710r 1               
+000710r 1               ;tile map need to be 512 aligned.. 320x240 needs 40x30 map.. 64x32 map = 4k..
+000710r 1               VRAM_layer1_map = 76*1024   ; yeah I is lazy
+000710r 1               ;tilebase needs to be 2K aligned
+000710r 1               VRAM_layer1_tilebase = 80*1024
+000710r 1               
 000710r 1               custom_irq_handler:
 000710r 1  AD 27 9F        lda VERA_isr
 000713r 1  29 01           and #VSYNC_BIT
@@ -1416,39 +1661,235 @@ Current file: polyfills-001.asm
 00071Ar 1  6C rr rr        jmp (default_irq_vector)
 00071Dr 1                  ; RTI will happen after jump
 00071Dr 1               
-00071Dr 1               INIT:
-00071Dr 1                 ; init vectors
-00071Dr 1  AD 14 03       lda IRQVec
-000720r 1  8D rr rr       sta default_irq_vector
-000723r 1  AD 15 03       lda IRQVec+1
-000726r 1  8D rr rr       sta default_irq_vector+1
-000729r 1               
-000729r 1  A9 rr          lda #<cursor_sprite
-00072Br 1  85 22          sta ZP_PTR
-00072Dr 1  8D rr rr       sta DEBUG_STUFF
-000730r 1  A9 rr          lda #>cursor_sprite
-000732r 1  85 23          sta ZP_PTR+1
-000734r 1  8D rr rr       sta DEBUG_STUFF+1
-000737r 1  20 rr rr       jsr ENABLE_MOUSE_CURSOR
-00073Ar 1               
-00073Ar 1  A9 71          lda #LAYER01SPRITES_ENABLE
-00073Cr 1  8D 29 9F       sta VERA_dc_video
-00073Fr 1               
-00073Fr 1               ENDLESS_LOOP:
-00073Fr 1  CB 20 E4 FF    wait_keypress
-000743r 1  F0 FA        
-000745r 1  F0 F8          beq ENDLESS_LOOP
-000747r 1               
-000747r 1               END:
-000747r 1                  ; restore default IRQ vector
-000747r 1  78              sei
-000748r 1  AD rr rr        lda default_irq_vector
-00074Br 1  8D 14 03        sta IRQVec
-00074Er 1  AD rr rr        lda default_irq_vector+1
-000751r 1  8D 15 03        sta IRQVec+1
-000754r 1  58              cli
-000755r 1  20 81 FF        jsr CINT
-000758r 1               
-000758r 1  60             rts
-000759r 1               
-000759r 1               
+00071Dr 1               DO_CLICK_MODE:
+00071Dr 1  AD rr rr        lda CLICK_BOUNCE
+000720r 1  F0 08           beq @do_check_click
+000722r 1  A5 46           lda ZP_MOUSE+4
+000724r 1  D0 03           bne @done
+000726r 1  CE rr rr        dec CLICK_BOUNCE
+000729r 1                 @done:
+000729r 1  60               rts
+00072Ar 1               @do_check_click:
+00072Ar 1  A5 46           lda ZP_MOUSE+4
+00072Cr 1  D0 01           bne @clickmode_check_a
+00072Er 1  60              rts
+00072Fr 1               @clickmode_check_a:
+00072Fr 1  A9 02           lda #2
+000731r 1  8D rr rr        sta CLICK_BOUNCE
+000734r 1  AD rr rr        lda CLICK_MODE
+000737r 1  D0 31           bne @clickmode_check_b
+000739r 1  A9 01           lda #1
+00073Br 1  8D rr rr        sta CLICK_MODE
+00073Er 1  A9 0A           lda #10
+000740r 1  8D 20 9F        sta VERA_addr_low
+000743r 1  A9 FC           lda #>VRAM_SPRITE_LIST
+000745r 1  8D 21 9F        sta VERA_addr_high
+000748r 1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+00074Ar 1  8D 22 9F        sta VERA_addr_bank
+00074Dr 1  A5 42           lda ZP_MOUSE
+00074Fr 1  85 22           sta ZP_PTR
+000751r 1  8D 23 9F        sta VERA_data0
+000754r 1  A5 43           lda ZP_MOUSE+1
+000756r 1  85 23           sta ZP_PTR+1
+000758r 1  8D 23 9F        sta VERA_data0
+00075Br 1  A5 44           lda ZP_MOUSE+2
+00075Dr 1  85 24           sta ZP_PTR+2
+00075Fr 1  8D 23 9F        sta VERA_data0
+000762r 1  A5 45           lda ZP_MOUSE+3
+000764r 1  85 25           sta ZP_PTR+3
+000766r 1  8D 23 9F        sta VERA_data0
+000769r 1  60              rts
+00076Ar 1                 @clickmode_check_b:
+00076Ar 1  C9 01           cmp #1
+00076Cr 1  D0 31           bne @clickmode_check_c
+00076Er 1  A9 02           lda #2
+000770r 1  8D rr rr        sta CLICK_MODE
+000773r 1  A9 12           lda #18
+000775r 1  8D 20 9F        sta VERA_addr_low
+000778r 1  A9 FC           lda #>VRAM_SPRITE_LIST
+00077Ar 1  8D 21 9F        sta VERA_addr_high
+00077Dr 1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+00077Fr 1  8D 22 9F        sta VERA_addr_bank
+000782r 1  A5 42           lda ZP_MOUSE
+000784r 1  85 26           sta ZP_PTR+4
+000786r 1  8D 23 9F        sta VERA_data0
+000789r 1               
+000789r 1  A5 43           lda ZP_MOUSE+1
+00078Br 1  85 27           sta ZP_PTR+5
+00078Dr 1  8D 23 9F        sta VERA_data0
+000790r 1               
+000790r 1  A5 44           lda ZP_MOUSE+2
+000792r 1  85 28           sta ZP_PTR+6
+000794r 1  8D 23 9F        sta VERA_data0
+000797r 1               
+000797r 1  A5 45           lda ZP_MOUSE+3
+000799r 1  85 29           sta ZP_PTR+7
+00079Br 1  8D 23 9F        sta VERA_data0
+00079Er 1  60              rts
+00079Fr 1                 @clickmode_check_c:
+00079Fr 1  9C rr rr        stz CLICK_MODE
+0007A2r 1  A9 1A           lda #26
+0007A4r 1  8D 20 9F        sta VERA_addr_low
+0007A7r 1  A9 FC           lda #>VRAM_SPRITE_LIST
+0007A9r 1  8D 21 9F        sta VERA_addr_high
+0007ACr 1  A9 11           lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+0007AEr 1  8D 22 9F        sta VERA_addr_bank
+0007B1r 1  A5 42           lda ZP_MOUSE
+0007B3r 1  85 2A           sta ZP_PTR+8
+0007B5r 1  8D 23 9F        sta VERA_data0
+0007B8r 1  A5 43           lda ZP_MOUSE+1
+0007BAr 1  85 2B           sta ZP_PTR+9
+0007BCr 1  8D 23 9F        sta VERA_data0
+0007BFr 1  A5 44           lda ZP_MOUSE+2
+0007C1r 1  85 2C           sta ZP_PTR+10
+0007C3r 1  8D 23 9F        sta VERA_data0
+0007C6r 1  A5 45           lda ZP_MOUSE+3
+0007C8r 1  85 2D           sta ZP_PTR+11
+0007CAr 1  8D 23 9F        sta VERA_data0
+0007CDr 1               DO_POLYGON:
+0007CDr 1  60               rts
+0007CEr 1               
+0007CEr 1               INIT:
+0007CEr 1                 ; init vectors
+0007CEr 1  AD 14 03       lda IRQVec
+0007D1r 1  8D rr rr       sta default_irq_vector
+0007D4r 1  AD 15 03       lda IRQVec+1
+0007D7r 1  8D rr rr       sta default_irq_vector+1
+0007DAr 1               
+0007DAr 1  A9 rr          lda #<cursor_sprite
+0007DCr 1  85 22          sta ZP_PTR
+0007DEr 1  8D rr rr       sta DEBUG_STUFF
+0007E1r 1  A9 rr          lda #>cursor_sprite
+0007E3r 1  85 23          sta ZP_PTR+1
+0007E5r 1  8D rr rr       sta DEBUG_STUFF+1
+0007E8r 1  20 rr rr       jsr ENABLE_MOUSE_CURSOR
+0007EBr 1               
+0007EBr 1  9C 20 9F       stz VERA_addr_low
+0007EEr 1  A9 03          lda #3
+0007F0r 1  8D 21 9F       sta VERA_addr_high
+0007F3r 1  A9 10          lda #VRAM_INCREMENT_1
+0007F5r 1  8D 22 9F       sta VERA_addr_bank
+0007F8r 1  A2 F7          ldx #247  ; 320x200 is 250*256 .. starting at 512 ..
+0007FAr 1  A0 00          ldy #0
+0007FCr 1                 @clear_200_LINES_LOOP:
+0007FCr 1                   @clear_200_lines_loop_inner:
+0007FCr 1  9C 23 9F             stz VERA_data0
+0007FFr 1  C8                   iny
+000800r 1  D0 FA                bne @clear_200_lines_loop_inner
+000802r 1  CA                 dex
+000803r 1  D0 F7              bne @clear_200_LINES_LOOP
+000805r 1  A2 32          ldx #50   ; 320*40 is 50*256
+000807r 1                 @make_low_40_pattern:
+000807r 1                   @make_low_40_pattern_inner:
+000807r 1  8C 23 9F             sty VERA_data0
+00080Ar 1  C8                   iny
+00080Br 1  D0 FA                bne @make_low_40_pattern_inner
+00080Dr 1  8C 23 9F           sty VERA_data0
+000810r 1  CA                 dex
+000811r 1  D0 F4              bne @make_low_40_pattern
+000813r 1                 ; VRAM already at markerA so and is OK to just write 256 bytes so..
+000813r 1  A9 00          lda #<VRAM_MARKER_A
+000815r 1  8D 20 9F       sta VERA_addr_low
+000818r 1  A9 2C          lda #>VRAM_MARKER_A
+00081Ar 1  8D 21 9F       sta VERA_addr_high
+00081Dr 1  E6 23          inc ZP_PTR+1
+00081Fr 1                 @markers_loop:
+00081Fr 1  B1 22              lda (ZP_PTR),y
+000821r 1  8D 23 9F           sta VERA_data0
+000824r 1  C8                 iny
+000825r 1  D0 F8              bne @markers_loop
+000827r 1               
+000827r 1                 ; setup layer 0 for bitmap..
+000827r 1  A9 40          lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+000829r 1  8D 2A 9F       sta VERA_dc_hscale
+00082Cr 1  A9 36          lda #54 ; setting up a 320x200 screen..
+00082Er 1  8D 2B 9F       sta VERA_dc_vscale
+000831r 1  A9 07          lda #MODE_BITMAP_256BPP
+000833r 1  8D 2D 9F       sta VERA_L0_config
+000836r 1  9C 2F 9F       stz VERA_L0_tilebase ; 320 pixel wide bitmap at top of memory
+000839r 1               
+000839r 1                 ; setup sprite table entries for the markers.. put them under layer1 but over layer0 - $08 z-depth
+000839r 1  A9 08          lda #8 ;  need sprite 1 entry
+00083Br 1  8D 20 9F       sta VERA_addr_low
+00083Er 1  A9 FC          lda #>VRAM_SPRITE_LIST
+000840r 1  8D 21 9F       sta VERA_addr_high
+000843r 1  A9 11          lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+000845r 1  8D 22 9F       sta VERA_addr_bank
+000848r 1  A2 08          ldx #$08  ; z depth
+00084Ar 1                 ; marker A - 8 bytes
+00084Ar 1  A9 60          lda #((VRAM_MARKER_A >> 5) & $FF) ; markerA address low byte
+00084Cr 1  8D 23 9F       sta VERA_data0
+00084Fr 1  A9 89          lda #($80 | (VRAM_MARKER_A >> 13)) ; markerA address high byte
+000851r 1  8D 23 9F       sta VERA_data0
+000854r 1  9C 23 9F       stz VERA_data0  ; markerA x low
+000857r 1  9C 23 9F       stz VERA_data0  ; markerA x high
+00085Ar 1  9C 23 9F       stz VERA_data0  ; markerA y low
+00085Dr 1  9C 23 9F       stz VERA_data0  ; markerA y high
+000860r 1  8E 23 9F       stx VERA_data0  ; markerA z-depth
+000863r 1  9C 23 9F       stz VERA_data0  ; markerA size/pal offset
+000866r 1                 ; marker B - 8 bytes
+000866r 1  A9 62          lda #((VRAM_MARKER_B >> 5) & $FF) ; markerA address low byte
+000868r 1  8D 23 9F       sta VERA_data0
+00086Br 1  A9 89          lda #($80 | (VRAM_MARKER_B >> 13)) ; markerA address high byte
+00086Dr 1  8D 23 9F       sta VERA_data0
+000870r 1  A9 10          lda #16
+000872r 1  8D 23 9F       sta VERA_data0  ; markerA x low
+000875r 1  9C 23 9F       stz VERA_data0  ; markerA x high
+000878r 1  8D 23 9F       sta VERA_data0  ; markerA y low
+00087Br 1  9C 23 9F       stz VERA_data0  ; markerA y high
+00087Er 1  8E 23 9F       stx VERA_data0  ; markerA z-depth
+000881r 1  9C 23 9F       stz VERA_data0  ; markerA size/pal offset
+000884r 1                 ; marker C - 8 bytes
+000884r 1  A9 64          lda #((VRAM_MARKER_C >> 5) & $FF) ; markerA address low byte
+000886r 1  8D 23 9F       sta VERA_data0
+000889r 1  A9 89          lda #($80 | (VRAM_MARKER_C >> 13)) ; markerA address high byte
+00088Br 1  8D 23 9F       sta VERA_data0
+00088Er 1  A9 20          lda #32
+000890r 1  8D 23 9F       sta VERA_data0  ; markerA x low
+000893r 1  9C 23 9F       stz VERA_data0  ; markerA x high
+000896r 1  8D 23 9F       sta VERA_data0  ; markerA y low
+000899r 1  9C 23 9F       stz VERA_data0  ; markerA y high
+00089Cr 1  8E 23 9F       stx VERA_data0  ; markerA z-depth
+00089Fr 1  9C 23 9F       stz VERA_data0  ; markerA size/pal offset
+0008A2r 1               
+0008A2r 1  A9 51          lda #LAYER0SPRITES_ENABLE
+0008A4r 1  8D 29 9F       sta VERA_dc_video
+0008A7r 1               
+0008A7r 1                 ; overwrite RAM IRQ vector with custom handler address
+0008A7r 1  78             sei ; disable IRQ while vector is changing
+0008A8r 1  A9 rr          lda #<custom_irq_handler
+0008AAr 1  8D 14 03       sta IRQVec
+0008ADr 1  A9 rr          lda #>custom_irq_handler
+0008AFr 1  8D 15 03       sta IRQVec+1
+0008B2r 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+0008B4r 1  8D 26 9F       sta VERA_ien
+0008B7r 1  58             cli ; enable IRQ now that vector is properly set
+0008B8r 1               
+0008B8r 1               ENDLESS_LOOP:
+0008B8r 1  9C rr rr       stz VSYNC_counter
+0008BBr 1  CB             wai
+0008BCr 1  AD rr rr       lda VSYNC_counter
+0008BFr 1  F0 F7          beq ENDLESS_LOOP
+0008C1r 1                 ; in VSYNC, check mouse
+0008C1r 1  A2 42          ldx #ZP_MOUSE
+0008C3r 1  20 6B FF       jsr MOUSE_GET
+0008C6r 1  85 46          sta ZP_MOUSE+4
+0008C8r 1  20 rr rr       jsr DO_CLICK_MODE
+0008CBr 1               
+0008CBr 1  20 E4 FF      jsr GETIN
+0008CEr 1  F0 E8         beq ENDLESS_LOOP
+0008D0r 1               
+0008D0r 1               
+0008D0r 1               END:
+0008D0r 1                  ; restore default IRQ vector
+0008D0r 1  78              sei
+0008D1r 1  AD rr rr        lda default_irq_vector
+0008D4r 1  8D 14 03        sta IRQVec
+0008D7r 1  AD rr rr        lda default_irq_vector+1
+0008DAr 1  8D 15 03        sta IRQVec+1
+0008DDr 1  58              cli
+0008DEr 1  20 81 FF        jsr CINT
+0008E1r 1               
+0008E1r 1  60             rts
+0008E2r 1               
+0008E2r 1               

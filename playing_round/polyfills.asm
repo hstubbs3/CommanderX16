@@ -461,7 +461,7 @@ start:
   lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
   sta VERA_ien
   cli ; enable IRQ now that vector is properly set
-   stz VSYNC_counter
+  stz VSYNC_counter
 
 
 

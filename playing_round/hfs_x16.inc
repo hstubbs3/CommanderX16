@@ -41,7 +41,7 @@ VERA_L1_tilebase  = $9F36
 VERA_L0_hscroll_h = $9F31
 
 ; VRAM addresses 124k+ 
-VRAM_MATH_SCRATCH = $1F100     ; ~4K of scratch = >900 multiplies
+VRAM_MATH_SCRATCH = $1F000     ; 2K of scratch = 512 multiplies
 VRAM_CURSOR_SPR   = $1F900 		; up to 16x16 bit sprite 
 VRAM_palette      = $1FA00      ;  
 VRAM_SPRITE_LIST  = $1FC00

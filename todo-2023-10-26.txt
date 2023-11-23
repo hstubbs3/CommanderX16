@@ -393,6 +393,20 @@ TODO 	output some text or something on layer 1 as overlay...80
 TODO 	troubleshoot polyfills.asm / mouse issue
 2023/11/22 	0940 	DONE
 
+1025 	Marker sprites back on screen... woot
+1030 	mouse still funky but markers working on click.. now to check multiplies... hmmm.. pretty sure I wrote over
+		the included font.. 
+1155 	working out a debug font... battery low time for break
+
+2300	picked it back up to finish the debug font and debug routine
+2355 	WOOT! by exact count no less, $0800 now contains debug font decoder/loader, debug font, and jump to INIT and 
+		next address right after is exactly $0900 .. all because increment | bank 0 is 16 and high byte needed was 8 and
+		16 >> 1 is 8 ... 
+
+		Woot... commit and call it for the night.. 
+		
+
+
 
 TODO 	mode7 style for floors / ceiling rendering
 
