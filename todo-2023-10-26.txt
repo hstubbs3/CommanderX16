@@ -424,6 +424,26 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 
 2023/11/25
 0830 	OK commit current code for walltest.. 
+0835 	random thought - sqrt ? well.. would likely need 1/sqrt(), like for distances which would be up to unsigned 8.8 
+		within the code ... is to reference a height table and drawing settings... 
+		for 64px tall texture .. setup screen to be 320x240, HUD should be... hmmm about 40 with 8px above it, 4px above below..
+		4 px border
+		viewport - 240- 4+8+40+4 = 240-56 = 184 = 23x8 .. 
+		8 px porder
+		40 px HUD
+		4 px border
+		left/right - 8px border = 304 viewport.. 
+		keeping the linear viewport, 320x184=58,240 bytes / 56.875K .... 57*2=114 ... want to start real data line 4 or so.. 
+		line 4 starts 1280 bytes in..  1280/8=160 .. could easily put layer0 tilebase at $00000 and build upon the debug font
+		for border/etc..
+1200 	battery getting low... will try to assemble current state, which will create HUD layer
+1210 	OK is assembling now but screen not correct.. break time
+1300 	meh.. srsly.. eat! 
+
+1400 	getting back at it a bit
+1435 	woot! the display is configured, the rle thing is working OK now.. finally.. hehe.. committing and then laying down..
+
+
 
 
 TODO 	mode7 style for floors / ceiling rendering
