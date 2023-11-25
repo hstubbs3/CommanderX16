@@ -404,8 +404,26 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 		16 >> 1 is 8 ... 
 
 		Woot... commit and call it for the night.. 
-		
 
+2023/11/24
+1115 	getting back to it... Yesterday spent some time on the chromebook looking into the Noah3D SNES source trying to
+		make sense of the bsp code... the main takeaway was really just how much that source code really is 16-bit focused
+		C code - which makes sense given the SNES was the target and its CPU was 6502 family but a 8/16bit hybrid
+
+		gonna go check out the original Wolfenstein3D with the DDA tracing ... just to be sure I have all this stuff straight
+
+1130 	OK getting back to NOAH3D project.. going to bring over the debug stub and start a new asm in general..
+
+1335 	having odd issue with testprogs/walltest.s crashing at start.. paring down to just boot
+		OK simple JMP INIT test works OK - font written to VRAM, data is aligned..
+1340	sticking rts after jsr config_debug_tiles_layer0 - didn't return? 
+			adding CINT ...	-	returned OK 
+			wait_keypress before CINT.. 	getting blank screen only..
+1415 	OK screen configured OK debug font test working.. battery low.. 
+
+
+2023/11/25
+0830 	OK commit current code for walltest.. 
 
 
 TODO 	mode7 style for floors / ceiling rendering
