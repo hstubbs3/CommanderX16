@@ -443,7 +443,12 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 1400 	getting back at it a bit
 1435 	woot! the display is configured, the rle thing is working OK now.. finally.. hehe.. committing and then laying down..
 
-
+2023/11/26 
+0950 	back at it.. managed to code golf the debug font decoder down to allow up to 40 chars (with 5 bytes a char)
+1320 	got distracted redoing memory locations and adding things needed for HUD.. expanded the font that is loaded to
+		make space for all potential font chars... 
+		makes pretty debug view of the font so... progress? committing and then getting some lunch. . 
+		
 
 
 TODO 	mode7 style for floors / ceiling rendering

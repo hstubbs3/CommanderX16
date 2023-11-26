@@ -328,525 +328,857 @@ Current file: walltest.s
 0003F3r 1               
 0003F3r 1               ; 256 byte alignment not guaranteed after this point!
 0003F3r 1               HUD_ADD_TILES: ; $0C00
-0003F3r 1  03 03 00 00  .byte %00000011,%00000011,%00000000,%00000000,%00000000,%00000000,%00000011,%00000011 ; bottom / top upleft corner - #38 $26 	$08
+0003F3r 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000011,%00000011 ; upleft corner - 			#40 $28 	$00
 0003F7r 1  00 00 03 03  
-0003FBr 1  FF FF 00 00  .byte %11111111,%11111111,%00000000,%00000000,%00000000,%00000000,%11111111,%11111111 ; bottom / top mid 	#39 #27 			$10
+0003FBr 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%11111111,%11111111 ; mid 						#41 #29 	$18
 0003FFr 1  00 00 FF FF  
-000403r 1  C0 C0 00 00  .byte %11000000,%11000000,%00000000,%00000000,%00000000,%00000000,%11000000,%11000000 ; bottom / top upright corner #40 $28 	$18
+000403r 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%11000000,%11000000 ; upright corner 				#42 $2A 	$20
 000407r 1  00 00 C0 C0  
-00040Br 1  03 03 03 03  .byte %00000011,%00000011,%00000011,%00000011,%00000011,%00000011,%00000011,%00000011 ; left side viewport #41 $29 				$20
+00040Br 1  03 03 03 03  .byte %00000011,%00000011,%00000011,%00000011,%00000011,%00000011,%00000011,%00000011 ; left side viewport 			#43 $2B 	$28
 00040Fr 1  03 03 03 03  
-000413r 1  C0 C0 C0 C0  .byte %11000000,%11000000,%11000000,%11000000,%11000000,%11000000,%11000000,%11000000 ; right side viewport #42 $2A 			$28
+000413r 1  C0 C0 C0 C0  .byte %11000000,%11000000,%11000000,%11000000,%11000000,%11000000,%11000000,%11000000 ; right side viewport 		#44 $2C 	$30
 000417r 1  C0 C0 C0 C0  
-00041Br 1  FF 80 80 80  .byte %11111111,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000 ; top/left corner HUD #43 $2B 			$30
-00041Fr 1  80 80 80 80  
-000423r 1  FF 00 00 00  .byte %11111111,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; top/mid HUD #44 $2C 					$38
+00041Br 1  03 03 00 00  .byte %00000011,%00000011,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; downleft corner viewport 	#44 $2D 	$38
+00041Fr 1  00 00 00 00  
+000423r 1  FF FF 00 00  .byte %11111111,%11111111,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; low mid viewport 	 		#46 $2E 	$40
 000427r 1  00 00 00 00  
-00042Br 1  FF 01 01 01  .byte %11111111,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001 ; top/right corner HUD  	#45 $2D 		$40
-00042Fr 1  01 01 01 01  
-000433r 1  80 80 80 80  .byte %10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000 ; left HUD 				#46 $2E 		$48
+00042Br 1  C0 C0 00 00  .byte %11000000,%11000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; downright side viewport 	#47 $2F 	$48
+00042Fr 1  00 00 00 00  
+000433r 1  FF 80 80 80  .byte %11111111,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000 ; top/left corner HUD 		#48 $30 	$50
 000437r 1  80 80 80 80  
-00043Br 1  01 01 01 01  .byte %00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001 ; right HUD 				#47 $2F 		$50
-00043Fr 1  01 01 01 01  
-000443r 1  80 80 80 80  .byte %10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%11111111 ; bottom/left corner HUD #48 $30 			$68
-000447r 1  80 80 80 FF  
-00044Br 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%11111111; bottom/mid HUD 			#49 $31 		$70
-00044Fr 1  00 00 00 FF  
-000453r 1  01 01 01 01  .byte %00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%11111111 ; bottom/right corner HUD  	#50 $32 	$78
-000457r 1  01 01 01 FF  
-00045Br 1               ;	af
-00045Br 1               HUD_MAP_RUNS: ; for now is just pattern 1,38,25 each line... spelling  it out in case want to make adjusts.. flip it cuz reasons... 25,38,1
-00045Br 1               ; 	   0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29, 30, 31, 32
-00045Br 1  FF           .byte $FF
-00045Cr 1  19 26 01     .byte  25, 38,  1 ; 30
-00045Fr 1  19 01 24 01  .byte  25,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1,  1, 25, 38,  1 ; 27 bytes / bottom 6 lines
-000463r 1  19 01 01 24  
-000467r 1  01 19 01 01  
-00047Br 1               ; 	29 b 	bottom hud b   28 					27 					26 					25 (top of HUD) 24 (space inbeween)
-00047Br 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 27 54
-00047Fr 1  26 01 19 26  
-000483r 1  01 19 26 01  
-000496r 1               ; 		23 			22 			21 			20 			19 			18 			17 			16 			15
-000496r 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 27 81
-00049Ar 1  26 01 19 26  
-00049Er 1  01 19 26 01  
-0004B1r 1               ; 		14 			13 			12 			11 			10 			9 			8 			7 			6
-0004B1r 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 18 	72 bytes ...  99 +3 = 102 got 105.. hmmm
-0004B5r 1  26 01 19 26  
-0004B9r 1  01 19 26 01  
-0004C3r 1               ;		5 			4 			3 			2 			1 			0
-0004C3r 1               HUD_MAP_CHARS:
-0004C3r 1  FF           .byte $FF
-0004C4r 1  28 27 26     .byte  40, 39, 38 	;	3
-0004C7r 1  2A 32 31 30  .byte  42, 50, 49, 48, 41, 42, 47, 36, 46, 41, 42, 47, 36, 46, 41, 42, 47, 36, 46, 41, 42, 45, 44, 43, 41, 40, 39, 38 ; 29-24 	;	27 	30
-0004CBr 1  29 2A 2F 24  
-0004CFr 1  2E 29 2A 2F  
-0004E3r 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41 ; 23-15 	; 	27 	57
-0004E7r 1  24 29 2A 24  
-0004EBr 1  29 2A 24 29  
-0004FEr 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41 ; 14-6 	; 	27 	84
-000502r 1  24 29 2A 24  
-000506r 1  29 2A 24 29  
-000519r 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 40, 39, 38 ; 18 +84 = 102
-00051Dr 1  24 29 2A 24  
-000521r 1  29 2A 24 29  
-00052Br 1               HUD_MAP_COLORS:
-00052Br 1  FF           .byte $FF
-00052Cr 1  89 89 89     .byte $89,$89,$89
-00052Fr 1  89 21 21 21  .byte $89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$89,$89 ; 29-24
-000533r 1  89 89 21 21  
-000537r 1  21 89 89 21  
-00054Br 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89 ; 23-15
-00054Fr 1  0B 89 89 0B  
-000553r 1  89 89 0B 89  
-000566r 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89 ; 14-6
-00056Ar 1  0B 89 89 0B  
-00056Er 1  89 89 0B 89  
-000581r 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$89,$89 ;
-000585r 1  0B 89 89 0B  
-000589r 1  89 89 0B 89  
-000593r 1               
-000593r 1               TEXTURE_WIDTH_MASKS:
-000593r 1  FF           .byte 	255 ; 	texture 0 is null
-000594r 1  01           .byte 	1 	;	texture 0 is 2 wide ..
-000595r 1  01           .byte 	1 	;	texture 1 is 2 wide ..
-000596r 1  00           .byte 	0 	;	texture 2 is 1 wide
-000597r 1  00           .byte 	0 	;	texture 3 is 1 wide
-000598r 1               TEXTURE_ADDRESS_HIGH:
-000598r 1  FF           .byte 	255 ; 	texture 0 is null
-000599r 1  rr           .byte (<TEST_TEXTURE_0)
-00059Ar 1  rr           .byte (<TEST_TEXTURE_1)
-00059Br 1  rr           .byte (<TEST_TEXTURE_2)
-00059Cr 1  rr           .byte (<TEST_TEXTURE_3)
-00059Dr 1               TEXTURE_ADDRESS_LOW:
-00059Dr 1  FF           .byte 	255 ; 	texture 0 is null
-00059Er 1  rr           .byte (>TEST_TEXTURE_0)
-00059Fr 1  rr           .byte (>TEST_TEXTURE_1)
-0005A0r 1  rr           .byte (>TEST_TEXTURE_2)
-0005A1r 1  rr           .byte (>TEST_TEXTURE_3)
-0005A2r 1               
-0005A2r 1               
-0005A2r 1               ;	global data
-0005A2r 1  DE AD BE EF  DEBUG_BUFFERA: 		 .byte $DE,$AD,$BE,$EF
-0005A6r 1  00 00 00 00  DEBUG_STUFF: 		 .byte 0,0,0,0
-0005AAr 1  DE AD BE EF  DEBUG_BUFFERB: 		 .byte $DE,$AD,$BE,$EF
-0005AEr 1  00 00        default_irq_vector:  .addr 0
-0005B0r 1  01           VSYNC_counter:       .byte 1
-0005B1r 1  10           current_buffer_inc1: .byte VRAM_INCREMENT_1
-0005B2r 1  E0           current_buffer_inc320: .byte VRAM_INCREMENT_320
-0005B3r 1  00           swap_buffer: 		 .byte 0
-0005B4r 1               ; end global data
-0005B4r 1  DE AD BE EF  DEBUG_END_GLOBALS:	 .byte $DE,$AD,$BE,$EF
-0005B8r 1               
-0005B8r 1               .include "hfs_x16.inc"
-0005B8r 2               
-0005B8r 2               ; VERA
-0005B8r 2               VERA_addr_low     = $9F20
-0005B8r 2               VERA_addr_high    = $9F21
-0005B8r 2               VERA_addr_bank    = $9F22
-0005B8r 2               VERA_data0        = $9F23
-0005B8r 2               VERA_data1        = $9F24
-0005B8r 2               VERA_ctrl         = $9F25 ; RESET | 6 bits DCSEL | addrsel
-0005B8r 2               VERA_DCSEL0_ADDR0 = $00
-0005B8r 2               VERA_DCSEL2_ADDR0 = $04
-0005B8r 2               VERA_DCSEL3_ADDR0 = $06
-0005B8r 2               VERA_DCSEL4_ADDR0 = $08
-0005B8r 2               VERA_DCSEL5_ADDR0 = $0A
-0005B8r 2               VERA_DCSEL6_ADDR0 = $0C
-0005B8r 2               
-0005B8r 2               VERA_ien          = $9F26
-0005B8r 2               VERA_isr          = $9F27
-0005B8r 2               
-0005B8r 2               VERA_dc_video     = $9F29 ; DCSEL = 0
-0005B8r 2               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
-0005B8r 2               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
-0005B8r 2               
-0005B8r 2               VERA_dc_hscale    = $9F2A
-0005B8r 2               VERA_dc_vscale    = $9F2B
-0005B8r 2               VERA_L0_config    = $9F2D
-0005B8r 2               ;   7       6     5   4       3       2             1   0
-0005B8r 2               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
-0005B8r 2               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
-0005B8r 2               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
-0005B8r 2               ;   2 - 128                                         2   4bpp 16 color
-0005B8r 2               ;   3 - 256                                         3   8bpp 256 color
-0005B8r 2               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
-0005B8r 2               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
-0005B8r 2               ;   The palette offset (in 'H-Scroll (11:8)') mo  ; start of program
-0005B8r 2               VERA_L0_mapbase   = $9F2E
-0005B8r 2               VERA_L0_tilebase  = $9F2F
-0005B8r 2               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
-0005B8r 2               VERA_L0_hscroll_h = $9F31
-0005B8r 2               
-0005B8r 2               VERA_L1_config    = $9F34
-0005B8r 2               VERA_L1_mapbase   = $9F35
-0005B8r 2               VERA_L1_tilebase  = $9F36
-0005B8r 2               VERA_L1_hscroll_l = $9F37
-0005B8r 2               VERA_L1_hscroll_h = $9F38
-0005B8r 2               VERA_L1_vscroll_l = $9F39
-0005B8r 2               VERA_L1_vscroll_h = $9F3A
-0005B8r 2               
-0005B8r 2               
-0005B8r 2               ; VRAM addresses 124k+
-0005B8r 2               VRAM_MATH_SCRATCH = $1F000     ; 2K of scratch = 512 multiplies
-0005B8r 2               VRAM_CURSOR_SPR   = $1F900 		; up to 16x16 bit sprite
-0005B8r 2               VRAM_palette      = $1FA00      ;
-0005B8r 2               VRAM_SPRITE_LIST  = $1FC00
-0005B8r 2               
-0005B8r 2               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
-0005B8r 2               DISPLAY_SCALE_ONE     = 128 ; 640x480
-0005B8r 2               MODE_BITMAP_256BPP = $07
-0005B8r 2               MODE_BITMAP_16BPP  = $06
-0005B8r 2               LAYER0_ONLY       = $11
-0005B8r 2               LAYER0SPRITES_ENABLE = $51
-0005B8r 2               LAYER01SPRITES_ENABLE = $71
-0005B8r 2               LAYER1SPRITES_ENABLE = $61
-0005B8r 2               SPRITES_ONLY = $41
-0005B8r 2               
-0005B8r 2               VRAM_INCREMENT_1 = $10
-0005B8r 2               VRAM_INCREMENT_2 = $20
-0005B8r 2               VRAM_INCREMENT_4 = $30
-0005B8r 2               VRAM_INCREMENT_8 = $40
-0005B8r 2               VRAM_INCREMENT_16 = $50
-0005B8r 2               VRAM_INCREMENT_32 = $60
-0005B8r 2               VRAM_INCREMENT_64 = $70
-0005B8r 2               VRAM_INCREMENT_128 = $80
-0005B8r 2               VRAM_INCREMENT_256 = $90
-0005B8r 2               VRAM_INCREMENT_512 = $A0
-0005B8r 2               VRAM_INCREMENT_40 = $B0
-0005B8r 2               VRAM_INCREMENT_80 = $C0
-0005B8r 2               VRAM_INCREMENT_160 = $D0
-0005B8r 2               VRAM_INCREMENT_320 = $E0
-0005B8r 2               VRAM_INCREMENT_640 = $F0
-0005B8r 2               
-0005B8r 2               
-0005B8r 2               ; DCSEL = 2
-0005B8r 2               VERA_FX_CTRL    = $9F29
-0005B8r 2               VERA_FX_TILEBASE = $9F2A
-0005B8r 2               VERA_FX_MAPBASE = $9F2B
-0005B8r 2               VERA_FX_MULT = $9F2C
-0005B8r 2               FX_MULTIPLY_ENABLE = $10
-0005B8r 2               
-0005B8r 2               ; DCSEL = 3
-0005B8r 2               VERA_FX_X_INC_L = $9F29
-0005B8r 2               VERA_FX_X_INC_H = $9F2A
-0005B8r 2               VERA_FX_Y_INC_L = $9F2B
-0005B8r 2               VERA_FX_Y_INC_H = $9F2C
-0005B8r 2               
-0005B8r 2               ; DCSEL = 4
-0005B8r 2               VERA_FX_X_POS_L = $9F29
-0005B8r 2               VERA_FX_X_POS_H = $9F2A
-0005B8r 2               VERA_FX_Y_POS_L = $9F2B
-0005B8r 2               VERA_FX_Y_POS_H = $9F2C
-0005B8r 2               
-0005B8r 2               ; DCSEL = 6
-0005B8r 2               VERA_FX_CACHE_L = $9F29  ; write only.. read here will reset accumulator!
-0005B8r 2               VERA_FX_CACHE_M = $9F2A  ; write only.. read triggers accumulate
-0005B8r 2               VERA_FX_CACHE_H = $9F2B  ; write only
-0005B8r 2               VERA_FX_CACHE_U = $9F2C  ; write only
-0005B8r 2               
-0005B8r 2               VSYNC_BIT         = $01
-0005B8r 2               
-0005B8r 2               ; Kernal
-0005B8r 2               CHROUT            = $FFD2
-0005B8r 2               GETIN             = $FFE4
-0005B8r 2               CINT              = $FF81
-0005B8r 2               CONSOLE_PUT_CHAR  = $FEDE
-0005B8r 2               MOUSE_CONFIG      = $FF68
-0005B8r 2               MOUSE_GET         = $FF6B
-0005B8r 2               MOUSE_SCAN        = $FF71
-0005B8r 2               
-0005B8r 2               ; RAM Interrupt Vectors
-0005B8r 2               IRQVec            = $0314
-0005B8r 2               
-0005B8r 2               ZP_PTR = $22
-0005B8r 2               
-0005B8r 2               VERA_SET_MULTIPLY = $10
-0005B8r 2               VERA_RESET_ACCUMULATOR = $80
-0005B8r 2               
-0005B8r 2               .macro set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each ..
-0005B8r 2                 ; set addr1
-0005B8r 2                 ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
-0005B8r 2                 sty VERA_ctrl   ; 4
-0005B8r 2                 ldx #(VRAM_INCREMENT_4 | ^VRAM_MATH_SCRATCH)  ; 6
-0005B8r 2                 stx VERA_addr_bank ;  10
-0005B8r 2                 lda #>VRAM_MATH_SCRATCH ; 12
-0005B8r 2                 sta VERA_addr_high ;  16
-0005B8r 2                 stz VERA_addr_low ; 20
-0005B8r 2                 ; set addr0
-0005B8r 2                 ldy #VERA_DCSEL2_ADDR0 ; set DCSEL =2 and addrsel to 0
-0005B8r 2                 sty VERA_ctrl
-0005B8r 2                 stx VERA_addr_bank
-0005B8r 2                 sta VERA_addr_high
-0005B8r 2                 lda #1  ; we want bytes 1,2 of each multiply..
-0005B8r 2                 sta VERA_addr_low
-0005B8r 2                 ; set multiply    42
-0005B8r 2                 lda #(VERA_SET_MULTIPLY | VERA_RESET_ACCUMULATOR)  ; set multiply mode
-0005B8r 2                 sta VERA_FX_MULT ;  48
-0005B8r 2                 lda #$48  ; enable cache writes and 16-bit hop
-0005B8r 2                 sta VERA_FX_CTRL ; 54
-0005B8r 2                 lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
-0005B8r 2                 sta VERA_ctrl ; 60
-0005B8r 2                 stz VERA_FX_CACHE_L
-0005B8r 2               .endmacro
-0005B8r 2               
-0005B8r 2               
-0005B8r 2               .macro wait_keypress
-0005B8r 2                 .local waity_wait
-0005B8r 2                 waity_wait:
-0005B8r 2                  wai
-0005B8r 2                  jsr GETIN
-0005B8r 2                  beq waity_wait
-0005B8r 2               .endmacro
-0005B8r 2               
-0005B8r 2               ENABLE_MOUSE_CURSOR:
-0005B8r 2               ; expect address of cursor sprite data in ZP_PTR like this -
-0005B8r 2               ; ZP_PTR+0/1 - address of data for mouse cursor
-0005B8r 2  A9 FF            lda #$FF
-0005BAr 2  20 68 FF         jsr MOUSE_CONFIG
-0005BDr 2                   ; configure sprite 0
-0005BDr 2  9C 20 9F         stz VERA_addr_low
-0005C0r 2  A9 FC            lda #>VRAM_SPRITE_LIST
-0005C2r 2  8D 21 9F         sta VERA_addr_high
-0005C5r 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
-0005C7r 2  8D 22 9F         sta VERA_addr_bank
-0005CAr 2  A9 C8            lda #((VRAM_CURSOR_SPR >> 5) & $FF )
-0005CCr 2  8D 23 9F         sta VERA_data0
-0005CFr 2  A9 8F        	lda #($80 | (VRAM_CURSOR_SPR >> 13)) ; high address, 8bit sprite
-0005D1r 2  8D 23 9F     	sta VERA_data0
-0005D4r 2  9C 23 9F         stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
-0005D7r 2  9C 23 9F         stz VERA_data0 ; x high
-0005DAr 2  9C 23 9F         stz VERA_data0 ; y low
-0005DDr 2  9C 23 9F         stz VERA_data0 ; y high
-0005E0r 2  A9 0C            lda #$0C
-0005E2r 2  8D 23 9F         sta VERA_data0 ; z-depth/flips
-0005E5r 2  A9 50            lda #$50 ; is 16/16 sprite, 8bit color / no offset
-0005E7r 2  8D 23 9F         sta VERA_data0 ; sprite width/height/palette.. a freed up now.
-0005EAr 2                   ; copy cursor image to sprite 0
-0005EAr 2  9C 20 9F         stz VERA_addr_low
-0005EDr 2  A9 F9            lda #>VRAM_CURSOR_SPR
-0005EFr 2  8D 21 9F         sta VERA_addr_high
-0005F2r 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_CURSOR_SPR)
-0005F4r 2  8D 22 9F         sta VERA_addr_bank
-0005F7r 2  A0 00            ldy #0
-0005F9r 2                 @cursor_data_loop:
-0005F9r 2  B1 22              lda (ZP_PTR),y
-0005FBr 2  8D 23 9F           sta VERA_data0
-0005FEr 2  C8                 iny
-0005FFr 2  D0 F8              bne @cursor_data_loop
-000601r 2  60             rts
-000602r 2               
-000602r 1               
-000602r 1               ;VRAM addresses - 124K+ reserved for stuffs
-000602r 1               							;	0 				1 				2
-000602r 1               							;	0123456789ABCDEF0123456789ABCDEF012345
-000602r 1               VRAM_DEBUG_FONT = $00000 	;	0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # 	1bpp / 38*8 = 304 bytes
-000602r 1               VRAM_AFTER_DEBUG_FONT = $00140 ;	304 bytes.. only so useful .. sprites need 32 byte alignment..
-000602r 1               VRAM_AFTER_ADDED_HUD_TILES = $001A8 ; 424 bytes - needs to stay <= $00208 ( 520 ) - so 12 more tiles could be added before more squeeze..?
-000602r 1               VRAM_FIRST_USABLE_SPRITE = $00140 ; 320 bytes in ..
-000602r 1               VRAM_START_DEBUG_TEXT = $00180 	;	384 bytes in // 3 lines in 64x32 tile map.. 320x240=30 lines..
-000602r 1               DEBUG_VSCROLL = $0014 	;	-20 VSCROLL.. debug has 4 lines above and below possibly trashed
-000602r 1               DEBUG_TILE_CONFIG = $50 ; 	64x64 16 color... using the scroll means using 30+3=33 lines 				4K 	$01000
-000602r 1               
-000602r 1               VRAM_VIEWPORT_A = $00000 ; 	2K align 	need 188 lines * 320 bytes = 60,160 58.75K / EB00  			58.75k 			EB00
-000602r 1               VRAM_VIEWPORT_A_START_offset = $0508 ; line 4, x=8
-000602r 1               VRAM_LAYER1_TILE_MAP 	= $0EA00  ;	needs to be 512B aligned, 64x32, could waste up to 2 lines 128B per line 	4K+128 	62.75K 	$0FB00
-000602r 1               VRAM_LAYER1_MAP_VIS = $0EB00 ;
-000602r 1               ; 62.75 to 64K-1 - $0FA00 to $0FFFF
-000602r 1               VRAM_VIEWPORT_B = $10000 ; 2K aligned starting at 6K runs to $1EB00
-000602r 1               
-000602r 1               ;124K+ reserved for stuffs
-000602r 1               
-000602r 1               config_debug_tiles_layer1:
-000602r 1  9C 25 9F     	stz VERA_ctrl
-000605r 1  A9 50        	lda #DEBUG_TILE_CONFIG
-000607r 1  8D 34 9F     	sta VERA_L1_config
-00060Ar 1  9C 35 9F     	stz	VERA_L1_mapbase ;	tilemap starts at 0 - top 3 lines trashed with debug font data
-00060Dr 1  9C 36 9F     	stz VERA_L1_tilebase ;  tiles start at 0
-000610r 1  9C 37 9F     	stz VERA_L1_hscroll_l
-000613r 1  9C 38 9F     	stz VERA_L1_hscroll_h
-000616r 1  A9 14        	lda #<DEBUG_VSCROLL
-000618r 1  8D 39 9F     	sta VERA_L1_vscroll_l
-00061Br 1  A9 00        	lda #>DEBUG_VSCROLL
-00061Dr 1  8D 3A 9F     	sta VERA_L1_vscroll_h
-000620r 1  A9 80            lda #<VRAM_START_DEBUG_TEXT
-000622r 1  8D 20 9F         sta VERA_addr_low
-000625r 1  A9 01            lda #>VRAM_START_DEBUG_TEXT
-000627r 1  8D 21 9F         sta VERA_addr_high
-00062Ar 1  A9 10            lda #(VRAM_INCREMENT_1 | ^VRAM_START_DEBUG_TEXT)
-00062Cr 1  8D 22 9F         sta VERA_addr_bank
-00062Fr 1                   ; set all tiles to blank tile ... dark grey on transparent
-00062Fr 1                   ;	blank tile is just after Z - is 37 #$25 ... hmmm
-00062Fr 1                   ; 30*64 = 1,920 	7*256
-00062Fr 1  A2 1E            ldx #30
-000631r 1                   @do_set_color_loop:
-000631r 1  A0 40        	    ldy #64
-000633r 1                     @do_set_color_inner_loop:
-000633r 1  A9 24              	  lda #$24
-000635r 1  8D 23 9F           	  sta VERA_data0
-000638r 1  A9 0C                  lda #$0C
-00063Ar 1  8D 23 9F         	  sta VERA_data0
-00063Dr 1  88               	  dey
-00063Er 1  D0 F3            	  bne @do_set_color_inner_loop
-000640r 1  CA                 dex
-000641r 1  D0 EE              bne @do_set_color_loop
-000643r 1                   ;
-000643r 1  A9 80        	lda #<VRAM_START_DEBUG_TEXT
-000645r 1  8D 20 9F     	sta VERA_addr_low
-000648r 1  A9 01        	lda #>VRAM_START_DEBUG_TEXT
-00064Ar 1  8D 21 9F     	sta VERA_addr_high
-00064Dr 1  A9 20            lda #(VRAM_INCREMENT_2 | ^VRAM_START_DEBUG_TEXT)
-00064Fr 1  8D 22 9F         sta VERA_addr_bank
-000652r 1  A9 00        	lda #0
-000654r 1               	@debug_debug_things:
-000654r 1  8D 23 9F     		sta VERA_data0
-000657r 1  1A           		inc a
-000658r 1  C9 28        		cmp #40
-00065Ar 1  D0 F8        		bne @debug_debug_things
-00065Cr 1  60           	rts
-00065Dr 1               
-00065Dr 1               config_viewport_with_hud_display:
-00065Dr 1  9C 25 9F     	stz VERA_ctrl
-000660r 1  A9 14        	lda #20
-000662r 1               	;sta VERA_L1_vscroll_l
-000662r 1  A9 FF        	lda #$FF
-000664r 1               	;sta VERA_L1_vscroll_h
-000664r 1  A9 75        	lda #(VRAM_LAYER1_TILE_MAP >> 9)
-000666r 1  8D 35 9F     	sta VERA_L1_mapbase
-000669r 1               	;	copy the additional tiles
-000669r 1  A9 40        	lda #<VRAM_AFTER_DEBUG_FONT
-00066Br 1  8D 20 9F     	sta VERA_addr_low
-00066Er 1  A9 01        	lda #>VRAM_AFTER_DEBUG_FONT
-000670r 1  8D 21 9F     	sta VERA_addr_high
-000673r 1  A9 10        	lda #(VRAM_INCREMENT_1 | ^VRAM_AFTER_DEBUG_FONT)
-000675r 1  8D 22 9F     	sta VERA_addr_bank
-000678r 1  A9 00        	lda #0
-00067Ar 1               	@copy_chars_loop:
-00067Ar 1  A8           		tay
-00067Br 1  B9 rr rr     		lda HUD_ADD_TILES,y
-00067Er 1  8D 23 9F     		sta VERA_data0
-000681r 1  B9 rr rr     		lda HUD_ADD_TILES+1,y
-000684r 1  8D 23 9F     		sta VERA_data0
-000687r 1  B9 rr rr     		lda HUD_ADD_TILES+2,y
-00068Ar 1  8D 23 9F     		sta VERA_data0
-00068Dr 1  B9 rr rr     		lda HUD_ADD_TILES+3,y
-000690r 1  8D 23 9F     		sta VERA_data0
-000693r 1  B9 rr rr     		lda HUD_ADD_TILES+4,y
-000696r 1  8D 23 9F     		sta VERA_data0
-000699r 1  B9 rr rr     		lda HUD_ADD_TILES+5,y
-00069Cr 1  8D 23 9F     		sta VERA_data0
-00069Fr 1  B9 rr rr     		lda HUD_ADD_TILES+6,y
-0006A2r 1  8D 23 9F     		sta VERA_data0
-0006A5r 1  B9 rr rr     		lda HUD_ADD_TILES+7,y
-0006A8r 1  8D 23 9F     		sta VERA_data0
-0006ABr 1  98           		tya
-0006ACr 1  18           		clc
-0006ADr 1  69 08        		adc #8
-0006AFr 1  C9 68        		cmp #104
-0006B1r 1  D0 C7        		BNE @copy_chars_loop
-0006B3r 1               	; 	create the map
-0006B3r 1  9C 20 9F     	stz VERA_addr_low
-0006B6r 1  A9 EB        	LDA #>VRAM_LAYER1_MAP_VIS
-0006B8r 1  8D 21 9F     	sta VERA_addr_high
-0006BBr 1  A9 10        	lda #(VRAM_INCREMENT_1 | ^VRAM_LAYER1_MAP_VIS)
-0006BDr 1  A0 67        	ldy #103
-0006BFr 1  8C rr rr     	sty DEBUG_STUFF
-0006C2r 1               	@do_runs_loop:
-0006C2r 1  84 22        	    sty ZP_PTR 				;	3 	3
-0006C4r 1  B9 rr rr     		lda HUD_MAP_RUNS,y  	; 	4* 	7
-0006C7r 1  85 23        		sta ZP_PTR+1 			; 	3 	10
-0006C9r 1  BE rr rr     	    ldx HUD_MAP_COLORS,y 	; 	4* 	18
-0006CCr 1  B9 rr rr     		lda HUD_MAP_CHARS,y 	; 	4* 	14
-0006CFr 1  A4 23        	    ldy ZP_PTR+1 			; 	3 	21 	possibly 24 a run..
-0006D1r 1               	  @do_run_loop:
-0006D1r 1  8D 23 9F     	  	  sta VERA_data0		;	4
-0006D4r 1  8E 23 9F     	  	  stx VERA_data0 		; 	4 	8
-0006D7r 1  88           	  	  dey 					;	2 	10
-0006D8r 1  D0 F7        	  	  bne @do_run_loop 		;	3 	13 per go round.. 24+ 13*byte to write.. 3840B * 13 = 49,920 ...
-0006DAr 1  A4 22        	  	ldy ZP_PTR ; 	3 	24 / 27
-0006DCr 1  88           	  	dey 	;	2 		26 / 29
-0006DDr 1  D0 E3        	  	bne @do_runs_loop 	; 3 	29/32
-0006DFr 1  9C 2F 9F     	stz VERA_L0_tilebase
-0006E2r 1  A9 07        	lda #MODE_BITMAP_256BPP
-0006E4r 1  8D 2D 9F     	sta VERA_L0_config
-0006E7r 1  60           	rts
-0006E8r 1               
-0006E8r 1               
-0006E8r 1               custom_irq_handler:
-0006E8r 1  AD 27 9F        lda VERA_isr
-0006EBr 1  29 01           and #VSYNC_BIT
-0006EDr 1  F0 20           beq @continue ; non-VSYNC IRQ, no tick update
-0006EFr 1  EE rr rr        inc VSYNC_counter
-0006F2r 1  2C rr rr        BIT @swap_buffer
-0006F5r 1  10 18           BPL @continue
-0006F7r 1                 @swap_buffer:
-0006F7r 1  AD rr rr       	lda current_buffer_inc1 ;
-0006FAr 1  49 01          	eor #1
-0006FCr 1  8D rr rr       	sta current_buffer_inc1 ;
-0006FFr 1  AD rr rr       	lda current_buffer_inc320 ;
-000702r 1  49 01          	eor #1
-000704r 1  8D rr rr       	sta current_buffer_inc320 ;
-000707r 1  29 01          	and #1
-000709r 1  18             	clc
-00070Ar 1  6A             	ror ; bit 0 to C
-00070Br 1  6A             	ror ; C to bit 7 ... ACC is now either $00 or $80
-00070Cr 1  8D 36 9F       	sta VERA_L1_tilebase ;	set location of buffer
-00070Fr 1               @continue:
-00070Fr 1                  ; continue to default IRQ handler
-00070Fr 1  6C rr rr        jmp (default_irq_vector)
-000712r 1                  ; RTI will happen after jump
-000712r 1               
-000712r 1               
-000712r 1               DEBUG_INIT_PREAMBLE:
-000712r 1  DE AD BE EF  	.byte $DE,$AD,$BE,$EF
-000716r 1               INIT: ; start of program per debug font inc
-000716r 1  20 rr rr     	jsr config_debug_tiles_layer1
-000719r 1  A9 40        	lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
-00071Br 1  8D 2A 9F       	sta VERA_dc_hscale
-00071Er 1  8D 2B 9F       	sta VERA_dc_vscale
-000721r 1  A9 61        	lda #LAYER1SPRITES_ENABLE
-000723r 1  8D 29 9F     	sta VERA_dc_video
-000726r 1               
-000726r 1  CB 20 E4 FF  	wait_keypress
-00072Ar 1  F0 FA        
-00072Cr 1  20 rr rr     	jsr config_viewport_with_hud_display
-00072Fr 1  A9 71        	lda #LAYER01SPRITES_ENABLE
-000731r 1  8D 29 9F     	sta VERA_dc_video
-000734r 1  CB 20 E4 FF  	wait_keypress
-000738r 1  F0 FA        
-00073Ar 1  20 81 FF     	jsr CINT
-00073Dr 1  60           	rts
-00073Er 1               
-00073Er 1  A9 01        	lda #1
-000740r 1  20 68 FF     	jsr MOUSE_CONFIG
-000743r 1               
-000743r 1                   ; overwrite RAM IRQ vector with custom handler address
-000743r 1  78               sei ; disable IRQ while vector is changing
-000744r 1  A9 rr            lda #<custom_irq_handler
-000746r 1  8D 14 03         sta IRQVec
-000749r 1  A9 rr            lda #>custom_irq_handler
-00074Br 1  8D 15 03         sta IRQVec+1
-00074Er 1  A9 01            lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
-000750r 1  8D 26 9F         sta VERA_ien
-000753r 1  58               cli ; enable IRQ now that vector is properly set
-000754r 1  9C rr rr         stz VSYNC_counter
-000757r 1               
-000757r 1               ENDLESS_LOOP:
-000757r 1  CB              wai
-000758r 1  AD rr rr        lda VSYNC_counter
-00075Br 1  F0 FA           beq ENDLESS_LOOP
-00075Dr 1  9C rr rr        stz VSYNC_counter
-000760r 1  20 E4 FF        jsr GETIN
-000763r 1  F0 F2           beq ENDLESS_LOOP
-000765r 1               
-000765r 1               do_cleanup:
-000765r 1                  ; restore default IRQ vector
-000765r 1  78              sei
-000766r 1  AD rr rr        lda default_irq_vector
-000769r 1  8D 14 03        sta IRQVec
-00076Cr 1  AD rr rr        lda default_irq_vector+1
-00076Fr 1  8D 15 03        sta IRQVec+1
-000772r 1  58              cli
-000773r 1  20 81 FF        jsr CINT
-000776r 1  60              rts
-000776r 1               
+00043Br 1  FF 00 00 00  .byte %11111111,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; top/mid HUD 				#49 $31 	$58
+00043Fr 1  00 00 00 00  
+000443r 1  FF 01 01 01  .byte %11111111,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001 ; top/right corner HUD  		#50 $32 	$60
+000447r 1  01 01 01 01  
+00044Br 1  80 80 80 80  .byte %10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000 ; left HUD 					#51 $33 	$68
+00044Fr 1  80 80 80 80  
+000453r 1  01 01 01 01  .byte %00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001 ; right HUD 					#52 $34		$70
+000457r 1  01 01 01 01  
+00045Br 1  80 80 80 80  .byte %10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%10000000,%11111111 ; bottom/left corner HUD 		#53 $35 	$78
+00045Fr 1  80 80 80 FF  
+000463r 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%11111111; bottom/mid HUD 				#54 $36 	$80
+000467r 1  00 00 00 FF  
+00046Br 1  01 01 01 01  .byte %00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%00000001,%11111111 ; bottom/right corner HUD  	#55 $37 	$88
+00046Fr 1  01 01 01 FF  
+000473r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 56 	$90
+000477r 1  55 AA 55 AA  
+00047Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 57 	$98
+00047Fr 1  55 AA 55 AA  
+000483r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 58 	$A0
+000487r 1  55 AA 55 AA  
+00048Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 59
+00048Fr 1  55 AA 55 AA  
+000493r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 60 	$B0
+000497r 1  55 AA 55 AA  
+00049Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 61
+00049Fr 1  55 AA 55 AA  
+0004A3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 62 	$C0
+0004A7r 1  55 AA 55 AA  
+0004ABr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; filler char 63
+0004AFr 1  55 AA 55 AA  
+0004B3r 1  00 00 00 00  .byte %00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000,%00000000 ; HUD space  	64 	$D0 	... so font is basically 32+ascii value... otay
+0004B7r 1  00 00 00 00  
+0004BBr 1  00 7E 3C 3C  .byte %00000000,%01111110,%00111100,%00111100,%00011000,%00000000,%00011000,%00000000 ; !  	65
+0004BFr 1  18 00 18 00  
+0004C3r 1  00 66 66 EE  .byte %00000000,%01100110,%01100110,%11101110,%00000000,%00000000,%00000000,%00000000 ; " 	66 	$E0
+0004C7r 1  00 00 00 00  
+0004CBr 1  00 24 7E 24  .byte %00000000,%00100100,%01111110,%00100100,%00100100,%01111110,%00100100,%00000000 ; # 	67
+0004CFr 1  24 7E 24 00  
+0004D3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; $ 	$F0
+0004D7r 1  55 AA 55 AA  
+0004DBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; %
+0004DFr 1  55 AA 55 AA  
+0004E3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; & 	$100
+0004E7r 1  55 AA 55 AA  
+0004EBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; '
+0004EFr 1  55 AA 55 AA  
+0004F3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; ( 	$110
+0004F7r 1  55 AA 55 AA  
+0004FBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; )
+0004FFr 1  55 AA 55 AA  
+000503r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; * 	$120
+000507r 1  55 AA 55 AA  
+00050Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; +
+00050Fr 1  55 AA 55 AA  
+000513r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; ` 	$130
+000517r 1  55 AA 55 AA  
+00051Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; -
+00051Fr 1  55 AA 55 AA  
+000523r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; . 	$140
+000527r 1  55 AA 55 AA  
+00052Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; /
+00052Fr 1  55 AA 55 AA  
+000533r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 0  	$150
+000537r 1  55 AA 55 AA  
+00053Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 1
+00053Fr 1  55 AA 55 AA  
+000543r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 2  	$160
+000547r 1  55 AA 55 AA  
+00054Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 3
+00054Fr 1  55 AA 55 AA  
+000553r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 4 	$170
+000557r 1  55 AA 55 AA  
+00055Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 5
+00055Fr 1  55 AA 55 AA  
+000563r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 6 	$180
+000567r 1  55 AA 55 AA  
+00056Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 7
+00056Fr 1  55 AA 55 AA  
+000573r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 8 	$190
+000577r 1  55 AA 55 AA  
+00057Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; 9
+00057Fr 1  55 AA 55 AA  
+000583r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; : 	$1A0
+000587r 1  55 AA 55 AA  
+00058Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; ;
+00058Fr 1  55 AA 55 AA  
+000593r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; < 	$1B0
+000597r 1  55 AA 55 AA  
+00059Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; =
+00059Fr 1  55 AA 55 AA  
+0005A3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; > 	$1C0
+0005A7r 1  55 AA 55 AA  
+0005ABr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; ?
+0005AFr 1  55 AA 55 AA  
+0005B3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; @ 	$1D0
+0005B7r 1  55 AA 55 AA  
+0005BBr 1  00 30 78 CC  .byte %00000000,%00110000,%01111000,%11001100,%11111110,%11000110,%11000110,%11000110 ; HUD A
+0005BFr 1  FE C6 C6 C6  
+0005C3r 1  00 7E C0 AA  .byte %00000000,%01111110,%11000000,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD B 	$1E0
+0005C7r 1  55 AA 55 AA  
+0005CBr 1  00 7E C0 C0  .byte %00000000,%01111110,%11000000,%11000000,%11000000,%11000000,%01111110,%01111110 ; HUD C
+0005CFr 1  C0 C0 7E 7E  
+0005D3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD D 	$1F0
+0005D7r 1  55 AA 55 AA  
+0005DBr 1  00 FE C0 FC  .byte %00000000,%11111110,%11000000,%11111100,%11111000,%11000000,%11111110,%11111110 ; HUD E
+0005DFr 1  F8 C0 FE FE  
+0005E3r 1  00 FE C0 FC  .byte %00000000,%11111110,%11000000,%11111100,%11111000,%11000000,%11000000,%11000000 ; HUD F
+0005E7r 1  F8 C0 C0 C0  
+0005EBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD G 	$200
+0005EFr 1  55 AA 55 AA  
+0005F3r 1  00 C6 C6 FE  .byte %00000000,%11000110,%11000110,%11111110,%11111110,%11000110,%11000110,%11000110 ; HUD H
+0005F7r 1  FE C6 C6 C6  
+0005FBr 1  00 7E 18 18  .byte %00000000,%01111110,%00011000,%00011000,%00011000,%00011000,%01111110,%10101010 ; HUD I 	$210
+0005FFr 1  18 18 7E AA  
+000603r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD J
+000607r 1  55 AA 55 AA  
+00060Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD K 	$220
+00060Fr 1  55 AA 55 AA  
+000613r 1  00 C0 C0 C0  .byte %00000000,%11000000,%11000000,%11000000,%11000000,%11000000,%11111110,%11111110 ; HUD L
+000617r 1  C0 C0 FE FE  
+00061Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD M 	$230
+00061Fr 1  55 AA 55 AA  
+000623r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD N
+000627r 1  55 AA 55 AA  
+00062Br 1  00 7C C6 C6  .byte %00000000,%01111100,%11000110,%11000110,%11000110,%11000110,%01111110,%01111100 ; HUD O
+00062Fr 1  C6 C6 7E 7C  
+000633r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD P
+000637r 1  55 AA 55 AA  
+00063Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD Q 	$250
+00063Fr 1  55 AA 55 AA  
+000643r 1  00 FE C6 FE  .byte %00000000,%11111110,%11000110,%11111110,%11111110,%11011000,%11001100,%11000110 ; HUD R
+000647r 1  FE D8 CC C6  
+00064Br 1  00 7E C0 7E  .byte %00000000,%01111110,%11000000,%01111110,%01111110,%00000110,%11111110,%11111100 ; HUD S 	$260
+00064Fr 1  7E 06 FE FC  
+000653r 1  00 FE 60 60  .byte %00000000,%11111110,%01100000,%01100000,%01100000,%01100000,%01100000,%01100000 ; HUD T
+000657r 1  60 60 60 60  
+00065Br 1  00 C6 C6 C6  .byte %00000000,%11000110,%11000110,%11000110,%11000110,%11000110,%01111110,%01111110 ; HUD U
+00065Fr 1  C6 C6 7E 7E  
+000663r 1  00 C6 C6 C6  .byte %00000000,%11000110,%11000110,%11000110,%11000110,%11001100,%01111000,%00110000 ; HUD V
+000667r 1  C6 CC 78 30  
+00066Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD W 	$280
+00066Fr 1  55 AA 55 AA  
+000673r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD X
+000677r 1  55 AA 55 AA  
+00067Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD Y 	$290
+00067Fr 1  55 AA 55 AA  
+000683r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD Z
+000687r 1  55 AA 55 AA  
+00068Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD [ 	$2A0
+00068Fr 1  55 AA 55 AA  
+000693r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD \
+000697r 1  55 AA 55 AA  
+00069Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD ] 	$2B0
+00069Fr 1  55 AA 55 AA  
+0006A3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD ^
+0006A7r 1  55 AA 55 AA  
+0006ABr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD _ 	$2C0 	to 2C8 ... off by 8 to 2D <- 159
+0006AFr 1  55 AA 55 AA  
+0006B3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD `
+0006B7r 1  55 AA 55 AA  
+0006BBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD a
+0006BFr 1  55 AA 55 AA  
+0006C3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD b
+0006C7r 1  55 AA 55 AA  
+0006CBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD c
+0006CFr 1  55 AA 55 AA  
+0006D3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD d
+0006D7r 1  55 AA 55 AA  
+0006DBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD e
+0006DFr 1  55 AA 55 AA  
+0006E3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD f
+0006E7r 1  55 AA 55 AA  
+0006EBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD g
+0006EFr 1  55 AA 55 AA  
+0006F3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD h
+0006F7r 1  55 AA 55 AA  
+0006FBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD i
+0006FFr 1  55 AA 55 AA  
+000703r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD j
+000707r 1  55 AA 55 AA  
+00070Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD k
+00070Fr 1  55 AA 55 AA  
+000713r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD l
+000717r 1  55 AA 55 AA  
+00071Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD m
+00071Fr 1  55 AA 55 AA  
+000723r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD n
+000727r 1  55 AA 55 AA  
+00072Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD o
+00072Fr 1  55 AA 55 AA  
+000733r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD p
+000737r 1  55 AA 55 AA  
+00073Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD q
+00073Fr 1  55 AA 55 AA  
+000743r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD r
+000747r 1  55 AA 55 AA  
+00074Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD s
+00074Fr 1  55 AA 55 AA  
+000753r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD t
+000757r 1  55 AA 55 AA  
+00075Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD u
+00075Fr 1  55 AA 55 AA  
+000763r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD v
+000767r 1  55 AA 55 AA  
+00076Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD w
+00076Fr 1  55 AA 55 AA  
+000773r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD x
+000777r 1  55 AA 55 AA  
+00077Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD y
+00077Fr 1  55 AA 55 AA  
+000783r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD z
+000787r 1  55 AA 55 AA  
+00078Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD {
+00078Fr 1  55 AA 55 AA  
+000793r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD |
+000797r 1  55 AA 55 AA  
+00079Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD }
+00079Fr 1  55 AA 55 AA  
+0007A3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD ~
+0007A7r 1  55 AA 55 AA  
+0007ABr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD (C) 	127+64= 191
+0007AFr 1  55 AA 55 AA  
+0007B3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 0 	192
+0007B7r 1  55 AA 55 AA  
+0007BBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+0007BFr 1  55 AA 55 AA  
+0007C3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 1 	194
+0007C7r 1  55 AA 55 AA  
+0007CBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+0007CFr 1  55 AA 55 AA  
+0007D3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 2 	196
+0007D7r 1  55 AA 55 AA  
+0007DBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+0007DFr 1  55 AA 55 AA  
+0007E3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 3 	198
+0007E7r 1  55 AA 55 AA  
+0007EBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+0007EFr 1  55 AA 55 AA  
+0007F3r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 4 	200
+0007F7r 1  55 AA 55 AA  
+0007FBr 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+0007FFr 1  55 AA 55 AA  
+000803r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 5 	202
+000807r 1  55 AA 55 AA  
+00080Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00080Fr 1  55 AA 55 AA  
+000813r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 6 	204
+000817r 1  55 AA 55 AA  
+00081Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00081Fr 1  55 AA 55 AA  
+000823r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 7 	206
+000827r 1  55 AA 55 AA  
+00082Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00082Fr 1  55 AA 55 AA  
+000833r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 8 	208
+000837r 1  55 AA 55 AA  
+00083Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00083Fr 1  55 AA 55 AA  
+000843r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL 9 	210
+000847r 1  55 AA 55 AA  
+00084Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00084Fr 1  55 AA 55 AA  
+000853r 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL - 	212
+000857r 1  55 AA 55 AA  
+00085Br 1  55 AA 55 AA  .byte %01010101,%10101010,%01010101,%10101010,%01010101,%10101010,%01010101,%10101010 ; HUD TALL
+00085Fr 1  55 AA 55 AA  
+000863r 1  00 C6 C6 CE  .byte %00000000,%11000110,%11000110,%11001110,%11001110,%00011100,%00011100,%00011000 ; HUD TALL % 	214
+000867r 1  CE 1C 1C 18  
+00086Br 1  30 70 70 E6  .byte %00110000,%01110000,%01110000,%11100110,%11100110,%11000110,%11000110,%00000000 ; HUD TALL 	215 .. 216 chars 	1408 	5x256+128
+00086Fr 1  E6 C6 C6 00  
+000873r 1               
+000873r 1               
+000873r 1               HUD_MAP_CHAR_RUNS:
+000873r 1               
+000873r 1               ;	af
+000873r 1               HUD_MAP_RUNS: ; for now is just pattern 1,38,25 each line... spelling  it out in case want to make adjusts.. flip it cuz reasons... 25,38,1
+000873r 1               ; 	   0   1   2   3   4   5   6   7   8   9   10  11  12  13  14  15  16  17  18  19  20  21  22  23  24  25  26  27  28  29, 30, 31, 32
+000873r 1  FF           .byte $FF
+000874r 1  19 26 01     .byte  25, 38,  1 ; 30
+000877r 1  19 01 24 01  .byte  25,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1, 25,  1,  1, 36,  1,  1, 25, 38,  1 ; 27 bytes / bottom 6 lines
+00087Br 1  19 01 01 24  
+00087Fr 1  01 19 01 01  
+000893r 1               ; 	29 b 	bottom hud b   28 					27 					26 					25 (top of HUD) 24 (space inbeween)
+000893r 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 27 54
+000897r 1  26 01 19 26  
+00089Br 1  01 19 26 01  
+0008AEr 1               ; 		23 			22 			21 			20 			19 			18 			17 			16 			15
+0008AEr 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 27 81
+0008B2r 1  26 01 19 26  
+0008B6r 1  01 19 26 01  
+0008C9r 1               ; 		14 			13 			12 			11 			10 			9 			8 			7 			6
+0008C9r 1  19 26 01 19  .byte  25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1, 25, 38,  1 ; 18 	72 bytes ...  99 +3 = 102 got 105.. hmmm
+0008CDr 1  26 01 19 26  
+0008D1r 1  01 19 26 01  
+0008DBr 1               ;		5 			4 			3 			2 			1 			0
+0008DBr 1               HUD_MAP_CHARS:
+0008DBr 1  FF           .byte $FF
+0008DCr 1  28 27 26     .byte  40, 39, 38 	;	3
+0008DFr 1  2A 32 31 30  .byte  42, 50, 49, 48, 41, 42, 47, 36, 46, 41, 42, 47, 36, 46, 41, 42, 47, 36, 46, 41, 42, 45, 44, 43, 41, 40, 39, 38 ; 29-24 	;	27 	30
+0008E3r 1  29 2A 2F 24  
+0008E7r 1  2E 29 2A 2F  
+0008FBr 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41 ; 23-15 	; 	27 	57
+0008FFr 1  24 29 2A 24  
+000903r 1  29 2A 24 29  
+000916r 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41 ; 14-6 	; 	27 	84
+00091Ar 1  24 29 2A 24  
+00091Er 1  29 2A 24 29  
+000931r 1  2A 24 29 2A  .byte  42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 42, 36, 41, 40, 39, 38 ; 18 +84 = 102
+000935r 1  24 29 2A 24  
+000939r 1  29 2A 24 29  
+000943r 1               HUD_MAP_COLORS:
+000943r 1  FF           .byte $FF
+000944r 1  89 89 89     .byte $89,$89,$89
+000947r 1  89 21 21 21  .byte $89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$21,$21,$21,$89,$89,$89,$89 ; 29-24
+00094Br 1  89 89 21 21  
+00094Fr 1  21 89 89 21  
+000963r 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89 ; 23-15
+000967r 1  0B 89 89 0B  
+00096Br 1  89 89 0B 89  
+00097Er 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89 ; 14-6
+000982r 1  0B 89 89 0B  
+000986r 1  89 89 0B 89  
+000999r 1  89 0B 89 89  .byte $89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$0B,$89,$89,$89,$89 ;
+00099Dr 1  0B 89 89 0B  
+0009A1r 1  89 89 0B 89  
+0009ABr 1               
+0009ABr 1               TEXTURE_WIDTH_MASKS:
+0009ABr 1  FF           .byte 	255 ; 	texture 0 is null
+0009ACr 1  01           .byte 	1 	;	texture 0 is 2 wide ..
+0009ADr 1  01           .byte 	1 	;	texture 1 is 2 wide ..
+0009AEr 1  00           .byte 	0 	;	texture 2 is 1 wide
+0009AFr 1  00           .byte 	0 	;	texture 3 is 1 wide
+0009B0r 1               TEXTURE_ADDRESS_HIGH:
+0009B0r 1  FF           .byte 	255 ; 	texture 0 is null
+0009B1r 1  rr           .byte (<TEST_TEXTURE_0)
+0009B2r 1  rr           .byte (<TEST_TEXTURE_1)
+0009B3r 1  rr           .byte (<TEST_TEXTURE_2)
+0009B4r 1  rr           .byte (<TEST_TEXTURE_3)
+0009B5r 1               TEXTURE_ADDRESS_LOW:
+0009B5r 1  FF           .byte 	255 ; 	texture 0 is null
+0009B6r 1  rr           .byte (>TEST_TEXTURE_0)
+0009B7r 1  rr           .byte (>TEST_TEXTURE_1)
+0009B8r 1  rr           .byte (>TEST_TEXTURE_2)
+0009B9r 1  rr           .byte (>TEST_TEXTURE_3)
+0009BAr 1               
+0009BAr 1               
+0009BAr 1               ;	global data
+0009BAr 1  DE AD BE EF  DEBUG_BUFFERA: 		 .byte $DE,$AD,$BE,$EF
+0009BEr 1  00 00 00 00  DEBUG_STUFF: 		 .byte 0,0,0,0
+0009C2r 1  DE AD BE EF  DEBUG_BUFFERB: 		 .byte $DE,$AD,$BE,$EF
+0009C6r 1  00 00        default_irq_vector:  .addr 0
+0009C8r 1  01           VSYNC_counter:       .byte 1
+0009C9r 1  10           current_buffer_inc1: .byte VRAM_INCREMENT_1
+0009CAr 1  E0           current_buffer_inc320: .byte VRAM_INCREMENT_320
+0009CBr 1  00           swap_buffer: 		 .byte 0
+0009CCr 1               ; end global data
+0009CCr 1  DE AD BE EF  DEBUG_END_GLOBALS:	 .byte $DE,$AD,$BE,$EF
+0009D0r 1               
+0009D0r 1               .include "hfs_x16.inc"
+0009D0r 2               
+0009D0r 2               ; VERA
+0009D0r 2               VERA_addr_low     = $9F20
+0009D0r 2               VERA_addr_high    = $9F21
+0009D0r 2               VERA_addr_bank    = $9F22
+0009D0r 2               VERA_data0        = $9F23
+0009D0r 2               VERA_data1        = $9F24
+0009D0r 2               VERA_ctrl         = $9F25 ; RESET | 6 bits DCSEL | addrsel
+0009D0r 2               VERA_DCSEL0_ADDR0 = $00
+0009D0r 2               VERA_DCSEL2_ADDR0 = $04
+0009D0r 2               VERA_DCSEL3_ADDR0 = $06
+0009D0r 2               VERA_DCSEL4_ADDR0 = $08
+0009D0r 2               VERA_DCSEL5_ADDR0 = $0A
+0009D0r 2               VERA_DCSEL6_ADDR0 = $0C
+0009D0r 2               
+0009D0r 2               VERA_ien          = $9F26
+0009D0r 2               VERA_isr          = $9F27
+0009D0r 2               
+0009D0r 2               VERA_dc_video     = $9F29 ; DCSEL = 0
+0009D0r 2               ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable
+0009D0r 2               ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
+0009D0r 2               
+0009D0r 2               VERA_dc_hscale    = $9F2A
+0009D0r 2               VERA_dc_vscale    = $9F2B
+0009D0r 2               VERA_L0_config    = $9F2D
+0009D0r 2               ;   7       6     5   4       3       2             1   0
+0009D0r 2               ;   Map Height | Map Width | T256C | Bitmap Mode | Color Depth
+0009D0r 2               ;   0 - 32                  0 - 16    0 tiled       0   1bpp mono
+0009D0r 2               ;   1 - 64                  1 - 256   1 enabled     1   2bpp 4 color
+0009D0r 2               ;   2 - 128                                         2   4bpp 16 color
+0009D0r 2               ;   3 - 256                                         3   8bpp 256 color
+0009D0r 2               ;   bitmap mode - tilebase points to bitmap data, mapbase not used
+0009D0r 2               ;   tile width = 0 is 320 pixels / tile width=1 is 640 pixels.. so could do 4bpp x 320?
+0009D0r 2               ;   The palette offset (in 'H-Scroll (11:8)') mo  ; start of program
+0009D0r 2               VERA_L0_mapbase   = $9F2E
+0009D0r 2               VERA_L0_tilebase  = $9F2F
+0009D0r 2               ;   Tile Base Address (16:11) | Tile Height 0-8/1-16 | Tile Width 0-8/1-16
+0009D0r 2               VERA_L0_hscroll_h = $9F31
+0009D0r 2               
+0009D0r 2               VERA_L1_config    = $9F34
+0009D0r 2               VERA_L1_mapbase   = $9F35
+0009D0r 2               VERA_L1_tilebase  = $9F36
+0009D0r 2               VERA_L1_hscroll_l = $9F37
+0009D0r 2               VERA_L1_hscroll_h = $9F38
+0009D0r 2               VERA_L1_vscroll_l = $9F39
+0009D0r 2               VERA_L1_vscroll_h = $9F3A
+0009D0r 2               
+0009D0r 2               
+0009D0r 2               ; VRAM addresses 124k+
+0009D0r 2               VRAM_MATH_SCRATCH = $1F000     ; 2K of scratch = 512 multiplies
+0009D0r 2               VRAM_CURSOR_SPR   = $1F900 		; up to 16x16 bit sprite
+0009D0r 2               VRAM_palette      = $1FA00      ;
+0009D0r 2               VRAM_SPRITE_LIST  = $1FC00
+0009D0r 2               
+0009D0r 2               DISPLAY_SCALE_TWO     = 64 ; 2X zoom
+0009D0r 2               DISPLAY_SCALE_ONE     = 128 ; 640x480
+0009D0r 2               MODE_BITMAP_256BPP = $07
+0009D0r 2               MODE_BITMAP_16BPP  = $06
+0009D0r 2               LAYER0_ONLY       = $11
+0009D0r 2               LAYER0SPRITES_ENABLE = $51
+0009D0r 2               LAYER01SPRITES_ENABLE = $71
+0009D0r 2               LAYER1SPRITES_ENABLE = $61
+0009D0r 2               SPRITES_ONLY = $41
+0009D0r 2               
+0009D0r 2               VRAM_INCREMENT_1 = $10
+0009D0r 2               VRAM_INCREMENT_2 = $20
+0009D0r 2               VRAM_INCREMENT_4 = $30
+0009D0r 2               VRAM_INCREMENT_8 = $40
+0009D0r 2               VRAM_INCREMENT_16 = $50
+0009D0r 2               VRAM_INCREMENT_32 = $60
+0009D0r 2               VRAM_INCREMENT_64 = $70
+0009D0r 2               VRAM_INCREMENT_128 = $80
+0009D0r 2               VRAM_INCREMENT_256 = $90
+0009D0r 2               VRAM_INCREMENT_512 = $A0
+0009D0r 2               VRAM_INCREMENT_40 = $B0
+0009D0r 2               VRAM_INCREMENT_80 = $C0
+0009D0r 2               VRAM_INCREMENT_160 = $D0
+0009D0r 2               VRAM_INCREMENT_320 = $E0
+0009D0r 2               VRAM_INCREMENT_640 = $F0
+0009D0r 2               
+0009D0r 2               
+0009D0r 2               ; DCSEL = 2
+0009D0r 2               VERA_FX_CTRL    = $9F29
+0009D0r 2               VERA_FX_TILEBASE = $9F2A
+0009D0r 2               VERA_FX_MAPBASE = $9F2B
+0009D0r 2               VERA_FX_MULT = $9F2C
+0009D0r 2               FX_MULTIPLY_ENABLE = $10
+0009D0r 2               
+0009D0r 2               ; DCSEL = 3
+0009D0r 2               VERA_FX_X_INC_L = $9F29
+0009D0r 2               VERA_FX_X_INC_H = $9F2A
+0009D0r 2               VERA_FX_Y_INC_L = $9F2B
+0009D0r 2               VERA_FX_Y_INC_H = $9F2C
+0009D0r 2               
+0009D0r 2               ; DCSEL = 4
+0009D0r 2               VERA_FX_X_POS_L = $9F29
+0009D0r 2               VERA_FX_X_POS_H = $9F2A
+0009D0r 2               VERA_FX_Y_POS_L = $9F2B
+0009D0r 2               VERA_FX_Y_POS_H = $9F2C
+0009D0r 2               
+0009D0r 2               ; DCSEL = 6
+0009D0r 2               VERA_FX_CACHE_L = $9F29  ; write only.. read here will reset accumulator!
+0009D0r 2               VERA_FX_CACHE_M = $9F2A  ; write only.. read triggers accumulate
+0009D0r 2               VERA_FX_CACHE_H = $9F2B  ; write only
+0009D0r 2               VERA_FX_CACHE_U = $9F2C  ; write only
+0009D0r 2               
+0009D0r 2               VSYNC_BIT         = $01
+0009D0r 2               
+0009D0r 2               ; Kernal
+0009D0r 2               CHROUT            = $FFD2
+0009D0r 2               GETIN             = $FFE4
+0009D0r 2               CINT              = $FF81
+0009D0r 2               CONSOLE_PUT_CHAR  = $FEDE
+0009D0r 2               MOUSE_CONFIG      = $FF68
+0009D0r 2               MOUSE_GET         = $FF6B
+0009D0r 2               MOUSE_SCAN        = $FF71
+0009D0r 2               
+0009D0r 2               ; RAM Interrupt Vectors
+0009D0r 2               IRQVec            = $0314
+0009D0r 2               
+0009D0r 2               ZP_PTR = $22
+0009D0r 2               
+0009D0r 2               VERA_SET_MULTIPLY = $10
+0009D0r 2               VERA_RESET_ACCUMULATOR = $80
+0009D0r 2               
+0009D0r 2               .macro set_vera_for_single_multiplies  ;  allowing read of bytes 1,2 of each ..
+0009D0r 2                 ; set addr1
+0009D0r 2                 ldy #VERA_DCSEL2_ADDR0+1 ; set DCSEL = 2 and addrsel to 1 ; 2
+0009D0r 2                 sty VERA_ctrl   ; 4
+0009D0r 2                 ldx #(VRAM_INCREMENT_4 | ^VRAM_MATH_SCRATCH)  ; 6
+0009D0r 2                 stx VERA_addr_bank ;  10
+0009D0r 2                 lda #>VRAM_MATH_SCRATCH ; 12
+0009D0r 2                 sta VERA_addr_high ;  16
+0009D0r 2                 stz VERA_addr_low ; 20
+0009D0r 2                 ; set addr0
+0009D0r 2                 ldy #VERA_DCSEL2_ADDR0 ; set DCSEL =2 and addrsel to 0
+0009D0r 2                 sty VERA_ctrl
+0009D0r 2                 stx VERA_addr_bank
+0009D0r 2                 sta VERA_addr_high
+0009D0r 2                 lda #1  ; we want bytes 1,2 of each multiply..
+0009D0r 2                 sta VERA_addr_low
+0009D0r 2                 ; set multiply    42
+0009D0r 2                 lda #(VERA_SET_MULTIPLY | VERA_RESET_ACCUMULATOR)  ; set multiply mode
+0009D0r 2                 sta VERA_FX_MULT ;  48
+0009D0r 2                 lda #$48  ; enable cache writes and 16-bit hop
+0009D0r 2                 sta VERA_FX_CTRL ; 54
+0009D0r 2                 lda #VERA_DCSEL6_ADDR0  ; set DCSEL = 6 and addrsel to 0 to prime for accessing cache VERA_FX_CACHE_L,M,H,U
+0009D0r 2                 sta VERA_ctrl ; 60
+0009D0r 2                 stz VERA_FX_CACHE_L
+0009D0r 2               .endmacro
+0009D0r 2               
+0009D0r 2               
+0009D0r 2               .macro wait_keypress
+0009D0r 2                 .local waity_wait
+0009D0r 2                 waity_wait:
+0009D0r 2                  wai
+0009D0r 2                  jsr GETIN
+0009D0r 2                  beq waity_wait
+0009D0r 2               .endmacro
+0009D0r 2               
+0009D0r 2               ENABLE_MOUSE_CURSOR:
+0009D0r 2               ; expect address of cursor sprite data in ZP_PTR like this -
+0009D0r 2               ; ZP_PTR+0/1 - address of data for mouse cursor
+0009D0r 2  A9 FF            lda #$FF
+0009D2r 2  20 68 FF         jsr MOUSE_CONFIG
+0009D5r 2                   ; configure sprite 0
+0009D5r 2  9C 20 9F         stz VERA_addr_low
+0009D8r 2  A9 FC            lda #>VRAM_SPRITE_LIST
+0009DAr 2  8D 21 9F         sta VERA_addr_high
+0009DDr 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_SPRITE_LIST)
+0009DFr 2  8D 22 9F         sta VERA_addr_bank
+0009E2r 2  A9 C8            lda #((VRAM_CURSOR_SPR >> 5) & $FF )
+0009E4r 2  8D 23 9F         sta VERA_data0
+0009E7r 2  A9 8F        	lda #($80 | (VRAM_CURSOR_SPR >> 13)) ; high address, 8bit sprite
+0009E9r 2  8D 23 9F     	sta VERA_data0
+0009ECr 2  9C 23 9F         stz VERA_data0 ; x low  VRAM_SPRITE_LIST + 2
+0009EFr 2  9C 23 9F         stz VERA_data0 ; x high
+0009F2r 2  9C 23 9F         stz VERA_data0 ; y low
+0009F5r 2  9C 23 9F         stz VERA_data0 ; y high
+0009F8r 2  A9 0C            lda #$0C
+0009FAr 2  8D 23 9F         sta VERA_data0 ; z-depth/flips
+0009FDr 2  A9 50            lda #$50 ; is 16/16 sprite, 8bit color / no offset
+0009FFr 2  8D 23 9F         sta VERA_data0 ; sprite width/height/palette.. a freed up now.
+000A02r 2                   ; copy cursor image to sprite 0
+000A02r 2  9C 20 9F         stz VERA_addr_low
+000A05r 2  A9 F9            lda #>VRAM_CURSOR_SPR
+000A07r 2  8D 21 9F         sta VERA_addr_high
+000A0Ar 2  A9 11            lda #(VRAM_INCREMENT_1 | ^VRAM_CURSOR_SPR)
+000A0Cr 2  8D 22 9F         sta VERA_addr_bank
+000A0Fr 2  A0 00            ldy #0
+000A11r 2                 @cursor_data_loop:
+000A11r 2  B1 22              lda (ZP_PTR),y
+000A13r 2  8D 23 9F           sta VERA_data0
+000A16r 2  C8                 iny
+000A17r 2  D0 F8              bne @cursor_data_loop
+000A19r 2  60             rts
+000A1Ar 2               
+000A1Ar 1               
+000A1Ar 1               ;VRAM addresses - 124K+ reserved for stuffs
+000A1Ar 1               							;	0 				1 				2
+000A1Ar 1               							;	0123456789ABCDEF0123456789ABCDEF012345
+000A1Ar 1               VRAM_DEBUG_FONT = $00000 	;	0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ # 	1bpp / 38*8 = 304 bytes
+000A1Ar 1               VRAM_AFTER_DEBUG_FONT = $00140 ;	304 bytes.. only so useful .. sprites need 32 byte alignment..
+000A1Ar 1               VRAM_START_DEBUG_TEXT = $00180 	;	384 bytes in // 3 lines in 64x32 tile map.. 320x240=30 lines..
+000A1Ar 1               VRAM_AFTER_ADDED_HUD_TILES = $00800 ; 1bpp 8x8 font takes up to 8*256 = 2K
+000A1Ar 1               DEBUG_VSCROLL = $0014 	;	-20 VSCROLL.. debug has 4 lines above and below possibly trashed
+000A1Ar 1               DEBUG_TILE_CONFIG = $50 ; 	64x64 16 color... using the scroll means using 30+3=33 lines 				4K 	$01000
+000A1Ar 1               
+000A1Ar 1               VRAM_VIEWPORT_A = $00000 ; 	2K align 	need 188 lines * 320 bytes = 60,160 58.75K / EB00  			58.75k 			EB00
+000A1Ar 1               VRAM_VIEWPORT_A_START_offset = $0508 ; line 4, x=8
+000A1Ar 1               VRAM_LAYER1_TILE_MAP 	= $10000  ;	needs to be 512B aligned, 64x32, could waste up to 2 lines 128B per line 	4K+128 	62.75K 	$0FB00
+000A1Ar 1               ; 62.75 to 64K-1 - $0FA00 to $0FFFF
+000A1Ar 1               VRAM_VIEWPORT_B = $10000 ; 2K aligned starting at 6K runs to $1EB00
+000A1Ar 1               
+000A1Ar 1               ;124K+ reserved for stuffs
+000A1Ar 1               
+000A1Ar 1               config_debug_tiles_layer1:
+000A1Ar 1  9C 25 9F     	stz VERA_ctrl
+000A1Dr 1  A9 50        	lda #DEBUG_TILE_CONFIG
+000A1Fr 1  8D 34 9F     	sta VERA_L1_config
+000A22r 1  9C 35 9F     	stz	VERA_L1_mapbase ;	tilemap starts at 0 - top 3 lines trashed with debug font data
+000A25r 1  9C 36 9F     	stz VERA_L1_tilebase ;  tiles start at 0
+000A28r 1  9C 37 9F     	stz VERA_L1_hscroll_l
+000A2Br 1  9C 38 9F     	stz VERA_L1_hscroll_h
+000A2Er 1  A9 14        	lda #<DEBUG_VSCROLL
+000A30r 1  8D 39 9F     	sta VERA_L1_vscroll_l
+000A33r 1  A9 00        	lda #>DEBUG_VSCROLL
+000A35r 1  8D 3A 9F     	sta VERA_L1_vscroll_h
+000A38r 1  A9 80            lda #<VRAM_START_DEBUG_TEXT
+000A3Ar 1  8D 20 9F         sta VERA_addr_low
+000A3Dr 1  A9 01            lda #>VRAM_START_DEBUG_TEXT
+000A3Fr 1  8D 21 9F         sta VERA_addr_high
+000A42r 1  A9 10            lda #(VRAM_INCREMENT_1 | ^VRAM_START_DEBUG_TEXT)
+000A44r 1  8D 22 9F         sta VERA_addr_bank
+000A47r 1                   ; set all tiles to blank tile ... dark grey on transparent
+000A47r 1                   ;	blank tile is just after Z - is 37 #$25 ... hmmm
+000A47r 1                   ; 30*64 = 1,920 	7*256
+000A47r 1  A2 1E            ldx #30
+000A49r 1                   @do_set_color_loop:
+000A49r 1  A0 40        	    ldy #64
+000A4Br 1                     @do_set_color_inner_loop:
+000A4Br 1  A9 24              	  lda #$24
+000A4Dr 1  8D 23 9F           	  sta VERA_data0
+000A50r 1  A9 0C                  lda #$0C
+000A52r 1  8D 23 9F         	  sta VERA_data0
+000A55r 1  88               	  dey
+000A56r 1  D0 F3            	  bne @do_set_color_inner_loop
+000A58r 1  CA                 dex
+000A59r 1  D0 EE              bne @do_set_color_loop
+000A5Br 1                   ;
+000A5Br 1  A9 80        	lda #<VRAM_START_DEBUG_TEXT
+000A5Dr 1  8D 20 9F     	sta VERA_addr_low
+000A60r 1  A9 01        	lda #>VRAM_START_DEBUG_TEXT
+000A62r 1  8D 21 9F     	sta VERA_addr_high
+000A65r 1  A9 20            lda #(VRAM_INCREMENT_2 | ^VRAM_START_DEBUG_TEXT)
+000A67r 1  8D 22 9F         sta VERA_addr_bank
+000A6Ar 1  A9 00        	lda #0
+000A6Cr 1               	@debug_debug_things:
+000A6Cr 1  8D 23 9F     		sta VERA_data0
+000A6Fr 1  1A           		inc a
+000A70r 1  C9 28        		cmp #40
+000A72r 1  D0 F8        		bne @debug_debug_things
+000A74r 1  60           	rts
+000A75r 1               
+000A75r 1               load_added_font_and_test:
+000A75r 1  9C 25 9F     	stz VERA_ctrl
+000A78r 1  9C 39 9F     	stz VERA_L1_vscroll_l
+000A7Br 1  9C 3A 9F     	stz VERA_L1_vscroll_h
+000A7Er 1  A9 80        	lda #(VRAM_LAYER1_TILE_MAP >> 9)
+000A80r 1  8D 35 9F     	sta VERA_L1_mapbase
+000A83r 1               	;	copy the additional tiles
+000A83r 1  A9 40        	lda #<VRAM_AFTER_DEBUG_FONT
+000A85r 1  8D 20 9F     	sta VERA_addr_low
+000A88r 1  A9 01        	lda #>VRAM_AFTER_DEBUG_FONT
+000A8Ar 1  8D 21 9F     	sta VERA_addr_high
+000A8Dr 1  A9 10        	lda #(VRAM_INCREMENT_1 | ^VRAM_AFTER_DEBUG_FONT)
+000A8Fr 1  8D 22 9F     	sta VERA_addr_bank
+000A92r 1  A0 00        	ldy #0 ;
+000A94r 1  A2 06        	ldx #6 ;
+000A96r 1  A9 rr        	lda #<HUD_ADD_TILES
+000A98r 1  85 22        	sta ZP_PTR
+000A9Ar 1  A9 rr        	lda #>HUD_ADD_TILES
+000A9Cr 1  85 23        	sta ZP_PTR+1
+000A9Er 1  18           	clc
+000A9Fr 1                 @copy_bytes_outer:
+000A9Fr 1               	@copy_bytes_inner:
+000A9Fr 1  B1 22        	  lda (ZP_PTR),y
+000AA1r 1  8D 23 9F           sta VERA_data0
+000AA4r 1  C8           	  iny
+000AA5r 1  D0 F8        	  BNE @copy_bytes_inner
+000AA7r 1  A5 23        	lda ZP_PTR+1
+000AA9r 1  69 01        	adc #1
+000AABr 1  85 23        	sta ZP_PTR+1
+000AADr 1  CA           	dex
+000AAEr 1  D0 EF        	bne @copy_bytes_outer
+000AB0r 1               	; 	setup debug display for test
+000AB0r 1  A9 00            lda #<VRAM_LAYER1_TILE_MAP
+000AB2r 1  85 22            sta ZP_PTR
+000AB4r 1  A9 00            lda #>VRAM_LAYER1_TILE_MAP
+000AB6r 1  85 23            sta ZP_PTR+1
+000AB8r 1  A9 21            lda #(VRAM_INCREMENT_2 | ^VRAM_LAYER1_TILE_MAP)
+000ABAr 1  8D 22 9F         sta VERA_addr_bank
+000ABDr 1                   ;	set colors
+000ABDr 1  A5 22            lda ZP_PTR
+000ABFr 1  1A               inc a
+000AC0r 1  8D 20 9F         sta VERA_addr_low
+000AC3r 1  A5 23            lda ZP_PTR+1
+000AC5r 1  8D 21 9F         sta VERA_addr_high
+000AC8r 1  A9 01            lda #01
+000ACAr 1  A2 07            ldx #7 ; need 30 * 64 / 256 ... best can do is 7 .. 7 *256/64 = 28 .. need 2 *64=128 more..
+000ACCr 1  A0 80            ldy #128
+000ACEr 1                 @do_set_color_loop:
+000ACEr 1                 	@do_set_color_inner_loop:
+000ACEr 1  8D 23 9F       	    sta VERA_data0
+000AD1r 1  C8             	    iny
+000AD2r 1  D0 FA          	    bne @do_set_color_inner_loop
+000AD4r 1  CA             	  dex
+000AD5r 1  D0 F7          	  bne @do_set_color_loop
+000AD7r 1  A5 22            lda ZP_PTR
+000AD9r 1  8D 20 9F         sta VERA_addr_low
+000ADCr 1  A5 23            lda ZP_PTR+1
+000ADEr 1  8D 21 9F         sta VERA_addr_high
+000AE1r 1  A9 24            lda #36
+000AE3r 1  A2 07            ldx #7 ; need 30 * 64 / 256 ... best can do is 7 .. 7 *256/64 = 28 .. need 2 *64=128 more..
+000AE5r 1  A0 80            ldy #128
+000AE7r 1                 @do_set_blank_loop:
+000AE7r 1                 	@do_set_blank_inner_loop:
+000AE7r 1  8D 23 9F       	    sta VERA_data0
+000AEAr 1  C8             	    iny
+000AEBr 1  D0 FA          	    bne @do_set_blank_inner_loop
+000AEDr 1  CA             	  dex
+000AEEr 1  D0 F7          	  bne @do_set_blank_loop
+000AF0r 1               
+000AF0r 1  A5 22          	lda ZP_PTR
+000AF2r 1  8D 20 9F       	sta VERA_addr_low
+000AF5r 1  A5 23            lda ZP_PTR+1
+000AF7r 1  8D 21 9F         sta VERA_addr_high
+000AFAr 1                   ; write 16 lines, 16 per line
+000AFAr 1                   ; x and y already zero...
+000AFAr 1  18               clc
+000AFBr 1  A2 10            ldx #16
+000AFDr 1                 @make_debug_text_loop:
+000AFDr 1  A5 22              lda ZP_PTR
+000AFFr 1  8D 20 9F           sta VERA_addr_low
+000B02r 1  69 80              adc #128
+000B04r 1  85 22              sta ZP_PTR
+000B06r 1  A5 23              lda ZP_PTR+1
+000B08r 1  8D 21 9F           sta VERA_addr_high
+000B0Br 1  69 00              adc #0
+000B0Dr 1  85 23              sta ZP_PTR+1
+000B0Fr 1                   @write_char:
+000B0Fr 1  8C 23 9F           sty VERA_data0 ; 1
+000B12r 1  C8                 iny
+000B13r 1  8C 23 9F           sty VERA_data0 ; 2
+000B16r 1  C8                 iny
+000B17r 1  8C 23 9F           sty VERA_data0 ; 3
+000B1Ar 1  C8                 iny
+000B1Br 1  8C 23 9F           sty VERA_data0 ; 4
+000B1Er 1  C8                 iny
+000B1Fr 1  8C 23 9F           sty VERA_data0 ; 5
+000B22r 1  C8                 iny
+000B23r 1  8C 23 9F           sty VERA_data0 ; 6
+000B26r 1  C8                 iny
+000B27r 1  8C 23 9F           sty VERA_data0 ; 7
+000B2Ar 1  C8                 iny
+000B2Br 1  8C 23 9F           sty VERA_data0 ; 8
+000B2Er 1  C8                 iny
+000B2Fr 1  8C 23 9F           sty VERA_data0 ; 9
+000B32r 1  C8                 iny
+000B33r 1  8C 23 9F           sty VERA_data0 ; 10
+000B36r 1  C8                 iny
+000B37r 1  8C 23 9F           sty VERA_data0 ; 11
+000B3Ar 1  C8                 iny
+000B3Br 1  8C 23 9F           sty VERA_data0 ; 12
+000B3Er 1  C8                 iny
+000B3Fr 1  8C 23 9F           sty VERA_data0 ; 13
+000B42r 1  C8                 iny
+000B43r 1  8C 23 9F           sty VERA_data0 ; 14
+000B46r 1  C8                 iny
+000B47r 1  8C 23 9F           sty VERA_data0 ; 15
+000B4Ar 1  C8                 iny
+000B4Br 1  8C 23 9F           sty VERA_data0 ; 16
+000B4Er 1  C8                 iny
+000B4Fr 1  CA                 dex
+000B50r 1  D0 AB              bne @make_debug_text_loop
+000B52r 1  60           	rts
+000B53r 1  9C 2F 9F     	stz VERA_L0_tilebase
+000B56r 1  A9 07        	lda #MODE_BITMAP_256BPP
+000B58r 1  8D 2D 9F     	sta VERA_L0_config
+000B5Br 1  60           	rts
+000B5Cr 1               
+000B5Cr 1               load_hud_map:
+000B5Cr 1  60           	rts
+000B5Dr 1               
+000B5Dr 1               custom_irq_handler:
+000B5Dr 1  AD 27 9F        lda VERA_isr
+000B60r 1  29 01           and #VSYNC_BIT
+000B62r 1  F0 20           beq @continue ; non-VSYNC IRQ, no tick update
+000B64r 1  EE rr rr        inc VSYNC_counter
+000B67r 1  2C rr rr        BIT @swap_buffer
+000B6Ar 1  10 18           BPL @continue
+000B6Cr 1                 @swap_buffer:
+000B6Cr 1  AD rr rr       	lda current_buffer_inc1 ;
+000B6Fr 1  49 01          	eor #1
+000B71r 1  8D rr rr       	sta current_buffer_inc1 ;
+000B74r 1  AD rr rr       	lda current_buffer_inc320 ;
+000B77r 1  49 01          	eor #1
+000B79r 1  8D rr rr       	sta current_buffer_inc320 ;
+000B7Cr 1  29 01          	and #1
+000B7Er 1  18             	clc
+000B7Fr 1  6A             	ror ; bit 0 to C
+000B80r 1  6A             	ror ; C to bit 7 ... ACC is now either $00 or $80
+000B81r 1  8D 36 9F       	sta VERA_L1_tilebase ;	set location of buffer
+000B84r 1               @continue:
+000B84r 1                  ; continue to default IRQ handler
+000B84r 1  6C rr rr        jmp (default_irq_vector)
+000B87r 1                  ; RTI will happen after jump
+000B87r 1               
+000B87r 1               
+000B87r 1               DEBUG_INIT_PREAMBLE:
+000B87r 1  DE AD BE EF  	.byte $DE,$AD,$BE,$EF
+000B8Br 1               INIT: ; start of program per debug font inc
+000B8Br 1  20 rr rr     	jsr config_debug_tiles_layer1
+000B8Er 1  A9 40        	lda #DISPLAY_SCALE_TWO ; set scale for bitmap mode
+000B90r 1  8D 2A 9F       	sta VERA_dc_hscale
+000B93r 1  8D 2B 9F       	sta VERA_dc_vscale
+000B96r 1  A9 61        	lda #LAYER1SPRITES_ENABLE
+000B98r 1  8D 29 9F     	sta VERA_dc_video
+000B9Br 1  CB 20 E4 FF  	wait_keypress
+000B9Fr 1  F0 FA        
+000BA1r 1  20 rr rr     	jsr load_added_font_and_test
+000BA4r 1  CB 20 E4 FF  	wait_keypress
+000BA8r 1  F0 FA        
+000BAAr 1  20 rr rr     	jsr load_hud_map
+000BADr 1  CB 20 E4 FF  	wait_keypress
+000BB1r 1  F0 FA        
+000BB3r 1               	; setup bitmap layer
+000BB3r 1  A9 71        	lda #LAYER01SPRITES_ENABLE
+000BB5r 1  8D 29 9F     	sta VERA_dc_video
+000BB8r 1  CB 20 E4 FF  	wait_keypress
+000BBCr 1  F0 FA        
+000BBEr 1  20 81 FF     	jsr CINT
+000BC1r 1  60           	rts
+000BC2r 1               
+000BC2r 1  A9 01        	lda #1
+000BC4r 1  20 68 FF     	jsr MOUSE_CONFIG
+000BC7r 1               
+000BC7r 1                   ; overwrite RAM IRQ vector with custom handler address
+000BC7r 1  78               sei ; disable IRQ while vector is changing
+000BC8r 1  A9 rr            lda #<custom_irq_handler
+000BCAr 1  8D 14 03         sta IRQVec
+000BCDr 1  A9 rr            lda #>custom_irq_handler
+000BCFr 1  8D 15 03         sta IRQVec+1
+000BD2r 1  A9 01            lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000BD4r 1  8D 26 9F         sta VERA_ien
+000BD7r 1  58               cli ; enable IRQ now that vector is properly set
+000BD8r 1  9C rr rr         stz VSYNC_counter
+000BDBr 1               
+000BDBr 1               ENDLESS_LOOP:
+000BDBr 1  CB              wai
+000BDCr 1  AD rr rr        lda VSYNC_counter
+000BDFr 1  F0 FA           beq ENDLESS_LOOP
+000BE1r 1  9C rr rr        stz VSYNC_counter
+000BE4r 1  20 E4 FF        jsr GETIN
+000BE7r 1  F0 F2           beq ENDLESS_LOOP
+000BE9r 1               
+000BE9r 1               do_cleanup:
+000BE9r 1                  ; restore default IRQ vector
+000BE9r 1  78              sei
+000BEAr 1  AD rr rr        lda default_irq_vector
+000BEDr 1  8D 14 03        sta IRQVec
+000BF0r 1  AD rr rr        lda default_irq_vector+1
+000BF3r 1  8D 15 03        sta IRQVec+1
+000BF6r 1  58              cli
+000BF7r 1  20 81 FF        jsr CINT
+000BFAr 1  60              rts
+000BFAr 1               
