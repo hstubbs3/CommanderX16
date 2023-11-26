@@ -8,32 +8,22 @@ DECODE_DEBUG_FONT_TO_VRAM:  ; 080D debug font start at top of VRAM $0000 .. debu
   stz $9F21 ; 0813  3 bytes     high
   lda #$10  ; 0816  2 bytes     for increment
   sta $9F22 ; 0818  3           bank
-  stz $30   ; 081B  2   zero low byte
-  lsr a  ; 081D  1
-  sta $31   ; 081F  2   
-  lda #$23   ; 0821  2 bytes     vera data0 is $9f23  
-  sta $40   ; 0823   2  ZP address
-  lda #$9F  ; 0825  2 
-  sta $41   ; 0827  2   ;   ok writing from ($30) to ($40) using indirect ZP
-  ldy #66 ; 081B  start of font data ..
+  ldy #56 ; 081B  start of font data .. 
   @DECODE_DEBUG_FONT_TO_VRAM:
-      lda #0
-      sta ($40) ; 081D 2 bytes.. top row of tile
-      sta ($40) ; 039 2    row 6
-      sta ($40) ; 083B 2    row 7
-      ldx #5 ; +2 bytes     83
+      stz $9f23 ; 081D 3 bytes.. top row of tile
+      ldx #5 ; 0820   2 bytes
       @DECODE_DEBUG_FONT_TO_VRAM_INNER:
-        lda ($30),y ; 081F 2 ;    row 1
-        sta ($40) ; 0821  2
-        iny ;     0823    1             -4 copies of this loop = -20    63
-        dex ;   +1 byte     64
-        bne @DECODE_DEBUG_FONT_TO_VRAM_INNER ; +2 bytes     66  
-      tya
-      bne @DECODE_DEBUG_FONT_TO_VRAM      ;   083E 
-  jmp INIT ; 0840   3   
-END_DEBUG_FONT_TO_VRAM: ; 0843  byte 67 ... 256-66 = 190/5 = up to 38 chars in the font, including blank.. 37 chars..
-;   alpha + 0-9 = 36 chars.. so room for 1 more maybe
-
+        lda $0800,y ; 0822  2 bytes
+        sta $9f23 ; 0824  3 bytes
+        iny ; 0827    1             -4 copies of this loop = -20    63
+        dex ; 0828  +1 byte     64
+        bne @DECODE_DEBUG_FONT_TO_VRAM_INNER ; 0829   +2 bytes     66  
+      stz $9f23 ; 0831  3   039 2    row 6
+      stz $9f23 ; 0834  3
+      tya ;   0837  1
+      bne @DECODE_DEBUG_FONT_TO_VRAM      ;   0838  2
+  jmp INIT ; 0840   3   - 
+END_DEBUG_FONT_TO_VRAM: ; 0843  
 
 
 
@@ -253,4 +243,14 @@ HFS_DEBUG_FONT_1BPP: ; is 8x5 font, 16*5=80 bytes hex digits 0-F ..
 .byte %00101000 
 .byte %01111100 
 .byte %00101000 
+.byte %00000000 ; hyphen    
+.byte %00000000 
+.byte %01111110 
+.byte %00000000 
+.byte %00000000 
+.byte %00011000 ; pipe     
+.byte %00011000 
+.byte %00000000 
+.byte %00011000 
+.byte %00011000 
 
