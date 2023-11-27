@@ -448,7 +448,12 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 1320 	got distracted redoing memory locations and adding things needed for HUD.. expanded the font that is loaded to
 		make space for all potential font chars... 
 		makes pretty debug view of the font so... progress? committing and then getting some lunch. . 
-		
+
+1640 	OK, need to sort out memory a little better and move on already.. 
+		layer1 tile map to VRAM $FF800 would allow it to be in the mirror location of the 2K of tiles and 2K reserved at 
+		top of VRAM .. 
+1810 	OK moved layer1 tile map to 0F000 cuz is 4K align not 2k ... viewport is initializing OK .. 
+		committing
 
 
 TODO 	mode7 style for floors / ceiling rendering
