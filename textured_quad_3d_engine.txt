@@ -1,0 +1,38 @@
+orthographic projection is an affine transformation... 
+either use the polyfill helper to calculate where to draw and the multiplier / accumulator to calculate texture mapping .. or somehow use look up tables and possibly more streamlined / optimized rendering functions..
+
+if object is convex, no need to sort quads or do clipping, only backface cull.. which could be done based on winding or normal.. normal would only require calculating Z component for BF cull? 
+
+file format? 
+num_objects
+objects_center_x   1
+objects_center_y   2
+objects_center_z   3
+objects_radius     4
+objects_faces_start 5   
+objects_faces_num 6   6 bytes / object if faces not really shared and limited to 256 ... 1.5K
+objects_matrix_a
+objects_matrix_b
+objects_matrix_c
+objects_matrix_d
+objects_matrix_e
+objects_matrix_f
+objects_matrix_g
+objects_matrix_h
+objects_matrix_i     9   rot/scale matrix for object_local -> world ...?     3.75K / 5.25K 
+
+num_faces
+faces_vertA     1
+faces_vertB     2
+faces_vertC     3
+faces_vertD     4
+faces_normX     5
+faces_normY     6
+faces_normZ     7
+faces_texture   8   8 bytes per face .. if limited to 256 faces - 8x256 = 4k        9.25K
+num_verts
+verts_x   
+verts_y
+verts_z         3   3 bytes   .75k                                         10K RAM needed / object? hmmm...
+num_texture_tiles
+texture_data   up to 15.75K of textures -> goes to VRAM ... 
