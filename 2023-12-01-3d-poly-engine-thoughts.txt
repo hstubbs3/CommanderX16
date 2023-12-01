@@ -1,0 +1,615 @@
+transform vertex
+
+world location -> screen x,y,z for object centers
+8.8 vertex in VRAM as 	xXyYzZ01 xXyYzZ 	xXyYzZ 	18 bytes
+	lda FX_ACCUM_RESET 	; 			4 	
+	; for xX*aA , yY*bB, zZ*cC
+		lda VERA_data1 	;	read x 	4 	4
+		lda VERA_data1 	; 	read X 	4 	8
+		lda ZP_a 		; 	read a 	3 	11
+		sta VERA_FX_CACHE_H ; 		4 	15
+		lda ZP_A 		; 			3 	18
+		sta VERA_FX_CACHE_U ; 		4 	22
+		lda FX_ACCUM 	; 			4 	26 	do accum 	26*3=78+4=82
+	stz VERA_FX_CACH_L 	;				4 	86
+	stx VERA_FX_CACH_M 	;	x set to 1 	4 	90
+	lda ZP_txl 			; 	3 				93
+	sta VERA_FX_CACHE_H ; 	4 				97
+	lda ZP_txh 			; 	3 				100
+	sta VERA_FX_CACHE_U ; 	4 				104
+	stz VERA_data0 		; 	4 				108 	final mul and write result to ouput array
+
+8.8 vertex in VRAM like xyz1xyz1 	uses 12 bytes
+like above but minus 16 - 92 .. 
+
+object center requires x,y,z = ~300 cycles
+
+then mul local rotation matrix * global rotate matrix - [3x3]*[3x3]
+Cij = ith row of A dot product jth column B 
+abc    ABC    aA+bD+cG  aB+bE+cF  aC+bF+cI
+def *  DEF =  dA+eD+fG  dB+eE+fF  dC+eF+fI
+ghi    GHI    gA+hD+iG  gB+hE+iF  gC+hF+iI
+
+is 9 x 3 muls / acc ... basically 32*27 = ~900 cycles / matrix..
+
+per model - 
+		transform world location - 	~300
+		calc model->screen matrix -	~900 	~1200
+	per object in model
+		transform centroid		 			~300
+		calc object->modelscreen matrix 	~900 	~1200
+per face - 
+		;	calc z of normal -> 	~200
+per vertex -
+		rot/translate object->screen - ~200
+
+say 2 models... 		2*
+	1200 +
+		each has 16 objects 
+			16*1200
+		each has ?? faces ... no transform costs..
+		each has 150 verts...
+			150*200 		30,000 + 32,000 = 62,000 + 1200= 63K
+126K just transforms ...
+say 500 setup per face to draw.. drawing 200 faces -> 100,000 cycles
+actual drawing? 256x192=~50,000 * 5 = 250k 
+
+~500k cycles / frame.. ~16 fps ... hmmm
+
+
+
+OK need to work backwards... make thing to draw the textured quad to screen
+then to transform world-space quad to screen-space.. 
+then model-space quads to screen
+then object-space quads to screen.
+
+could sort on objects, draw back to front. 
+
+
+2023/11/29
+say view something like 256x192 ... character polygon probably within 32x32 ... maybe less, like 24x24.. 192x144 possible could ensure quad poly < 16x16
+32x32 = 1024 possible height/width combinations total ... how many combinations within each for affine quads or triangles?
+
+triangles ...
+1x1 - 1 combination
+2x2 - 4
+11 11 1   1
+1   1 11 11
+3x3 - 10? 
+111 111  1   1    1   1   1   1
+11   11 111  11 111  11  111  1
+1     1 1   1   1   11 	 111 111 
+2 		4 	6 		8 	  9   10
+
+would have to plot out, but likely is relatively low... 
+possibly split LUT between fills per row and x start ..
+
+basically comes down to  combinations of shear X / shear Y .. for the transform to remain affine the center can't move.. rotation is basically a shear of a shear..
+
+so 64x64 would have ... shear X from -63 to +63 = 127 .. raw LUT would need 127*127=16,129 entries to handle every possible combination ... need X diff / fill per line ..
+so 2 bytes per - ~32K to do as LUT .. but same LUT could contain all the smaller variants as well.. 
+
+for feeding affine helper, need X_inc / y_inc for each sheer combination = 64k , then start_x / start_y per line -> 32k .. 
+should be relationship between x/y shear.. like add or sub... in that case then need x/y inc values for -63 to 63 = 127 *2 bytes = 254 bytes x/y 
+and also x starter inc values for shear X - 127 bytes ... huh..
+
+process quad becomes..
+
+get verts transformed to screen space
+find bounding box and its size for the quad -
+sort verts by Y, if there's tie for lowest y, break tie with X
+confirm winding for backface culling.
+consider quad 
+  A
+    B
+C
+  D
+
+to texture map with affine helper - 
+X shear amount is Ax - Cx 	this relates to y_inc across the line..
+Y shear amount is By - Ay 	this relates to x_inc across the line..
+width is max(X)-min(X) ( 0 is line vertical line )
+height is max(Y)-min(Y) ( 0 is horizontal line )
+
+startX on first line is (Cx-Ax)
+starX changes per line as (Ax-Cx)/(Cy-Ay) ?
+startY on first line is (Ay-By) ?
+starY changes per line as (By-Ay)/(By-Ay) ?
+
+hmm... need to calc stuff
+
+
+but average poly should be about 16x16 or less.. so drawing 256 quads using affine helper without adjusting start X of each line would mean 
+~256 pixels/quad, ~65K pixels / screen .. ~8 cycles / pixel (not using cache) = ~500k cycles .. ~16 fps cap
+using cache - ~5 cycles/pixel - ~325k cycles 	~24 fps
+using cache and 8bit to 4bit - ~3 cycles - ~41 fps
+
+using affine and adjusting startX of each line + using variable fills? 
+average quad bounding box of 16x16 = 256 pixels, but actual average coverage = 192 pixels only.. 3/4 pixels so ~21/~32/~54 fps caps
+
+is a lot of room for optimizations all over.. hmm
+
+1x1 					1 			  1
+1xany -> vertical line, 1 type 		 63 		  64
+anyx1 -> horizontal line, 1 type  	 63 		 127
+2x2
+11 11 11 10 01 10 01 	7 types 	  7 		 134
+11 10 01 11 11 01 10
+2x3
+111 111          110    110
+110 100 x2=4x2=8 011 x2 001 x4 		 14 		 148
+2x4
+
+ok.. so really becomes try every combinations of pixels and ask how quad could apply.. lol.. 
+
+but is already known - shear X, shear Y
+
+2x2 - shear X can be -1,0 or 1 ... shear Y -1,0 or 1 only
+0,0  11
+     11
+1,0  01
+     10
+0,1  10
+     01
+1,1  01
+     10
+
+3x3 - -2 to 2 - 5*5=25
+1,0  110
+     111
+     011
+2,0  100
+     010
+     001
+1,1  110
+     111
+     011
+2,1  110
+     111
+     011
+2,2  100
+     010
+     001
+
+4x4
+1,0  111
+     111
+      111
+      111
+2,0  11
+      11
+      11
+       11
+
+
+8x8
+1,0   1111111
+      1111111
+      1111111
+      1111111
+       1111111
+       1111111
+       1111111
+       1111111
+1,-1      111
+      1111111
+      1111111
+      11111111
+      11111111
+       1111111
+       1111111
+          1111
+2,0   111111    0,-2       11
+      111111            11111
+       11111         11111111
+       111111        11111111
+       111111        11111111
+        11111        11111111
+        111111       11111
+        111111       11
+2,-2      11  
+        11  11
+      11    11
+      11    11
+      11    11
+      11    11
+      11  11
+        11
+4,-4     1
+        111
+       1   1
+       1    1
+      1      1
+       1    1
+        1   1
+         111
+          1
+
+is shear of shear.. otay
+
+need to write script that can generate dis..
+
+
+2023/11/30
+
+OK so really there's width, height, x skew, y skew.. 
+like 
+width   X skew  total width
+ 1      -8       9
+        ...
+ 1       0       1
+        ...
+         8       9
+
+negative skew would mean starting outside texture space / slides left  ( X skew / x_increment ) texels
+for given total_width, there's 2*total_width-1 possible values for x_skew ...
+x_inc is set based on width ( total_width - |x_skew| ) though... 
+so for 64x64 max only need 64 x_inc -> 128 bytes
+and start_x based on x_skew / width - 128*64 = 8K entries ...
+then start_x_inc based on x_skew / height - 128*64 = 8K entries ...
+
+and hypothetically... Y would be same / could use same ?
+
+maybe use only 32x entries for the start_x / start_x_inc ? or how to do 64x128 lookup ?
+
+lda X_SKEW ; -63 to 63          3
+asl        ; -126 to 126        2   5
+sta ZP_TEMP ;                   3   8
+lda WIDTH ;                     3   11
+asl     ;                       2   13
+ror ZP_TEMP ;                   5   18
+sta ZP_TEMP+1 ;                 3   21 ...  OK ....
+
+STZ ZP_TEMP ; 3     3
+lda WIDTH   ; 3     6
+lsr         ; 2     8
+sta ZP_TEMP+1 ; 3   11
+lda X_SKEW ; 3      14
+rol         ; 2     16      
+tay         ; 2     18      ZP_TEMP is 0 WIDTH>>1 y is s.6skew.width0   is weid but sure doable for look up ?
+
+width restricted to 32 would be usable directly? may consider as limit / clip larger into these?? hmmm
+
+
+Yeah thinking walk before run..
+first do untextured quads.. then using cache writes for untextured.. then worry about textured quads .. then about cached write textured quads..
+identify bottlenecks - large polys? small polys? low skew? high skew? etc.. 
+
+evaluate doing 16 color 2px at a time vs bit color ... 
+
+for 8bit color, 256 8bit tiles = 16K ... so if we use 1 tile store for all textures.. that's 16K ... say VRAM from 110K to 126K reserved for affine helper..
+leaves 110K .. need HUD and stuff.. so say 100K available for double buffer? 
+50K / 320 pixels/line = 160 lines ... 64 bytes over 49K actually... so 210x157 could be OK double-buffered in this scenario... is about 1/3
+1/3.33 - ~190x138 ~43K 
+160x120 = 37.5K  and is only half used... 
+2048mod160 = 128
+line    end     mod/2k
+  0      160     160
+  1      480     480
+  2      800     800
+  3     1120    1120
+  4     1440    1440
+  5     1760    1760
+  6     2080      32
+ 12     4000    1952
+ 13     4320     224
+ 19     6240      96
+ 25     8160      32    <- yeah... can't put side-by-side at 160 ... 128 wide maybe?
+
+line    start   end     mod/2k  end
+  0        0     128     128
+  6     1920    2048       0    2176  leaves 64 bytes empty.. OK 
+  7     2240    2368     320    2496
+  8     2688    640     end 2688
+ 12     3840    3968    1920    line 6
+so could do 128 wide double-buff.. like as 160 with up to 32 on each side.. so could center and have 16px borders or do HUD .. 
+is suggesting a 128x96 active area maybe... carved from 160x120 screen resolution.. implies lead of 12 lines..
+so each starts line 12.. 
+12*320=3,840 - 3.75K free
+then at 3.75k A starts.     B started at 2K would kick in here.. then A ends at 320*107 + 128 = 34386 / 33.5625 K 
+B would end 2K later - at 36K .
+160 wide = 20 tiles across..so using tiled would need 32x16 = 1K tile map... is total mess but doable..
+
+vs just using sprites... 160x120 as sprites would need ~19K for 8bit color.. 
+
+suggesting still for 3D engine using 16 color sprites per object.. if nothing else using sprites, then up to 128 objects on screen..
+assuming these all fit in 64K VRAM - 128 such object average 0.5K ... 32x32x4bit color ..
+
+then some 16 color bitmap BG could max out at ~18k / buffer?  maybe SPRITE or tile or 1bit/2bit bitmap.. 18K=18432 ..
+1bit 320 wide = 40 bytes/line - ~460
+2bit 320 wide = 80 bytes/line - ~230 <- oooh..  320x240 with borders or hud or something?
+4bit 320 wide = 160 bytes/line - ~115 <- possibly using a tall pixel mode here or 320x240 but only half tall viewport..?
+
+
+simplest may be 16 colors on-screen TOTAL, using a bitmap layer 320x240 = 75k for double buffer
+or 160x120 with 8bit color for same VRAM usage / no interleave
+or 128x96 active area and interleave to get down to ~36K for double buffer ? 
+128x96 is not a lot of anything though... >_> hmmm
+
+could be a style but at that point texture mapping fighters would be dumb... maybe for a 3D platformer, shooter, racing game?
+
+
+expansion board? 
+hypothetically could employ something like  ESP8266 for ~$3 and has WIFI ... NodeMCU ESP8266 CH340G Wi-Fi Development Board
+4MB flash... !
+2.4Ghz wifi up to 600MB/s
+
+up to 160MHz CPU ... 32bit RISC ...
+Groovy.. up to 20x main CPU... 
+N64 had ~93.75Mhz 64bit RISC main CPU and a ~62.5Mhz Reality co-processor...    160Mhz is overkill here ... 
+
+ESP8266 has 32KiB instruction RAM/ 80KiB user-data RAM .. 
+
+is a bit short on RAM if trying to hold textures... but should be able to hold _models_ and act like GPU in that sense.. possibly in tandem with the VERA
+could texture map... like if the VERA configured for doing AFFINE helper, ESP8266 could generate maybe do sort polys / do draw calls ...
+possibly like helper, keep in-step using CPU? or possibly have it take over the PC counter and run in loop across 32 bytes of registers ...
+would need to be sure what can be done how fast... how long X will take? 
+
+most likely wouldn't have frame buffer, would have to generate graphics on the fly with only 80KiB RAM ... 
+4 cycles for main CPU to write absolute... so good estimate is take the 65c02 offline and then have 20*4=80 cycles per VERA write.
+
+using 8bit zbuffer up to like 160x120 - ~19K stretched over 320x240 or 256x192 would be ~48K .. so somewhere between 60K of models/textures and 32K models/textures
+sure need to do transforms and such.. wait how does that render exactly??
+
+need Z buffer and color buffer .. something like 24 bits Z and 8bits color = 32bits..  4 bytes / pixel... 
+320x240*4 =300K ...so would want micro with at least 1M RAM ?
+
+stuffing 320x240 bytes - 76,800 bytes - to VERA at 8Mhz/4=2Mhz -> maxes out at ~25 fps .. realistically could do maybe 15 fps stuffing VERA like a turkey this way.
+
+256x192 -> 49,152 could possibly be done 20-30 fps.. maybe.. for 30 fps is taking 200K cycles of 266K budget .. would need to stuff micro controller like turkey...
+
+really need ~32.55KB max pixels.. /12 - 2,777 sqrt() - 52.7 .. 212x159 .. 210x161 =33,810 135K pixels.. lol we back at this resolution?
+200*160=32,000 31.25K  ... seems good bet.. or 192x144 ( 190x142 - 26,980 .. 108K cycles to stuff like turkey) 
+192x144 is 27648 or 27KB .. easily doable using 64x64 sprites or tile engine? 
+sprites work a bit better for the poly helper and mode7 stuff ..
+
+320x144 = 45K (!).. potentially slip stuff into the 128byte slack each line, but overall that could mean 90K needed for buffers.. leaves ~32K wide open..
+slack each line in weird place though?
+line    start    end     128 byte slack alignment
+  0         0     192        64     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  1       320     512       512     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  2       640     832        64     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  3       960    1024      1024     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  4      1280    1472        64     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  5      1600    1792       256     2x 8x8 8bit tiles.. 16x16 4bit sprite
+  6      1920    2112        64
+  7      2240    2432       128
+  8      2560    2752        64
+  9      2880    3072      1024
+  10     3200    3192        64
+
+192x144 would be 24x18=432 8x8 tiles.. looks like could slip 2*144*2=576 among the buffers.. 288 per buffer even.. wtf. 
+320x144 is 45K .. there's 2K alignment at 8K, 18K, 28K, 38K = 4 spots to possibly set tile_base or set FX_map_base 
+
+main buffer would eat 3/5s of the space .. so using for tiles can use up to ~153 tiles per 16K within the space.. or consider the 10K jumps.. 
+64 8x8 tiles ... smallest is 7K -> ~44 8x8 tiles (8bit color) or 88 8x8 tiles (4bit color) .. there's 5 slots for such tiles within each buffer -.-
+
+so hypothetically 90K double buffer bitmaps is hiding 36K of texture mapping or sprite space... -.- 
+yeah should be plenty for what i got planned.. 
+may have to fiddle with alignment if not using 190x142 video mode though.. trying to center would mean cutting into that space.. say using 192x144 but screen is
+215x161 .. then 1 tile each line due to alignment mucked.. wastes half space on 8bit tiles.. hmm... down to 51 tiles per 16K .. likely some juicy spots somewhere?
+is hard to say exactly.. except if 215 mode .. 8 pixels shaved off left and 23 off right could be OK for some border if needed.. probably just run 190x142 frankly..
+or ~195x145 with like 3-4 pixels shaved off sides.. I dunno.. 
+
+64x64 sprites just seem way to go.. 
+for 192x144 - 
+ 0 3 6   0-63
+ 1 4 7   64-127
+ 2 5 8   128-143 (so 64x16)
+making buffer were next line is 64 increment... but x=63 to x=64 is +64*144=9,216 (9K). so using as backplane need to account for clipping at those gaps?
+or is it possible to use linear buffer and rearrange? 
+
+read 64 / write 64 - using cache is 20 per 4 bytes -> 320 cycles a line .
+then need to reset destination address.. at best ld immed / st abs = 6*2 = 12 ..    so 332 cycles per 64 pixels..
+is 144*3 sets of pixels .. ~450 * ~300 cycles.. 150 000 cycles !.. well fuck. good to know. 
+
+so sure, is now tile-based renderer 64x64 tiles.. is only problem if wanting to use cached writes or the poly fill helper.. -.-
+
+
+2023/12/01
+values needed to do use affine helper for texture mapped quads by scaled tiles.. 
+
+orthographic ...    is possible to only transform fewer values? only really need A B and D .. C could be derived?
+given poly - 
+AB
+DC
+
+Dx = Ax+x_skew
+Dy = Cy-y_skew
+
+that'd mean get screen(x,y) per vert is like xA+yB+zC+t = 22*3 for the muls.. then
+lda abs ; 4
+adc ZP  ; 3     7   add tX_l .. really just want that sweet sweet carry.. 
+lda abs ; 4     11
+adc ZP  ; 3     14  add tX_h
+sta ZP ; 3   17  write 8bit screen coord 
+; 66+17 = 83 cycles to get like Ax say 
+; 83 cycles to calc/stash Bx    166
+sbc ZP ; 3  Bx-Ax -> x_diff calc'd  169
+BMI     B_LEFT_A ; 2/3  cuz reasons ...     ~172 
+; calc Cy,By, y_diff, possibly narrow down type?    ~344 cycles
+;calc x_skew 
+lda ZP 3
+sbc ZP 6   
+BMI  3      12  356 cycles
+; calc y_skew - +12     368 cycles
+; calc Dx / Dy (needed?)    380 cycles
+; calc lookies, write poly to display plan - need
+        num top/bottom      1 Byte
+        num mids            1
+        start_x             1
+        start_y             1
+        text_start_x        1
+        text_start_y        1
+
+        left_x_inc_top      2
+        right_x_inc_top     2
+        left_x_inc_mid      2
+        right_x_inc_mid     2
+        left_x_inc_bot      2
+        right_x_inc_bot     2
+        start_x_inc_top     2
+        start_y_inc_top     2
+        start_x_inc_mid     2
+        start_y_inc_mid     2
+        start_x_inc_bot     2
+        start_y_inc_bot     2
+        inc_x               2
+        inc_y               2       34 bytes / poly...
+say takes   ~16 cycles to calc/lookup/stash per byte =>     ~500 cycles ... setup per drawn quad ~900 cycles + drawing.. 
+drawing worse case like 8 cycles / pixel ... 
+so say draw 256 quads to screen.. ~230k cycles ... ok...
+and covering 192x144 area as worse case... is like 27k but we'll say 25K pixels to draw ... is 200K ... totals ~430K cycles... 
+20 fps is 400K budget... so is not too bad.. is all textured polys... 15 fps should be doable.. 
+but then say half only is textured -> 215K cycles .. 
+and skip setup for texture things -> is like 20 less bytes/poly.. need 14 bytes... like 224 cycles... ~600 cycles + drawing.. and drawing is more like 4/pixel..
+so saying 12.5K pixels *4 = 50k cycles + 600*128=77k = 127K cycles .... added with the 128 textured => 342K cycles ... yay 20 fps? 
+so we _can_ do textured question is more _how much_ of it do we want to do? 
+also seems easily target 15 fps with like ~512 untextured quads ??
+
+wait.. calc verts then lookup verts calc quads.. not calc verts every quad.. but if assuming these 256 quads were culled from 512 quads using 256 verts then is correct..
+cube is 8 verts to 6 faces .. only calc'ing 3/4 of the verts means calc 6 verts to draw 3 faces .. 6 verts ~350 cycles 2100 + 3 poly setups = 3600 .. so ~1200/quad drawn..
+so estimates still pretty reasonable... is just estimates after all.. 
+
+calculated -
+x_diff       Bx-Ax 
+y_diff      Cy-By
+x_skew      Cx-Bx
+y_skew      By-Ay
+
+
+derived - 
+width       x_diff+1
+height      y_diff+1
+num top/bottom lines = abs(y_skew)+1
+num middle lines = abs(Cy-By)
+screen_width    width+x_skew
+screen_height   height+y_skew
+start_x = 0
+start_y = 0
+
+type 0 - flat
+
+type 1
+onscreen    texture
+ A          A   B
+   B
+D
+  C         D   C
+
+not using cache writes - 
+top/middle lines 
+texture_start_y_increment = int(256*15/height)
+
+left - top/middle
+line_start_offset = int(256*x_skew/abs(y_diff))
+
+right - top
+line_end_offset = int(256*x_diff/y_skew)
+
+bottom lines
+texture_start_x_increment = int(256*15/y_skew)
+
+
+untextured / unlit / orthographic
+transform needed verts - 83 per screen bit .. assume transform all until / unless sort out some cheap way to back-face cull before transform..
+prob could use BSP tree and averaged normals for each vert ? and don't explicitly store 4th vert.. possibly allow triangles.. 
+probably use some sort of header/type byte..
+could have - 
+Quads / tris    2
+    perspective / ortho store 3 only *2 = 4 
+        textured - A/B/C/D start
+        untextured / solid color
+        untextured / checker pattern 25/50  *7 = 28
+            lit / unlit                     *2 = 56
+            4/8 bit color                   *2 = 112
+
+something like that..
+DO_MODEL:
+    ; ls - lda (ZP),y / sta abs ; 9 per byte - grab x,y,z of model world center to make model-view matrix .. so have model in world coords already from other logics..
+    ; so should have its objects in world coords already as well, because like collision detection? 
+    ; so ... just need transform world -> view 
+    ; ZPls -lda ZP / sta abs ; 7 per byte - world->view rot/scale matrix... 2 bytes each A-I
+    stz FX_ACCUM_RESET ; 4  4   clear accumulator   
+    ls modelX ; 18  22
+    ZPls A ;    14      36
+    lda FX_ACCUM ;  4   40
+    ;   repeat Y,B and Z,C but do sta data1 instead after C lda FX_accum => +80     120       data0 => ModelViewSz.Z
+    lda data0 ; 4  Zl   124 
+    adc ZP    ; 3  world->view tZl  127
+    sta (Zp),y ; 5  132
+    lda data0 ; 4  Zh   136
+    adc ZP  ;   3       139
+    CMP #NEAR_Z ; 2     141
+    BMI TOO_CLOSE ; 2   153
+    CMP #FAR_Z ;    2   155
+    BPL TOO_FAR ; 2     157
+    sta (ZP),y ; 5      162 
+    ;   do DEF, see if model within X of view - 162     324
+    ; GHI                                       162     486     max to cull model as offscreen .. not too bad.. 0.16% of 30 fps to cull offscreen model..
+    ; OK should already have model -> world rotScale matrix .. need to make model-view rotScale ..
+    ; will take 132 *9 to make and stash - 1188         ~1700 per model so far.. 
+    sty ZP ; 3  405     stash y model, get objects
+    ldy #0
+DO_OBJECT:
+    ; get object center in world coords, check if on-screen - 486
+    ; create the object->view rotScale matrix   1188                ~1700 per object 
+DO_VERT:
+    ;   need 8bit x/y on screen for each vert.. (offscreen verts clip weird?) .. ok well maybe is x/2, like 64-192 is valid / onscreen ? ok just grab 16bits result
+    stz FX_ACCUM_RESET ; 4
+    ls (ZP),y      ; 9  13   get 8bit X
+    stz abs        ; 4  17  zero the other byte
+    ZPls A ; 14     34
+    lda FX_accum ;  38 ... 
+    ;   repeat x3 total to accumulate value -         114
+    ls SX ; 18      132  
+    ;   repeat x3 total to complete vert screen transform - 396 per vert 
+
+DO_POLY:
+    ldx (ZP),y      ; 5     get header byte 
+    jmp (abs,x)     ; 6     11  do particular flavor poly
+
+DO_POLY_UNTEXTURED_UNLIT_TRIANGLE_8bit: ; 11 to get here... 
+    sty ZP  ;   3   stash poly num
+    lda (ZP),y ; 5 8    grab vertA index
+    tay ;   2   10
+    lda (ZP),y ; 5  15  grab vertA yH
+    bne AY_offscreen ; 2    17
+    lda (ZP),y ; 5 22   grab vertB yH
+    bne BY_offscreen ; 2    24
+    lda (ZP),y ; 5  29  grab vertC yH 
+    bne CY_offscreen ; 2 31
+    lda (ZP),y ; 5   36  grab AYl
+    sbc (ZP),y ; 5   41  sub BYl
+    BMI AY_LESS_BY ; 2  43
+    BEQ AY_EQU_BY  ; 2  45
+  BY_LESS_AY:      ;    46
+    sta ZP  ;   3   49          have AB_y_diff for one side at least.. 
+    lda (ZP),y ; 5  54  load in BYl
+    sbc (ZP),y ; 5  59  sub CYl
+    BMI BY_LESS_AYCY ; 2 61
+    BEQ BYECY_LESS_AY ; 2 63    possibly bottom only
+  CY_BY_AY: ; 64    vertical order established.. check winding...
+    sta ZP ; 3  67  have  BCy_diff
+    lda (ZP),y ; 5 72   load CXh ; 
+    BNE CYBYAY_CX_offscreen ; 2   74
+    lda (ZP),y ; 5  79  load AXh ;
+    BNE CYBYAY_AX_offscreen ; 2 81
+    lda (ZP),y ; 5  86  grab AXl .. should be right of BXl
+    sbc (ZP),y ; 5  91  
+    BMI FACING_AWAY ; 2     93  and we out of here ... 
+    sta ZP ; 3  96  bottom x_diff to ZP 
+    stx (ZP),y ; 5  101  stash poly type
+    ldx (ZP),y ; 5  106
+    stx (ZP),y ; 5  111 stash solid color byte
+    lda (ZP),y ; 5  116 CXl - starting X
+    sta (ZP),y ; 5  121     stashed
+    sbc (ZP),y ; 5  126 CXl - BXl - x_diff for left
+    ;   do lookie stuff here for left_top x_inc ... maybe a mul.. should be maybe 32 cycle ?    160
+    ;   do calc for right_top / right_bottom - 192
+    ;   do calc for left_bottom - 224
+    ; poly done added to draw list.. goto next?     256     256 to setup untextured/unlit/solid polys.  256 per triangle...
+
+
+so say 256 triangle/256 vertex model .. ~400 a vert, ~300 a triangle = ~180K cycles just setup?!? damn this is mean.. 
+possibly could save a few cycles somewhere maybe but where?
