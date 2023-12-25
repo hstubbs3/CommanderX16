@@ -455,6 +455,30 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 1810 	OK moved layer1 tile map to 0F000 cuz is 4K align not 2k ... viewport is initializing OK .. 
 		committing
 
+2023/12/17
+1000 	The past few weeks I have been busy with other things... I have worked out some details for the noah3d project
+		as well as been thinking about how to approach doing more general 3D engines - like doom or even descent, 3d fighter
+		or something weird like combining the "mode7" flats with wolf3d or even doom style walls.. 
+		possibly could do affine texture mapping if one integrates the poly-fill helper's outputs with the affine helper..
+		but that will still likely be very cycle-intensive, so maybe another time... possibly using a 2nd VERA or by implementing
+		an accelerator using some other means... like maybe with a pi pico ? 
+		pi pico W is ~$5 and should be able to basically be snuck onto suitable PCB and used as expansion device.. 
+		unclear how fast one can stuff data into the VERA via the commander X16 CPU bus - at least 2Mb/s though using like DMA
+		and taking the CPU offline... would have to monkey with other compositing options to do anything else.. like read
+		in the VERA's 640x480 VGA signal and do overlay / compositing with it ... yeah that sounds fun.. woot!
+
+1130 	for 3D fighter - simple stick-figure would need 2 or 3 sticks per limb, a torso, waist, head.. if each were cuboid
+		that would mean say 15 cuboids.. if they're _actually_ rotated rectangular prisms, then only 3 faces to draw each..
+		or globbed would need to draw hexagons ... probably better to do quads to have some possible shading or something..
+		15 cuboids - 120 verts used to draw up to 45 quads .. . should work OK ... probably should be able to transform maybe
+		1024 verts and draw a max of 512 quads at a decent framerate ... 3D fighter would target minimum 15 fps without slowdown
+		potentially could be OK if FPS with 25% of target.. 
+
+2023/12/25 	Christmas!
+0905 	Wow, it has been about a month since updating this. Have been thinking over 3D stuff though just haven't been
+		writing code so much.. so much theory..
+		
+
 
 TODO 	mode7 style for floors / ceiling rendering
 

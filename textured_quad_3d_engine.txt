@@ -4,13 +4,13 @@ either use the polyfill helper to calculate where to draw and the multiplier / a
 if object is convex, no need to sort quads or do clipping, only backface cull.. which could be done based on winding or normal.. normal would only require calculating Z component for BF cull? 
 
 file format? 
-num_objects
+num_objects 	;	objects are convex, so no sorting polygons just sort objects and draw back to front... 
 objects_center_x   1
 objects_center_y   2
 objects_center_z   3
 objects_radius     4
 objects_faces_start 5   
-objects_faces_num 6   6 bytes / object if faces not really shared and limited to 256 ... 1.5K
+objects_faces_num 6   
 objects_matrix_a
 objects_matrix_b
 objects_matrix_c
@@ -19,20 +19,111 @@ objects_matrix_e
 objects_matrix_f
 objects_matrix_g
 objects_matrix_h
-objects_matrix_i     9   rot/scale matrix for object_local -> world ...?     3.75K / 5.25K 
+objects_matrix_i     9   rot/scale matrix for object_local -> world ...?  15 bytes/object ... let's say limit 17 objects/model =255 bytes
 
+or matrix is 16bit/s7.8 - 18 bytes for the matrix +6 = 24 .. 512 bytes could hold 21 objects 
 num_faces
 faces_vertA     1
 faces_vertB     2
 faces_vertC     3
 faces_vertD     4
+faces_texture   5   5 bytes per face .. if limited to 256 faces - 5*256 	1.25k 	1.5K / model RAM 
 faces_normX     5
 faces_normY     6
 faces_normZ     7
-faces_texture   8   8 bytes per face .. if limited to 256 faces - 8x256 = 4k        9.25K
 num_verts
 verts_x   
 verts_y
-verts_z         3   3 bytes   .75k                                         10K RAM needed / object? hmmm...
+verts_z         3   3 bytes   .75k <- RAM or VRAM ? 	or if 16bit verts->6 bytes each -> 1.5K VRAM ?
 num_texture_tiles
-texture_data   up to 15.75K of textures -> goes to VRAM ... 
+texture_data   up to 15.75K of textures -> goes to VRAM, possibly stays banked.. 
+
+
+say 16bit verts.. multiplier uses VRAM... one could set matrix stuff then 
+	0123 	4567 	89AB 	CDEF 	
+0 	xxyy 	zz
+
+
+alternatively - sorted polygons? say possibly 512 polygons in the scene to draw. should be non-intersecting - so either clipped or don't care..
+then there is scene info something like this .. maybe only use 8bit zbuffer ... 
+poly_addr_l 	512
+poly_addr_h 	512
+poly_z_close 	512
+poly_model_num 	512 	which model is this poly from?
+poly_face_num 	512 	which face on that model? 
+
+acshually... 8bit zbuffer.. only 256 values... 256*256 = 64k ... first bucket by 8 z's ... 
+
+so as each polygon is added to draw list ... hmmm.. how many polys to allow per bucket? 
+8k is 32*256 	... 	theoretically should only be about 512 polys to draw max? so maybe a few at same 8bit Z ..
+need 5 bytes per poly.. maybe state limit for textures is 255 tiles total - 8k for 16 color, 16k for 256 color is a lot..
+so each face has definite texture / texture size.. so 
+texture tile size 	1 byte 	1 	;	0 - solid fill? , possibly could do checkered and stuff too..? 
+if textured:
+	texture tile start 	1 byte 	2	 
+	poly_start_y 		1 byte 	3
+	poly_start_x 		2 byte 	5
+	poly_width 			1 		6
+	poly_start_u 		1 		8
+	poly_start_v 		1 		9
+	u_inc_across 		2  		11		
+	v_inc_across 		2 		13 	if affine...
+	u_inc_down 			1 		14
+	v_inc_down 			1 		15
+  per section - top middle bottom -
+	  poly_top_lines 		1 		1
+	  top_x_inc 			2 		3
+	  top_y_inc 			2 		5
+	; 	5*3=15+15 = 30 bytes / polygon.. woot. otay.. 
+
+32 slots in bank / 256 bytes / slot .. 30 bytes/poly = 	8 polys/slot.. if each slot is 1 Z, that is 32 Z per bank, need 8 banks, 64k
+need to get to like 32 bytes  / poly... hmmm ...
+
+32 bytes / poly = 8 polys per slot.. intermediate addresses every 8.. 
+
+num_polys_at_z 		256 bytes 	indexed like -> bbbbbsss 	b:bank / s:slot 
+
+so as each polygon processed, add to draw list , drop if no space in bank..
+
+then actually draw back to front... 
+
+    lda #192
+    sta ZP_num_polys_z
+    lda #>num_polys_at_z
+    sta ZP_num_polys_z+1
+    bra do_z_bank
+    lda #8
+    sta ZP_Z_BANK_DRAW
+  do_z_bank:
+      sta ZP_Z_BANK_DRAW ; 3 	10
+      sta RAM_BANK 		 ; 3 	13 	set bank for Z lookup 
+      stz ZP_bank_data 	 ; 3 	16
+      lda #$BF 			 ; 2 	18
+      sta ZP_bank_data+1 ; 3 	21
+      ldy #31 			 ; 2 	23
+    do_zs:
+        lda (ZP_num_polys_z),y ; 5 	18 	get num polys at this z 
+        bne process_z ; 2 	20
+        jmp next_z 	  ; 4 	24
+      process_z: ; 21
+      	  tax
+      	  adc z_offsets,y 	;	4 	
+      	  sta ZP_bank_data
+      	  txa
+      	  dec a 
+      	  tay  ;	y now has the num polys  for offsetting.. 
+      	process_poly:
+      	   lda (ZP_bank_data),y ; 5 	byte  of this poly
+      	   sta abs ; 4 	do stuff with it... 
+      	   dey ; 	2 	11 drop to next byte for poly.. 
+          ; 2 	26
+    next_z: ; 24/ 
+        ldy ZP_stash_y 	; 2 	26/
+        dey 			; 2 	28/
+        bne do_z 		; 2 	30/
+    	lda ZP_Z_BANK_DRAW ; 3 	32/
+  	    dec a 			 ; 2 	34/
+  	    beq exit_z_banks   ; 2 	36/
+  	    jmp do_z_bank ; 4 	 	40/
+   exit_z_banks: ; 37/
+   		rts ; 
