@@ -478,6 +478,9 @@ TODO 	troubleshoot polyfills.asm / mouse issue
 0905 	Wow, it has been about a month since updating this. Have been thinking over 3D stuff though just haven't been
 		writing code so much.. so much theory..
 		
+2023/12/30
+0400 	OK technically last night sometime, started coding wolf3d BSP stuff.. going to continue it now for a bit.
+0455 	Taking a break from this for now.. am committing changes.. 
 
 
 TODO 	mode7 style for floors / ceiling rendering
