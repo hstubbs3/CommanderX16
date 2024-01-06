@@ -430,3 +430,117 @@ OK have precision angle, returning from CALC_ATAN
    WITHIN_VIEW:
    	  TAX 	
    	  LDA SCREEN_X,X 
+
+whatif... just do top 6bits top/bottom lookup? 12bit lookup - 4K ? faster?
+Hmmmm... seems about same actually... 
+TAN_CALC_4K:
+    LDY ZP_B+1   ; 3 3
+    LDX RANGER,Y ; 4 7
+    JMP @TCT,X   ; 6 13 
+ @TCT:
+    .address @TCTBLOW
+    .address @TCTBZERO
+    .address @TCTBONE
+    .address @TCTBTWO
+    .address @TCTBTHREE
+    .address @TCTBFOUR
+    .address @TCTBFIVE
+    .address @TCTBSIX
+    .address @TCTBSEVEN
+  @TCTBLOW:
+      LDA ZP_B 			; 	3 	3
+      BMI @TCTBLOWSEVEN ; 	2 	5
+      CMP #64 			; 	2 	7
+      BCS @TCTBLOWSIX 	; 	2 	9
+    @TCTBLOWFIVE: 	; 	12
+      ASL 				; 	2 	2
+      ASL 				; 	2 	4
+      STY ZP_LK 		;	3 	7
+      LDA ZP_T 		 	; 	3 	10
+    @TCPBL7_T7:
+    @TCTB7_T7:
+      LSR 				;	2 	12
+      LSR 				; 	2 	14
+      LSR 				; 	2 	16
+      ROR ZP_LK 		; 	5 	21
+      LSR 				; 	2 	23
+      ROR ZP_LK 		; 	5 	28
+      ORA #>TAN_LOOKIES	; 	2 	30
+      STA ZP_LK+1 		; 	3 	33
+      LDX (ZP_LK) 		; 	5 	38
+      LDA ATAN,X 		; 	4 	42
+      RTS 				; 	6  	48+9 +13 = 70
+    @TCTBLOWSIX: 	;	10
+      ASL 				; 	2 	2
+      STA ZP_LK 		; 	3 	5
+      LDA ZP_T 			; 	3 	8
+      CMP #64  			; 	2 	10
+      BCS @TCTBL6_T6 	; 	2 	12
+    @TCTBL6_T5: 	12
+    @TCPBL7_T6:
+    @TCTB7_T6:
+      LSR 				;	2 	2
+      LSR 				; 	2 	4
+      ROR ZP_LK 		; 	5 	9
+      LSR 				; 	2 	11
+      ROR ZP_LK 		; 	5 	16
+      ORA #>TAN_LOOKIES	; 	2 	18
+      STA ZP_LK+1 		; 	3 	21
+      LDA (ZP_LK) 		; 	5 	26
+      LSR 				; 	2 	28
+      TAX 				; 	2 	30
+      LDA ATAN,X 		; 	4 	34
+      RTS 				; 	6  	40 + 12+9+13 = 74
+    @TCTBL6_T6: ;	13
+      LSR 				; 	2 	2
+      LSR 				; 	2 	4
+      ROR ZP_LK 		; 	5 	9
+      LSR 				; 	2 	11
+      ROR ZP_LK 		; 	5 	16
+      ORA #>TAN_LOOKIES	; 	2 	18
+      STA ZP_LK+1 		; 	3 	21
+      LDA (ZP_LK) 		; 	5 	26
+      TAX 				; 	2 	28
+      LDA ATAN,X 		; 	4 	32
+      RTS 				; 	6  	38 + 12+9+13 = 72
+    @TCTBLOWSEVEN: ; 6
+      STA ZP_LK 	;	3 	3
+      LDA ZP_T 		;	3 	6
+      BMI @TCPBL7_T7 ; 2 	8 	ends up 69
+      CMP #64 		;	2 	10
+      BCC @TCPBL7_T5 ; 3 	13
+      LSR 	;	2 	15
+      BRA @TCPBL7_T6 	;	3 	16
+    @TCPBL7_T5: ; 14
+    @TCTB7_T5:
+      LSR 		;	2 	2
+      ROR ZP_LK ; 	5 	7
+      LSR 		; 	2 	9
+      ROR ZP_LK ; 	5 	14
+      ORA #>TAN_LOOKIES	; 	2 	16
+      STA ZP_LK+1 		; 	3 	19
+      LDA (ZP_LK) 		; 	5 	24
+      LSR 				; 	2 	26
+      LSR 				;	2 	28
+      TAX 				; 	2 	30
+      LDA ATAN,X 		; 	4 	34
+      RTS 				; 	6  	40 + 14+6+13 = 73
+    @TCTBZERO: 		;	13 from the jump
+    @TCTBONE: 		;	13 from the jump
+    @TCTBTWO: 		;	13 from the jump
+    @TCTBTHREE: 	;	13 from the jump
+    @TCTBFOUR: 		;	13 from the jump
+    @TCTBFIVE: 		;	13 from the jump
+    @TCTBSIX:  		;	13 from the jump
+        TYA 	;	2 	2
+        ASL 	;	2 	4
+        STA ZP_LK  	;	3 	7
+        LDA ZP_T+1 	; 	3 	10
+....
+    @TCTBSEVEN: 	;	13 from the jump
+        STY ZP_LK 	;	3 	3
+        LDA ZP_T+1 	; 	3 	6
+        BMI @TCTB7_T7 ; 	2 	8
+        CMP #64 	; 	2 	10
+        BCS @TCTB7_T6 ; 	2 	12
+        BRA @TCTB7_T5; 	3 	15
