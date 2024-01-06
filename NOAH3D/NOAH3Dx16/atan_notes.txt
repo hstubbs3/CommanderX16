@@ -1,4 +1,122 @@
 
+
+
+top 4 bit coverage? - 111 points out of 256 never hit - have 57% possible tangents .. highest tan reachable is 240/256 - 30.69 .. which could be tweaked maybe.. 
+but double precision angles should be fine this way..% average error is ~5% .. need to fix some logic though where the top and bottom best 4 bits are equal? 
+if the exponent is equal and top 4 bits equal its making it 128 not 255 .. That's not horrible thing to check actually..
+If bits T and B are equal, T >= 1/2 .. so could make the diagonal 248 no prob.. then switch that logic relating to the exponent stuff..
+
+seems convoluted but 3.13% overage absolute error... max error ~8%  ( out of /256 frac ) noice.
+average +/- error - .79% ! 
+
+fixing up that logic and setting max to 248 means now all precision angles coverable?
+actually it should be 244 not 248 . that helps span that upper bit better.. 
+only 107 frac out of 256 can't be hit now..  all 64 precision values possible.. woot ! 
+3.19% / 0.61% average errors - 
+
+how to account for the improper regions? 
+
+assuming B_exponent > 3 ... 
+
+if T_exponent == B_exponent : shift = 0
+elif T_NIB <= B_NIB: shift = B_exponent - max(3,T_exponent)
+else : shift = B_exponent - max(3,T_exponent) - 1
+
+ugh.. 
+improper is nifty trick though.. adding lookup to check improper just kinda sucks.. but eh.. is not so bad considering all it is enabling.. a relatively fast and precise 8 bit division..
+ 		0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	A 	B 	C 	D 	E 	F
+0 		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+1 		0	244	128	85	64	51	42	36	32	28	25	23	21	19	18	17
+2 		0	128	244	170	128	102	85	73	64	56	51	46	42	39	36	34
+3 		0	192	192	244	192	153	128	109	96	85	76	69	64	59	54	51
+4 		0	128	128	170	244	204	170	146	128	113	102	93	85	78	73	68
+5 		0	160	160	213	160	244	213	182	160	142	128	116	106	98	91	85
+6 		0	192	192	128	192	153	244	219	192	170	153	139	128	118	109	102
+7 		0	224	224	149	224	179	149	244	224	199	179	162	149	137	128	119
+8 		0	128	128	170	128	204	170	146	244	227	204	186	170	157	146	136
+9 		0	144	144	192	144	230	192	164	144	244	230	209	192	177	164	153
+A 		0	160	160	213	160	128	213	182	160	142	244	232	213	196	182	170
+B 		0	176	176	234	176	140	234	201	176	156	140	244	234	216	201	187
+C 		0	192	192	128	192	153	128	219	192	170	153	139	244	236	219	204
+D 		0	208	208	138	208	166	138	237	208	184	166	151	138	244	237	221
+E 		0 	224	224	149	224	179	149	128	224	199	179	162	149	137	244	238
+F		0 	240	240	160	240	192	160	137	240	213	192	174	160	147	137	244
+
+T>B
+ 		0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	A 	B 	C 	D 	E 	F
+0 		0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+1 		1	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+2 		1	1	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+3 		1	1	1	0	0	0	0	0	0	0	0	0	0	0	0	0
+4 		1	1	1	1	0	0	0	0	0	0	0	0	0	0	0	0
+5 		1	1	1	1	1	0	0	0	0	0	0	0	0	0	0	0
+6 		1	1	1	1	1	1	0	0	0	0	0	0	0	0	0	0
+7 		1	1	1	1	1	1	1	0	0	0	0	0	0	0	0	0
+8 		1	1	1	1	1	1	1	1	0	0	0	0	0	0	0	0
+9 		1	1	1	1	1	1	1	1	1	0	0	0	0	0	0	0
+A 		1	1	1	1	1	1	1	1	1	1	0	0	0	0	0	0
+B 		1	1	1	1	1	1	1	1	1	1	1	0	0	0	0	0
+C 		1	1	1	1	1	1	1	1	1	1	1	1	0	0	0	0
+D 		1	1	1	1	1	1	1	1	1	1	1	1	1	0	0	0
+E 		1	1	1	1	1	1	1	1	1	1	1	1	1	1	0	0
+F 		1	1	1	1	1	1	1	1	1	1	1	1	1	1	1	0
+
+
+screenX lookup - 
+get precision angle value from ATAN. 
+
+possibly need to subtract from 128 - from ATAN is angle 0 to 63 where 63 is nearly 45* .. 
+basically - if octant is Y major, do subtract / negate .. 
+
+EOR #$7F 	would make 63 into 64 
+INC A 		and we want 63 to become 65 in this case.. 
+
+Then subtract left precision angle .. 
+    SEC
+    SBC ZP_SCR_LEFT 
+    BCC IS_LEFT_OF_SCREEN
+    BMI IS_RIGHT_OF_SCREEN
+    TAX
+    LDA SCREEN_X,X 
+
+ez pz lemon squeezy .. screen is +/- 63 BAM , 128 possible screenX only. .  but max 320 px means something ever 2-3 px, not bad. 
+
+screen_X table is sorta mirror of the ATAN lookup one.. 
+
+ATAN_TABLE:
+    ; 	   0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	A 	B 	C 	D  	E 	F
+    .byte  0, 	0, 	1, 	1, 	1, 	2, 	2, 	2, 	3, 	3, 	3, 	3, 	4, 	4, 	4,	5 
+    .byte  5, 	6, 	6, 	6, 	6, 	7, 	7,	7, 	8, 	8, 	8, 	9, 	9, 	9, 	9, 	10
+    .byte  10, 	10, 11, 11, 11, 12, 12, 12, 14, 14, 14, 14, 14, 14, 14, 14
+    .byte  15,  15, 16, 16, 16, 17, 17, 17, 17, 18, 18, 18, 19, 19, 20, 20
+    .byte  20,  20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 23, 23, 24, 24, 24
+    .byte  25,  25, 25, 25, 26, 26, 26, 27, 27, 27, 27, 28, 28, 28, 29, 29
+    .byte  29,  29, 30, 30, 30, 30, 31, 31, 31, 32, 32, 32, 32, 33, 33, 33
+    .byte  34,  34, 34, 34, 35, 35, 35, 35, 36, 36, 36, 36, 37, 37, 37, 37
+    .byte  38,  39, 39, 39, 39, 39, 40, 40, 40, 40, 40, 40, 41, 41, 41, 41
+    .byte  42,  42, 42, 42, 43, 43, 43, 43, 44, 44, 44, 44, 44, 45, 45, 45
+    .byte  45,  46, 46, 46, 46, 47, 47, 47, 47, 47, 48, 48, 48, 48, 49, 49
+    .byte  49,  49, 49, 50, 50, 50, 50, 50, 51, 51, 51, 51, 52, 52, 52, 52
+    .byte  52,  53, 53, 53, 53, 53, 54, 54, 54, 54, 55, 55, 55, 55, 55, 55
+    .byte  56,  56, 56, 56, 56, 56, 57, 57, 57, 57, 57, 58, 58, 58, 58, 58
+    .byte  59,  59, 59, 59, 59, 59, 60, 60, 60, 60, 60, 60, 61, 61, 61, 61
+    .byte  62,  62, 62, 62, 62, 62, 62, 63, 63, 63, 63, 63, 63, 63, 63, 63
+
+actually can't even hit 63 normally... even in half there is missing bits ... 
+
+maybe need to reconsider case T >= B/2 ... probably not too horrible issue though. maybe not worth doing, all things considered.. 
+
+SCREEN_X_TABLE:
+; is frac/256 * screenwidth, where frac is TAN of angles above... so only 128 entries... ! 
+; evenly spaced per precision angle would contribute to fisheye skew? or just off a bit? 
+; say for 304 px wide screen - 157/64 = 2.45 ... 
+    ; 	   0 	1 	2 	3 	4 	5 	6 	7 	8 	9 	A 	B 	C 	D  	E 	F
+    .byte  0, 	3, 	6, 	9, 	12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45
+    .byte  48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 81, 84, 86, 88, 90
+    .byte   92, 94, 96, 98,100,102,104,106,108,110,112,114,116,118,120,122
+    .byte  124,126,128,130,132,134,136,138,140,142,144,148,150,152,154,156
+    .byte  157
+
 Ooops... need to double-check ranging. fuck.. totally goofed the flow..
    LDY ZP_B+1
    LDX RANGER,Y
