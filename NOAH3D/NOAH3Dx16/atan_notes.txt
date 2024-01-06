@@ -1,0 +1,314 @@
+
+Ooops... need to double-check ranging. fuck.. totally goofed the flow..
+   LDY ZP_B+1
+   LDX RANGER,Y
+   JMP TABLE,x
+
+   each level - 
+      extract 8 bits of T
+      get top 4 bits of B 
+      make value to do lookup - put into Y
+      get range of B 
+      subtract range of T
+      If zero - 
+          skip improper
+          do lookup into X
+          do ATAN
+          return
+      else -
+          sub improper check 
+          Put range into X
+          do lookup into A
+          jump 
+
+
+CALC_FRAC256_FROM_16BIT:
+    LDY ZP_B+1 	; 	2 	2 		3 	3
+    LDX RANGER,Y ; 	3  	7 		4 	7
+    JMP @TABLE,X ;3 	10 		6 	13
+  @TABLE:
+      .address @DO_B8BIT 	; 	2 	12
+      .address @DO_B9BIT  	;	2 	14
+      .address @DO_B10BIT 	;	2 	16
+      .address @DO_B11BIT 	; 	2 	18
+      .address @DO_B12BIT 	; 	2 	20
+      .address @DO_B13BIT 	;	2 	22
+      .address @DO_B14BIT 	;	2 	24
+      .address @DO_B15BIT 	;	2 	25
+      .address @DO_B16BIT 	; 	2 	28 	26B first stanza
+  @DO_B8BIT:
+      LDX ZP_B ; 	3 	3 	B in X
+      LDA TOP4H,X ; 4 	7   A has TOP4 of B
+      LDY ZP_T ; 	3 	10  Y has T
+      ORA TOP4L,Y ; 4 	14 	A ready as lookup, X has B  Y has T
+      TAY 		;	2 	16 	overrite T with lookup
+      LDA RANGER,X ; 4 	20  Get B Range
+      LDX ZP_T 	;	3 	23 	restore T to X
+      BRA SUBTRACT_RANGES ; 3 	26
+  @DO_B9BIT:
+      LDA ZP_B 	; 	3 	3
+      LSR  		; 	2 	5
+      ORA #$80 	; 	2 	7
+      AND #$F0 	; 	2 	9
+      TAY  		;	2 	11
+      LDA ZP_T+1 ; 	3 	14
+      LSR 		; 	2 	16
+      LDA ZP_T 	; 	3 	19
+      ROR 		; 	2 	21
+      BRA WAIT_A_MIN_BRUH ;	3 	24
+  @DO_B10BIT: 	;	......98 76543210
+      LDA ZP_B 	;	3 	3 	76543210
+      AND #$C0 	; 	2 	5 	76......
+      ORA ZP_B+1 ; 	3 	8 	76....98
+      TAY 	; 	2 	10 		
+      LDX ROT4,Y 	; 	4 	14 	..9876..
+      LDY HI4H,X 	; 	4 	18 	9876....
+      LDA ZP_T 	;	3 	21 	76543210
+      AND #$FC 	; 	2 	23 	765432..
+      ORA ZP_T+1 ; 	3 	26 	76543298
+      LSR 		; 	2 	28 	.7654329
+      BCC @B10A ; 	2 	30
+      ORA #$80 	;	2 	32 	87654329
+    @B10A:
+       LSR 		; 	2 	34 	.8765432
+       BCC WAIT_A_MIN_BRUH ; 	2 	36 	
+       ORA #$80  ; 	2 	38 	98765432
+       BRA WAIT_A_MIN_BRUH ; 	3 	41 	5 behind B12
+
+
+   @DO_B11BIT:
+       LDA ZP_B 	;	3
+       ASL 			;	2 	5
+       TYA 			;	2 	7
+       ROL  		;	2 	9
+       TAX 			;	2 	11
+       LDY ROT4,X 	;	4 	15 	top4 in Y
+       LDA ZP_T 	;	3 	18
+       AND #$F8 	;	2 	20
+       ORA ZP_T+1 	; 	3 	23
+       TAX 			; 	2 	25
+       LDA ROT4,X 	;	4 	29
+       BRA ASL_ADC1 ; 	3 	32
+   @DO_B12Bit:
+        LDA ROT4,Y 	;	4 	4
+        TAY 		; 	2 	6
+        LDA ZP_T 	; 	3 	9
+        AND #$F0 	;	2 	11
+        ORA ZP_T+1 	;	3 	14
+        TAX 		; 	2 	16
+        LDA ROT4,X 	;	4 	20
+        BRA WAIT_A_MIN_BRUH ; 23
+   @DO_B13BIT:  ; 	...43210 	;	13 cycles to here 
+        TYA 	;	2 	2
+        ASL 	; 	2 	4
+        ASL 	; 	2 	6
+        ASL 	; 	2 	8
+        AND #$F0 	; 	2 	10
+        TAY 	 	;	2 	12
+        LDA ZP_T 	; 	3 	15
+        AND #$E 	; 	2 	17
+        ORA ZP_T+1 	;	3 	20
+   ASL_ADC3: 
+        ASL 		; 	2 	2 	B13B - 	22
+        ADC #0 		;	2 	4 			24
+   ASL_ADC2: 								;		B14 - 13+21=34 +21+23 best case - 78 worse case 89
+        ASL 		; 	2 	2 			26
+        ADC #0 		; 	2 	4 			28
+   ASL_ADC1: ;										B15 - 13+19=32 +17+23 best case - 72 worse case 86 	B11 13+32..13 behind B15
+        ASL 		;	2 	2 			30
+        ADC #0 		; 	2 	4 			32
+WAIT_A_MIN_BRUH: 	;								B12 - 13+23=36 to here +12 to subtract_ranges. = 48, 9 behind b8
+      TAX 				;	T:87654321 in X 	34
+WAITI_A_MIN_BRUH2: 	; 								B16 - 25 to here .. + 10 = 37 .. 2 better than B8
+      TYA 			; 						36 		
+      ORA TOP4L,X 	; 						40
+      TAY 				;	lookup in Y 	42
+      LDA #16 		;	8bits range for B 	45
+SUBTRACT_RANGES: 									; B8 runtime 13+26 to this point..39..  +8+15 = 62 best case +24+20= 83 cycle worse  
+      SEC 			; 							47
+      SBC RANGER,X 	; 	subtract range for B  	51
+      BEQ SKIP_IMPROPER ; 2 32 					53 
+      SBC IMPROPER,Y ; 4 	4 					57
+      TAX 			; 2 	6 					59
+      LDA DIV,Y 	; 	4 	10 					63
+      JMP @IMPROPTABLE,X ; 6 	16 				69
+  @IMPROPTABLE:
+      .address @EXP0
+      .address @EXP1
+      .address @EXP2
+      .address @EXP3
+      .address @EXP4
+  @EXP4: LSR 					;	2 	2
+  @EXP3: LSR 					;	2 	4
+  @EXP2: LSR 					;	2 	6
+  @EXP1: LSR 					; 	2 	8
+  @EXP0: 
+      TAX 						; 	2 	10
+      LDA ATAN,X 	; 	4 	8 	; 	4 	14
+      RTS 						;	6 	20 		B13 likely is worse runtime - 13+69+20 = 102 cycles worse case. 13+53+15=81 cycle best case 
+  SKIP_IMPROPER:
+      LDX DIV,Y 	;	4 	36
+      LDA ATAN,X 	; 	4 	8
+      RTS
+   @DO_B14BIT:
+        TYA 			;	2 	2
+        ASL 			;	2 	4
+        ASL 			;	2 	6
+        AND #$F0 		;	2 	8
+        TAY 			;	2 	10
+        LDA ZP_T 		;	3 	13
+        AND #$C0 		;	2 	15
+        ORA ZP_T+1 		;	3 	18
+      BRA ASL_ADC2 		;	3 	21
+   @DO_B15BIT:
+       TYA 	 	;	2 	2
+       ASL 		; 	2 	4
+       AND #$F0 ;	2 	6
+       TAY 		; 	2 	8
+       LDA ZP_T ; 	3 	11
+       AND #$80  ; 	2 	13
+       ORA ZP_T+1 ;	3 	16
+      BRA ASL_ADC1 	; 	3 	19
+   @DO_B16BIT:
+       TYA 						;	2 	2
+       AND #$F0 				;	2 	4
+       TAY 						;	2 	6
+       LDX ZP_T+1 				; 	3 	9
+       BRA WAITI_A_MIN_BRUH2 	;	3 	12 	B16 best case? 13+12=25 +12 to subtract_ranges = 37 .. 2 less than B8 ... 60 best case, 83 worse case.. 
+
+
+; 149 lines at average 2 bytes per? - ~300 BYTES of code... maybe less with all the labels and 1 BYTE instructions.. 
+; needs lookup tables - RANGER,TOP4H,TOP4L,ROT4,DIV,ATAN,IMPROPER .. 7 tables ... so total about 2K for the operation
+may need to tweak code placement to ensure local branches OK 
+
+
+BITS/BOTTOM 	BEST 	WORST 	average/expected
+8 				62 		85 		73
+9 				57 		78 		67
+10  			69		95 		82
+11 				85 		106 	95
+12 				69 		90 		79
+13 				81 		102 	91
+14 				78 		99 		88
+15 				72 		93 		82
+16 				60 		81 		71
+~81 cycles on average.. so ~100 cycles to screenX per side of segment to draw... ~200 cycles / segment
+rest of the traversal and calculations - likely ~256 cycles / segment setup/overhead ... likely typical scene only has ~64 such segments - ~16K cycles overhead drawing segments / frame?
+at something around 12 cycles/pixel to draw... 304x160 display .. say ~500K cycles just drawing? 15 fps budget is 533K cycles / frame.. larger columns would mean less segments to draw though..
+segments are square? so worse case 1 segment = 160x160 of display, so filling screen with walls would mean drawing 2-3 walls maybe.. and would mean two close for bad guys?
+80x80 per wall - ~5 walls - 1/2 the textured pixels but floor/ceiling isn't free dawg so like 375K cycles drawing .. more likely to have sprites and such though?
+
+Most likely this system wants to be 160x120 or 215x161 instead.. even 256x191 may be improvement? 256x191 was like 240x144 view area - 35K pixels.. 2.5 scaler
+200x120 = 24K pixels at 3 scaler, even better.. prob could have floors / ceilings but maybe pixelated is close to SNES WOLF3D ..
+
+This is all working blindly assuming T is very small? some of the manipulations get long.. maybe if can avoid having to grab extra bits...
+
+Like for B11 ?
+
+   @DO_B11BIT:
+       LDA ZP_B 	;	3
+       ASL 			;	2 	5
+       TYA 			;	2 	7
+       ROL  		;	2 	9
+       TAX 			;	2 	11
+       LDY ROT4,X 	;	4 	15 	top4 in Y
+       LDA ZP_T 	;	3 	18
+       AND #$F8 	;	2 	20
+       ORA ZP_T+1 	; 	3 	23
+       TAX 			; 	2 	25
+       LDA ROT4,X 	;	4 	29
+       BRA ASL_ADC1 ; 	3 	32
+
+   @DO_B11BIT:
+       ....
+       LDY ROT4,X 	;	4 	15 	top4 in Y
+       LDX ZP_T+1 	; 	3 	18
+       CPX #8 		; 	2 	20
+       BCS @B11A 	;	2 	22
+     @B11A: 	;	1 	23
+       LDA ZP_T 	; 	3 	26
+       ASL 			; 	2 	28
+       TXA 			; 	2 	30
+       ROL 			;	2 	32
+       TAX 			; 	2 	34
+
+yeah no... no good..
+
+B13?
+   @DO_B13BIT:  ; 	...43210 	;	13 cycles to here 
+        TYA 	;	2 	2
+        ASL 	; 	2 	4
+        ASL 	; 	2 	6
+        ASL 	; 	2 	8
+        AND #$F0 	; 	2 	10
+        TAY 	 	;	2 	12 ok stashed the Y
+        LDA ZP_T 	; 	3 	15
+        AND #$E 	; 	2 	17
+        ORA ZP_T+1 	;	3 	20
+        ASL 	;	2 	22
+        ADC 	; 	2 	24
+        ASL 	; 	2 	26
+        ADC 	; 	2 	28
+        ASL 	; 	2 	30
+        ADC 	; 	2 	32
+
+well.. first of all can save 6 cycles with a lookup... 
+   @DO_B13BIT:  ; 	...43210 	;	13 cycles to here 
+        LDA TOP4H,Y ; 4 	4
+        TAY 	;	2 	6
+     ; from there though - comparing to 12 here..
+        LDX ZP_T+1 	; 	3 	3
+        CPX #8 		; 	2 	5
+        BCS @B13A 	; 	2 	7 	8 +12=20 - 12 cycles better if don't need to get more bits .. 
+        CPX #2 		; 	2 	9 	...__???
+        BCS @B13B 	; 	2 	11
+        ;	...____? - need bits
+        TXA 		; 	2 	13
+        LSR 		;	2 	15
+        LDA ZP_T 	;	3 	18
+        ROR 		; 	2 	20
+        BRA @B13A
+      @B13B: ; ...__?X?
+
+      @B13A: ; 8 (20/32 - some improvement..)
+
+
+   @DO_B13BIT:  ; 	...43210 	;	13 cycles to here 
+        LDA TOP4H,Y ; 4 	4
+        TAY 	;	2 	6
+        LDA ZP_T 	; 	3 	9 	...CBA98 76543210
+        AND #$E 	; 	2 	11  765_____
+        ORA ZP_T+1 	;	3 	14  765CBA98 .. ASL / ADC x 3 = 12  - can we beat 26 ? 
+        TAX 		; 	2 	16
+        LDA ROT4,X 	; 	4 	20 	BA98765C
+        LSR 		; 	2 	22 	_BA98765
+        BCC @B13A 	; 	2 	24
+        ORA #$80 	; 	2 	26 	CBA98765
+      @B13A: ; 25/26 		not really.. would need ROT5 or something lookup.. 
+
+
+nope the worse cases just suck. is not a lot of variation though, just figure on ~100 cycles per.. or do full divide.. 
+
+
+OK have precision angle, returning from CALC_ATAN
+
+      LDA ATAN,X 	; 	4 	8
+      RTS
+
+      SEC
+      SBC ZP_LEFTANGLE
+      BCC WITHIN_VIEW
+   OUTSIDE_VIEW:
+      CMP #192 	
+      BCC 	OFFRIGHT
+   OFFLEFT:
+       ; if this was LEFT side calc, clip. Otherwise, segment outside view
+       LDA #0
+
+   OFFRIGHT:
+       ; if this was RIGHT side calc, clip. Otherwise, segment outside view
+       LDA #127
+
+   WITHIN_VIEW:
+   	  TAX 	
+   	  LDA SCREEN_X,X 
