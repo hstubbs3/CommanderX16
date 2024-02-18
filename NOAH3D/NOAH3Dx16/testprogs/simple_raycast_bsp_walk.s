@@ -1,6 +1,131 @@
 ; Wolf3D style BSP walk.. level is 64x64 tiles in 1/4th tile increments
 ; reserve Zero Page space during rendering - $0022-$007F  Available to the user
 ; will need to determine which to use , but can make it movable.. 
+
+; this should be loaded aligned 256! 
+ROT4:
+  .byte $00, $10, $20, $30, $40, $50, $60, $70, $80, $90, $A0, $B0, $C0, $D0, $E0, $F0
+  .byte $01, $11, $21, $31, $41, $51, $61, $71, $81, $91, $A1, $B1, $C1, $D1, $E1, $F1 
+  .byte $02, $12, $22, $32, $42, $52, $62, $72, $82, $92, $A2, $B2, $C2, $D2, $E2, $F2
+  .byte $03, $13, $23, $33, $43, $53, $63, $73, $83, $93, $A3, $B3, $C3, $D3, $E3, $F3
+  .byte $04, $14, $24, $34, $44, $54, $64, $74, $84, $94, $A4, $B4, $C4, $D4, $E4, $F4
+  .byte $05, $15, $25, $35, $45, $55, $65, $75, $85, $95, $A5, $B5, $C5, $D5, $E5, $F5
+  .byte $06, $16, $26, $36, $46, $56, $66, $76, $86, $96, $A6, $B6, $C6, $D6, $E6, $F6
+  .byte $07, $17, $27, $37, $47, $57, $67, $77, $87, $97, $A7, $B7, $C7, $D7, $E7, $F7
+  .byte $08, $18, $28, $38, $48, $58, $68, $78, $88, $98, $A8, $B8, $C8, $D8, $E8, $F8
+  .byte $09, $19, $29, $39, $49, $59, $69, $79, $89, $99, $A9, $B9, $C9, $D9, $E9, $F9
+  .byte $0A, $1A, $2A, $3A, $4A, $5A, $6A, $7A, $8A, $9A, $AA, $BA, $CA, $DA, $EA, $FA
+  .byte $0B, $1B, $2B, $3B, $4B, $5B, $6B, $7B, $8B, $9B, $AB, $BB, $CB, $DB, $EB, $FB
+  .byte $0C, $1C, $2C, $3C, $4C, $5C, $6C, $7C, $8C, $9C, $AC, $BC, $CC, $DC, $EC, $FC
+  .byte $0D, $1D, $2D, $3D, $4D, $5D, $6D, $7D, $8D, $9D, $AD, $BD, $CD, $DD, $ED, $FD
+  .byte $0E, $1E, $2E, $3E, $4E, $5E, $6E, $7E, $8E, $9E, $AE, $BE, $CE, $DE, $EE, $FE
+  .byte $0F, $1F, $2F, $3F, $4F, $5F, $6F, $7F, $8F, $9F, $AF, $BF, $CF, $DF, $EF, $FF
+RANGEFIND:
+  .byte $00, $02, $04, $04, $06, $06, $06, $06, $08, $08, $08, $08, $08, $08, $08, $08 ; 0 through 4bits 0-15
+  .byte $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A, $0A ; 16-31
+  .byte $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C ; 32-47
+  .byte $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C, $0C ; 48-63
+  .byte $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E ; 64-79
+  .byte $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E ; 80-95
+  .byte $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E ; 96-111
+  .byte $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E, $0E ; 112-127
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+  .byte $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10, $10
+TOP4H: ; grab 4 bits starting at first 1bit and return in high nibble.. 
+  .byte   0, 128, 128, 192, 128, 160, 192, 224, 128, 144, 160, 176, 192, 208, 224, 240  ; 0-15 
+  .byte 128, 128, 144, 144, 160, 160, 176, 176, 192, 192, 208, 208, 224, 224, 240, 240  ; 16-31 - x8
+  .byte 128, 128, 128, 128, 144, 144, 144, 144, 160, 160, 160, 160, 176, 176, 176, 176  ; 32-47 - x4
+  .byte 192, 192, 192, 192, 208, 208, 208, 208, 224, 224, 224, 224, 240, 240, 240, 240  ; 48-63 - x4
+  .byte 128, 128, 128, 128, 128, 128, 128, 128, 144, 144, 144, 144, 144, 144, 144, 144  ; 64-79 - x2
+  .byte 160, 160, 160, 160, 160, 160, 160, 160, 176, 176, 176, 176, 176, 176, 176, 176  ; 
+  .byte 192, 192, 192, 192, 192, 192, 192, 192, 208, 208, 208, 208, 208, 208, 208, 208
+  .byte 224, 224, 224, 224, 224, 224, 224, 224, 240, 240, 240, 240, 240, 240, 240, 240
+  .byte 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128  ; x1 
+  .byte 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144, 144
+  .byte 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160, 160
+  .byte 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176, 176
+  .byte 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192, 192
+  .byte 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208, 208
+  .byte 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224, 224
+  .byte 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240, 240
+TOP4L: ; grab 4 bits starting at first 1bit and return in low nibble
+  .byte 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+  .byte 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15
+  .byte 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10, 11, 11, 11, 11
+  .byte 12, 12, 12, 12, 13, 13, 13, 13, 14, 14, 14, 14, 15, 15, 15, 15
+  .byte 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 9, 9, 9, 9, 9, 9
+  .byte 10, 10, 10, 10, 10, 10, 10, 10, 11, 11, 11, 11, 11, 11, 11, 11
+  .byte 12, 12, 12, 12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 13, 13, 13
+  .byte 14, 14, 14, 14, 14, 14, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15
+  .byte 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8
+  .byte 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9
+  .byte 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10
+  .byte 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11
+  .byte 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12
+  .byte 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13
+  .byte 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14
+  .byte 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+IMPROPER: ; 0 if low nibble is less than high nibble... 
+  .byte 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2
+  .byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2
+DIVNIBBLE: ; BT
+  ;       0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F
+.byte 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255
+.byte 255, 241, 128, 192, 128, 160, 192, 224, 128, 144, 160, 176, 192, 208, 224, 240
+.byte 255, 128, 242, 192, 128, 160, 192, 224, 128, 144, 160, 176, 192, 208, 224, 240
+.byte 255,  85, 170, 243, 171, 213, 128, 149, 171, 192, 213, 235, 128, 139, 149, 160
+.byte 255,  64, 128, 192, 244, 160, 192, 224, 128, 144, 160, 176, 192, 208, 224, 240
+.byte 255,  51, 102, 153, 204, 245, 154, 179, 205, 230, 128, 141, 154, 166, 179, 192
+.byte 255,  42,  85, 128, 170, 213, 246, 149, 171, 192, 213, 235, 128, 139, 149, 160
+.byte 255,  36,  73, 109, 146, 182, 219, 247, 146, 165, 183, 201, 219, 238, 128, 137
+.byte 255,  32,  64,  96, 128, 160, 192, 224, 248, 144, 160, 176, 192, 208, 224, 240
+.byte 255,  28,  56,  85, 113, 142, 170, 199, 227, 249, 142, 156, 171, 185, 199, 213
+.byte 255,  25,  51,  76, 102, 128, 153, 179, 204, 230, 250, 141, 154, 166, 179, 192
+.byte 255,  23,  46,  69,  93, 116, 139, 162, 186, 209, 232, 251, 140, 151, 163, 175
+.byte 255,  21,  42,  64,  85, 106, 128, 149, 170, 192, 213, 234, 252, 139, 149, 160
+.byte 255,  19,  39,  59,  78,  98, 118, 137, 157, 177, 196, 216, 236, 253, 138, 148
+.byte 255,  18,  36,  54,  73,  91, 109, 128, 146, 164, 182, 201, 219, 237, 254, 137
+.byte 255,  17,  34,  51,  68,  85, 102, 119, 136, 153, 170, 187, 204, 221, 238, 255
+
+ATAN512:  ; returns 0=H/V to 64=45*
+  ;     0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F   
+  .byte  0,  0,  1,  1,  1,  2,  2,  2,  3,  3,  3,  3,  4,  4,  4,  5
+  .byte  5,  5,  6,  6,  6,  7,  7,  7,  8,  8,  8,  9,  9,  9, 10, 10
+  .byte 10, 10, 11, 11, 11, 12, 12, 12, 13, 13, 13, 14, 14, 14, 14, 15
+  .byte 15, 15, 16, 16, 16, 17, 17, 17, 18, 18, 18, 18, 19, 19, 19, 20
+  .byte 20, 20, 21, 21, 21, 21, 22, 22, 22, 23, 23, 23, 24, 24, 24, 24
+  .byte 25, 25, 25, 26, 26, 26, 26, 27, 27, 27, 28, 28, 28, 28, 29, 29
+  .byte 29, 30, 30, 30, 30, 31, 31, 31, 31, 32, 32, 32, 33, 33, 33, 33
+  .byte 34, 34, 34, 34, 35, 35, 35, 35, 36, 36, 36, 36, 37, 37, 37, 38
+  .byte 38, 38, 38, 39, 39, 39, 39, 40, 40, 40, 40, 41, 41, 41, 41, 42
+  .byte 42, 42, 42, 42, 43, 43, 43, 43, 44, 44, 44, 44, 45, 45, 45, 45
+  .byte 46, 46, 46, 46, 46, 47, 47, 47, 47, 48, 48, 48, 48, 48, 49, 49
+  .byte 49, 49, 50, 50, 50, 50, 50, 51, 51, 51, 51, 51, 52, 52, 52, 52
+  .byte 52, 53, 53, 53, 53, 53, 54, 54, 54, 54, 54, 55, 55, 55, 55, 55
+  .byte 56, 56, 56, 56, 56, 57, 57, 57, 57, 57, 57, 58, 58, 58, 58, 58
+  .byte 59, 59, 59, 59, 59, 59, 60, 60, 60, 60, 60, 61, 61, 61, 61, 61
+  .byte 61, 62, 62, 62, 62, 62, 62, 63, 63, 63, 63, 63, 63, 64, 64, 64
+
 .ifndef BSP_ZP_START
   BSP_ZP_START = $22
 .endif
@@ -72,31 +197,26 @@ PVS_BIT_LOOKIES:
 ; BSP tree itself must fit somewhere in memory without needing bank switching - either within a bank or occupying low ram
 .addr BSP_START
 
+.ifndef ZP_TMP 
+ZP_TMP = $7F 
+.endif 
+
 ; BSP format for WOLF3D
-; SPLITNODE
+; SPLITNODE -  
 ; 0     BYTE  FLAG_JUMP - determines type of thing... 
-; 1     BYTE  MAIN_AXIS
-; 2     BYTE  BOUND_BOX_MIN_MAIN
-; 3     BYTE  MINOR_AXIS_MIN_MIN
-; 4     BYTE  MINOR_AXIS_MIN_MAX
-; 5/6   ADDR  MIN_CHILD
-; 7/8   ADDR  MAX_CHILD
-; 9     BYTE  MINOR_AXIS_MAX_MAX
-; 10    BYTE  MINOR_AXIS_MAX_MIN
-; 11    BYTE  BOUND_BOX_MAX_MAIN
-; splitnode w/ bound checks - 14 bytes
-;
-; Improved SPLITNODE - because LEAFNODES in PVS anyway ... 
-; 0     BYTE  FLAG_JUMP - determines type of thing... 
-; 1     BYTE  MAIN_AXIS
-; 2/3   ADDR  MIN_CHILD
-; 4/5   ADDR  MAX_CHILD
-; 6 bytes per splitnode .. at 6 bytes splitnode, 2 bytes leafnode 1 byte end_list and 6 bytes for a wall seg... 
+; 1     BYTE  PVS
+; 2     BYTE  MAIN_AXIS
+; 3/4   ADDR  MIN_CHILD
+; 5/6   ADDR  MAX_CHILD
+; 7 bytes per splitnode .. at 6 bytes splitnode, 2 bytes leafnode 1 byte end_list and 6 bytes for a wall seg... 
 ; say 6 bytes / element - 8K banked = >1000 elements .. maybe PVS won't have to be banked? may not even be 256 PVS area
 ; LEAFNODE
 ;  0    BYTE  FLAG_JUMP - determines type of thing
-;  1    BYTE  AREA - used for sound, tracking connected areas.. nav meshing? PVS, whatever.. 
-;  2    childs list of segments and stuff starts here... 
+;  1    BYTE  PVS_BIT
+;  2    BYTE  PVS_BYTE
+;  3    BYTE  AREA - used for sound, tracking connected areas.. nav meshing? PVS, whatever.. 
+;  -    childs list of segments and stuff starts here... 
+;  4 bytes + childs 
 ;
 ; WALL
 ; 0     BYTE  FLAG_JUMP - determines type of thing... 
@@ -139,7 +259,133 @@ ZP_BSP_LX = BSP_ZP_START+16 ;   BYTE  1   17
 ZP_BSP_LY = BSP_ZP_START+17 ;   BYTE  1   18
 ZP_BSP_RX = BSP_ZP_START+18 ;   BYTE  1   19
 ZP_BSP_RY = BSP_ZP_START+19 ;   BYTE  1   20
-ZP_BSP_MATH_TEMP = BSP_ZP_START+20 ; BYTE   4   24
+ZP_VIEW_ANGLE_PRECISE = BSP_ZP_START+20 ; BYTE 1 21
+ZP_DIVLOOK = BSP_ZP_START+21 ; ADDRESS 2  23
+
+.macro PREPDIVNIBBLE
+  lda #>DIVNIBBLE
+  sta ZP_DIVLOOK+1
+.endmacro
+
+.macro GET_ATAN_FROM_DIVA
+    TAX           ; 2   2
+    LDA ATAN512,X ; 4   6
+.endmacro
+
+CALC_FRAC256_FROM_16BIT: ; expects bottom_H in Y, bottomL in A, top_H in X and top_L in ZP_TMP
+    STX ZP_TMP-1 ;  3   3
+    LDX RANGEFIND,Y ;  3   7     4   7
+    JMP @TABLE,X ;3   10    6   13
+  @TABLE:
+      .address @DO_B8BIT  ;   2   12
+      .address @DO_B9BIT    ; 2   14
+      .address @DO_B10BIT   ; 2   16
+      .address @DO_B11BIT   ;   2   18
+      .address @DO_B12BIT   ;   2   20
+      .address @DO_B13BIT   ; 2   22
+      .address @DO_B14BIT   ; 2   24
+      .address @DO_B15BIT   ; 2   25
+      .address @DO_B16BIT   ;   2   28  26B first stanza
+  @RET_ZERO:  ;
+      RTS
+  @DO_B8BIT:  ; 13 
+        TAX     ; 2   2
+        LDY ZP_TMP  ;   3   9  get the top num 
+        JMP CALC_FRAC256_FROM_8BIT
+  @DO_B9BIT:
+      TAX   ;   2   2
+      LDA zP_TMP ; 3  5
+      LSR ZP_TMP-1   ; 5  10
+      ROR          ; 2  12
+      TAY          ; 2  14
+      TXA         ;  2  16
+      LSR         ;   2   18
+      AND #$80    ; 2   20
+      ORA TOP4L,Y ; 4   24
+      STA ZP_DIVLOOK ; 3  27
+      LDA #16     ;   2   29
+      BRA CONTINUE_CALCFRAC256 ; 3  32
+  @DO_B10BIT:
+      STY ZP_TMP-2 ; 3  3
+      LSR ZP_TMP-2 ; 5  8
+      ROR          ; 2  10
+      LSR          ; 2  12
+      AND #$80     ; 2  14
+      TAX          ; 2  16  Bottom TOP$ in X for lookup 
+      LDA ZP_TMP   ; 3  19
+      LSR ZP_TMP-1 ; 5  24
+      ROR          ; 2  26
+      LSR ZP_TMP-1 ; 5  31
+      ROR          ; 2  33
+      TAY          ; 2  35 TOP in Y 
+      TXA          ; 2  37
+@CONTINUEB11:
+      ORA TOP4L,Y  ; 4  41
+      STA ZP_DIVLOOK ; 3 44
+      LDA #16       ;   2   44
+      BRA CONTINUE_CALCFRAC256 ; 3  47
+  @DO_B11BIT:
+      ASL 
+      TYA
+      ROL
+      TAY   ;  2    8   BOTTOM TOP4 is in bottom of Y
+      LDA ZP_TMP ; 3  11 doing top..  
+      AND #$F8   ; 2  13  76543..
+      ORA ZP_TMP-1 ; 3  16  76543A98
+      ASL         ;   2   18
+      ADC #0  ;       2   20  6543A987
+      TAX    ;        2   24    X   has top flipped .. 
+      LDA ROT4,Y    ; 4   28  A has TOP4 from bottom in TOP now
+      LDY ROT4,X    ; 4   32  Y has top in correct order of bits 
+      BRA @CONTINUEB11 ; 3  35 
+ 
+CALC_FRAC256_CHECK_IMPROPER: ; 29+13=42 from 16low
+        TAX             ; 2   2
+        LDA (ZP_DIVLOOK) ; 5  7
+        JMP (@BLT,X)  ;   6   13  
+
+    @BLT:
+        .address @EXP_EVEN
+        .address @EXP_ONE
+        .address @EXP_TWO 
+        .address @EXP_THREE
+        .address @EXP_FOUR
+        .address @EXP_FIVE
+        .address @EXP_SIX
+        .address @EXP_SEVEN
+      @EXP_SEVEN: ; 7 bits difference - 0,1 both ATAN=0
+          LDA #0 ; 2  
+          RTS   ;  
+      @EXP_SIX: ;   6 bits difference - B could 8 bits and T 2 or B could be 7 and T 1 .. 
+          AND #$C0   ;  2   2
+          ASL        ;  2   4
+          ADC #0     ;  2   6
+          ASL        ;  2   8
+          ADC #0     ;  2   10
+          RTS       ;   6   16
+      @EXP_FIVE: ; 5 bits difference .. DIV / 32 .. final answer is >8 
+          LSR
+      @EXP_FOUR: ; 4 bits diff .. /16
+          LSR
+      @EXP_THREE: ; 3 bits diff .. /8
+          LSR
+      @EXP_TWO: ; 2 bits diff .. /4
+          LSR 
+      @EXP_ONE: ; 1 bits diff .. /2
+          LSR      
+      @EXP_EVEN ; 0 bits diff .. /1
+          RTS     ;   6   16 is between 6 and 16 +13 = 19/29 for check improper
+CALC_FRAC256_FROM_8BIT: ; B in X, T in Y
+        ORA TOP4H,Y ;   4   13  make the lookie value
+        STA ZP_DIVLOOK ; 3  16  stash the look value.. then is 5 to do the lookup using it.. 
+        LDA RANGEFIND,X ; 4   22  get range for bottom nibble 
+    CONTINUE_CALCFRAC256:
+        SEC   ;         2   18
+        SBC RANGEFIND,Y ; 4   26  get range for top nibble
+        BNE CALC_FRAC256_CHECK_IMPROPER ; 2 28
+        LDA (ZP_DIVLOOK) ; 5  33
+        RTS ;              6  39  <--- 39+13 = 52 best case for Low 
+
 
 .macro SWITCH_TO_ZP_BSP_NEXT
     LDA ZP_BSP_NEXT  ; 3   3
@@ -155,6 +401,13 @@ ZP_BSP_MATH_TEMP = BSP_ZP_START+20 ; BYTE   4   24
     JMP (WALK_BSP_JUMPTABLE,x) ; 6  15
 .endmacro
 
+.macro WALK_BSP_FIND
+    LDY #1
+    LDA (ZP_BSP)
+    TAX 
+    JMP (WALK_BSP_FIND_LEAF_TABLE,X)
+.endmacro
+
 .macro WALK_SEGMENT 
   LDA (ZP_BSP),y  ; 5   5   ; set y and ZP_BSP correctly! 
   TAX             ; 2   7
@@ -165,19 +418,18 @@ ZP_BSP_MATH_TEMP = BSP_ZP_START+20 ; BYTE   4   24
 
 ; prepare to do walk, create back-stack, identify current node for PVS
 READ_WALK_BSP_FIND_LEAF:
-  LDA #<DO_LEAFNODE_PREP
-  STA WALK_BSP_JUMPTABLE+2
-  LDA #>DO_LEAFNODE_PREP
-  STA WALK_BSP_JUMPTABLE+3
-READY_WALK_BSP:
+  PREPDIVNIBBLE
   stz ZP_BSP_STACK_PTR  ; if stack ptr becomes neg we overflow .. 
-  stz ZP_BSP_B
-  stz ZP_BSP_B
   lda BSP_START   
   sta ZP_BSP
   lda BSP_sTART+1
   sta ZP_BSP+1
   WALK_BSP
+
+WALK_BSP_FIND_LEAF_TABLE:
+  .addr DO_LEAFNODE_FIND
+  .addr DO_SPLITNODE_X_FIND
+  .addr DO_SPLITNODE_Y_FIND
 
 WALK_BSP_JUMPTABLE:
   .addr DO_LEAFNODE             ; 0000 0010
@@ -196,7 +448,7 @@ WALK_SEGMENT_JUMPTABLE:
 ;   .addr DO_SPLITNODE_FORTYFIVE  ; 0000 0110
 ;  .addr DO_SPLITNODE_X_MAJOR    ; 0000
 
-DO_LEAFNODE_PREP:
+DO_LEAFNODE_FIND:
     LDA (ZP_BSP),Y            ;   5   5   grab the PVS value
     STZ ZP_PVS_POINTER        ;   3   8
     LSR A                     ;   2   10
@@ -215,11 +467,12 @@ DO_LEAFNODE_PREP:
     INY                       ;   2   48
     WALK_SEGMENT              ; 13    51
 
-; SPLITNODE
+; SPLITNODE -  
 ; 0     BYTE  FLAG_JUMP - determines type of thing... 
-; 1     BYTE  MAIN_AXIS
-; 2/3   ADDR  MIN_CHILD
-; 4/5   ADDR  MAX_CHILD
+; 1     BYTE  PVS
+; 2     BYTE  MAIN_AXIS
+; 3/4   ADDR  MIN_CHILD
+; 5/6   ADDR  MAX_CHILD
 
 DO_SPLITNODE_X:
     LDA (ZP_BSP),y  ;  5   5   X value of the split
@@ -415,936 +668,3 @@ DO_DOOR_HORIZONTAL:
 DO_DECORATION:
   JMP POP_BSP_STACK ; until thing is actually defined, will effectively allow skip
   WALK_BSP
-;
-;http://6502org.wikidot.com/software-math-intdiv#toc1
-;16-bit / 8-bit = 8-bit quotient, 8-bit remainder (unsigned)
-;Inputs:
-;TH = bits 15 to 8 of the numerator
-;TLQ = bits 7 to 0 of the numerator
-;B = 8-bit denominator
-;Outputs:
-;TLQ = 8-bit quotient of T / B
-;accumulator = remainder of T / B
-;;
-;   LDA TH
-;   LDX #8
-;   ASL TLQ
-;L1 ROL
-;   BCS L2
-;   CMP B
-;   BCC L3
-;L2 SBC B
-;;
-;; The SEC is needed when the BCS L2 branch above was taken
-;;
-;   SEC
-;L3 ROL TLQ
-;   DEX
-;   BNE L1
-;
-
-
-; do divide, expecting 8bit fraction / 255 of ZP_BSP_MATH_TEMP / ZP_BSP_MATH_TEMP+1 
-; temp+1 should be larger.. duh
-T = ZP_BSP_MATH_TEMP
-B = ZP_BSP_MATH_TEMP+1
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 47   /   105   =  114
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-  X8:
-      ROL A   ; 2   2                     /           98
-      TAX     ; 2   4         98
-      SBC B   ; 3   7                                 NEG /
-      BCS @END ;  2 9
-      TXA     ; 2   11                                98
-    @END: ; 10/11
-  X7:
-      ROL A   ; 2   2                                 196   /
-      TAX     ; 2   4     196
-      SBC B   ; 3   7                                  90   C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X6:
-      ROL A   ; 2   2                                 181   /
-      TAX     ; 2   4     181
-      SBC B   ; 3   7                                  76   C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X5:
-      ROL A   ; 2   2                                 153   /
-      TAX     ; 2   4     153
-      SBC B   ; 3   7                                  47   C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X4:
-      ROL A   ; 2   2                                  99   /
-      TAX     ; 2   4     99
-      SBC B   ; 3   7                                  NEG  /
-      BCS @END ;  2 9
-      TXA     ; 2   11                                 99
-    @END: ; 10/11
-  X3:
-      ROL A   ; 2   2                                  198
-      TAX     ; 2   4   198
-      SBC B   ; 3   7                                   92  C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X2:
-      ROL A   ; 2   2                                  185  /                     
-      TAX     ; 2   4   185 
-      SBC B   ; 3   7                                   79  C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X1:
-      ROL A   ; 2   2                                  159  /
-      TAX     ; 2   4
-      SBC B   ; 3   7                                   53  C
-      BCS @END ;  2 9
-      TXA     ; 2   11
-    @END: ; 10/11
-  X0:
-      ROL A   ; 2   2                                 107 !   
-
-actually pretty close... 
-
-; do divide, expecting 8bit fraction / 255 of ZP_BSP_MATH_TEMP / ZP_BSP_MATH_TEMP+1 
-; temp+1 should be larger.. duh
-T = ZP_BSP_MATH_TEMP
-B = ZP_BSP_MATH_TEMP+1
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 47   /   105   =  114
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        47   /
-  X8:
-      ROL A   ; 2   2        98   /       
-      SBC B   ; 3   7       -8  248   /
-  X7:
-      ROL A   ; 2   2       240   C   
-      SBC B   ; 3   7       135   C
-  X6:
-      ROL A   ; 2   2        15   C       
-      SBC B   ; 3   7       166   /
-  X5:
-      ROL A   ; 2   2        76   C       
-      SBC B   ; 3   7       227   /
-  X4:
-      ROL A   ; 2   2       198   C       
-      SBC B   ; 3   7        93   C
-  X3:
-      ROL A   ; 2   2       187   /       
-      SBC B   ; 3   7        81   C
-  X2:
-      ROL A   ; 2   2       163   /       
-      SBC B   ; 3   7        57   C
-  X1:
-      ROL A   ; 2   2       115   /   <- !!!       
-
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128 = 128 1/2
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;               128   /
-      SBC B ;               255   /
-  X7:
-      ROL A ;               254   C
-      SBC B ;               126   C
-  X6:
-      ROL A ;               253   /
-      SBC B ;               124   C
-  X5:
-      ROL A ;               249   /
-      SBC B ;               120   C
-  X4:
-      ROL A ;               241   /
-      SBC B ;               112   C
-  X3:
-      ROL A ;               225   /
-      SBC B ;                96   C
-  X2:
-      ROL A ;               193   /
-      SBC B ;                64   C
-  X1:
-      ROL A ;               129   /   <- huh... 
-
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                  1    128 = 2
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                         1
-  X8:
-      ROL A ;                 2   /
-      SBC B ;               129   /
-  X7:
-      ROL A ;                 2   C
-      SBC B ;               130   /
-  X6:
-      ROL A ;                 4   C
-      SBC B ;               132   /
-  X5:
-      ROL A ;                 8   C
-      SBC B ;               136   /
-  X4:
-      ROL A ;                16   C
-      SBC B ;               144   /
-  X3:
-      ROL A ;                32   C
-      SBC B ;               160   /
-  X2:
-      ROL A ;                64   C
-      SBC B ;               192   /
-  X1:
-      ROL A ;               128   C   <- close/ish.. ? 
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 1    128 = 2
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    SEC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        1    C
-  X8:
-      ROL A ;                3    /
-      SBC B ;               130   /
-  X7:
-      ROL A ;                 4   C  
-      SBC B ;               132   /
-  X6:
-      ROL A ;                 8   C
-      SBC B ;               136   /
-  X5:
-      ROL A ;                16   C
-      SBC B ;               144   /
-  X4:
-      ROL A ;                32   C
-      SBC B ;               160   /
-  X3:
-      ROL A ;                64   C
-      SBC B ;               192   /
-  X2:
-      ROL A ;               128   C
-      SBC B ;                 0   C
-  X1:
-      ROL A ;                 1   / ?
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 192    208  = 236
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    SEC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                       192   C
-  X8:
-      ROL A ;               129   C
-      SBC B ;               177   /
-  X7:
-      ROL A ;                98   C
-      SBC B ;               146   /
-  X6:
-      ROL A ;                36   C
-      SBC B ;                84   /
-  X5:
-      ROL A ;               168   /
-      SBC B ;               215   /
-  X4:
-      ROL A ;               174   C
-      SBC B ;               222   /
-  X3:
-      ROL A ;               188   C
-      SBC B ;               236   /   <- something something how many digits in divisor?
-  X2:
-      ROL A ;               216   C
-      SBC B ;                 8   C
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 192    208 = 236
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                       192   /
-  X8:
-      ROL A ;               128   C
-      SBC B ;               176   /
-  X7:
-      ROL A ;                96   C
-      SBC B ;               144   /
-  X6:
-      ROL A ;                32   C
-      SBC B ;                80   /
-  X5:
-      ROL A ;               160   /
-      SBC B ;               207   /
-  X4:
-      ROL A ;               158   C
-      SBC B ;               206   /
-  X3:
-      ROL A ;               156   C
-      SBC B ;               204   /
-  X2:
-      ROL A ;               152   C
-      SBC B ;               200   /
-  X1:
-      ROL A ;               144   ?
-
-is weird it almost works despite muxing up the digits ... really shouldn't do that? 
-
-    ; 192 / 208 = 236 as fraction ... 
-    ;              ACC   C    ANS
-    ;              192   /
-    LDA #$FE
-    STA ANS  ;                 254
-    LDA T   ;      192 / 208 = 236 ...
-    SEC 
-X7:     
-    ROL A ;        129  C   
-    SBC B ;        177  /
-    ROL ANS ;           C     252
-X6:     
-    ROL A ;         99  C
-    SBC B ;        147  /
-    ROL ANS ;           C     248
-X5:     
-    ROL A ;         39  C
-    SBC B ;         87  / 
-    ROL ANS ;           C     240
-X4:     
-    ROL A ;         175 /
-    SBC B ;         222 /
-    ROL ANS ;           C     224
-X3:     
-    ROL A ;         189 C
-    SBC B ;         237 /
-    ROL ANS ;           C     192
-X2:     
-    ROL A ;         219 C   
-    SBC B ;          11 C
-    ROL ANS ;           C     129
-X1:     
-    ROL A ;          23 /
-    SBC B ;          70 /
-    ROL ANS ;           C       3
-X0:     
-    ROL A ;         141 /
-    SBC B ;         188 /
-    ROL ANS ;                   6
-
-
-    ; 192 / 208 = 236 as fraction ... 
-    ;              ACC   C    ANS
-    ;              192   /
-    STZ ANS  ;                 0
-    LDA T   ;      192 / 208 = 236 ...
-    CLC 
-X7:     
-    ROL A ;        128  C   
-    SBC B ;        176  /
-    ROL ANS ;           /       0
-X6:     
-    ROL A ;         96  C
-    SBC B ;        144  /
-    ROL ANS ;           0       0
-X5:     
-    ROL A ;         32  C
-    SBC B ;         80  / 
-    ROL ANS ;                   0
-X4:     
-    ROL A ;         160 /
-    SBC B ;         207 /
-    ROL ANS ;                   0
-X3:     
-    ROL A ;         158 C
-    SBC B ;         206 /
-    ROL ANS ;                   0
-X2:     
-    ROL A ;         156 C   
-    SBC B ;         204 /
-    ROL ANS ;           /       0
-X1:     
-    ROL A ;         152 C
-    SBC B ;         200 /
-    ROL ANS ;           /       0
-X0:     
-    ROL A ;         144 C
-    SBC B ;         192 /
-    ROL ANS ;           /       0
-
-    ; 192 / 208 = 236 as fraction ... 
-    ;              ACC   C    ANS
-    ;              192   /
-    STZ ANS  ;                 0
-    ;      192 / 208 = 236 ...
-    LDA B   ;       208   /     0
-    EOR #$FF;        47
-    CLC     ;
-X8:
-    ADC T   ;       239   /
-    ROL ANS ;             /     0
-    ASL A   ;       222   C
-X8:
-    ADC T   ;       159   C
-    ROL ANS ;             /     1
-    ASL A   ;        62   C
-X8:
-    ADC T   ;       255   /
-    ROL ANS ;             /     2
-    ASL A   ;       254   C
-X8:
-    ADC T   ;       191   C
-    ROL ANS ;             /     5
-    ASL A   ;       126   C
-X8:
-    ADC T   ;        63   C
-    ROL ANS ;             /     11
-    ASL A   ;
-
-
-    ; 192 / 208 = 236 as fraction ... 
-    ;              ACC   C    ANS
-    ;              192   /
-    STZ ANS  ;                 0
-    ;      192 / 208 = 236 ...
-    LDA B   ;       208   /     0
-    EOR #$FF;        47
-    TAX     ;
-    CLC     ;
-
-X8:
-    ADC T   ;       239   /
-    ROL ANS ;             /    0
-    TXA     ;        47
-    ASL A   ;        94   /
-    TAX     ;   94
-X7:
-    ADC T   ;        30  C
-    ROL ANS ;            /     1
-    TXA     ;         94
-    ASL A   ;        188
-    TAX     ;
-X6:
-    ADC T   ;        125 C
-    ROL ANS ;            /     3
-    TXA     ;   188
-    ASL A   ;        120 C   
-    TAX     ;
-X5:
-    ADC T   ;         57 C
-    ROL ANS ;             /    7
-    TXA     ;   120
-    ASL A   ;        240 /
-    TAX     ;
-X4:
-    ADC T   ;        176 C
-    ROL ANS ;                 15
-    TXA     ;   240
-    ASL A   ;         224 C
-    TAX     ;
-X3:
-    ADC T   ;         161 C
-    ROL ANS ;             /   31
-    TXA     ;   224
-    ASL A   ;         192 C
-    TAX     ;
-X2:
-    ADC T   ;         129 C
-    ROL ANS ;             /   65
-    TXA     ;   192
-    ASL A   ;         128 C
-    TAX     ;
-X1:
-    ADC T   ;          65 C
-    ROL ANS ;             /   131
-    TXA     ;   128
-    ASL A   ;           0 C
-    TAX     ;
-X0:
-    ADC T   ;         
-    ROL ANS ; 
-    TXA     ;
-    ASL A   ;
-    TAX     ;
-
-
-X8:
-    ADC T   ;        
-    ROL ANS ;       
-    ASL A   ;
-X8:
-    ADC T   ;        
-    ROL ANS ;       
-    ASL A   ;
-X8:
-    ADC T   ;        
-    ROL ANS ;       
-    ASL A   ;
-X8:
-    ADC T   ;        
-    ROL ANS ;       
-    ASL A   ;
-X8:
-    ADC T   ;        
-    ROL ANS ;       
-    ASL A   ;
-
-
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  
-SIMPLE_DIVIDE_FRACTIONAL:
-    ;                                     C            T      B      
-    ;                                                 64    128
-    LDA TH    ; 3   10                                                                
-    ; LDX #8 ... 
-    CLC   ; ASL TLQ   set to eqiv         /
-    ;                       ACC   C
-    ;                        64   /
-  X8:
-      ROL A ;                  
-      SBC B ;  
-  X7:
-      ROL A ;                  
-      SBC B ;  
-  X6:
-      ROL A ;                  
-      SBC B ;  
-  X5:
-      ROL A ;                  
-      SBC B ;  
-  X4:
-      ROL A ;                  
-      SBC B ;  
-  X3:
-      ROL A ;                  
-      SBC B ;  
-  X2:
-      ROL A ;                  
-      SBC B ;  
-  X1:
-      ROL A ;                  

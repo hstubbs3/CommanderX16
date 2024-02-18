@@ -1,0 +1,6 @@
+todo.txt
+
+2024/02/18
+
+1220 	initial git getting together.. 
+1400 	OK first sprite is popping up OK ... 

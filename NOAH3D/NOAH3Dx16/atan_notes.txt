@@ -544,3 +544,943 @@ TAN_CALC_4K:
         CMP #64 	; 	2 	10
         BCS @TCTB7_T6 ; 	2 	12
         BRA @TCTB7_T5; 	3 	15
+
+
+
+
+
+
+
+;
+;http://6502org.wikidot.com/software-math-intdiv#toc1
+;16-bit / 8-bit = 8-bit quotient, 8-bit remainder (unsigned)
+;Inputs:
+;TH = bits 15 to 8 of the numerator
+;TLQ = bits 7 to 0 of the numerator
+;B = 8-bit denominator
+;Outputs:
+;TLQ = 8-bit quotient of T / B
+;accumulator = remainder of T / B
+;;
+;   LDA TH
+;   LDX #8
+;   ASL TLQ
+;L1 ROL
+;   BCS L2
+;   CMP B
+;   BCC L3
+;L2 SBC B
+;;
+;; The SEC is needed when the BCS L2 branch above was taken
+;;
+;   SEC
+;L3 ROL TLQ
+;   DEX
+;   BNE L1
+;
+
+
+; do divide, expecting 8bit fraction / 255 of ZP_BSP_MATH_TEMP / ZP_BSP_MATH_TEMP+1 
+; temp+1 should be larger.. duh
+T = ZP_BSP_MATH_TEMP
+B = ZP_BSP_MATH_TEMP+1
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 47   /   105   =  114
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+  X8:
+      ROL A   ; 2   2                     /           98
+      TAX     ; 2   4         98
+      SBC B   ; 3   7                                 NEG /
+      BCS @END ;  2 9
+      TXA     ; 2   11                                98
+    @END: ; 10/11
+  X7:
+      ROL A   ; 2   2                                 196   /
+      TAX     ; 2   4     196
+      SBC B   ; 3   7                                  90   C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X6:
+      ROL A   ; 2   2                                 181   /
+      TAX     ; 2   4     181
+      SBC B   ; 3   7                                  76   C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X5:
+      ROL A   ; 2   2                                 153   /
+      TAX     ; 2   4     153
+      SBC B   ; 3   7                                  47   C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X4:
+      ROL A   ; 2   2                                  99   /
+      TAX     ; 2   4     99
+      SBC B   ; 3   7                                  NEG  /
+      BCS @END ;  2 9
+      TXA     ; 2   11                                 99
+    @END: ; 10/11
+  X3:
+      ROL A   ; 2   2                                  198
+      TAX     ; 2   4   198
+      SBC B   ; 3   7                                   92  C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X2:
+      ROL A   ; 2   2                                  185  /                     
+      TAX     ; 2   4   185 
+      SBC B   ; 3   7                                   79  C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X1:
+      ROL A   ; 2   2                                  159  /
+      TAX     ; 2   4
+      SBC B   ; 3   7                                   53  C
+      BCS @END ;  2 9
+      TXA     ; 2   11
+    @END: ; 10/11
+  X0:
+      ROL A   ; 2   2                                 107 !   
+
+actually pretty close... 
+
+; do divide, expecting 8bit fraction / 255 of ZP_BSP_MATH_TEMP / ZP_BSP_MATH_TEMP+1 
+; temp+1 should be larger.. duh
+T = ZP_BSP_MATH_TEMP
+B = ZP_BSP_MATH_TEMP+1
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 47   /   105   =  114
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        47   /
+  X8:
+      ROL A   ; 2   2        98   /       
+      SBC B   ; 3   7       -8  248   /
+  X7:
+      ROL A   ; 2   2       240   C   
+      SBC B   ; 3   7       135   C
+  X6:
+      ROL A   ; 2   2        15   C       
+      SBC B   ; 3   7       166   /
+  X5:
+      ROL A   ; 2   2        76   C       
+      SBC B   ; 3   7       227   /
+  X4:
+      ROL A   ; 2   2       198   C       
+      SBC B   ; 3   7        93   C
+  X3:
+      ROL A   ; 2   2       187   /       
+      SBC B   ; 3   7        81   C
+  X2:
+      ROL A   ; 2   2       163   /       
+      SBC B   ; 3   7        57   C
+  X1:
+      ROL A   ; 2   2       115   /   <- !!!       
+
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128 = 128 1/2
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;               128   /
+      SBC B ;               255   /
+  X7:
+      ROL A ;               254   C
+      SBC B ;               126   C
+  X6:
+      ROL A ;               253   /
+      SBC B ;               124   C
+  X5:
+      ROL A ;               249   /
+      SBC B ;               120   C
+  X4:
+      ROL A ;               241   /
+      SBC B ;               112   C
+  X3:
+      ROL A ;               225   /
+      SBC B ;                96   C
+  X2:
+      ROL A ;               193   /
+      SBC B ;                64   C
+  X1:
+      ROL A ;               129   /   <- huh... 
+
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                  1    128 = 2
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                         1
+  X8:
+      ROL A ;                 2   /
+      SBC B ;               129   /
+  X7:
+      ROL A ;                 2   C
+      SBC B ;               130   /
+  X6:
+      ROL A ;                 4   C
+      SBC B ;               132   /
+  X5:
+      ROL A ;                 8   C
+      SBC B ;               136   /
+  X4:
+      ROL A ;                16   C
+      SBC B ;               144   /
+  X3:
+      ROL A ;                32   C
+      SBC B ;               160   /
+  X2:
+      ROL A ;                64   C
+      SBC B ;               192   /
+  X1:
+      ROL A ;               128   C   <- close/ish.. ? 
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 1    128 = 2
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    SEC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        1    C
+  X8:
+      ROL A ;                3    /
+      SBC B ;               130   /
+  X7:
+      ROL A ;                 4   C  
+      SBC B ;               132   /
+  X6:
+      ROL A ;                 8   C
+      SBC B ;               136   /
+  X5:
+      ROL A ;                16   C
+      SBC B ;               144   /
+  X4:
+      ROL A ;                32   C
+      SBC B ;               160   /
+  X3:
+      ROL A ;                64   C
+      SBC B ;               192   /
+  X2:
+      ROL A ;               128   C
+      SBC B ;                 0   C
+  X1:
+      ROL A ;                 1   / ?
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 192    208  = 236
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    SEC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                       192   C
+  X8:
+      ROL A ;               129   C
+      SBC B ;               177   /
+  X7:
+      ROL A ;                98   C
+      SBC B ;               146   /
+  X6:
+      ROL A ;                36   C
+      SBC B ;                84   /
+  X5:
+      ROL A ;               168   /
+      SBC B ;               215   /
+  X4:
+      ROL A ;               174   C
+      SBC B ;               222   /
+  X3:
+      ROL A ;               188   C
+      SBC B ;               236   /   <- something something how many digits in divisor?
+  X2:
+      ROL A ;               216   C
+      SBC B ;                 8   C
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 192    208 = 236
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                       192   /
+  X8:
+      ROL A ;               128   C
+      SBC B ;               176   /
+  X7:
+      ROL A ;                96   C
+      SBC B ;               144   /
+  X6:
+      ROL A ;                32   C
+      SBC B ;                80   /
+  X5:
+      ROL A ;               160   /
+      SBC B ;               207   /
+  X4:
+      ROL A ;               158   C
+      SBC B ;               206   /
+  X3:
+      ROL A ;               156   C
+      SBC B ;               204   /
+  X2:
+      ROL A ;               152   C
+      SBC B ;               200   /
+  X1:
+      ROL A ;               144   ?
+
+is weird it almost works despite muxing up the digits ... really shouldn't do that? 
+
+    ; 192 / 208 = 236 as fraction ... 
+    ;              ACC   C    ANS
+    ;              192   /
+    LDA #$FE
+    STA ANS  ;                 254
+    LDA T   ;      192 / 208 = 236 ...
+    SEC 
+X7:     
+    ROL A ;        129  C   
+    SBC B ;        177  /
+    ROL ANS ;           C     252
+X6:     
+    ROL A ;         99  C
+    SBC B ;        147  /
+    ROL ANS ;           C     248
+X5:     
+    ROL A ;         39  C
+    SBC B ;         87  / 
+    ROL ANS ;           C     240
+X4:     
+    ROL A ;         175 /
+    SBC B ;         222 /
+    ROL ANS ;           C     224
+X3:     
+    ROL A ;         189 C
+    SBC B ;         237 /
+    ROL ANS ;           C     192
+X2:     
+    ROL A ;         219 C   
+    SBC B ;          11 C
+    ROL ANS ;           C     129
+X1:     
+    ROL A ;          23 /
+    SBC B ;          70 /
+    ROL ANS ;           C       3
+X0:     
+    ROL A ;         141 /
+    SBC B ;         188 /
+    ROL ANS ;                   6
+
+
+    ; 192 / 208 = 236 as fraction ... 
+    ;              ACC   C    ANS
+    ;              192   /
+    STZ ANS  ;                 0
+    LDA T   ;      192 / 208 = 236 ...
+    CLC 
+X7:     
+    ROL A ;        128  C   
+    SBC B ;        176  /
+    ROL ANS ;           /       0
+X6:     
+    ROL A ;         96  C
+    SBC B ;        144  /
+    ROL ANS ;           0       0
+X5:     
+    ROL A ;         32  C
+    SBC B ;         80  / 
+    ROL ANS ;                   0
+X4:     
+    ROL A ;         160 /
+    SBC B ;         207 /
+    ROL ANS ;                   0
+X3:     
+    ROL A ;         158 C
+    SBC B ;         206 /
+    ROL ANS ;                   0
+X2:     
+    ROL A ;         156 C   
+    SBC B ;         204 /
+    ROL ANS ;           /       0
+X1:     
+    ROL A ;         152 C
+    SBC B ;         200 /
+    ROL ANS ;           /       0
+X0:     
+    ROL A ;         144 C
+    SBC B ;         192 /
+    ROL ANS ;           /       0
+
+    ; 192 / 208 = 236 as fraction ... 
+    ;              ACC   C    ANS
+    ;              192   /
+    STZ ANS  ;                 0
+    ;      192 / 208 = 236 ...
+    LDA B   ;       208   /     0
+    EOR #$FF;        47
+    CLC     ;
+X8:
+    ADC T   ;       239   /
+    ROL ANS ;             /     0
+    ASL A   ;       222   C
+X8:
+    ADC T   ;       159   C
+    ROL ANS ;             /     1
+    ASL A   ;        62   C
+X8:
+    ADC T   ;       255   /
+    ROL ANS ;             /     2
+    ASL A   ;       254   C
+X8:
+    ADC T   ;       191   C
+    ROL ANS ;             /     5
+    ASL A   ;       126   C
+X8:
+    ADC T   ;        63   C
+    ROL ANS ;             /     11
+    ASL A   ;
+
+
+    ; 192 / 208 = 236 as fraction ... 
+    ;              ACC   C    ANS
+    ;              192   /
+    STZ ANS  ;                 0
+    ;      192 / 208 = 236 ...
+    LDA B   ;       208   /     0
+    EOR #$FF;        47
+    TAX     ;
+    CLC     ;
+
+X8:
+    ADC T   ;       239   /
+    ROL ANS ;             /    0
+    TXA     ;        47
+    ASL A   ;        94   /
+    TAX     ;   94
+X7:
+    ADC T   ;        30  C
+    ROL ANS ;            /     1
+    TXA     ;         94
+    ASL A   ;        188
+    TAX     ;
+X6:
+    ADC T   ;        125 C
+    ROL ANS ;            /     3
+    TXA     ;   188
+    ASL A   ;        120 C   
+    TAX     ;
+X5:
+    ADC T   ;         57 C
+    ROL ANS ;             /    7
+    TXA     ;   120
+    ASL A   ;        240 /
+    TAX     ;
+X4:
+    ADC T   ;        176 C
+    ROL ANS ;                 15
+    TXA     ;   240
+    ASL A   ;         224 C
+    TAX     ;
+X3:
+    ADC T   ;         161 C
+    ROL ANS ;             /   31
+    TXA     ;   224
+    ASL A   ;         192 C
+    TAX     ;
+X2:
+    ADC T   ;         129 C
+    ROL ANS ;             /   65
+    TXA     ;   192
+    ASL A   ;         128 C
+    TAX     ;
+X1:
+    ADC T   ;          65 C
+    ROL ANS ;             /   131
+    TXA     ;   128
+    ASL A   ;           0 C
+    TAX     ;
+X0:
+    ADC T   ;         
+    ROL ANS ; 
+    TXA     ;
+    ASL A   ;
+    TAX     ;
+
+
+X8:
+    ADC T   ;        
+    ROL ANS ;       
+    ASL A   ;
+X8:
+    ADC T   ;        
+    ROL ANS ;       
+    ASL A   ;
+X8:
+    ADC T   ;        
+    ROL ANS ;       
+    ASL A   ;
+X8:
+    ADC T   ;        
+    ROL ANS ;       
+    ASL A   ;
+X8:
+    ADC T   ;        
+    ROL ANS ;       
+    ASL A   ;
+
+
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
+SIMPLE_DIVIDE_FRACTIONAL:
+    ;                                     C            T      B      
+    ;                                                 64    128
+    LDA TH    ; 3   10                                                                
+    ; LDX #8 ... 
+    CLC   ; ASL TLQ   set to eqiv         /
+    ;                       ACC   C
+    ;                        64   /
+  X8:
+      ROL A ;                  
+      SBC B ;  
+  X7:
+      ROL A ;                  
+      SBC B ;  
+  X6:
+      ROL A ;                  
+      SBC B ;  
+  X5:
+      ROL A ;                  
+      SBC B ;  
+  X4:
+      ROL A ;                  
+      SBC B ;  
+  X3:
+      ROL A ;                  
+      SBC B ;  
+  X2:
+      ROL A ;                  
+      SBC B ;  
+  X1:
+      ROL A ;                  
