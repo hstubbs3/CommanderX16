@@ -4,3 +4,36 @@ todo.txt
 
 1220 	initial git getting together.. 
 1400 	OK first sprite is popping up OK ... 
+
+2024/02/19
+
+0915 	world size.. 
+		wanted something like ~30x58 or maybe ~39x58 even ( alcove or oval style with 1" lip)
+
+		hexes are sqrt(3):2 .. conforming to a grid system would make it sqrt(3):6/4, losing 1/8 to 
+		row above and below..  sqrt(3)=1.732 .. ~71/41 ..  
+
+		solving ratio to get a 'circular' unit - 71/41 : 3/2  - circular unit 265/164 ...
+		unit 		width 		height(hex) 	height(offset grid)
+		155/82 	: 71/41 	: 	2 			: 	3/2
+		1.8902 	: 1.7317 	: 	2 			: 	1.5
+		1 		: 0.9161 	: 	1.0580 		: 	0.7935
+		16px 	: 14.6576 	: 	16.928 		: 	12.6960
+		16|0 	: 14|168 	: 	16|237 		: 	12|178
+
+		tub units 		hexes
+		Y 		X  		Y 		X
+		30 		58 		37.8 	63.1 	37x63 should be fine...
+
+		37*12.696 = 469.752
+		63*14.6576 = 923.4288
+		925x471 PNG where 1 unit is 16px = 57.8125 x 29.4375
+
+
+1415 	calling it for now, need to sort out some data structures.. have made the Godot thing work well for figuring
+  		out what is needed for each bearing though..
+
+  		
+
+
+		

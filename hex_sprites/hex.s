@@ -4,6 +4,8 @@ jmp start ; 	3 bytes
 SCRATCH240:
 .res 240, $FF
 
+
+
 ;constants
 
 ; RAM Interrupt Vectors
@@ -90,11 +92,13 @@ T_CHAR            = $54
 CLR               = $93
 
 ; 	$0800-$9EFF	BASIC program/variables; available to the user
-WORLD_DATA = $8000 	;	so is %100 [Y 5 bits ] : [ab] 0 [X - 6 bits
+WORLD_DATA = $6000 	;	so is %100 [Y 5 bits ] : [ab] 0 [X - 6 bits
+SCREEN_buffer = $8000
 
 ; global data
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
+camera_facing: 		 .byte 1
 
 ; zero page layout $0022-$007F is available to user
 ZP_PTR = $22 
@@ -144,6 +148,9 @@ start:
   	dex 
   	BNE @copy_to_vram_loop
 
+
+  bra   @end ; skip this test stuff
+
   ; set this to sprite 0 for first test.. 
   ; 	0	Address (12:5)
   ; 	1	Mode	-	Address (16:13)
@@ -161,7 +168,6 @@ start:
   ldy #128
   LDA #112
   stA ZP_PTR 	;	to keep track of height to draw at...
-  
   @row_loop:
     ldx #16
     @e_loop:
@@ -242,7 +248,17 @@ start:
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
+   beq @FRAME_CHECK
+   cmp #SPACE
    bne @cleanup_and_exit
+   ; switch to next bearing
+   LDA camera_facing
+   INC A
+   CMP #3
+   BCC @draw
+   LDA #0
+   @draw:
+   STA camera_facing
 
    ; update screen
    jsr draw_world
@@ -259,8 +275,157 @@ start:
    jsr CINT
    rts
 
+; all the objects need to get into a structure to be drawn at each screen Y..
+; need object type, screenX .. store back to front .. track # objects to be drawn ?
+; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
+
 draw_world:
+  ; clear first entry for each line... 
+  STZ ZP_PTR 
+  LDA #>SCREEN_buffer
+  STA ZP_PTR+1
+  LDX #30
+  LDA #0
+  @loop:
+    TAY
+    STA (ZP_PTR),y 	;	set first buffer entry for line mod 4 = 0 
+    LDY #64 		; 	move buffer pointer to next line
+    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =1 
+    LDY #128 		; 	move buffer pointer to next line
+    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =2
+    LDY #192 		; 	move buffer pointer to next line
+    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =3 
+    INC ZP_PTR+1 	;	next page plz
+    DEX  
+    BNE @loop
+  ; fetch bearing data .. 
+  LDA camera_facing
+  ASL 
+  TAX
+  jmp (@T_BEARINGS,X)
+@T_BEARINGS:
+	.addr BEARING_ZERO
+	.addr BEARING_ONE
+	.addr BEARING_TWO
+
+BEARING_ZERO:
+    LDA #112 ; starting at screen Y=112 
+  @E_loop:
+    STA ZP_PTR+2 ; stash the Y we're working at... 
+      STZ ZP_PTR   ; zero this out to use pointer .. 
+      LSR 
+      ROR ZP_PTR ; 
+      LSR
+      ROR ZP_PTR ; because is 64 avail for each 
+      ORA #>SCREEN_buffer ; making pointer woot! 
+      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
+      LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
+      LDA #8 	;   start at X=0
+    @E_loopE:
+        TAX
+        LDA #2 	;	water type
+        STA (ZP_PTR),y 
+        iny 
+        TXA ;	get X value
+        STA (ZP_PTR),y 
+        iny 
+        CLC
+        adc #16
+        CMP #136
+        BCC @E_loopE 	;kk
+      LDA #0
+      STA (ZP_PTR),y ; stash zero value to end the thing
+      LDA ZP_PTR+2
+      SBC #15 	;	borrow is set ...
+      BCS @E_loop ; still spots left on screen.. otay
+    jmp update_screen 
+BEARING_ONE:
+BEARING_TWO: ; 30 degrees .. 
+    LDA #116 ; starting at screen Y=112 
+  @E_loop:
+    STA ZP_PTR+2 ; stash the Y we're working at... 
+      STZ ZP_PTR   ; zero this out to use pointer .. 
+      LSR 
+      ROR ZP_PTR ; 
+      LSR
+      ROR ZP_PTR ; because is 64 avail for each 
+      ORA #>SCREEN_buffer ; making pointer woot! 
+      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
+      LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
+      LDA #12 	;   start at X=0
+    @E_loopE:
+        TAX
+        LDA #2 	;	water type
+        STA (ZP_PTR),y 
+        iny 
+        TXA ;	get X value
+        STA (ZP_PTR),y 
+        iny 
+        CLC
+        adc #28
+        CMP #136
+        BCC @E_loopE 	;kk
+      LDA #0
+      STA (ZP_PTR),y ; stash zero value to end the thing
+      LDA ZP_PTR+2
+      SBC #13 	;	borrow is set ...
+      BCS @E_loop ; still spots left on screen.. otay
+    jmp update_screen 
+
   rts 
+
+update_screen:
+  stz VERA_addr_low
+  lda #>VRAM_sprite_attributes
+  sta VERA_addr_high
+  lda #$11
+  sta VERA_addr_bank
+    LDA #119
+    STA ZP_PTR+2 ; stash line we at .. 
+      STZ ZP_PTR
+      LSR 
+      ROR ZP_PTR ; 
+      LSR
+      ROR ZP_PTR ; because is 64 avail for each 
+      ORA #>SCREEN_buffer ; making pointer woot! 
+      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
+  @y_line_loop:
+      LDY #0 ; set to check that first point .. 
+      dec ZP_PTR+2
+    @do_check_line:
+        LDA (ZP_PTR),Y ;	get type 
+        INY 
+        TAX 
+        JMP (@T_objtypes,X) ; 
+    @T_objtypes:
+        .addr @end_line 
+        .addr @do_water 
+    @do_water:
+      stz VERA_data0 	; 	address 12:5
+      STZ VERA_data0 	; 	4bit color address 16:13
+      LDA (ZP_PTR),Y  	;	get the X
+      iny 
+      STA VERA_data0 	;	X 
+      STZ VERA_data0 	;	 X 
+      LDA ZP_PTR+2
+      STA VERA_data0 	;	y
+      STZ VERA_data0 	; 	y
+      LDA #$0C 
+      STA VERA_data0 	; 	3 z depth no flip
+      LDA #$D0 			; 	16x64 no palette offset
+      STA VERA_data0
+      bra @do_check_line
+    @end_line:
+        SEC 
+        LDA ZP_PTR
+        SBC #64
+        STA ZP_PTR
+        LDA ZP_PTR+1
+        SBC #0
+        STA ZP_PTR+1
+        CMP #>SCREEN_buffer
+        BCS @y_line_loop
+rts
 
 test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
 ; 	   01   23   45   67   89   AB   CD   EF
