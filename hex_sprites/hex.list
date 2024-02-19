@@ -95,6 +95,9 @@ Current file: hex.s
 0000F3r 1               T_CHAR            = $54
 0000F3r 1               CLR               = $93
 0000F3r 1               
+0000F3r 1               ; 	$0800-$9EFF	BASIC program/variables; available to the user
+0000F3r 1               WORLD_DATA = $8000 	;	so is %100 [Y 5 bits ] : [ab] 0 [X - 6 bits
+0000F3r 1               
 0000F3r 1               ; global data
 0000F3r 1  00 00        default_irq_vector:  .addr 0
 0000F5r 1  01           VSYNC_counter:       .byte 1
@@ -161,199 +164,252 @@ Current file: hex.s
 000146r 1  8D 21 9F       sta VERA_addr_high
 000149r 1  A9 11          lda #$11
 00014Br 1  8D 22 9F       sta VERA_addr_bank
-00014Er 1  A0 00          ldy #0
-000150r 1                 @loop:
-000150r 1  9C 23 9F         stz VERA_data0 	; 	address 12:5
-000153r 1  9C 23 9F         STZ VERA_data0 	; 	4bit color address 16:13
-000156r 1  8C 23 9F         STY VERA_data0 	;	X
-000159r 1  9C 23 9F         STZ VERA_data0 	;	 X
-00015Cr 1  98               tya
-00015Dr 1  4A               LSR
-00015Er 1  8D 23 9F         STA VERA_data0 	;	y
-000161r 1  9C 23 9F         STZ VERA_data0 	; 	y
-000164r 1  A9 0C            LDA #$0C
-000166r 1  8D 23 9F         STA VERA_data0 	; 	3 z depth no flip
-000169r 1  A9 D0            LDA #$D0 			; 	16x64 no palette offset
-00016Br 1  8D 23 9F         STA VERA_data0
-00016Er 1  C8               iny
-00016Fr 1  C0 80            cpy #128
-000171r 1  D0 DD            bne @loop
-000173r 1               
-000173r 1                 ; enable display
-000173r 1  9C 25 9F       stz VERA_ctrl
-000176r 1  A9 41          lda #SPRITES_ONLY_VGA
-000178r 1  8D 29 9F       sta VERA_dc_video
-00017Br 1               
-00017Br 1                 ; overwrite RAM IRQ vector with custom handler address
-00017Br 1  78             sei ; disable IRQ while vector is changing
-00017Cr 1  A9 rr          lda #<custom_irq_handler
-00017Er 1  8D 14 03       sta IRQVec
-000181r 1  A9 rr          lda #>custom_irq_handler
-000183r 1  8D 15 03       sta IRQVec+1
-000186r 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
-000188r 1  8D 26 9F       sta VERA_ien
-00018Br 1  58             cli ; enable IRQ now that vector is properly set
-00018Cr 1               
-00018Cr 1                 ; main loop here...
-00018Cr 1               @check_keyboard:
-00018Cr 1                  ; poll keyboard for input
-00018Cr 1  20 E4 FF        jsr GETIN
-00018Fr 1  C9 00           cmp #0
-000191r 1  F0 F9           beq @check_keyboard
-000193r 1               
-000193r 1               cleanup_and_exit:
-000193r 1                  ; restore default IRQ vector
-000193r 1  78              sei
-000194r 1  AD rr rr        lda default_irq_vector
-000197r 1  8D 14 03        sta IRQVec
-00019Ar 1  AD rr rr        lda default_irq_vector+1
-00019Dr 1  8D 15 03        sta IRQVec+1
-0001A0r 1  58              cli
-0001A1r 1  20 81 FF        jsr CINT
-0001A4r 1  60              rts
-0001A5r 1               
-0001A5r 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
-0001A5r 1               ; 	   01   23   45   67   89   AB   CD   EF
-0001A5r 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
-0001A9r 1  66 66 00 00  
-0001ADr 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
-0001B1r 1  EE EE 66 00  
-0001B5r 1  06 6E EE EE  .byte $06, $6E, $EE, $EE, $EE, $EE, $E6, $60 	;	2
-0001B9r 1  EE EE E6 60  
-0001BDr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	;	3
-0001C1r 1  EE EE EE 66  
-0001C5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	;	4
-0001C9r 1  EE EE EE 66  
-0001CDr 1  66 6E EE EE  .byte $66, $6E, $EE, $EE, $EE, $EE, $E6, $66 	;	5
-0001D1r 1  EE EE E6 66  
-0001D5r 1  66 66 EE EE  .byte $66, $66, $EE, $EE, $EE, $EE, $66, $66 	;	6
-0001D9r 1  EE EE 66 66  
-0001DDr 1  66 66 66 66  .byte $66, $66, $66, $66, $66, $66, $66, $66 	;	7
-0001E1r 1  66 66 66 66  
+00014Er 1  A0 80          ldy #128
+000150r 1  A9 70          LDA #112
+000152r 1  85 22          stA ZP_PTR 	;	to keep track of height to draw at...
+000154r 1               
+000154r 1                 @row_loop:
+000154r 1  A2 10            ldx #16
+000156r 1                   @e_loop:
+000156r 1  9C 23 9F           stz VERA_data0 	; 	address 12:5
+000159r 1  9C 23 9F           STZ VERA_data0 	; 	4bit color address 16:13
+00015Cr 1  8E 23 9F           STX VERA_data0 	;	X
+00015Fr 1  9C 23 9F           STZ VERA_data0 	;	 X
+000162r 1  A5 22              LDA ZP_PTR
+000164r 1  8D 23 9F           STA VERA_data0 	;	y
+000167r 1  9C 23 9F           STZ VERA_data0 	; 	y
+00016Ar 1  A9 0C              LDA #$0C
+00016Cr 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
+00016Fr 1  A9 D0              LDA #$D0 			; 	16x64 no palette offset
+000171r 1  8D 23 9F           STA VERA_data0
+000174r 1  88                 dey
+000175r 1  F0 45              beq @end
+000177r 1  8A                 TXA
+000178r 1  18           	  CLC
+000179r 1  69 10              ADC #16
+00017Br 1  AA                 TAX
+00017Cr 1  E0 90              CPX #144
+00017Er 1  D0 D6              BNE @e_loop
+000180r 1  38               SEC
+000181r 1  A5 22            LDA ZP_PTR
+000183r 1  E9 06            SBC #6
+000185r 1  85 22            STA ZP_PTR
+000187r 1  A2 08            ldx #8
+000189r 1                   @o_loop:
+000189r 1  9C 23 9F           stz VERA_data0 	; 	address 12:5
+00018Cr 1  9C 23 9F           STZ VERA_data0 	; 	4bit color address 16:13
+00018Fr 1  8E 23 9F           STX VERA_data0 	;	X
+000192r 1  9C 23 9F           STZ VERA_data0 	;	 X
+000195r 1  A5 22              LDA ZP_PTR
+000197r 1  8D 23 9F           STA VERA_data0 	;	y
+00019Ar 1  9C 23 9F           STZ VERA_data0 	; 	y
+00019Dr 1  A9 0C              LDA #$0C
+00019Fr 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
+0001A2r 1  A9 D0              LDA #$D0 			; 	16x64 no palette offset
+0001A4r 1  8D 23 9F           STA VERA_data0
+0001A7r 1  88                 dey
+0001A8r 1  F0 12              beq @end
+0001AAr 1  8A                 TXA
+0001ABr 1  18                 CLC
+0001ACr 1  69 10              ADC #16
+0001AEr 1  AA                 TAX
+0001AFr 1  E0 98              CPX #152
+0001B1r 1  D0 D6              BNE @o_loop
+0001B3r 1  A5 22            LDA ZP_PTR
+0001B5r 1  38               SEC
+0001B6r 1  E9 06            SBC #6
+0001B8r 1  85 22            STA ZP_PTR
+0001BAr 1  80 98            bra @row_loop
+0001BCr 1               
+0001BCr 1                 @end:
+0001BCr 1               
+0001BCr 1                 ; enable display
+0001BCr 1  9C 25 9F       stz VERA_ctrl
+0001BFr 1  A9 41          lda #SPRITES_ONLY_VGA
+0001C1r 1  8D 29 9F       sta VERA_dc_video
+0001C4r 1               
+0001C4r 1                 ; overwrite RAM IRQ vector with custom handler address
+0001C4r 1  78             sei ; disable IRQ while vector is changing
+0001C5r 1  A9 rr          lda #<custom_irq_handler
+0001C7r 1  8D 14 03       sta IRQVec
+0001CAr 1  A9 rr          lda #>custom_irq_handler
+0001CCr 1  8D 15 03       sta IRQVec+1
+0001CFr 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+0001D1r 1  8D 26 9F       sta VERA_ien
+0001D4r 1  58             cli ; enable IRQ now that vector is properly set
+0001D5r 1               
+0001D5r 1                 ; main loop here...
+0001D5r 1               @FRAME_CHECK:
+0001D5r 1  CB              wai
+0001D6r 1  AC rr rr        ldy VSYNC_counter
+0001D9r 1  F0 FA           beq @FRAME_CHECK
+0001DBr 1  9C rr rr        stz VSYNC_counter
+0001DEr 1               
+0001DEr 1                  ; poll keyboard for input
+0001DEr 1  20 E4 FF        jsr GETIN
+0001E1r 1  C9 00           cmp #0
+0001E3r 1  D0 05           bne @cleanup_and_exit
 0001E5r 1               
-0001E5r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	8
-0001E9r 1  EE EE EE EE  
-0001EDr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0001F1r 1  EE 66 EE EE  
-0001F5r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0001F9r 1  66 EE 66 EE  
-0001FDr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000201r 1  EE EE EE 66  
-000205r 1               
-000205r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	12
-000209r 1  EE EE EE EE  
-00020Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000211r 1  EE 66 EE EE  
-000215r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000219r 1  66 EE 66 EE  
-00021Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000221r 1  EE EE EE 66  
-000225r 1               
-000225r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	16
-000229r 1  EE EE EE EE  
-00022Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000231r 1  EE 66 EE EE  
-000235r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000239r 1  66 EE 66 EE  
-00023Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000241r 1  EE EE EE 66  
-000245r 1               
-000245r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	20
-000249r 1  EE EE EE EE  
-00024Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000251r 1  EE 66 EE EE  
-000255r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000259r 1  66 EE 66 EE  
-00025Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000261r 1  EE EE EE 66  
-000265r 1               
-000265r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	24
-000269r 1  EE EE EE EE  
-00026Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000271r 1  EE 66 EE EE  
-000275r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000279r 1  66 EE 66 EE  
-00027Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000281r 1  EE EE EE 66  
-000285r 1               
-000285r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	28
-000289r 1  EE EE EE EE  
-00028Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000291r 1  EE 66 EE EE  
-000295r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000299r 1  66 EE 66 EE  
-00029Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0002A1r 1  EE EE EE 66  
-0002A5r 1               
-0002A5r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	32
-0002A9r 1  EE EE EE EE  
-0002ADr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0002B1r 1  EE 66 EE EE  
-0002B5r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0002B9r 1  66 EE 66 EE  
-0002BDr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0002C1r 1  EE EE EE 66  
-0002C5r 1               
-0002C5r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	36
-0002C9r 1  EE EE EE EE  
-0002CDr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0002D1r 1  EE 66 EE EE  
-0002D5r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0002D9r 1  66 EE 66 EE  
-0002DDr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0002E1r 1  EE EE EE 66  
-0002E5r 1               
-0002E5r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	40
-0002E9r 1  EE EE EE EE  
-0002EDr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0002F1r 1  EE 66 EE EE  
-0002F5r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0002F9r 1  66 EE 66 EE  
-0002FDr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000301r 1  EE EE EE 66  
-000305r 1               
-000305r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	44
-000309r 1  EE EE EE EE  
-00030Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000311r 1  EE 66 EE EE  
-000315r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000319r 1  66 EE 66 EE  
-00031Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000321r 1  EE EE EE 66  
-000325r 1               
-000325r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	48
-000329r 1  EE EE EE EE  
-00032Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000331r 1  EE 66 EE EE  
-000335r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000339r 1  66 EE 66 EE  
-00033Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000341r 1  EE EE EE 66  
-000345r 1               
-000345r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	52
-000349r 1  EE EE EE EE  
-00034Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000351r 1  EE 66 EE EE  
-000355r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000359r 1  66 EE 66 EE  
-00035Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000361r 1  EE EE EE 66  
-000365r 1               
-000365r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	56
-000369r 1  EE EE EE EE  
-00036Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000371r 1  EE 66 EE EE  
-000375r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000379r 1  66 EE 66 EE  
-00037Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-000381r 1  EE EE EE 66  
-000385r 1               
-000385r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
-000389r 1  EE EE EE EE  
-00038Dr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-000391r 1  EE 66 EE EE  
-000395r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-000399r 1  66 EE 66 EE  
-00039Dr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0003A1r 1  EE EE EE 66  
-0003A4r 1               
+0001E5r 1                  ; update screen
+0001E5r 1  20 rr rr        jsr draw_world
+0001E8r 1  80 EB           bra @FRAME_CHECK
+0001EAr 1               
+0001EAr 1               @cleanup_and_exit:
+0001EAr 1                  ; restore default IRQ vector
+0001EAr 1  78              sei
+0001EBr 1  AD rr rr        lda default_irq_vector
+0001EEr 1  8D 14 03        sta IRQVec
+0001F1r 1  AD rr rr        lda default_irq_vector+1
+0001F4r 1  8D 15 03        sta IRQVec+1
+0001F7r 1  58              cli
+0001F8r 1  20 81 FF        jsr CINT
+0001FBr 1  60              rts
+0001FCr 1               
+0001FCr 1               draw_world:
+0001FCr 1  60             rts
+0001FDr 1               
+0001FDr 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
+0001FDr 1               ; 	   01   23   45   67   89   AB   CD   EF
+0001FDr 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
+000201r 1  66 66 00 00  
+000205r 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
+000209r 1  EE EE 66 00  
+00020Dr 1  06 EE EE EE  .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
+000211r 1  EE EE EE 60  
+000215r 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
+000219r 1  EE EE EE E6  
+00021Dr 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
+000221r 1  EE EE EE E6  
+000225r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $E6, $66 	;	5
+000229r 1  EE EE E6 66  
+00022Dr 1  66 66 EE EE  .byte $66, $66, $EE, $EE, $EE, $EE, $66, $66 	;	6
+000231r 1  EE EE 66 66  
+000235r 1  EE 66 66 66  .byte $EE, $66, $66, $66, $66, $66, $66, $EE 	;	7
+000239r 1  66 66 66 EE  
+00023Dr 1               
+00023Dr 1  EE EE 66 66  .byte $EE, $EE, $66, $66, $66, $66, $EE, $EE 	; 	8
+000241r 1  66 66 EE EE  
+000245r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000249r 1  EE 66 EE EE  
+00024Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000251r 1  66 EE 66 EE  
+000255r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000259r 1  EE EE EE 66  
+00025Dr 1               
+00025Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	12
+000261r 1  EE EE EE EE  
+000265r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000269r 1  EE 66 EE EE  
+00026Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000271r 1  66 EE 66 EE  
+000275r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000279r 1  EE EE EE 66  
+00027Dr 1               
+00027Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	16
+000281r 1  EE EE EE EE  
+000285r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000289r 1  EE 66 EE EE  
+00028Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000291r 1  66 EE 66 EE  
+000295r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000299r 1  EE EE EE 66  
+00029Dr 1               
+00029Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	20
+0002A1r 1  EE EE EE EE  
+0002A5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0002A9r 1  EE 66 EE EE  
+0002ADr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0002B1r 1  66 EE 66 EE  
+0002B5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0002B9r 1  EE EE EE 66  
+0002BDr 1               
+0002BDr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	24
+0002C1r 1  EE EE EE EE  
+0002C5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0002C9r 1  EE 66 EE EE  
+0002CDr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0002D1r 1  66 EE 66 EE  
+0002D5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0002D9r 1  EE EE EE 66  
+0002DDr 1               
+0002DDr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	28
+0002E1r 1  EE EE EE EE  
+0002E5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0002E9r 1  EE 66 EE EE  
+0002EDr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0002F1r 1  66 EE 66 EE  
+0002F5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0002F9r 1  EE EE EE 66  
+0002FDr 1               
+0002FDr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	32
+000301r 1  EE EE EE EE  
+000305r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000309r 1  EE 66 EE EE  
+00030Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000311r 1  66 EE 66 EE  
+000315r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000319r 1  EE EE EE 66  
+00031Dr 1               
+00031Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	36
+000321r 1  EE EE EE EE  
+000325r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000329r 1  EE 66 EE EE  
+00032Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000331r 1  66 EE 66 EE  
+000335r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000339r 1  EE EE EE 66  
+00033Dr 1               
+00033Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	40
+000341r 1  EE EE EE EE  
+000345r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000349r 1  EE 66 EE EE  
+00034Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000351r 1  66 EE 66 EE  
+000355r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000359r 1  EE EE EE 66  
+00035Dr 1               
+00035Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	44
+000361r 1  EE EE EE EE  
+000365r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000369r 1  EE 66 EE EE  
+00036Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000371r 1  66 EE 66 EE  
+000375r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000379r 1  EE EE EE 66  
+00037Dr 1               
+00037Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	48
+000381r 1  EE EE EE EE  
+000385r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+000389r 1  EE 66 EE EE  
+00038Dr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+000391r 1  66 EE 66 EE  
+000395r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+000399r 1  EE EE EE 66  
+00039Dr 1               
+00039Dr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	52
+0003A1r 1  EE EE EE EE  
+0003A5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0003A9r 1  EE 66 EE EE  
+0003ADr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0003B1r 1  66 EE 66 EE  
+0003B5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0003B9r 1  EE EE EE 66  
+0003BDr 1               
+0003BDr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	56
+0003C1r 1  EE EE EE EE  
+0003C5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0003C9r 1  EE 66 EE EE  
+0003CDr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0003D1r 1  66 EE 66 EE  
+0003D5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0003D9r 1  EE EE EE 66  
+0003DDr 1               
+0003DDr 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
+0003E1r 1  EE EE EE EE  
+0003E5r 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0003E9r 1  EE 66 EE EE  
+0003EDr 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0003F1r 1  66 EE 66 EE  
+0003F5r 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0003F9r 1  EE EE EE 66  
+0003FCr 1               

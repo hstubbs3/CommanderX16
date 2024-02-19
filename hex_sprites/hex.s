@@ -89,6 +89,9 @@ O_CHAR            = $4F
 T_CHAR            = $54
 CLR               = $93
 
+; 	$0800-$9EFF	BASIC program/variables; available to the user
+WORLD_DATA = $8000 	;	so is %100 [Y 5 bits ] : [ab] 0 [X - 6 bits
+
 ; global data
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
@@ -155,23 +158,64 @@ start:
   sta VERA_addr_high
   lda #$11
   sta VERA_addr_bank
-  ldy #0
-  @loop:
-    stz VERA_data0 	; 	address 12:5
-    STZ VERA_data0 	; 	4bit color address 16:13
-    STY VERA_data0 	;	X 
-    STZ VERA_data0 	;	 X 
-    tya
-    LSR
-    STA VERA_data0 	;	y
-    STZ VERA_data0 	; 	y
-    LDA #$0C 
-    STA VERA_data0 	; 	3 z depth no flip
-    LDA #$D0 			; 	16x64 no palette offset
-    STA VERA_data0
-    iny 
-    cpy #128
-    bne @loop
+  ldy #128
+  LDA #112
+  stA ZP_PTR 	;	to keep track of height to draw at...
+  
+  @row_loop:
+    ldx #16
+    @e_loop:
+      stz VERA_data0 	; 	address 12:5
+      STZ VERA_data0 	; 	4bit color address 16:13
+      STX VERA_data0 	;	X 
+      STZ VERA_data0 	;	 X 
+      LDA ZP_PTR
+      STA VERA_data0 	;	y
+      STZ VERA_data0 	; 	y
+      LDA #$0C 
+      STA VERA_data0 	; 	3 z depth no flip
+      LDA #$D0 			; 	16x64 no palette offset
+      STA VERA_data0
+      dey 
+      beq @end
+      TXA
+	  CLC
+      ADC #16
+      TAX
+      CPX #144
+      BNE @e_loop
+    SEC
+    LDA ZP_PTR
+    SBC #6
+    STA ZP_PTR
+    ldx #8
+    @o_loop:
+      stz VERA_data0 	; 	address 12:5
+      STZ VERA_data0 	; 	4bit color address 16:13
+      STX VERA_data0 	;	X 
+      STZ VERA_data0 	;	 X 
+      LDA ZP_PTR
+      STA VERA_data0 	;	y
+      STZ VERA_data0 	; 	y
+      LDA #$0C 
+      STA VERA_data0 	; 	3 z depth no flip
+      LDA #$D0 			; 	16x64 no palette offset
+      STA VERA_data0
+      dey 
+      beq @end
+      TXA
+      CLC
+      ADC #16
+      TAX
+      CPX #152
+      BNE @o_loop
+    LDA ZP_PTR
+    SEC
+    SBC #6
+    STA ZP_PTR
+    bra @row_loop
+
+  @end:
 
   ; enable display 
   stz VERA_ctrl
@@ -189,13 +233,22 @@ start:
   cli ; enable IRQ now that vector is properly set
 
   ; main loop here... 
-@check_keyboard:
-   ; poll keyboard for input
+@FRAME_CHECK:
+   wai
+   ldy VSYNC_counter
+   beq @FRAME_CHECK
+   stz VSYNC_counter
+
+   ; poll keyboard for input 
    jsr GETIN
    cmp #0
-   beq @check_keyboard
+   bne @cleanup_and_exit
 
-cleanup_and_exit:
+   ; update screen
+   jsr draw_world
+   bra @FRAME_CHECK
+
+@cleanup_and_exit:
    ; restore default IRQ vector
    sei
    lda default_irq_vector
@@ -206,18 +259,21 @@ cleanup_and_exit:
    jsr CINT
    rts
 
+draw_world:
+  rts 
+
 test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
 ; 	   01   23   45   67   89   AB   CD   EF
 .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
 .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
-.byte $06, $6E, $EE, $EE, $EE, $EE, $E6, $60 	;	2
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	;	3
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	;	4
-.byte $66, $6E, $EE, $EE, $EE, $EE, $E6, $66 	;	5
+.byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
+.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
+.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
+.byte $66, $EE, $EE, $EE, $EE, $EE, $E6, $66 	;	5
 .byte $66, $66, $EE, $EE, $EE, $EE, $66, $66 	;	6
-.byte $66, $66, $66, $66, $66, $66, $66, $66 	;	7
+.byte $EE, $66, $66, $66, $66, $66, $66, $EE 	;	7
 
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	8
+.byte $EE, $EE, $66, $66, $66, $66, $EE, $EE 	; 	8
 .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
 .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
 .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
