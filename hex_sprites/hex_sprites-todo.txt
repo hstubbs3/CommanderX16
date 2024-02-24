@@ -33,7 +33,37 @@ todo.txt
 1415 	calling it for now, need to sort out some data structures.. have made the Godot thing work well for figuring
   		out what is needed for each bearing though..
 
-  		
+
+2024/02/21
+0755 	normalize so widest orientation of hex is 16 px ? 
+		unit 155/82 : 71/41  : 2 : 3/2 ... 
+			 15.121 : 13.853 : 16 : 12 
+			 15  31 : 13 218 : 16 : 12   0
+		test 925x471 .. = 60.418 x 30.76 ?
+
+0845 	approximating 71/41 as 7/4 has ~1% error .. makes hex exactly 16x14 and then circular unit is 15...
+
+
+2024/02/22
+
+0800 	building out table for doing view. 
+		on-screen, each hexagon ( point-up ) is represented by circle with diameter 16 that is squashed for camera tilt
+
+		world map itself should be 29x50 actually, because the ratios .. if we set the height (offset grid) to 1" ... 
+		width 		height(hex) 	height(offset grid)
+		71/41 	: 	2 			: 	3/2
+		71/41*2/3 : 2*2/3 		: 	3/2 * 2/3
+		142/123 : 	4/3 		: 	1
+
+		now, world 29 units tall requires just 29 rows.. to get 58 units wide - 58 divided by 142/123 = 50.239
+		makes number of cells to calculate = 2*(36 to 49) + 50 = 1190+50= 1240 only... so ~50K cycles to calculate step
+
+2030 	getting lookup table sorted out for next test 
+
+2024/02/24
+
+0800 	single row working... committing
+
 
 
 		

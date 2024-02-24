@@ -1,9 +1,66 @@
 ; 	080D
 jmp start ; 	3 bytes 
 ;	0810 	- 240 bytes available for stuff that doesn't need alignment 
-SCRATCH240:
-.res 240, $FF
+.repeat 28
+	.byte $DE,$AD,$BE,$EF
+.endrepeat
+SCRATCH128:
+.repeat 32
+	.byte $DE,$AD,$BE,$EF
+.endrepeat
 
+ACROSS_ROW_X_H: ; 0900
+;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
+.byte $10,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $E
+.byte  $E,  $E,  $E,  $E,  $E,  $D,  $D,  $D,  $D,  $D,  $C,  $C,  $C,  $C,  $B,  $B
+.byte  $B,  $B,  $A,  $A,  $A,  $9,  $9,  $9,  $8,  $8,  $8,  $7,  $7,  $7,  $6,  $6
+.byte  $6,  $5,  $5,  $5,  $4,  $4,  $3,  $3,  $3,  $2,  $2,  $1,  $1,  $1,  $0,  $0
+.byte  $0, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FC, $FC, $FC, $FB, $FB, $FA, $FA, $FA
+.byte $F9, $F9, $F9, $F8, $F8, $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4
+.byte $F4, $F4, $F4, $F3, $F3, $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1
+.byte $F1, $F1, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0
+.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1
+.byte $F1, $F1, $F1, $F1, $F1, $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4
+.byte $F4, $F4, $F5, $F5, $F5, $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9
+.byte $F9, $FA, $FA, $FA, $FB, $FB, $FC, $FC, $FC, $FD, $FD, $FE, $FE, $FE, $FF, $FF
+.byte $00,  $0,  $0,  $1,  $1,  $1,  $2,  $2,  $3,  $3,  $3,  $4,  $4,  $5,  $5,  $5
+.byte  $6,  $6,  $6,  $7,  $7,  $7,  $8,  $8,  $8,  $9,  $9,  $9,  $A,  $A,  $A,  $B
+.byte  $B,  $B,  $B,  $C,  $C,  $C,  $C,  $D,  $D,  $D,  $D,  $D,  $E,  $E,  $E,  $E
+.byte  $E,  $E,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F
+
+ACROSS_ROW_X_L: ; 0A00
+;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
+.byte  $0, $FE, $FB, $F4, $EC, $E1, $D3, $C3, $B1, $9C, $85, $6B, $4F, $31, $10, $ED
+.byte $C8, $A0, $76, $4A, $1C, $EB, $B9, $84, $4D, $14, $D9, $9D, $5E, $1D, $DA, $96
+.byte $50,  $8, $BE, $73, $26, $D7, $87, $36, $E3, $8F, $39, $E2, $8A, $31, $D7, $7B
+.byte $1F, $C2, $63,  $4, $A5, $44, $E3, $81, $1F, $BC, $59, $F5, $91, $2D, $C8, $64
+.byte  $0, $9B, $37, $D2, $6E,  $A, $A6, $43, $E0, $7E, $1C, $BB, $5A, $FB, $9C, $3D
+.byte $E0, $84, $28, $CE, $75, $1D, $C6, $70, $1C, $C9, $78, $28, $D9, $8C, $41, $F7
+.byte $AF, $69, $25, $E2, $A1, $62, $26, $EB, $B2, $7B, $46, $14, $E3, $B5, $89, $5F
+.byte $37, $12, $EF, $CE, $B0, $94, $7A, $63, $4E, $3C, $2C, $1E, $13,  $B,  $4,  $1
+.byte  $0,  $1,  $4,  $B, $13, $1E, $2C, $3C, $4E, $63, $7A, $94, $B0, $CE, $EF, $12
+.byte $37, $5F, $89, $B5, $E3, $14, $46, $7B, $B2, $EB, $26, $62, $A1, $E2, $25, $69
+.byte $AF, $F7, $41, $8C, $D9, $28, $78, $C9, $1C, $70, $C6, $1D, $75, $CE, $28, $84
+.byte $E0, $3D, $9C, $FB, $5A, $BB, $1C, $7E, $E0, $43, $A6,  $A, $6E, $D2, $37, $9B
+.byte  $0, $64, $C8, $2D, $91, $F5, $59, $BC, $1F, $81, $E3, $44, $A5,  $4, $63, $C2
+.byte $1F, $7B, $D7, $31, $8A, $E2, $39, $8F, $E3, $36, $87, $D7, $26, $73, $BE,  $8
+.byte $50, $96, $DA, $1D, $5E, $9D, $D9, $14, $4D, $84, $B9, $EB, $1C, $4A, $76, $A0
+.byte $C8, $ED, $10, $31, $4F, $6B, $85, $9C, $B1, $C3, $D3, $E1, $EC, $F4, $FB, $FE
+
+ACROSS_ROW_Y_H: ; 0B00
+;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
+.byte  $0,  $0,  $0,  $0,  $0,  $0,  $1, $1, $1, $1, $1, $2, $2, $2, $2, $2, $3, $3, $3, $3, $3, $3, $4, $4, $4, $4, $4, $4, $5, $5, $5, $5, $5, $5, $5, $6, $6, $6, $6, $6, $6, $6, $6, $6, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $8, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $6, $6, $6, $6, $6, $6, $6, $6, $6, $5, $5, $5, $5, $5, $5, $5, $4, $4, $4, $4, $4, $4, $3, $3, $3, $3, $3, $3, $2, $2, $2, $2, $2, $1, $1, $1, $1, $1, $0, $0, $0, $0, $0, $0, $FF, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $FF, $FF
+
+ACROSS_ROW_Y_L: ; 0C00
+;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
+.byte  $0, $32, $64, $96, $C8, $FA, $2C, $5E, $8F, $C0, $F1, $22, $52, $82
+.byte $B1, $E1,  $F, $3D, $6B, $98, $C5, $F1, $1C, $47, $71, $9B, $C3 
+.byte $EB, $13, $39, $5F, $84, $A8, $CB, $ED,  $E, $2F, $4E, $6C, $8A
+.byte $A6, $C2, $DC, $F5,  $E, $25, $3B, $50, $64, $76, $88, $98, $A7
+.byte $B5, $C2, $CE, $D8, $E1, $E9, $F0, $F6, $FA, $FD, $FF,  $0, $FF
+.byte $FD, $FA, $F6, $F0, $E9, $E1, $D8, $CE, $C2, $B5, $A7, $98, $88
+.byte $76, $64, $50, $3B, $25,  $E, $F5, $DC, $C2, $A6, $8A, $6C, $4E
+.byte $2F, $E, $ED, $CB, $A8, $84, $5F, $39, $13, $EB, $C3, $9B, $71, $47, $1C, $F1, $C5, $98, $6B, $3D, $F, $E1, $B1, $82, $52, $22, $F1, $C0, $8F, $5E, $2C, $FA, $C8, $96, $64, $32, $0, $CD, $9B, $69, $37, $5, $D3, $A1, $70, $3F, $E, $DD, $AD, $7D, $4E, $1E, $F0, $C2, $94, $67, $3A, $E, $E3, $B8, $8E, $64, $3C, $14, $EC, $C6, $A0, $7B, $57, $34, $12, $F1, $D0, $B1, $93, $75, $59, $3D, $23, $A, $F1, $DA, $C4, $AF, $9B, $89, $77, $67, $58, $4A, $3D, $31, $27, $1E, $16, $F, $9, $5, $2, $0, $0, $0, $2, $5, $9, $F, $16, $1E, $27, $31, $3D, $4A, $58, $67, $77, $89, $9B, $AF, $C4, $DA, $F1, $A, $23, $3D, $59, $75, $93, $B1, $D0, $F1, $12, $34, $57, $7B, $A0, $C6, $EC, $14, $3C, $64, $8E, $B8, $E3, $E, $3A, $67, $94, $C2, $F0, $1E, $4E, $7D, $AD, $DD, $E, $3F, $70, $A1, $D3, $5, $37, $69, $9B, $CD
 
 
 ;constants
@@ -95,13 +152,20 @@ CLR               = $93
 WORLD_DATA = $6000 	;	so is %100 [Y 5 bits ] : [ab] 0 [X - 6 bits
 SCREEN_buffer = $8000
 
+; zero page layout $0022-$007F is available to user
+ZP_PTR = $22 
+SCRATCH_PTR = $7E
 ; global data
+.byte $DE,$AD,$BE,$EF
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
 camera_facing: 		 .byte 1
 
-; zero page layout $0022-$007F is available to user
-ZP_PTR = $22 
+
+.macro stash_scratch
+	STA (SCRATCH_PTR)
+    INC SCRATCH_PTR
+.endmacro
 
 custom_irq_handler:
    lda VERA_isr
@@ -132,96 +196,13 @@ start:
   lda #$10
   sta VERA_addr_bank
   ; is 512 bytes at test_cell_sprite label
-  lda #<test_cell_sprite
-  sta ZP_PTR
-  lda #>test_cell_sprite
-  sta ZP_PTR+1
-  ldy #0 
-  ldx #2
+  ldx #0
   @copy_to_vram_loop:
-  	@copy_to_vram_loop_inner:
-  	  lda (ZP_PTR),y
+  	  lda test_cell_sprite_16x8,X
   	  sta VERA_data0
-  	  iny 
-  	  BNE @copy_to_vram_loop_inner
-  	inc ZP_PTR+1
-  	dex 
-  	BNE @copy_to_vram_loop
-
-
-  bra   @end ; skip this test stuff
-
-  ; set this to sprite 0 for first test.. 
-  ; 	0	Address (12:5)
-  ; 	1	Mode	-	Address (16:13)
-  ; 	2	X (7:0)
-  ; 	3	-	X (9:8)
-  ; 	4	Y (7:0)
-  ; 	5	-	Y (9:8)
-  ; 	6	Collision mask	Z-depth	V-flip	H-flip
-  ; 	7	Sprite height	Sprite width	Palette offset
-  stz VERA_addr_low
-  lda #>VRAM_sprite_attributes
-  sta VERA_addr_high
-  lda #$11
-  sta VERA_addr_bank
-  ldy #128
-  LDA #112
-  stA ZP_PTR 	;	to keep track of height to draw at...
-  @row_loop:
-    ldx #16
-    @e_loop:
-      stz VERA_data0 	; 	address 12:5
-      STZ VERA_data0 	; 	4bit color address 16:13
-      STX VERA_data0 	;	X 
-      STZ VERA_data0 	;	 X 
-      LDA ZP_PTR
-      STA VERA_data0 	;	y
-      STZ VERA_data0 	; 	y
-      LDA #$0C 
-      STA VERA_data0 	; 	3 z depth no flip
-      LDA #$D0 			; 	16x64 no palette offset
-      STA VERA_data0
-      dey 
-      beq @end
-      TXA
-	  CLC
-      ADC #16
-      TAX
-      CPX #144
-      BNE @e_loop
-    SEC
-    LDA ZP_PTR
-    SBC #6
-    STA ZP_PTR
-    ldx #8
-    @o_loop:
-      stz VERA_data0 	; 	address 12:5
-      STZ VERA_data0 	; 	4bit color address 16:13
-      STX VERA_data0 	;	X 
-      STZ VERA_data0 	;	 X 
-      LDA ZP_PTR
-      STA VERA_data0 	;	y
-      STZ VERA_data0 	; 	y
-      LDA #$0C 
-      STA VERA_data0 	; 	3 z depth no flip
-      LDA #$D0 			; 	16x64 no palette offset
-      STA VERA_data0
-      dey 
-      beq @end
-      TXA
-      CLC
-      ADC #16
-      TAX
-      CPX #152
-      BNE @o_loop
-    LDA ZP_PTR
-    SEC
-    SBC #6
-    STA ZP_PTR
-    bra @row_loop
-
-  @end:
+  	  inx
+  	  CPX #64
+  	  BNE @copy_to_vram_loop
 
   ; enable display 
   stz VERA_ctrl
@@ -240,10 +221,14 @@ start:
 
   ; main loop here... 
 @FRAME_CHECK:
+   lda #4
+  @frame_A:
    wai
    ldy VSYNC_counter
-   beq @FRAME_CHECK
+   beq @frame_A
    stz VSYNC_counter
+   DEC A
+   BNE @frame_A
 
    ; poll keyboard for input 
    jsr GETIN
@@ -251,17 +236,12 @@ start:
    beq @FRAME_CHECK
    cmp #SPACE
    bne @cleanup_and_exit
-   ; switch to next bearing
-   LDA camera_facing
-   INC A
-   CMP #3
-   BCC @draw
-   LDA #0
-   @draw:
-   STA camera_facing
 
+   ; switch to next bearing
+   INC camera_facing
    ; update screen
-   jsr draw_world
+   ; jsr draw_world
+   jsr draw_test
    bra @FRAME_CHECK
 
 @cleanup_and_exit:
@@ -278,6 +258,118 @@ start:
 ; all the objects need to get into a structure to be drawn at each screen Y..
 ; need object type, screenX .. store back to front .. track # objects to be drawn ?
 ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
+
+draw_test:
+	LDA #>SCRATCH128 	;	setup debug pointer
+	STA $7F
+	LDA #<SCRATCH128
+	STA $7E 	
+    stz VERA_addr_low
+    lda #>VRAM_sprite_attributes
+    sta VERA_addr_high
+    lda #$11
+    sta VERA_addr_bank
+    ; load increments and set start position...
+    LDX camera_facing
+    ; stash camera facing to scratch 
+    TXA
+	stash_scratch
+	stash_scratch
+	stash_scratch
+	stash_scratch
+	stash_scratch
+	stash_scratch
+	stash_scratch
+	stash_scratch
+
+
+    LDA ACROSS_ROW_X_L,X 
+    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+    STZ ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+	stash_scratch
+
+    STZ ZP_PTR+1
+    LDA ACROSS_ROW_X_H,X 
+    STA ZP_PTR+5
+	stash_scratch
+    CMP #0
+    BPL @going_right
+    LDA #144
+    STA ZP_PTR+1
+  @going_right:
+    LDA ACROSS_ROW_Y_L,X 
+    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+   ; STZ ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+	stash_scratch
+    STZ ZP_PTR+3
+    LDA ACROSS_ROW_Y_H,X 
+    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
+    stash_scratch
+    CMP #0
+    BPL @going_down
+    LDA #112
+    STA ZP_PTR+3
+  @going_down:
+    LDY #128 		;	amount of sprites we can write max
+    STY ZP_PTR
+    STY ZP_PTR+2
+
+  @loop:
+  	  TXA
+  	  stash_scratch
+  	  TYA
+  	  stash_scratch
+
+      STZ VERA_data0 ; 	address 12:5
+      STZ VERA_data0 ;  mode  | address 16:13
+      LDA ZP_PTR+1 	
+      STA VERA_data0 ; 	X 7:0
+      stash_scratch
+
+      STZ VERA_data0 ; 	X 9:8
+      LDA ZP_PTR+3  ; 	spriteY
+      STA VERA_data0 ;  Y 7:0
+      stash_scratch
+
+      STZ VERA_data0 ; 	Y 9:8
+      LDA #$0C 
+      STA VERA_data0 	; 	3 z depth no flip
+      LDA #$10 			; 	16x8 no palette offset
+      STA VERA_data0
+    ; increment X
+      LDA ZP_PTR 	;	load X_l
+      ADC ZP_PTR+4 	
+      STA ZP_PTR
+      stash_scratch
+
+      LDA ZP_PTR+1
+      ADC ZP_PTR+5
+      stash_scratch
+      CMP #160
+      BCS @end 		; covers negatives even.. 
+      STA ZP_PTR+1
+    ; increment Y
+      LDA ZP_PTR+2 	;
+      ADC ZP_PTR+6
+      STA ZP_PTR+2
+      stash_scratch
+
+      LDA ZP_PTR+3
+      ADC ZP_PTR+7
+      stash_scratch
+      CMP #120
+      BCS @end 		; 	 covers negatives even.. 
+      STA ZP_PTR+3
+
+      LDA #$FF
+      stash_scratch
+      stash_scratch
+
+      DEY
+      BNE @loop 
+  @end:
+      rts
+
 
 draw_world:
   ; clear first entry for each line... 
@@ -426,6 +518,17 @@ update_screen:
         CMP #>SCREEN_buffer
         BCS @y_line_loop
 rts
+
+test_cell_sprite_16x8: 	;	16x8x16 bit = 64 bytes
+; 	   01   23   45   67   89   AB   CD   EF
+.byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
+.byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
+.byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
+.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
+.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
+.byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	5
+.byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	6
+.byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	7
 
 test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
 ; 	   01   23   45   67   89   AB   CD   EF
