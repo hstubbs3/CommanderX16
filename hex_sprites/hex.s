@@ -63,6 +63,34 @@ ACROSS_ROW_Y_L: ; 0C00
 .byte $2F, $E, $ED, $CB, $A8, $84, $5F, $39, $13, $EB, $C3, $9B, $71, $47, $1C, $F1, $C5, $98, $6B, $3D, $F, $E1, $B1, $82, $52, $22, $F1, $C0, $8F, $5E, $2C, $FA, $C8, $96, $64, $32, $0, $CD, $9B, $69, $37, $5, $D3, $A1, $70, $3F, $E, $DD, $AD, $7D, $4E, $1E, $F0, $C2, $94, $67, $3A, $E, $E3, $B8, $8E, $64, $3C, $14, $EC, $C6, $A0, $7B, $57, $34, $12, $F1, $D0, $B1, $93, $75, $59, $3D, $23, $A, $F1, $DA, $C4, $AF, $9B, $89, $77, $67, $58, $4A, $3D, $31, $27, $1E, $16, $F, $9, $5, $2, $0, $0, $0, $2, $5, $9, $F, $16, $1E, $27, $31, $3D, $4A, $58, $67, $77, $89, $9B, $AF, $C4, $DA, $F1, $A, $23, $3D, $59, $75, $93, $B1, $D0, $F1, $12, $34, $57, $7B, $A0, $C6, $EC, $14, $3C, $64, $8E, $B8, $E3, $E, $3A, $67, $94, $C2, $F0, $1E, $4E, $7D, $AD, $DD, $E, $3F, $70, $A1, $D3, $5, $37, $69, $9B, $CD
 
 
+NEXT_ROW_X_H:
+; 		0 	1 	2 	3 		4 	5 	6 	7 		8 	9 	A 	B 		C 	D 	E 	F
+.byte $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F3, $F3
+.byte $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1, $F1, $F1, $F0, $F0, $F0
+.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0
+.byte $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1, $F1, $F1, $F1, $F1, $F1
+.byte $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4, $F4, $F5, $F5, $F5, $F5
+.byte $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9, $F9, $FA, $FA, $FB, $FB
+.byte $FB, $FC, $FC, $FD, $FD, $FD, $FE, $FE, $FE, $FF, $FF,  $0,  $0,  $0,  $1,  $1
+.byte  $2,  $2,  $2,  $3,  $3,  $4,  $4,  $4,  $5,  $5,  $5,  $6,  $6,  $6,  $7,  $7
+.byte  $8,  $8,  $8,  $8,  $9,  $9,  $9,  $A,  $A,  $A,  $B,  $B,  $B,  $B,  $C,  $C
+.byte  $C,  $C,  $D,  $D,  $D,  $D,  $D,  $E,  $E,  $E,  $E,  $E,  $E,  $F,  $F,  $F
+.byte  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F , $F
+.byte  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $F,  $E,  $E,  $E,  $E,  $E,  $E
+.byte  $D,  $D,  $D,  $D,  $D,  $C,  $C,  $C,  $C,  $B,  $B,  $B,  $A,  $A,  $A,  $A
+.byte  $9,  $9,  $9,  $8,  $8,  $8,  $7,  $7,  $7,  $6,  $6,  $6,  $5,  $5,  $4,  $4
+.byte  $4,  $3,  $3,  $2,  $2,  $2,  $1,  $1,  $1,  $0,  $0, $FF, $FF, $FF, $FE, $FE
+.byte $FD, $FD, $FD, $FC, $FC, $FB, $FB, $FB, $FA, $FA, $FA, $F9, $F9, $F9, $F8, $F8
+
+NEXT_ROW_X_L:
+.byte $0, $A9, $54, $0, $AE, $5D, $D, $BF, $73, $28, $DF, $98, $52, $E, $CC, $8C, $4E, $12, $D7, $9F, $69, $35, $3, $D3, $A6, $7B, $51, $2B, $6, $E4, $C4, $A6, $8B, $72, $5C, $48, $36, $27, $1A, $10, $8, $3, $0, $0, $2, $6, $D, $17, $23, $31, $42, $55, $6A, $83, $9D, $BA, $D9, $FA, $1E, $44, $6D, $97, $C4, $F3, $24, $58, $8D, $C5, $FE, $3A, $77, $B7, $F8, $3B, $80, $C7, $10, $5A, $A6, $F3, $42, $93, $E4, $38, $8D, $E3, $3A, $92, $EC, $47, $A2, $FF, $5D, $BB, $1B, $7B, $DB, $3D, $9F, $1, $64, $C8, $2B, $8F, $F4, $58, $BC, $21, $86, $EA, $4E, $B2, $16, $7A, $DD, $3F, $A2, $3, $64, $C5, $24, $83, $E1, $3E, $9A, $F5, $4F, $A8, $0, $56, $AB, $FF, $51, $A2, $F2, $40, $8C, $D7, $20, $67, $AD, $F1, $33, $73, $B1, $ED, $28, $60, $96, $CA, $FC, $2C, $59, $84, $AE, $D4, $F9, $1B, $3B, $59, $74, $8D, $A3, $B7, $C9, $D8, $E5, $EF, $F7, $FC, $FF, $FF, $FD, $F9, $F2, $E8, $DC, $CE, $BD, $AA, $95, $7C, $62, $45, $26, $5, $E1, $BB, $92, $68, $3B, $C, $DB, $A7, $72, $3A, $1, $C5, $88, $48, $7, $C4, $7F, $38, $EF, $A5, $59, $C, $BD, $6C, $1B, $C7, $72, $1C, $C5, $6D, $13, $B8, $5D, $0, $A2, $44, $E4, $84, $24, $C2, $60, $FE, $9B, $37, $D4, $70, $B, $A7, $43, $DE, $79, $15, $B1, $4D, $E9, $85, $22, $C0, $5D, $FC, $9B, $3A, $DB, $7C, $1E, $C1, $65, $A, $B0, $57
+
+NEXT_ROW_Y_H:
+.byte $6, $6, $6, $6, $6, $6, $6, $6, $6, $5, $5, $5, $5, $5, $5, $5, $4, $4, $4, $4, $4, $4, $3, $3, $3, $3, $3, $3, $2, $2, $2, $2, $2, $1, $1, $1, $1, $1, $0, $0, $0, $0, $0, $FF, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $FF, $FF, $0, $0, $0, $0, $0, $1, $1, $1, $1, $1, $2, $2, $2, $2, $2, $2, $3, $3, $3, $3, $3, $3, $4, $4, $4, $4, $4, $4, $5, $5, $5, $5, $5, $5, $5, $6, $6, $6, $6, $6, $6, $6, $6, $6, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7, $7
+
+NEXT_ROW_Y_L:
+.byte $ED, $D3, $B9, $9D, $80, $62, $44, $24, $3, $E2, $BF, $9C, $77, $52, $2C, $6, $DE, $B6, $8D, $63, $39, $E, $E2, $B6, $89, $5C, $2E, $0, $D1, $A2, $72, $42, $12, $E1, $B0, $7F, $4D, $1B, $EA, $B8, $85, $53, $21, $EF, $BC, $8A, $58, $26, $F4, $C2, $91, $60, $2E, $FE, $CD, $9D, $6D, $3E, $F, $E0, $B2, $85, $58, $2B, $0, $D4, $AA, $80, $57, $2E, $6, $DF, $B9, $94, $6F, $4C, $29, $7, $E6, $C6, $A7, $89, $6B, $4F, $34, $1A, $1, $E9, $D3, $BD, $A8, $95, $83, $72, $62, $53, $45, $39, $2E, $24, $1B, $13, $D, $8, $4, $1, $0, $0, $1, $3, $6, $B, $11, $18, $21, $2A, $35, $41, $4E, $5D, $6C, $7D, $8F, $A2, $B6, $CB, $E2, $F9, $12, $2C, $46, $62, $7F, $9D, $BB, $DB, $FC, $1D, $40, $63, $88, $AD, $D3, $F9, $21, $49, $72, $9C, $C6, $F1, $1D, $49, $76, $A3, $D1, $FF, $2E, $5D, $8D, $BD, $ED, $1E, $4F, $80, $B2, $E4, $15, $47, $7A, $AC, $DE, $10, $43, $75, $A7, $D9, $B, $3D, $6E, $9F, $D1, $1, $32, $62, $92, $C1, $F0, $1F, $4D, $7A, $A7, $D4, $FF, $2B, $55, $7F, $A8, $D1, $F9, $20, $46, $6B, $90, $B3, $D6, $F8, $19, $39, $58, $76, $94, $B0, $CB, $E5, $FE, $16, $2C, $42, $57, $6A, $7C, $8D, $9D, $AC, $BA, $C6, $D1, $DB, $E4, $EC, $F2, $F7, $FB, $FE, $FF, $FF, $FE, $FC, $F9, $F4, $EE, $E7, $DE, $D5, $CA, $BE, $B1, $A2, $93, $82, $70, $5D, $49, $34, $1D, $6
+
 ;constants
 
 ; RAM Interrupt Vectors
@@ -200,9 +228,34 @@ start:
   @copy_to_vram_loop:
   	  lda test_cell_sprite_16x8,X
   	  sta VERA_data0
-  	  inx
+  	  INX
   	  CPX #64
   	  BNE @copy_to_vram_loop
+  ldx #0
+  :
+      lda test_cross_heair_8x8,X 
+      STA VERA_data0
+      INX
+      CPX #32
+      BNE :-
+  STZ VERA_addr_low
+  lda #>VRAM_sprite_attributes
+  sta VERA_addr_high
+  lda #$11
+  sta VERA_addr_bank
+  LDA #2
+  STA VERA_data0 ; 	address 12:5
+  STZ VERA_data0 ;  mode  | address 16:13
+  LDA #84
+  STA VERA_data0 ; 	X 7:0
+  STZ VERA_data0 ; 	X 9:8
+  LDA #104
+  STA VERA_data0 ;  Y 7:0
+  STZ VERA_data0 ; 	Y 9:8
+  LDA #$0C 
+  STA VERA_data0 	; 	3 z depth no flip
+  STZ VERA_data0 	;	8x8 no palette offset
+
 
   ; enable display 
   stz VERA_ctrl
@@ -220,6 +273,8 @@ start:
   cli ; enable IRQ now that vector is properly set
 
   ; main loop here... 
+   LDA #$FF
+   STA camera_facing
 @FRAME_CHECK:
    lda #4
   @frame_A:
@@ -260,116 +315,191 @@ start:
 ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
 
 draw_test:
-	LDA #>SCRATCH128 	;	setup debug pointer
-	STA $7F
-	LDA #<SCRATCH128
-	STA $7E 	
-    stz VERA_addr_low
+	lda #8
+	STA VERA_addr_low
     lda #>VRAM_sprite_attributes
     sta VERA_addr_high
     lda #$11
     sta VERA_addr_bank
+
+  
     ; load increments and set start position...
     LDX camera_facing
-    ; stash camera facing to scratch 
-    TXA
-	stash_scratch
-	stash_scratch
-	stash_scratch
-	stash_scratch
-	stash_scratch
-	stash_scratch
-	stash_scratch
-	stash_scratch
+    TXA 
+    CLC
+    ADC #128
+    STA ZP_PTR+17
+    ; increments across rows
+    STZ ZP_PTR+16   ; 	is driving me nuts so .. 
+    LDA #128
+    STA ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
+    STA ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
+    LDA #80
+    STA ZP_PTR+13 	;	next row start at XH ZP_PTR+13
+    LDA #104
+ 	STA ZP_PTR+15 	;	next row start YH at ZP_PTR+15
 
 
     LDA ACROSS_ROW_X_L,X 
     STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-    STZ ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-	stash_scratch
-
-    STZ ZP_PTR+1
     LDA ACROSS_ROW_X_H,X 
-    STA ZP_PTR+5
-	stash_scratch
-    CMP #0
-    BPL @going_right
-    LDA #144
-    STA ZP_PTR+1
-  @going_right:
+    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
     LDA ACROSS_ROW_Y_L,X 
     STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-   ; STZ ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-	stash_scratch
-    STZ ZP_PTR+3
     LDA ACROSS_ROW_Y_H,X 
     STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
-    stash_scratch
-    CMP #0
-    BPL @going_down
-    LDA #112
+    ; increments o next rows 
+    LDA NEXT_ROW_X_L,X 
+    STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
+    LDA NEXT_ROW_X_H,X 
+    STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
+    LDA NEXT_ROW_Y_L,X 
+    STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
+    LDA NEXT_ROW_Y_H,X 
+    STA ZP_PTR+11	; 	ZP_PTR+3 = spriteY increment 
+
+    LDA #16
+    STA ZP_PTR+30
+
+    LDY #100		;	amount of sprites we can write max
+  @quad_loop:
+  @do_row:
+  	LDA ZP_PTR+12 	;
+  	STA ZP_PTR 		;	current row XL
+    ADC ZP_PTR+8
+    STA ZP_PTR+12 	;	next row XL 
+    LDA ZP_PTR+13 	;
+    CMP #152
+    BCS @next_quad 		;	off screen
+    STA ZP_PTR+1 	;	current row XH
+    ADC ZP_PTR+9 	;
+    STA ZP_PTR+13 	;	next row XH
+
+    LDA ZP_PTR+14 	
+    STA ZP_PTR+2 	;	current row YL
+    ADC ZP_PTR+10 	
+    STA ZP_PTR+14 	;	next row YL
+    LDA ZP_PTR+15 
+    CMP #120 	
+    BCS @next_quad;	off screen 
     STA ZP_PTR+3
-  @going_down:
-    LDY #128 		;	amount of sprites we can write max
-    STY ZP_PTR
-    STY ZP_PTR+2
-
-  @loop:
-  	  TXA
-  	  stash_scratch
-  	  TYA
-  	  stash_scratch
-
+    ADC ZP_PTR+11 	
+    STA ZP_PTR+15 	;	next row YH 
+  @forward_row_loop:
       STZ VERA_data0 ; 	address 12:5
       STZ VERA_data0 ;  mode  | address 16:13
       LDA ZP_PTR+1 	
       STA VERA_data0 ; 	X 7:0
-      stash_scratch
-
       STZ VERA_data0 ; 	X 9:8
       LDA ZP_PTR+3  ; 	spriteY
       STA VERA_data0 ;  Y 7:0
-      stash_scratch
-
       STZ VERA_data0 ; 	Y 9:8
       LDA #$0C 
       STA VERA_data0 	; 	3 z depth no flip
       LDA #$10 			; 	16x8 no palette offset
+      LDA ZP_PTR+30;
       STA VERA_data0
     ; increment X
       LDA ZP_PTR 	;	load X_l
       ADC ZP_PTR+4 	
       STA ZP_PTR
-      stash_scratch
 
       LDA ZP_PTR+1
       ADC ZP_PTR+5
-      stash_scratch
-      CMP #160
-      BCS @end 		; covers negatives even.. 
+      CMP #152
+      BCS @do_row 		; covers negatives even.. 
       STA ZP_PTR+1
     ; increment Y
       LDA ZP_PTR+2 	;
       ADC ZP_PTR+6
       STA ZP_PTR+2
-      stash_scratch
 
       LDA ZP_PTR+3
       ADC ZP_PTR+7
-      stash_scratch
       CMP #120
-      BCS @end 		; 	 covers negatives even.. 
+      BCS @do_row 		; 	 covers negatives even.. 
       STA ZP_PTR+3
-
-      LDA #$FF
-      stash_scratch
-      stash_scratch
-
       DEY
-      BNE @loop 
+      BNE @forward_row_loop 
   @end:
-      rts
+     rts
+  @next_quad: 
+  	  inc ZP_PTR+30
+  	  LDX ZP_PTR+16 	;	
+  	  TXA 
+  	  CLC 
+  	  ADC #2
+  	  STA ZP_PTR+16
+  	  jmp (@t_quads,X) 	; 
+  	@t_quads:
+  	  .addr @quad_1
+  	  .addr @quad_2
+  	  .addr @quad_3
+  	  .addr @end
+  @quad_1: 	;	need invert across row to make next bits . next row stays same
+	LDX ZP_PTR+17
+    LDA ACROSS_ROW_X_L,X 
+    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+    ADC #128
+    STA ZP_PTR+12
+    LDA ACROSS_ROW_X_H,X 
+    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
+    ADC #80
+    STA ZP_PTR+13
+    LDA ACROSS_ROW_Y_L,X 
+    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+    ADC #128
+    STA ZP_PTR+14
+    LDA ACROSS_ROW_Y_H,X 
+    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
+    ADC #104
+    STA ZP_PTR+15
+    jmp @quad_loop
+@quad_2: ; invert next row - start 1 row up 
+	LDX ZP_PTR+17
+    LDA NEXT_ROW_X_L,X 
+    STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
+    ADC #128
+    STA ZP_PTR+12
+    STA ZP_PTR+18
 
+    LDA NEXT_ROW_X_H,X 
+    STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
+    ADC #80
+    STA ZP_PTR+13
+    STA ZP_PTR+19
+
+    LDA NEXT_ROW_Y_L,X 
+    STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
+    ADC #128
+    STA ZP_PTR+14
+    STA ZP_PTR+20
+
+    LDA NEXT_ROW_Y_H,X 
+    STA ZP_PTR+11 	; 	ZP_PTR+3 = spriteY increment 
+    ADC #104
+    STA ZP_PTR+15
+    STA ZP_PTR+21
+    jmp @quad_loop
+@quad_3: ; restore across row and increment .. 
+	LDX camera_facing
+    LDA ACROSS_ROW_X_L,X 
+    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+    ADC ZP_PTR+18
+    STA ZP_PTR+12
+    LDA ACROSS_ROW_X_H,X 
+    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
+    ADC ZP_PTR+19
+    STA ZP_PTR+13
+    LDA ACROSS_ROW_Y_L,X 
+    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+    ADC ZP_PTR+20
+    STA ZP_PTR+14
+    LDA ACROSS_ROW_Y_H,X 
+    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
+    ADC ZP_PTR+21
+    STA ZP_PTR+15
+    jmp @quad_loop
 
 draw_world:
   ; clear first entry for each line... 
@@ -519,7 +649,18 @@ update_screen:
         BCS @y_line_loop
 rts
 
-test_cell_sprite_16x8: 	;	16x8x16 bit = 64 bytes
+test_cross_heair_8x8: 	; 	8x8x16 color = 32 bytes
+; 	   01   23   45   67
+.byte $11, $00, $00, $11
+.byte $10, $00, $00, $01
+.byte $00, $00, $00, $00
+.byte $00, $01, $10, $00
+.byte $00, $01, $10, $00
+.byte $00, $00, $00, $00
+.byte $10, $00, $00, $01
+.byte $11, $00, $00, $11
+
+test_cell_sprite_16x8: 	;	16x8x16 color = 64 bytes
 ; 	   01   23   45   67   89   AB   CD   EF
 .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
 .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1

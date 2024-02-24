@@ -64,6 +64,9 @@ todo.txt
 
 0800 	single row working... committing
 
+1050 	view generating going forward.. OK 
+
+1300 	somehow got the view generation test working.. 
 
 
 		
