@@ -91,6 +91,8 @@ NEXT_ROW_Y_H:
 NEXT_ROW_Y_L:
 .byte $ED, $D3, $B9, $9D, $80, $62, $44, $24, $3, $E2, $BF, $9C, $77, $52, $2C, $6, $DE, $B6, $8D, $63, $39, $E, $E2, $B6, $89, $5C, $2E, $0, $D1, $A2, $72, $42, $12, $E1, $B0, $7F, $4D, $1B, $EA, $B8, $85, $53, $21, $EF, $BC, $8A, $58, $26, $F4, $C2, $91, $60, $2E, $FE, $CD, $9D, $6D, $3E, $F, $E0, $B2, $85, $58, $2B, $0, $D4, $AA, $80, $57, $2E, $6, $DF, $B9, $94, $6F, $4C, $29, $7, $E6, $C6, $A7, $89, $6B, $4F, $34, $1A, $1, $E9, $D3, $BD, $A8, $95, $83, $72, $62, $53, $45, $39, $2E, $24, $1B, $13, $D, $8, $4, $1, $0, $0, $1, $3, $6, $B, $11, $18, $21, $2A, $35, $41, $4E, $5D, $6C, $7D, $8F, $A2, $B6, $CB, $E2, $F9, $12, $2C, $46, $62, $7F, $9D, $BB, $DB, $FC, $1D, $40, $63, $88, $AD, $D3, $F9, $21, $49, $72, $9C, $C6, $F1, $1D, $49, $76, $A3, $D1, $FF, $2E, $5D, $8D, $BD, $ED, $1E, $4F, $80, $B2, $E4, $15, $47, $7A, $AC, $DE, $10, $43, $75, $A7, $D9, $B, $3D, $6E, $9F, $D1, $1, $32, $62, $92, $C1, $F0, $1F, $4D, $7A, $A7, $D4, $FF, $2B, $55, $7F, $A8, $D1, $F9, $20, $46, $6B, $90, $B3, $D6, $F8, $19, $39, $58, $76, $94, $B0, $CB, $E5, $FE, $16, $2C, $42, $57, $6A, $7C, $8D, $9D, $AC, $BA, $C6, $D1, $DB, $E4, $EC, $F2, $F7, $FB, $FE, $FF, $FF, $FE, $FC, $F9, $F4, $EE, $E7, $DE, $D5, $CA, $BE, $B1, $A2, $93, $82, $70, $5D, $49, $34, $1D, $6
 
+TUB_WORLD:
+.include "tub_world.inc"
 ;constants
 
 ; RAM Interrupt Vectors
@@ -183,12 +185,15 @@ SCREEN_buffer = $8000
 ; zero page layout $0022-$007F is available to user
 ZP_PTR = $22 
 SCRATCH_PTR = $7E
+
 ; global data
 .byte $DE,$AD,$BE,$EF
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
 camera_facing: 		 .byte 1
 
+camera_cell_x: 		 .byte 32
+camera_cell_y: 		 .byte 15
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
@@ -273,8 +278,11 @@ start:
   cli ; enable IRQ now that vector is properly set
 
   ; main loop here... 
-   LDA #$FF
-   STA camera_facing
+   STz camera_facing
+
+@do_update:
+   jsr draw_test
+
 @FRAME_CHECK:
    lda #4
   @frame_A:
@@ -284,20 +292,19 @@ start:
    stz VSYNC_counter
    DEC A
    BNE @frame_A
-
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
    beq @FRAME_CHECK
-   cmp #SPACE
-   bne @cleanup_and_exit
-
-   ; switch to next bearing
+   cmp #$1D 	;	cursor right
+   BNE :+
+   DEC camera_facing
+   BRA @do_update
+   :
+   cmp  #$9D 	;	cursor left
+   BNE @do_update
    INC camera_facing
-   ; update screen
-   ; jsr draw_world
-   jsr draw_test
-   bra @FRAME_CHECK
+   BRA @do_update
 
 @cleanup_and_exit:
    ; restore default IRQ vector
@@ -361,9 +368,15 @@ draw_test:
     LDA #16
     STA ZP_PTR+30
 
-    LDY #100		;	amount of sprites we can write max
+    LDY #120		;	amount of sprites we can write max
   @quad_loop:
+  	bra @do_row
+  @next_row:
+      DEY
+      BNE @do_row
+      rts
   @do_row:
+  	LDX #5
   	LDA ZP_PTR+12 	;
   	STA ZP_PTR 		;	current row XL
     ADC ZP_PTR+8
@@ -407,7 +420,7 @@ draw_test:
       LDA ZP_PTR+1
       ADC ZP_PTR+5
       CMP #152
-      BCS @do_row 		; covers negatives even.. 
+      BCS @next_row		; covers negatives even.. 
       STA ZP_PTR+1
     ; increment Y
       LDA ZP_PTR+2 	;
@@ -417,12 +430,15 @@ draw_test:
       LDA ZP_PTR+3
       ADC ZP_PTR+7
       CMP #120
-      BCS @do_row 		; 	 covers negatives even.. 
+      BCS @next_row		; 	 covers negatives even.. 
       STA ZP_PTR+3
+      DEX 
+      BEQ @next_row
       DEY
       BNE @forward_row_loop 
   @end:
      rts
+
   @next_quad: 
   	  inc ZP_PTR+30
   	  LDX ZP_PTR+16 	;	

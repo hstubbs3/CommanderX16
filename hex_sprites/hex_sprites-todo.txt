@@ -69,4 +69,11 @@ todo.txt
 1300 	somehow got the view generation test working.. 
 
 
-		
+2024/02/26
+
+0630 	yesterday doofed up map of the tub .. want to make demo moving around the world.. 
+
+TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
+TODO 	making moving around by hex work 
+TODO 	make moving around by X/Y/Z work 
+
