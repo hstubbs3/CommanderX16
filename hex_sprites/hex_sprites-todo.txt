@@ -73,6 +73,8 @@ todo.txt
 
 0630 	yesterday doofed up map of the tub .. want to make demo moving around the world.. 
 
+TODO 	sort out that z-buffer object list
+	TODO 	figure out proper calculation of camera_z ... 
 TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
 TODO 	making moving around by hex work 
 TODO 	make moving around by X/Y/Z work 
