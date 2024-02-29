@@ -444,7 +444,7 @@ Current file: hex.s
 0010CFr 1  AD 15 03       lda IRQVec+1
 0010D2r 1  8D rr rr       sta default_irq_vector+1
 0010D5r 1  9C 29 9F       stz VERA_dc_video   ; disable display
-0010D8r 1  A9 20          lda #32 ; set scale for bitmap mode - going for 160x120 mode
+0010D8r 1  A9 2B          lda #43 ; set scale for bitmap mode - going for 215x161 mode
 0010DAr 1  8D 2A 9F       sta VERA_dc_hscale
 0010DDr 1  8D 2B 9F       sta VERA_dc_vscale
 0010E0r 1                 ; for now no L0 or L1
@@ -455,615 +455,648 @@ Current file: hex.s
 0010E6r 1  9C 21 9F       stz VERA_addr_high
 0010E9r 1  A9 10          lda #$10
 0010EBr 1  8D 22 9F       sta VERA_addr_bank
+0010EEr 1                 ; load test VRAM data
+0010EEr 1               
 0010EEr 1                 ; is 512 bytes at test_cell_sprite label
-0010EEr 1  A2 00          ldx #0
-0010F0r 1                 @copy_to_vram_loop:
-0010F0r 1  BD rr rr       	  lda test_cell_sprite_16x8,X
-0010F3r 1  8D 23 9F       	  sta VERA_data0
-0010F6r 1  E8             	  INX
-0010F7r 1  E0 40          	  CPX #64
-0010F9r 1  D0 F5          	  BNE @copy_to_vram_loop
-0010FBr 1  A2 00          ldx #0
-0010FDr 1                 :
-0010FDr 1  BD rr rr           lda test_cross_heair_8x8,X
+0010EEr 1  A0 00          ldy #0
+0010F0r 1               
+0010F0r 1  A9 rr          LDA #<test_vram_data
+0010F2r 1  85 22          STA ZP_PTR
+0010F4r 1  A9 rr          LDA #>test_vram_data
+0010F6r 1  85 23          STA ZP_PTR+1
+0010F8r 1  A2 05          LDX #5   ;   num pages to copy
+0010FAr 1  80 02          BRA :++
+0010FCr 1                 :
+0010FCr 1  E6 23             INC ZP_PTR+1
+0010FEr 1                   :
+0010FEr 1  B1 22              LDA (ZP_PTR),Y
 001100r 1  8D 23 9F           STA VERA_data0
-001103r 1  E8                 INX
-001104r 1  E0 20              CPX #32
-001106r 1  D0 F5              BNE :-
-001108r 1  9C 20 9F       STZ VERA_addr_low
-00110Br 1  A9 FC          lda #>VRAM_sprite_attributes
-00110Dr 1  8D 21 9F       sta VERA_addr_high
-001110r 1  A9 11          lda #$11
-001112r 1  8D 22 9F       sta VERA_addr_bank
-001115r 1  A9 02          LDA #2
-001117r 1  8D 23 9F       STA VERA_data0 ; 	address 12:5
-00111Ar 1  9C 23 9F       STZ VERA_data0 ;  mode  | address 16:13
-00111Dr 1  A9 54          LDA #84
-00111Fr 1  8D 23 9F       STA VERA_data0 ; 	X 7:0
-001122r 1  9C 23 9F       STZ VERA_data0 ; 	X 9:8
-001125r 1  A9 68          LDA #104
-001127r 1  8D 23 9F       STA VERA_data0 ;  Y 7:0
-00112Ar 1  9C 23 9F       STZ VERA_data0 ; 	Y 9:8
-00112Dr 1  A9 0C          LDA #$0C
-00112Fr 1  8D 23 9F       STA VERA_data0 	; 	3 z depth no flip
-001132r 1  9C 23 9F       STZ VERA_data0 	;	8x8 no palette offset
-001135r 1               
-001135r 1               
-001135r 1                 ; enable display
-001135r 1  9C 25 9F       stz VERA_ctrl
-001138r 1  A9 41          lda #SPRITES_ONLY_VGA
-00113Ar 1  8D 29 9F       sta VERA_dc_video
-00113Dr 1               
-00113Dr 1                 ; overwrite RAM IRQ vector with custom handler address
-00113Dr 1  78             sei ; disable IRQ while vector is changing
-00113Er 1  A9 rr          lda #<custom_irq_handler
-001140r 1  8D 14 03       sta IRQVec
-001143r 1  A9 rr          lda #>custom_irq_handler
-001145r 1  8D 15 03       sta IRQVec+1
-001148r 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
-00114Ar 1  8D 26 9F       sta VERA_ien
-00114Dr 1  58             cli ; enable IRQ now that vector is properly set
-00114Er 1               
-00114Er 1                 ; main loop here...
-00114Er 1  9C rr rr        STz camera_facing
-001151r 1               
-001151r 1               @do_update:
-001151r 1  20 rr rr        jsr draw_test
-001154r 1               
-001154r 1               @FRAME_CHECK:
-001154r 1  A9 04           lda #4
-001156r 1                 @frame_A:
-001156r 1  CB              wai
-001157r 1  AC rr rr        ldy VSYNC_counter
-00115Ar 1  F0 FA           beq @frame_A
-00115Cr 1  9C rr rr        stz VSYNC_counter
-00115Fr 1  3A              DEC A
-001160r 1  D0 F4           BNE @frame_A
-001162r 1                  ; poll keyboard for input
-001162r 1  20 E4 FF        jsr GETIN
-001165r 1  C9 00           cmp #0
-001167r 1  F0 EB           beq @FRAME_CHECK
-001169r 1  C9 1D           cmp #$1D 	;	cursor right
-00116Br 1  D0 05           BNE :+
-00116Dr 1  CE rr rr        DEC camera_facing
-001170r 1  80 DF           BRA @do_update
-001172r 1                  :
-001172r 1  C9 9D           cmp  #$9D 	;	cursor left
-001174r 1  D0 DB           BNE @do_update
-001176r 1  EE rr rr        INC camera_facing
-001179r 1  80 D6           BRA @do_update
-00117Br 1               
-00117Br 1               @cleanup_and_exit:
-00117Br 1                  ; restore default IRQ vector
-00117Br 1  78              sei
-00117Cr 1  AD rr rr        lda default_irq_vector
-00117Fr 1  8D 14 03        sta IRQVec
-001182r 1  AD rr rr        lda default_irq_vector+1
-001185r 1  8D 15 03        sta IRQVec+1
-001188r 1  58              cli
-001189r 1  20 81 FF        jsr CINT
-00118Cr 1  60              rts
-00118Dr 1               
-00118Dr 1               ; all the objects need to get into a structure to be drawn at each screen Y..
-00118Dr 1               ; need object type, screenX .. store back to front .. track # objects to be drawn ?
-00118Dr 1               ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
-00118Dr 1               
-00118Dr 1               draw_test:
-00118Dr 1  A9 08        	lda #8
-00118Fr 1  8D 20 9F     	STA VERA_addr_low
-001192r 1  A9 FC            lda #>VRAM_sprite_attributes
-001194r 1  8D 21 9F         sta VERA_addr_high
-001197r 1  A9 11            lda #$11
-001199r 1  8D 22 9F         sta VERA_addr_bank
-00119Cr 1               
-00119Cr 1               
-00119Cr 1                   ; load increments and set start position...
-00119Cr 1  AE rr rr         LDX camera_facing
-00119Fr 1  8A               TXA
-0011A0r 1  18               CLC
-0011A1r 1  69 80            ADC #128
-0011A3r 1  85 33            STA ZP_PTR+17
-0011A5r 1                   ; increments across rows
-0011A5r 1  64 32            STZ ZP_PTR+16   ; 	is driving me nuts so ..
-0011A7r 1  A9 80            LDA #128
-0011A9r 1  85 2E            STA ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
-0011ABr 1  85 30            STA ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
-0011ADr 1  A9 50            LDA #80
-0011AFr 1  85 2F            STA ZP_PTR+13 	;	next row start at XH ZP_PTR+13
-0011B1r 1  A9 68            LDA #104
-0011B3r 1  85 31         	STA ZP_PTR+15 	;	next row start YH at ZP_PTR+15
-0011B5r 1               
-0011B5r 1               
-0011B5r 1  BD rr rr         LDA ACROSS_ROW_X_L,X
-0011B8r 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-0011BAr 1  BD rr rr         LDA ACROSS_ROW_X_H,X
-0011BDr 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-0011BFr 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
-0011C2r 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-0011C4r 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
-0011C7r 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
-0011C9r 1                   ; increments o next rows
-0011C9r 1  BD rr rr         LDA NEXT_ROW_X_L,X
-0011CCr 1  85 2A            STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
-0011CEr 1  BD rr rr         LDA NEXT_ROW_X_H,X
-0011D1r 1  85 2B            STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
-0011D3r 1  BD rr rr         LDA NEXT_ROW_Y_L,X
-0011D6r 1  85 2C            STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
-0011D8r 1  BD rr rr         LDA NEXT_ROW_Y_H,X
-0011DBr 1  85 2D            STA ZP_PTR+11	; 	ZP_PTR+3 = spriteY increment
-0011DDr 1               
-0011DDr 1  A9 10            LDA #16
-0011DFr 1  85 40            STA ZP_PTR+30
-0011E1r 1               
-0011E1r 1  A0 78            LDY #120		;	amount of sprites we can write max
-0011E3r 1                 @quad_loop:
-0011E3r 1  80 04          	bra @do_row
-0011E5r 1                 @next_row:
-0011E5r 1  88                 DEY
-0011E6r 1  D0 01              BNE @do_row
-0011E8r 1  60                 rts
-0011E9r 1                 @do_row:
-0011E9r 1  A2 05          	LDX #5
-0011EBr 1  A5 2E          	LDA ZP_PTR+12 	;
-0011EDr 1  85 22          	STA ZP_PTR 		;	current row XL
-0011EFr 1  65 2A            ADC ZP_PTR+8
-0011F1r 1  85 2E            STA ZP_PTR+12 	;	next row XL
-0011F3r 1  A5 2F            LDA ZP_PTR+13 	;
-0011F5r 1  C9 98            CMP #152
-0011F7r 1  B0 63            BCS @next_quad 		;	off screen
-0011F9r 1  85 23            STA ZP_PTR+1 	;	current row XH
-0011FBr 1  65 2B            ADC ZP_PTR+9 	;
-0011FDr 1  85 2F            STA ZP_PTR+13 	;	next row XH
-0011FFr 1               
-0011FFr 1  A5 30            LDA ZP_PTR+14
-001201r 1  85 24            STA ZP_PTR+2 	;	current row YL
-001203r 1  65 2C            ADC ZP_PTR+10
-001205r 1  85 30            STA ZP_PTR+14 	;	next row YL
-001207r 1  A5 31            LDA ZP_PTR+15
-001209r 1  C9 78            CMP #120
-00120Br 1  B0 4F            BCS @next_quad;	off screen
-00120Dr 1  85 25            STA ZP_PTR+3
-00120Fr 1  65 2D            ADC ZP_PTR+11
-001211r 1  85 31            STA ZP_PTR+15 	;	next row YH
-001213r 1                 @forward_row_loop:
-001213r 1  9C 23 9F           STZ VERA_data0 ; 	address 12:5
-001216r 1  9C 23 9F           STZ VERA_data0 ;  mode  | address 16:13
-001219r 1  A5 23              LDA ZP_PTR+1
-00121Br 1  8D 23 9F           STA VERA_data0 ; 	X 7:0
-00121Er 1  9C 23 9F           STZ VERA_data0 ; 	X 9:8
-001221r 1  A5 25              LDA ZP_PTR+3  ; 	spriteY
-001223r 1  8D 23 9F           STA VERA_data0 ;  Y 7:0
-001226r 1  9C 23 9F           STZ VERA_data0 ; 	Y 9:8
-001229r 1  A9 0C              LDA #$0C
-00122Br 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
-00122Er 1  A9 10              LDA #$10 			; 	16x8 no palette offset
-001230r 1  A5 40              LDA ZP_PTR+30;
-001232r 1  8D 23 9F           STA VERA_data0
-001235r 1                   ; increment X
-001235r 1  A5 22              LDA ZP_PTR 	;	load X_l
-001237r 1  65 26              ADC ZP_PTR+4
-001239r 1  85 22              STA ZP_PTR
-00123Br 1               
-00123Br 1  A5 23              LDA ZP_PTR+1
-00123Dr 1  65 27              ADC ZP_PTR+5
-00123Fr 1  C9 98              CMP #152
-001241r 1  B0 A2              BCS @next_row		; covers negatives even..
-001243r 1  85 23              STA ZP_PTR+1
-001245r 1                   ; increment Y
-001245r 1  A5 24              LDA ZP_PTR+2 	;
-001247r 1  65 28              ADC ZP_PTR+6
-001249r 1  85 24              STA ZP_PTR+2
-00124Br 1               
-00124Br 1  A5 25              LDA ZP_PTR+3
-00124Dr 1  65 29              ADC ZP_PTR+7
-00124Fr 1  C9 78              CMP #120
-001251r 1  B0 92              BCS @next_row		; 	 covers negatives even..
-001253r 1  85 25              STA ZP_PTR+3
-001255r 1  CA                 DEX
-001256r 1  F0 8D              BEQ @next_row
-001258r 1  88                 DEY
-001259r 1  D0 B8              BNE @forward_row_loop
-00125Br 1                 @end:
-00125Br 1  60                rts
-00125Cr 1               
-00125Cr 1                 @next_quad:
-00125Cr 1  E6 40          	  inc ZP_PTR+30
-00125Er 1  A6 32          	  LDX ZP_PTR+16 	;
-001260r 1  8A             	  TXA
-001261r 1  18             	  CLC
-001262r 1  69 02          	  ADC #2
-001264r 1  85 32          	  STA ZP_PTR+16
-001266r 1  7C rr rr       	  jmp (@t_quads,X) 	;
-001269r 1                 	@t_quads:
-001269r 1  rr rr          	  .addr @quad_1
-00126Br 1  rr rr          	  .addr @quad_2
-00126Dr 1  rr rr          	  .addr @quad_3
-00126Fr 1  rr rr          	  .addr @end
-001271r 1                 @quad_1: 	;	need invert across row to make next bits . next row stays same
-001271r 1  A6 33        	LDX ZP_PTR+17
-001273r 1  BD rr rr         LDA ACROSS_ROW_X_L,X
-001276r 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-001278r 1  69 80            ADC #128
-00127Ar 1  85 2E            STA ZP_PTR+12
-00127Cr 1  BD rr rr         LDA ACROSS_ROW_X_H,X
-00127Fr 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-001281r 1  69 50            ADC #80
-001283r 1  85 2F            STA ZP_PTR+13
-001285r 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
-001288r 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-00128Ar 1  69 80            ADC #128
-00128Cr 1  85 30            STA ZP_PTR+14
-00128Er 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
-001291r 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
-001293r 1  69 68            ADC #104
-001295r 1  85 31            STA ZP_PTR+15
-001297r 1  4C rr rr         jmp @quad_loop
-00129Ar 1               @quad_2: ; invert next row - start 1 row up
-00129Ar 1  A6 33        	LDX ZP_PTR+17
-00129Cr 1  BD rr rr         LDA NEXT_ROW_X_L,X
-00129Fr 1  85 2A            STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
-0012A1r 1  69 80            ADC #128
-0012A3r 1  85 2E            STA ZP_PTR+12
-0012A5r 1  85 34            STA ZP_PTR+18
-0012A7r 1               
-0012A7r 1  BD rr rr         LDA NEXT_ROW_X_H,X
-0012AAr 1  85 2B            STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
-0012ACr 1  69 50            ADC #80
-0012AEr 1  85 2F            STA ZP_PTR+13
-0012B0r 1  85 35            STA ZP_PTR+19
-0012B2r 1               
-0012B2r 1  BD rr rr         LDA NEXT_ROW_Y_L,X
-0012B5r 1  85 2C            STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
-0012B7r 1  69 80            ADC #128
-0012B9r 1  85 30            STA ZP_PTR+14
-0012BBr 1  85 36            STA ZP_PTR+20
-0012BDr 1               
-0012BDr 1  BD rr rr         LDA NEXT_ROW_Y_H,X
-0012C0r 1  85 2D            STA ZP_PTR+11 	; 	ZP_PTR+3 = spriteY increment
-0012C2r 1  69 68            ADC #104
-0012C4r 1  85 31            STA ZP_PTR+15
-0012C6r 1  85 37            STA ZP_PTR+21
-0012C8r 1  4C rr rr         jmp @quad_loop
-0012CBr 1               @quad_3: ; restore across row and increment ..
-0012CBr 1  AE rr rr     	LDX camera_facing
-0012CEr 1  BD rr rr         LDA ACROSS_ROW_X_L,X
-0012D1r 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-0012D3r 1  65 34            ADC ZP_PTR+18
-0012D5r 1  85 2E            STA ZP_PTR+12
-0012D7r 1  BD rr rr         LDA ACROSS_ROW_X_H,X
-0012DAr 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-0012DCr 1  65 35            ADC ZP_PTR+19
-0012DEr 1  85 2F            STA ZP_PTR+13
-0012E0r 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
-0012E3r 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-0012E5r 1  65 36            ADC ZP_PTR+20
-0012E7r 1  85 30            STA ZP_PTR+14
-0012E9r 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
-0012ECr 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
-0012EEr 1  65 37            ADC ZP_PTR+21
-0012F0r 1  85 31            STA ZP_PTR+15
-0012F2r 1  4C rr rr         jmp @quad_loop
-0012F5r 1               
-0012F5r 1               draw_world:
-0012F5r 1                 ; clear first entry for each line...
-0012F5r 1  64 22          STZ ZP_PTR
-0012F7r 1  A9 80          LDA #>SCREEN_buffer
-0012F9r 1  85 23          STA ZP_PTR+1
-0012FBr 1  A2 1E          LDX #30
-0012FDr 1  A9 00          LDA #0
-0012FFr 1                 @loop:
-0012FFr 1  A8               TAY
-001300r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mod 4 = 0
-001302r 1  A0 40            LDY #64 		; 	move buffer pointer to next line
-001304r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =1
-001306r 1  A0 80            LDY #128 		; 	move buffer pointer to next line
-001308r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =2
-00130Ar 1  A0 C0            LDY #192 		; 	move buffer pointer to next line
-00130Cr 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =3
-00130Er 1  E6 23            INC ZP_PTR+1 	;	next page plz
-001310r 1  CA               DEX
-001311r 1  D0 EC            BNE @loop
-001313r 1                 ; fetch bearing data ..
-001313r 1  AD rr rr       LDA camera_facing
-001316r 1  0A             ASL
-001317r 1  AA             TAX
-001318r 1  7C rr rr       jmp (@T_BEARINGS,X)
-00131Br 1               @T_BEARINGS:
-00131Br 1  rr rr        	.addr BEARING_ZERO
-00131Dr 1  rr rr        	.addr BEARING_ONE
-00131Fr 1  rr rr        	.addr BEARING_TWO
-001321r 1               
-001321r 1               BEARING_ZERO:
-001321r 1  A9 70            LDA #112 ; starting at screen Y=112
-001323r 1                 @E_loop:
-001323r 1  85 24            STA ZP_PTR+2 ; stash the Y we're working at...
-001325r 1  64 22              STZ ZP_PTR   ; zero this out to use pointer ..
-001327r 1  4A                 LSR
-001328r 1  66 22              ROR ZP_PTR ;
-00132Ar 1  4A                 LSR
-00132Br 1  66 22              ROR ZP_PTR ; because is 64 avail for each
-00132Dr 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
-00132Fr 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
-001331r 1  A0 00              LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
-001333r 1  A9 08              LDA #8 	;   start at X=0
-001335r 1                   @E_loopE:
-001335r 1  AA                   TAX
-001336r 1  A9 02                LDA #2 	;	water type
+001103r 1  C8                 INY
+001104r 1  D0 F8              BNE :-
+001106r 1  CA                DEX
+001107r 1  D0 F3             BNE :--
+001109r 1               
+001109r 1                 ; write sprite test data
+001109r 1  A9 80          LDA #128
+00110Br 1  8D 20 9F       STA VERA_addr_low
+00110Er 1  A9 FC          lda #>VRAM_sprite_attributes
+001110r 1  8D 21 9F       sta VERA_addr_high
+001113r 1  A9 19          lda #$19   ;  decrement 1 bank 1
+001115r 1  8D 22 9F       sta VERA_addr_bank
+001118r 1  A2 80          LDX #128
+00111Ar 1                 :
+00111Ar 1  BD rr rr         LDA test_sprite_data,X
+00111Dr 1  8D 23 9F         STA VERA_data0
+001120r 1  CA               DEX
+001121r 1  D0 F7            BNE :-
+001123r 1  BD rr rr        LDA test_sprite_data,X
+001126r 1  8D 23 9F        STA VERA_data0
+001129r 1               
+001129r 1                 ; enable display
+001129r 1  9C 25 9F       stz VERA_ctrl
+00112Cr 1  A9 41          lda #SPRITES_ONLY_VGA
+00112Er 1  8D 29 9F       sta VERA_dc_video
+001131r 1               
+001131r 1                 ; overwrite RAM IRQ vector with custom handler address
+001131r 1  78             sei ; disable IRQ while vector is changing
+001132r 1  A9 rr          lda #<custom_irq_handler
+001134r 1  8D 14 03       sta IRQVec
+001137r 1  A9 rr          lda #>custom_irq_handler
+001139r 1  8D 15 03       sta IRQVec+1
+00113Cr 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+00113Er 1  8D 26 9F       sta VERA_ien
+001141r 1  58             cli ; enable IRQ now that vector is properly set
+001142r 1               
+001142r 1                 ; main loop here...
+001142r 1  9C rr rr        STz camera_facing
+001145r 1               
+001145r 1               @do_update:
+001145r 1  20 rr rr        jsr draw_test
+001148r 1               
+001148r 1               @FRAME_CHECK:
+001148r 1  A9 04           lda #4
+00114Ar 1                 @frame_A:
+00114Ar 1  CB              wai
+00114Br 1  AC rr rr        ldy VSYNC_counter
+00114Er 1  F0 FA           beq @frame_A
+001150r 1  9C rr rr        stz VSYNC_counter
+001153r 1  3A              DEC A
+001154r 1  D0 F4           BNE @frame_A
+001156r 1                  ; poll keyboard for input
+001156r 1  20 E4 FF        jsr GETIN
+001159r 1  C9 00           cmp #0
+00115Br 1  F0 EB           beq @FRAME_CHECK
+00115Dr 1  C9 1D           cmp #$1D 	;	cursor right
+00115Fr 1  D0 05           BNE :+
+001161r 1  CE rr rr        DEC camera_facing
+001164r 1  80 DF           BRA @do_update
+001166r 1                  :
+001166r 1  C9 9D           cmp  #$9D 	;	cursor left
+001168r 1  D0 DB           BNE @do_update
+00116Ar 1  EE rr rr        INC camera_facing
+00116Dr 1  80 D6           BRA @do_update
+00116Fr 1               
+00116Fr 1               @cleanup_and_exit:
+00116Fr 1                  ; restore default IRQ vector
+00116Fr 1  78              sei
+001170r 1  AD rr rr        lda default_irq_vector
+001173r 1  8D 14 03        sta IRQVec
+001176r 1  AD rr rr        lda default_irq_vector+1
+001179r 1  8D 15 03        sta IRQVec+1
+00117Cr 1  58              cli
+00117Dr 1  20 81 FF        jsr CINT
+001180r 1  60              rts
+001181r 1               
+001181r 1               ; all the objects need to get into a structure to be drawn at each screen Y..
+001181r 1               ; need object type, screenX .. store back to front .. track # objects to be drawn ?
+001181r 1               ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
+001181r 1               
+001181r 1               draw_test:
+001181r 1  A9 80        	lda #128
+001183r 1  8D 20 9F     	STA VERA_addr_low
+001186r 1  A9 FC            lda #>VRAM_sprite_attributes
+001188r 1  8D 21 9F         sta VERA_addr_high
+00118Br 1  A9 11            lda #$11
+00118Dr 1  8D 22 9F         sta VERA_addr_bank
+001190r 1               
+001190r 1               
+001190r 1                   ; load increments and set start position...
+001190r 1  AE rr rr         LDX camera_facing
+001193r 1  8A               TXA
+001194r 1  18               CLC
+001195r 1  69 80            ADC #128
+001197r 1  85 33            STA ZP_PTR+17
+001199r 1                   ; increments across rows
+001199r 1  64 32            STZ ZP_PTR+16   ; 	is driving me nuts so ..
+00119Br 1  A9 80            LDA #128
+00119Dr 1  85 2E            STA ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
+00119Fr 1  85 30            STA ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
+0011A1r 1  A9 64            LDA #100
+0011A3r 1  85 2F            STA ZP_PTR+13 	;	next row start at XH ZP_PTR+13
+0011A5r 1  A9 84            LDA #132
+0011A7r 1  85 31         	STA ZP_PTR+15 	;	next row start YH at ZP_PTR+15
+0011A9r 1               
+0011A9r 1               
+0011A9r 1  BD rr rr         LDA ACROSS_ROW_X_L,X
+0011ACr 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+0011AEr 1  BD rr rr         LDA ACROSS_ROW_X_H,X
+0011B1r 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
+0011B3r 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
+0011B6r 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+0011B8r 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
+0011BBr 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
+0011BDr 1                   ; increments o next rows
+0011BDr 1  BD rr rr         LDA NEXT_ROW_X_L,X
+0011C0r 1  85 2A            STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
+0011C2r 1  BD rr rr         LDA NEXT_ROW_X_H,X
+0011C5r 1  85 2B            STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
+0011C7r 1  BD rr rr         LDA NEXT_ROW_Y_L,X
+0011CAr 1  85 2C            STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
+0011CCr 1  BD rr rr         LDA NEXT_ROW_Y_H,X
+0011CFr 1  85 2D            STA ZP_PTR+11	; 	ZP_PTR+3 = spriteY increment
+0011D1r 1               
+0011D1r 1  A9 10            LDA #16
+0011D3r 1  85 40            STA ZP_PTR+30
+0011D5r 1               
+0011D5r 1  A0 70            LDY #112		;	amount of sprites we can write max
+0011D7r 1                 @quad_loop:
+0011D7r 1  A2 08           LDX #8
+0011D9r 1  86 7F           STX $7F
+0011DBr 1  80 04          	bra @do_row
+0011DDr 1                 @next_row:
+0011DDr 1  88                 DEY
+0011DEr 1  D0 01              BNE @do_row
+0011E0r 1  60                 rts
+0011E1r 1                 @do_row:
+0011E1r 1  C6 7F              DEC $7F
+0011E3r 1  F0 73              BEQ @next_quad
+0011E5r 1               
+0011E5r 1  A2 1B           LDX #27
+0011E7r 1  A5 2E          	LDA ZP_PTR+12 	;
+0011E9r 1  85 22          	STA ZP_PTR 		;	current row XL
+0011EBr 1  65 2A            ADC ZP_PTR+8
+0011EDr 1  85 2E            STA ZP_PTR+12 	;	next row XL
+0011EFr 1  A5 2F            LDA ZP_PTR+13 	;
+0011F1r 1  C9 C9            CMP #201
+0011F3r 1  B0 63            BCS @next_quad 		;	off screen
+0011F5r 1  85 23            STA ZP_PTR+1 	;	current row XH
+0011F7r 1  65 2B            ADC ZP_PTR+9 	;
+0011F9r 1  85 2F            STA ZP_PTR+13 	;	next row XH
+0011FBr 1               
+0011FBr 1  A5 30            LDA ZP_PTR+14
+0011FDr 1  85 24            STA ZP_PTR+2 	;	current row YL
+0011FFr 1  65 2C            ADC ZP_PTR+10
+001201r 1  85 30            STA ZP_PTR+14 	;	next row YL
+001203r 1  A5 31            LDA ZP_PTR+15
+001205r 1  C9 99            CMP #153
+001207r 1  B0 4F            BCS @next_quad;	off screen
+001209r 1  85 25            STA ZP_PTR+3
+00120Br 1  65 2D            ADC ZP_PTR+11
+00120Dr 1  85 31            STA ZP_PTR+15 	;	next row YH
+00120Fr 1                 @forward_row_loop:
+00120Fr 1  9C 23 9F           STZ VERA_data0 ; 	address 12:5
+001212r 1  9C 23 9F           STZ VERA_data0 ;  mode  | address 16:13
+001215r 1  A5 23              LDA ZP_PTR+1
+001217r 1  8D 23 9F           STA VERA_data0 ; 	X 7:0
+00121Ar 1  9C 23 9F           STZ VERA_data0 ; 	X 9:8
+00121Dr 1  A5 25              LDA ZP_PTR+3  ; 	spriteY
+00121Fr 1  8D 23 9F           STA VERA_data0 ;  Y 7:0
+001222r 1  9C 23 9F           STZ VERA_data0 ; 	Y 9:8
+001225r 1  A9 0C              LDA #$0C
+001227r 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
+00122Ar 1  A9 10              LDA #$10 			; 	16x8 no palette offset
+00122Cr 1  A5 40              LDA ZP_PTR+30;
+00122Er 1  8D 23 9F           STA VERA_data0
+001231r 1                   ; increment X
+001231r 1  A5 22              LDA ZP_PTR 	;	load X_l
+001233r 1  65 26              ADC ZP_PTR+4
+001235r 1  85 22              STA ZP_PTR
+001237r 1               
+001237r 1  A5 23              LDA ZP_PTR+1
+001239r 1  65 27              ADC ZP_PTR+5
+00123Br 1  C9 D0              CMP #208
+00123Dr 1  B0 9E              BCS @next_row		; covers negatives even..
+00123Fr 1  85 23              STA ZP_PTR+1
+001241r 1                   ; increment Y
+001241r 1  A5 24              LDA ZP_PTR+2 	;
+001243r 1  65 28              ADC ZP_PTR+6
+001245r 1  85 24              STA ZP_PTR+2
+001247r 1               
+001247r 1  A5 25              LDA ZP_PTR+3
+001249r 1  65 29              ADC ZP_PTR+7
+00124Br 1  C9 99              CMP #153
+00124Dr 1  B0 8E              BCS @next_row		; 	 covers negatives even..
+00124Fr 1  85 25              STA ZP_PTR+3
+001251r 1  CA                 DEX
+001252r 1  F0 89              BEQ @next_row
+001254r 1  88                 DEY
+001255r 1  D0 B8              BNE @forward_row_loop
+001257r 1                 @end:
+001257r 1  60                rts
+001258r 1               
+001258r 1                 @next_quad:
+001258r 1  E6 40          	  inc ZP_PTR+30
+00125Ar 1  A6 32          	  LDX ZP_PTR+16 	;
+00125Cr 1  8A             	  TXA
+00125Dr 1  18             	  CLC
+00125Er 1  69 02          	  ADC #2
+001260r 1  85 32          	  STA ZP_PTR+16
+001262r 1  7C rr rr       	  jmp (@t_quads,X) 	;
+001265r 1                 	@t_quads:
+001265r 1  rr rr          	  .addr @quad_1
+001267r 1  rr rr          	  .addr @quad_2
+001269r 1  rr rr          	  .addr @quad_3
+00126Br 1  rr rr          	  .addr @end
+00126Dr 1                 @quad_1: 	;	need invert across row to make next bits . next row stays same
+00126Dr 1  A6 33        	LDX ZP_PTR+17
+00126Fr 1  BD rr rr         LDA ACROSS_ROW_X_L,X
+001272r 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+001274r 1  69 80            ADC #128
+001276r 1  85 2E            STA ZP_PTR+12
+001278r 1  BD rr rr         LDA ACROSS_ROW_X_H,X
+00127Br 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
+00127Dr 1  69 64            ADC #100
+00127Fr 1  85 2F            STA ZP_PTR+13
+001281r 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
+001284r 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+001286r 1  69 80            ADC #128
+001288r 1  85 30            STA ZP_PTR+14
+00128Ar 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
+00128Dr 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
+00128Fr 1  69 84            ADC #132
+001291r 1  85 31            STA ZP_PTR+15
+001293r 1  4C rr rr         jmp @quad_loop
+001296r 1               @quad_2: ; invert next row - start 1 row up
+001296r 1  A6 33        	LDX ZP_PTR+17
+001298r 1  BD rr rr         LDA NEXT_ROW_X_L,X
+00129Br 1  85 2A            STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
+00129Dr 1  69 80            ADC #128
+00129Fr 1  85 2E            STA ZP_PTR+12
+0012A1r 1  85 34            STA ZP_PTR+18
+0012A3r 1               
+0012A3r 1  BD rr rr         LDA NEXT_ROW_X_H,X
+0012A6r 1  85 2B            STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
+0012A8r 1  69 64            ADC #100
+0012AAr 1  85 2F            STA ZP_PTR+13
+0012ACr 1  85 35            STA ZP_PTR+19
+0012AEr 1               
+0012AEr 1  BD rr rr         LDA NEXT_ROW_Y_L,X
+0012B1r 1  85 2C            STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
+0012B3r 1  69 80            ADC #128
+0012B5r 1  85 30            STA ZP_PTR+14
+0012B7r 1  85 36            STA ZP_PTR+20
+0012B9r 1               
+0012B9r 1  BD rr rr         LDA NEXT_ROW_Y_H,X
+0012BCr 1  85 2D            STA ZP_PTR+11 	; 	ZP_PTR+3 = spriteY increment
+0012BEr 1  69 84            ADC #132
+0012C0r 1  85 31            STA ZP_PTR+15
+0012C2r 1  85 37            STA ZP_PTR+21
+0012C4r 1  4C rr rr         jmp @quad_loop
+0012C7r 1               @quad_3: ; restore across row and increment ..
+0012C7r 1  AE rr rr     	LDX camera_facing
+0012CAr 1  BD rr rr         LDA ACROSS_ROW_X_L,X
+0012CDr 1  85 26            STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
+0012CFr 1  65 34            ADC ZP_PTR+18
+0012D1r 1  85 2E            STA ZP_PTR+12
+0012D3r 1  BD rr rr         LDA ACROSS_ROW_X_H,X
+0012D6r 1  85 27            STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
+0012D8r 1  65 35            ADC ZP_PTR+19
+0012DAr 1  85 2F            STA ZP_PTR+13
+0012DCr 1  BD rr rr         LDA ACROSS_ROW_Y_L,X
+0012DFr 1  85 28            STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
+0012E1r 1  65 36            ADC ZP_PTR+20
+0012E3r 1  85 30            STA ZP_PTR+14
+0012E5r 1  BD rr rr         LDA ACROSS_ROW_Y_H,X
+0012E8r 1  85 29            STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment
+0012EAr 1  65 37            ADC ZP_PTR+21
+0012ECr 1  85 31            STA ZP_PTR+15
+0012EEr 1  4C rr rr         jmp @quad_loop
+0012F1r 1               
+0012F1r 1               draw_world:
+0012F1r 1                 ; clear first entry for each line...
+0012F1r 1  64 22          STZ ZP_PTR
+0012F3r 1  A9 80          LDA #>SCREEN_buffer
+0012F5r 1  85 23          STA ZP_PTR+1
+0012F7r 1  A2 1E          LDX #30
+0012F9r 1  A9 00          LDA #0
+0012FBr 1                 @loop:
+0012FBr 1  A8               TAY
+0012FCr 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mod 4 = 0
+0012FEr 1  A0 40            LDY #64 		; 	move buffer pointer to next line
+001300r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =1
+001302r 1  A0 80            LDY #128 		; 	move buffer pointer to next line
+001304r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =2
+001306r 1  A0 C0            LDY #192 		; 	move buffer pointer to next line
+001308r 1  91 22            STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =3
+00130Ar 1  E6 23            INC ZP_PTR+1 	;	next page plz
+00130Cr 1  CA               DEX
+00130Dr 1  D0 EC            BNE @loop
+00130Fr 1                 ; fetch bearing data ..
+00130Fr 1  AD rr rr       LDA camera_facing
+001312r 1  0A             ASL
+001313r 1  AA             TAX
+001314r 1  7C rr rr       jmp (@T_BEARINGS,X)
+001317r 1               @T_BEARINGS:
+001317r 1  rr rr        	.addr BEARING_ZERO
+001319r 1  rr rr        	.addr BEARING_ONE
+00131Br 1  rr rr        	.addr BEARING_TWO
+00131Dr 1               
+00131Dr 1               BEARING_ZERO:
+00131Dr 1  A9 70            LDA #112 ; starting at screen Y=112
+00131Fr 1                 @E_loop:
+00131Fr 1  85 24            STA ZP_PTR+2 ; stash the Y we're working at...
+001321r 1  64 22              STZ ZP_PTR   ; zero this out to use pointer ..
+001323r 1  4A                 LSR
+001324r 1  66 22              ROR ZP_PTR ;
+001326r 1  4A                 LSR
+001327r 1  66 22              ROR ZP_PTR ; because is 64 avail for each
+001329r 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
+00132Br 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
+00132Dr 1  A0 00              LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
+00132Fr 1  A9 08              LDA #8 	;   start at X=0
+001331r 1                   @E_loopE:
+001331r 1  AA                   TAX
+001332r 1  A9 02                LDA #2 	;	water type
+001334r 1  91 22                STA (ZP_PTR),y
+001336r 1  C8                   iny
+001337r 1  8A                   TXA ;	get X value
 001338r 1  91 22                STA (ZP_PTR),y
 00133Ar 1  C8                   iny
-00133Br 1  8A                   TXA ;	get X value
-00133Cr 1  91 22                STA (ZP_PTR),y
-00133Er 1  C8                   iny
-00133Fr 1  18                   CLC
-001340r 1  69 10                adc #16
-001342r 1  C9 88                CMP #136
-001344r 1  90 EF                BCC @E_loopE 	;kk
-001346r 1  A9 00              LDA #0
-001348r 1  91 22              STA (ZP_PTR),y ; stash zero value to end the thing
-00134Ar 1  A5 24              LDA ZP_PTR+2
-00134Cr 1  E9 0F              SBC #15 	;	borrow is set ...
-00134Er 1  B0 D3              BCS @E_loop ; still spots left on screen.. otay
-001350r 1  4C rr rr         jmp update_screen
-001353r 1               BEARING_ONE:
-001353r 1               BEARING_TWO: ; 30 degrees ..
-001353r 1  A9 74            LDA #116 ; starting at screen Y=112
-001355r 1                 @E_loop:
-001355r 1  85 24            STA ZP_PTR+2 ; stash the Y we're working at...
-001357r 1  64 22              STZ ZP_PTR   ; zero this out to use pointer ..
-001359r 1  4A                 LSR
-00135Ar 1  66 22              ROR ZP_PTR ;
-00135Cr 1  4A                 LSR
-00135Dr 1  66 22              ROR ZP_PTR ; because is 64 avail for each
-00135Fr 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
-001361r 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
-001363r 1  A0 00              LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
-001365r 1  A9 0C              LDA #12 	;   start at X=0
-001367r 1                   @E_loopE:
-001367r 1  AA                   TAX
-001368r 1  A9 02                LDA #2 	;	water type
+00133Br 1  18                   CLC
+00133Cr 1  69 10                adc #16
+00133Er 1  C9 88                CMP #136
+001340r 1  90 EF                BCC @E_loopE 	;kk
+001342r 1  A9 00              LDA #0
+001344r 1  91 22              STA (ZP_PTR),y ; stash zero value to end the thing
+001346r 1  A5 24              LDA ZP_PTR+2
+001348r 1  E9 0F              SBC #15 	;	borrow is set ...
+00134Ar 1  B0 D3              BCS @E_loop ; still spots left on screen.. otay
+00134Cr 1  4C rr rr         jmp update_screen
+00134Fr 1               BEARING_ONE:
+00134Fr 1               BEARING_TWO: ; 30 degrees ..
+00134Fr 1  A9 74            LDA #116 ; starting at screen Y=112
+001351r 1                 @E_loop:
+001351r 1  85 24            STA ZP_PTR+2 ; stash the Y we're working at...
+001353r 1  64 22              STZ ZP_PTR   ; zero this out to use pointer ..
+001355r 1  4A                 LSR
+001356r 1  66 22              ROR ZP_PTR ;
+001358r 1  4A                 LSR
+001359r 1  66 22              ROR ZP_PTR ; because is 64 avail for each
+00135Br 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
+00135Dr 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
+00135Fr 1  A0 00              LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
+001361r 1  A9 0C              LDA #12 	;   start at X=0
+001363r 1                   @E_loopE:
+001363r 1  AA                   TAX
+001364r 1  A9 02                LDA #2 	;	water type
+001366r 1  91 22                STA (ZP_PTR),y
+001368r 1  C8                   iny
+001369r 1  8A                   TXA ;	get X value
 00136Ar 1  91 22                STA (ZP_PTR),y
 00136Cr 1  C8                   iny
-00136Dr 1  8A                   TXA ;	get X value
-00136Er 1  91 22                STA (ZP_PTR),y
-001370r 1  C8                   iny
-001371r 1  18                   CLC
-001372r 1  69 1C                adc #28
-001374r 1  C9 88                CMP #136
-001376r 1  90 EF                BCC @E_loopE 	;kk
-001378r 1  A9 00              LDA #0
-00137Ar 1  91 22              STA (ZP_PTR),y ; stash zero value to end the thing
-00137Cr 1  A5 24              LDA ZP_PTR+2
-00137Er 1  E9 0D              SBC #13 	;	borrow is set ...
-001380r 1  B0 D3              BCS @E_loop ; still spots left on screen.. otay
-001382r 1  4C rr rr         jmp update_screen
-001385r 1               
-001385r 1  60             rts
-001386r 1               
-001386r 1               update_screen:
-001386r 1  9C 20 9F       stz VERA_addr_low
-001389r 1  A9 FC          lda #>VRAM_sprite_attributes
-00138Br 1  8D 21 9F       sta VERA_addr_high
-00138Er 1  A9 11          lda #$11
-001390r 1  8D 22 9F       sta VERA_addr_bank
-001393r 1  A9 77            LDA #119
-001395r 1  85 24            STA ZP_PTR+2 ; stash line we at ..
-001397r 1  64 22              STZ ZP_PTR
-001399r 1  4A                 LSR
-00139Ar 1  66 22              ROR ZP_PTR ;
-00139Cr 1  4A                 LSR
-00139Dr 1  66 22              ROR ZP_PTR ; because is 64 avail for each
-00139Fr 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
-0013A1r 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
-0013A3r 1                 @y_line_loop:
-0013A3r 1  A0 00              LDY #0 ; set to check that first point ..
-0013A5r 1  C6 24              dec ZP_PTR+2
-0013A7r 1                   @do_check_line:
-0013A7r 1  B1 22                LDA (ZP_PTR),Y ;	get type
-0013A9r 1  C8                   INY
-0013AAr 1  AA                   TAX
-0013ABr 1  7C rr rr             JMP (@T_objtypes,X) ;
-0013AEr 1                   @T_objtypes:
-0013AEr 1  rr rr                .addr @end_line
-0013B0r 1  rr rr                .addr @do_water
-0013B2r 1                   @do_water:
-0013B2r 1  9C 23 9F           stz VERA_data0 	; 	address 12:5
-0013B5r 1  9C 23 9F           STZ VERA_data0 	; 	4bit color address 16:13
-0013B8r 1  B1 22              LDA (ZP_PTR),Y  	;	get the X
-0013BAr 1  C8                 iny
-0013BBr 1  8D 23 9F           STA VERA_data0 	;	X
-0013BEr 1  9C 23 9F           STZ VERA_data0 	;	 X
-0013C1r 1  A5 24              LDA ZP_PTR+2
-0013C3r 1  8D 23 9F           STA VERA_data0 	;	y
-0013C6r 1  9C 23 9F           STZ VERA_data0 	; 	y
-0013C9r 1  A9 0C              LDA #$0C
-0013CBr 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
-0013CEr 1  A9 D0              LDA #$D0 			; 	16x64 no palette offset
-0013D0r 1  8D 23 9F           STA VERA_data0
-0013D3r 1  80 D2              bra @do_check_line
-0013D5r 1                   @end_line:
-0013D5r 1  38                   SEC
-0013D6r 1  A5 22                LDA ZP_PTR
-0013D8r 1  E9 40                SBC #64
-0013DAr 1  85 22                STA ZP_PTR
-0013DCr 1  A5 23                LDA ZP_PTR+1
-0013DEr 1  E9 00                SBC #0
-0013E0r 1  85 23                STA ZP_PTR+1
-0013E2r 1  C9 80                CMP #>SCREEN_buffer
-0013E4r 1  B0 BD                BCS @y_line_loop
-0013E6r 1  60           rts
-0013E7r 1               
-0013E7r 1               test_cross_heair_8x8: 	; 	8x8x16 color = 32 bytes
-0013E7r 1               ; 	   01   23   45   67
-0013E7r 1  11 00 00 11  .byte $11, $00, $00, $11
-0013EBr 1  10 00 00 01  .byte $10, $00, $00, $01
-0013EFr 1  00 00 00 00  .byte $00, $00, $00, $00
-0013F3r 1  00 01 10 00  .byte $00, $01, $10, $00
-0013F7r 1  00 01 10 00  .byte $00, $01, $10, $00
-0013FBr 1  00 00 00 00  .byte $00, $00, $00, $00
-0013FFr 1  10 00 00 01  .byte $10, $00, $00, $01
-001403r 1  11 00 00 11  .byte $11, $00, $00, $11
-001407r 1               
-001407r 1               test_cell_sprite_16x8: 	;	16x8x16 color = 64 bytes
-001407r 1               ; 	   01   23   45   67   89   AB   CD   EF
-001407r 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
-00140Br 1  66 66 00 00  
-00140Fr 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
-001413r 1  EE EE 66 00  
-001417r 1  06 EE EE EE  .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
-00141Br 1  EE EE EE 60  
-00141Fr 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
-001423r 1  EE EE EE E6  
-001427r 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
-00142Br 1  EE EE EE E6  
-00142Fr 1  06 EE EE EE  .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	5
-001433r 1  EE EE EE 60  
-001437r 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	6
-00143Br 1  EE EE 66 00  
-00143Fr 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	7
-001443r 1  66 66 00 00  
-001447r 1               
-001447r 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
-001447r 1               ; 	   01   23   45   67   89   AB   CD   EF
-001447r 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
-00144Br 1  66 66 00 00  
-00144Fr 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
-001453r 1  EE EE 66 00  
-001457r 1  06 EE EE EE  .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
-00145Br 1  EE EE EE 60  
-00145Fr 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
-001463r 1  EE EE EE E6  
-001467r 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
-00146Br 1  EE EE EE E6  
-00146Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $E6, $66 	;	5
-001473r 1  EE EE E6 66  
-001477r 1  66 66 EE EE  .byte $66, $66, $EE, $EE, $EE, $EE, $66, $66 	;	6
-00147Br 1  EE EE 66 66  
-00147Fr 1  EE 66 66 66  .byte $EE, $66, $66, $66, $66, $66, $66, $EE 	;	7
-001483r 1  66 66 66 EE  
-001487r 1               
-001487r 1  EE EE 66 66  .byte $EE, $EE, $66, $66, $66, $66, $EE, $EE 	; 	8
-00148Br 1  66 66 EE EE  
-00148Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001493r 1  EE 66 EE EE  
-001497r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00149Br 1  66 EE 66 EE  
-00149Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0014A3r 1  EE EE EE 66  
-0014A7r 1               
-0014A7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	12
-0014ABr 1  EE EE EE EE  
-0014AFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0014B3r 1  EE 66 EE EE  
-0014B7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0014BBr 1  66 EE 66 EE  
-0014BFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0014C3r 1  EE EE EE 66  
-0014C7r 1               
-0014C7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	16
-0014CBr 1  EE EE EE EE  
-0014CFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0014D3r 1  EE 66 EE EE  
-0014D7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0014DBr 1  66 EE 66 EE  
-0014DFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0014E3r 1  EE EE EE 66  
-0014E7r 1               
-0014E7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	20
-0014EBr 1  EE EE EE EE  
-0014EFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0014F3r 1  EE 66 EE EE  
-0014F7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0014FBr 1  66 EE 66 EE  
-0014FFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001503r 1  EE EE EE 66  
-001507r 1               
-001507r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	24
-00150Br 1  EE EE EE EE  
-00150Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001513r 1  EE 66 EE EE  
-001517r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00151Br 1  66 EE 66 EE  
-00151Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001523r 1  EE EE EE 66  
-001527r 1               
-001527r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	28
-00152Br 1  EE EE EE EE  
-00152Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001533r 1  EE 66 EE EE  
-001537r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00153Br 1  66 EE 66 EE  
-00153Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001543r 1  EE EE EE 66  
-001547r 1               
-001547r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	32
-00154Br 1  EE EE EE EE  
-00154Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001553r 1  EE 66 EE EE  
-001557r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00155Br 1  66 EE 66 EE  
-00155Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001563r 1  EE EE EE 66  
-001567r 1               
-001567r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	36
-00156Br 1  EE EE EE EE  
-00156Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001573r 1  EE 66 EE EE  
-001577r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00157Br 1  66 EE 66 EE  
-00157Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001583r 1  EE EE EE 66  
-001587r 1               
-001587r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	40
-00158Br 1  EE EE EE EE  
-00158Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001593r 1  EE 66 EE EE  
-001597r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00159Br 1  66 EE 66 EE  
-00159Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0015A3r 1  EE EE EE 66  
-0015A7r 1               
-0015A7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	44
-0015ABr 1  EE EE EE EE  
-0015AFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0015B3r 1  EE 66 EE EE  
-0015B7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0015BBr 1  66 EE 66 EE  
-0015BFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0015C3r 1  EE EE EE 66  
-0015C7r 1               
-0015C7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	48
-0015CBr 1  EE EE EE EE  
-0015CFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0015D3r 1  EE 66 EE EE  
-0015D7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0015DBr 1  66 EE 66 EE  
-0015DFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-0015E3r 1  EE EE EE 66  
-0015E7r 1               
-0015E7r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	52
-0015EBr 1  EE EE EE EE  
-0015EFr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-0015F3r 1  EE 66 EE EE  
-0015F7r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-0015FBr 1  66 EE 66 EE  
-0015FFr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001603r 1  EE EE EE 66  
-001607r 1               
-001607r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	56
-00160Br 1  EE EE EE EE  
-00160Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001613r 1  EE 66 EE EE  
-001617r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00161Br 1  66 EE 66 EE  
-00161Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001623r 1  EE EE EE 66  
-001627r 1               
-001627r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
-00162Br 1  EE EE EE EE  
-00162Fr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-001633r 1  EE 66 EE EE  
-001637r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-00163Br 1  66 EE 66 EE  
-00163Fr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-001643r 1  EE EE EE 66  
-001646r 1               
+00136Dr 1  18                   CLC
+00136Er 1  69 1C                adc #28
+001370r 1  C9 88                CMP #136
+001372r 1  90 EF                BCC @E_loopE 	;kk
+001374r 1  A9 00              LDA #0
+001376r 1  91 22              STA (ZP_PTR),y ; stash zero value to end the thing
+001378r 1  A5 24              LDA ZP_PTR+2
+00137Ar 1  E9 0D              SBC #13 	;	borrow is set ...
+00137Cr 1  B0 D3              BCS @E_loop ; still spots left on screen.. otay
+00137Er 1  4C rr rr         jmp update_screen
+001381r 1               
+001381r 1  60             rts
+001382r 1               
+001382r 1               update_screen:
+001382r 1  9C 20 9F       stz VERA_addr_low
+001385r 1  A9 FC          lda #>VRAM_sprite_attributes
+001387r 1  8D 21 9F       sta VERA_addr_high
+00138Ar 1  A9 11          lda #$11
+00138Cr 1  8D 22 9F       sta VERA_addr_bank
+00138Fr 1  A9 77            LDA #119
+001391r 1  85 24            STA ZP_PTR+2 ; stash line we at ..
+001393r 1  64 22              STZ ZP_PTR
+001395r 1  4A                 LSR
+001396r 1  66 22              ROR ZP_PTR ;
+001398r 1  4A                 LSR
+001399r 1  66 22              ROR ZP_PTR ; because is 64 avail for each
+00139Br 1  09 80              ORA #>SCREEN_buffer ; making pointer woot!
+00139Dr 1  85 23              STA ZP_PTR+1 ; ZP_PTR points to the line..
+00139Fr 1                 @y_line_loop:
+00139Fr 1  A0 00              LDY #0 ; set to check that first point ..
+0013A1r 1  C6 24              dec ZP_PTR+2
+0013A3r 1                   @do_check_line:
+0013A3r 1  B1 22                LDA (ZP_PTR),Y ;	get type
+0013A5r 1  C8                   INY
+0013A6r 1  AA                   TAX
+0013A7r 1  7C rr rr             JMP (@T_objtypes,X) ;
+0013AAr 1                   @T_objtypes:
+0013AAr 1  rr rr                .addr @end_line
+0013ACr 1  rr rr                .addr @do_water
+0013AEr 1                   @do_water:
+0013AEr 1  9C 23 9F           stz VERA_data0 	; 	address 12:5
+0013B1r 1  9C 23 9F           STZ VERA_data0 	; 	4bit color address 16:13
+0013B4r 1  B1 22              LDA (ZP_PTR),Y  	;	get the X
+0013B6r 1  C8                 iny
+0013B7r 1  8D 23 9F           STA VERA_data0 	;	X
+0013BAr 1  9C 23 9F           STZ VERA_data0 	;	 X
+0013BDr 1  A5 24              LDA ZP_PTR+2
+0013BFr 1  8D 23 9F           STA VERA_data0 	;	y
+0013C2r 1  9C 23 9F           STZ VERA_data0 	; 	y
+0013C5r 1  A9 0C              LDA #$0C
+0013C7r 1  8D 23 9F           STA VERA_data0 	; 	3 z depth no flip
+0013CAr 1  A9 D0              LDA #$D0 			; 	16x64 no palette offset
+0013CCr 1  8D 23 9F           STA VERA_data0
+0013CFr 1  80 D2              bra @do_check_line
+0013D1r 1                   @end_line:
+0013D1r 1  38                   SEC
+0013D2r 1  A5 22                LDA ZP_PTR
+0013D4r 1  E9 40                SBC #64
+0013D6r 1  85 22                STA ZP_PTR
+0013D8r 1  A5 23                LDA ZP_PTR+1
+0013DAr 1  E9 00                SBC #0
+0013DCr 1  85 23                STA ZP_PTR+1
+0013DEr 1  C9 80                CMP #>SCREEN_buffer
+0013E0r 1  B0 BD                BCS @y_line_loop
+0013E2r 1  60           rts
+0013E3r 1               
+0013E3r 1               test_sprite_data:
+0013E3r 1               ; first 16 sprites reserved ...
+0013E3r 1               ;      0   1   2   3   4   5   6  7
+0013E3r 1               ;     add,mod, XL, XH, YL, YH,msk,hwp
+0013E3r 1  20 00 68 00  .byte  32,$00,104,  0,132,  0,$0C,$00  ;  cursor middle - 8x8  sprite 0
+0013E7r 1  84 00 0C 00  
+0013EBr 1  10 00 0C 00  .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
+0013EFr 1  00 00 0C 30  
+0013F3r 1  10 00 4C 00  .byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
+0013F7r 1  00 00 0C 30  
+0013FBr 1  10 00 8C 00  .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
+0013FFr 1  00 00 0C 30  
+001403r 1               
+001403r 1  10 00 0C 00  .byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
+001407r 1  99 00 0F 30  
+00140Br 1  10 00 4C 00  .byte  16,$00, 76,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
+00140Fr 1  99 00 0F 30  
+001413r 1  10 00 8C 00  .byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
+001417r 1  99 00 0F 30  
+00141Br 1               
+00141Br 1  10 00 00 00  .byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
+00141Fr 1  10 00 0C C0  
+001423r 1  10 00 00 00  .byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
+001427r 1  50 00 0C C0  
+00142Br 1  10 00 D0 00  .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
+00142Fr 1  10 00 0F C0  
+001433r 1  10 00 D0 00  .byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
+001437r 1  50 00 0F C0  
+00143Br 1               
+00143Br 1  00 00 00 00  .res 40, 0
+00143Fr 1  00 00 00 00  
+001443r 1  00 00 00 00  
+001463r 1               
+001463r 1               
+001463r 1               test_vram_data:
+001463r 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0
+001463r 1               ; 	   01   23   45   67   89   AB   CD   EF
+001463r 1  00 00 66 66  .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
+001467r 1  66 66 00 00  
+00146Br 1  00 66 EE EE  .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
+00146Fr 1  EE EE 66 00  
+001473r 1  06 EE EE EE  .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
+001477r 1  EE EE EE 60  
+00147Br 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
+00147Fr 1  EE EE EE E6  
+001483r 1  6E EE EE EE  .byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
+001487r 1  EE EE EE E6  
+00148Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $E6, $66 	;	5
+00148Fr 1  EE EE E6 66  
+001493r 1  66 66 EE EE  .byte $66, $66, $EE, $EE, $EE, $EE, $66, $66 	;	6
+001497r 1  EE EE 66 66  
+00149Br 1  EE 66 66 66  .byte $EE, $66, $66, $66, $66, $66, $66, $EE 	;	7
+00149Fr 1  66 66 66 EE  
+0014A3r 1               
+0014A3r 1  EE EE 66 66  .byte $EE, $EE, $66, $66, $66, $66, $EE, $EE 	; 	8
+0014A7r 1  66 66 EE EE  
+0014ABr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0014AFr 1  EE 66 EE EE  
+0014B3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0014B7r 1  66 EE 66 EE  
+0014BBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0014BFr 1  EE EE EE 66  
+0014C3r 1               
+0014C3r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	12
+0014C7r 1  EE EE EE EE  
+0014CBr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0014CFr 1  EE 66 EE EE  
+0014D3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0014D7r 1  66 EE 66 EE  
+0014DBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0014DFr 1  EE EE EE 66  
+0014E3r 1               
+0014E3r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	16
+0014E7r 1  EE EE EE EE  
+0014EBr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0014EFr 1  EE 66 EE EE  
+0014F3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0014F7r 1  66 EE 66 EE  
+0014FBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0014FFr 1  EE EE EE 66  
+001503r 1               
+001503r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	20
+001507r 1  EE EE EE EE  
+00150Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00150Fr 1  EE 66 EE EE  
+001513r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001517r 1  66 EE 66 EE  
+00151Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00151Fr 1  EE EE EE 66  
+001523r 1               
+001523r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	24
+001527r 1  EE EE EE EE  
+00152Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00152Fr 1  EE 66 EE EE  
+001533r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001537r 1  66 EE 66 EE  
+00153Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00153Fr 1  EE EE EE 66  
+001543r 1               
+001543r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	28
+001547r 1  EE EE EE EE  
+00154Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00154Fr 1  EE 66 EE EE  
+001553r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001557r 1  66 EE 66 EE  
+00155Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00155Fr 1  EE EE EE 66  
+001563r 1               
+001563r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	32
+001567r 1  EE EE EE EE  
+00156Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00156Fr 1  EE 66 EE EE  
+001573r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001577r 1  66 EE 66 EE  
+00157Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00157Fr 1  EE EE EE 66  
+001583r 1               
+001583r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	36
+001587r 1  EE EE EE EE  
+00158Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00158Fr 1  EE 66 EE EE  
+001593r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001597r 1  66 EE 66 EE  
+00159Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00159Fr 1  EE EE EE 66  
+0015A3r 1               
+0015A3r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	40
+0015A7r 1  EE EE EE EE  
+0015ABr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0015AFr 1  EE 66 EE EE  
+0015B3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0015B7r 1  66 EE 66 EE  
+0015BBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0015BFr 1  EE EE EE 66  
+0015C3r 1               
+0015C3r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	44
+0015C7r 1  EE EE EE EE  
+0015CBr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0015CFr 1  EE 66 EE EE  
+0015D3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0015D7r 1  66 EE 66 EE  
+0015DBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0015DFr 1  EE EE EE 66  
+0015E3r 1               
+0015E3r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	48
+0015E7r 1  EE EE EE EE  
+0015EBr 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+0015EFr 1  EE 66 EE EE  
+0015F3r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+0015F7r 1  66 EE 66 EE  
+0015FBr 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+0015FFr 1  EE EE EE 66  
+001603r 1               
+001603r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	52
+001607r 1  EE EE EE EE  
+00160Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00160Fr 1  EE 66 EE EE  
+001613r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001617r 1  66 EE 66 EE  
+00161Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00161Fr 1  EE EE EE 66  
+001623r 1               
+001623r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	56
+001627r 1  EE EE EE EE  
+00162Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00162Fr 1  EE 66 EE EE  
+001633r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001637r 1  66 EE 66 EE  
+00163Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+00163Fr 1  EE EE EE 66  
+001643r 1               
+001643r 1  EE EE EE EE  .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
+001647r 1  EE EE EE EE  
+00164Br 1  EE EE 66 EE  .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
+00164Fr 1  EE 66 EE EE  
+001653r 1  EE 66 EE 66  .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
+001657r 1  66 EE 66 EE  
+00165Br 1  66 EE EE EE  .byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63   512 bytes - next sprite addr = 16
+00165Fr 1  EE EE EE 66  
+001663r 1               
+001663r 1               
+001663r 1               test_border:
+001663r 1  0B 0B 0B 0B  .repeat 64
+001667r 1  B0 B0 B0 B0  
+00166Br 1  0B 0B 0B 0B  
+001863r 1                  .res 4, $0B
+001863r 1                  .res 4, $B0
+001863r 1               .endrepeat
+001863r 1               
+001863r 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 32
+001863r 1               ;     01   23   45   67
+001863r 1  11 00 00 11  .byte $11, $00, $00, $11
+001867r 1  10 00 00 01  .byte $10, $00, $00, $01
+00186Br 1  00 00 00 00  .byte $00, $00, $00, $00
+00186Fr 1  00 01 10 00  .byte $00, $01, $10, $00
+001873r 1  00 01 10 00  .byte $00, $01, $10, $00
+001877r 1  00 00 00 00  .byte $00, $00, $00, $00
+00187Br 1  10 00 00 01  .byte $10, $00, $00, $01
+00187Fr 1  11 00 00 11  .byte $11, $00, $00, $11
+001882r 1               

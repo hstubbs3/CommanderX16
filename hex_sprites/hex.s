@@ -217,7 +217,7 @@ start:
   lda IRQVec+1
   sta default_irq_vector+1
   stz VERA_dc_video   ; disable display
-  lda #32 ; set scale for bitmap mode - going for 160x120 mode
+  lda #43 ; set scale for bitmap mode - going for 215x161 mode
   sta VERA_dc_hscale
   sta VERA_dc_vscale
   ; for now no L0 or L1 
@@ -228,39 +228,42 @@ start:
   stz VERA_addr_high
   lda #$10
   sta VERA_addr_bank
+  ; load test VRAM data
+
   ; is 512 bytes at test_cell_sprite label
-  ldx #0
-  @copy_to_vram_loop:
-  	  lda test_cell_sprite_16x8,X
-  	  sta VERA_data0
-  	  INX
-  	  CPX #64
-  	  BNE @copy_to_vram_loop
-  ldx #0
-  :
-      lda test_cross_heair_8x8,X 
+  ldy #0
+
+  LDA #<test_vram_data
+  STA ZP_PTR
+  LDA #>test_vram_data
+  STA ZP_PTR+1
+  LDX #5   ;   num pages to copy 
+  BRA :++
+  : 
+     INC ZP_PTR+1
+    :
+      LDA (ZP_PTR),Y
       STA VERA_data0
-      INX
-      CPX #32
+      INY
       BNE :-
-  STZ VERA_addr_low
+     DEX 
+     BNE :--
+
+  ; write sprite test data 
+  LDA #128
+  STA VERA_addr_low
   lda #>VRAM_sprite_attributes
   sta VERA_addr_high
-  lda #$11
+  lda #$19   ;  decrement 1 bank 1
   sta VERA_addr_bank
-  LDA #2
-  STA VERA_data0 ; 	address 12:5
-  STZ VERA_data0 ;  mode  | address 16:13
-  LDA #84
-  STA VERA_data0 ; 	X 7:0
-  STZ VERA_data0 ; 	X 9:8
-  LDA #104
-  STA VERA_data0 ;  Y 7:0
-  STZ VERA_data0 ; 	Y 9:8
-  LDA #$0C 
-  STA VERA_data0 	; 	3 z depth no flip
-  STZ VERA_data0 	;	8x8 no palette offset
-
+  LDX #128
+  :
+    LDA test_sprite_data,X 
+    STA VERA_data0 
+    DEX 
+    BNE :- 
+   LDA test_sprite_data,X 
+   STA VERA_data0 
 
   ; enable display 
   stz VERA_ctrl
@@ -322,7 +325,7 @@ start:
 ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
 
 draw_test:
-	lda #8
+	lda #128
 	STA VERA_addr_low
     lda #>VRAM_sprite_attributes
     sta VERA_addr_high
@@ -341,9 +344,9 @@ draw_test:
     LDA #128
     STA ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
     STA ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
-    LDA #80
+    LDA #100
     STA ZP_PTR+13 	;	next row start at XH ZP_PTR+13
-    LDA #104
+    LDA #132
  	STA ZP_PTR+15 	;	next row start YH at ZP_PTR+15
 
 
@@ -368,21 +371,26 @@ draw_test:
     LDA #16
     STA ZP_PTR+30
 
-    LDY #120		;	amount of sprites we can write max
+    LDY #112		;	amount of sprites we can write max
   @quad_loop:
+   LDX #8
+   STX $7F
   	bra @do_row
   @next_row:
       DEY
       BNE @do_row
       rts
-  @do_row:
-  	LDX #5
+  @do_row:      
+      DEC $7F
+      BEQ @next_quad
+
+   LDX #27
   	LDA ZP_PTR+12 	;
   	STA ZP_PTR 		;	current row XL
     ADC ZP_PTR+8
     STA ZP_PTR+12 	;	next row XL 
     LDA ZP_PTR+13 	;
-    CMP #152
+    CMP #201
     BCS @next_quad 		;	off screen
     STA ZP_PTR+1 	;	current row XH
     ADC ZP_PTR+9 	;
@@ -393,7 +401,7 @@ draw_test:
     ADC ZP_PTR+10 	
     STA ZP_PTR+14 	;	next row YL
     LDA ZP_PTR+15 
-    CMP #120 	
+    CMP #153 	
     BCS @next_quad;	off screen 
     STA ZP_PTR+3
     ADC ZP_PTR+11 	
@@ -419,7 +427,7 @@ draw_test:
 
       LDA ZP_PTR+1
       ADC ZP_PTR+5
-      CMP #152
+      CMP #208
       BCS @next_row		; covers negatives even.. 
       STA ZP_PTR+1
     ; increment Y
@@ -429,7 +437,7 @@ draw_test:
 
       LDA ZP_PTR+3
       ADC ZP_PTR+7
-      CMP #120
+      CMP #153
       BCS @next_row		; 	 covers negatives even.. 
       STA ZP_PTR+3
       DEX 
@@ -460,7 +468,7 @@ draw_test:
     STA ZP_PTR+12
     LDA ACROSS_ROW_X_H,X 
     STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-    ADC #80
+    ADC #100
     STA ZP_PTR+13
     LDA ACROSS_ROW_Y_L,X 
     STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
@@ -468,7 +476,7 @@ draw_test:
     STA ZP_PTR+14
     LDA ACROSS_ROW_Y_H,X 
     STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
-    ADC #104
+    ADC #132
     STA ZP_PTR+15
     jmp @quad_loop
 @quad_2: ; invert next row - start 1 row up 
@@ -481,7 +489,7 @@ draw_test:
 
     LDA NEXT_ROW_X_H,X 
     STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
-    ADC #80
+    ADC #100
     STA ZP_PTR+13
     STA ZP_PTR+19
 
@@ -493,7 +501,7 @@ draw_test:
 
     LDA NEXT_ROW_Y_H,X 
     STA ZP_PTR+11 	; 	ZP_PTR+3 = spriteY increment 
-    ADC #104
+    ADC #132
     STA ZP_PTR+15
     STA ZP_PTR+21
     jmp @quad_loop
@@ -665,29 +673,29 @@ update_screen:
         BCS @y_line_loop
 rts
 
-test_cross_heair_8x8: 	; 	8x8x16 color = 32 bytes
-; 	   01   23   45   67
-.byte $11, $00, $00, $11
-.byte $10, $00, $00, $01
-.byte $00, $00, $00, $00
-.byte $00, $01, $10, $00
-.byte $00, $01, $10, $00
-.byte $00, $00, $00, $00
-.byte $10, $00, $00, $01
-.byte $11, $00, $00, $11
+test_sprite_data:
+; first 16 sprites reserved ... 
+;      0   1   2   3   4   5   6  7
+;     add,mod, XL, XH, YL, YH,msk,hwp
+.byte  32,$00,104,  0,132,  0,$0C,$00  ;  cursor middle - 8x8  sprite 0
+.byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
+.byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
+.byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
 
-test_cell_sprite_16x8: 	;	16x8x16 color = 64 bytes
-; 	   01   23   45   67   89   AB   CD   EF
-.byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
-.byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
-.byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	2
-.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	3
-.byte $6E, $EE, $EE, $EE, $EE, $EE, $EE, $E6 	;	4
-.byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $60 	;	5
-.byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	6
-.byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	7
+.byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
+.byte  16,$00, 76,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
+.byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
 
-test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
+.byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
+.byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
+.byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
+.byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
+
+.res 40, 0
+
+
+test_vram_data:
+test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0 
 ; 	   01   23   45   67   89   AB   CD   EF
 .byte $00, $00, $66, $66, $66, $66, $00, $00 	; 	0
 .byte $00, $66, $EE, $EE, $EE, $EE, $66, $00  	;	1
@@ -766,4 +774,22 @@ test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes
 .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
 .byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
 .byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
+.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63   512 bytes - next sprite addr = 16
+
+
+test_border:
+.repeat 64
+   .res 4, $0B
+   .res 4, $B0
+.endrepeat
+
+test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 32
+;     01   23   45   67
+.byte $11, $00, $00, $11
+.byte $10, $00, $00, $01
+.byte $00, $00, $00, $00
+.byte $00, $01, $10, $00
+.byte $00, $01, $10, $00
+.byte $00, $00, $00, $00
+.byte $10, $00, $00, $01
+.byte $11, $00, $00, $11

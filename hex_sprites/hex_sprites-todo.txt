@@ -73,6 +73,16 @@ todo.txt
 
 0630 	yesterday doofed up map of the tub .. want to make demo moving around the world.. 
 
+2024/02/28
+0950 	been thinking would like to make the view maybe closer to 45* or expanding to larger view, maybe 215x161 or even
+		256x192 .. going wider may mean larger cell width though ( >16 px).. possibly leaving gaps ...
+
+
+2024/02/29		
+0715 	switched test to 215x161 .. if go to 256x192 with like 8 px border.. would be like 256
+0910 	ok is working fine, added border to test and updated how test VRAM data is written .. committing.. 
+
+
 TODO 	sort out that z-buffer object list
 	TODO 	figure out proper calculation of camera_z ... 
 TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
