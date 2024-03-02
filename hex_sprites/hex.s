@@ -32,11 +32,9 @@ NEXT_ROW_X_L: ; 0E00
 .byte $0, $A9, $54, $0, $AE, $5D, $D, $BF, $73, $28, $DF, $98, $52, $E, $CC, $8C, $4E, $12, $D7, $9F, $69, $35, $3, $D3, $A6, $7B, $51, $2B, $6, $E4, $C4, $A6, $8B, $72, $5C, $48, $36, $27, $1A, $10, $8, $3, $0, $0, $2, $6, $D, $17, $23, $31, $42, $55, $6A, $83, $9D, $BA, $D9, $FA, $1E, $44, $6D, $97, $C4, $F3, $24, $58, $8D, $C5, $FE, $3A, $77, $B7, $F8, $3B, $80, $C7, $10, $5A, $A6, $F3, $42, $93, $E4, $38, $8D, $E3, $3A, $92, $EC, $47, $A2, $FF, $5D, $BB, $1B, $7B, $DB, $3D, $9F, $1, $64, $C8, $2B, $8F, $F4, $58, $BC, $21, $86, $EA, $4E, $B2, $16, $7A, $DD, $3F, $A2, $3, $64, $C5, $24, $83, $E1, $3E, $9A, $F5, $4F, $A8, $0, $56, $AB, $FF, $51, $A2, $F2, $40, $8C, $D7, $20, $67, $AD, $F1, $33, $73, $B1, $ED, $28, $60, $96, $CA, $FC, $2C, $59, $84, $AE, $D4, $F9, $1B, $3B, $59, $74, $8D, $A3, $B7, $C9, $D8, $E5, $EF, $F7, $FC, $FF, $FF, $FD, $F9, $F2, $E8, $DC, $CE, $BD, $AA, $95, $7C, $62, $45, $26, $5, $E1, $BB, $92, $68, $3B, $C, $DB, $A7, $72, $3A, $1, $C5, $88, $48, $7, $C4, $7F, $38, $EF, $A5, $59, $C, $BD, $6C, $1B, $C7, $72, $1C, $C5, $6D, $13, $B8, $5D, $0, $A2, $44, $E4, $84, $24, $C2, $60, $FE, $9B, $37, $D4, $70, $B, $A7, $43, $DE, $79, $15, $B1, $4D, $E9, $85, $22, $C0, $5D, $FC, $9B, $3A, $DB, $7C, $1E, $C1, $65, $A, $B0, $57
 
 NEXT_ROW_Y_H: ; 0F00
-;.byte $8, $8, $7, $7, $7, $7, $7, $7, $7, $6, $6, $6, $6, $6, $6, $5, $5, $5, $5, $5, $5, $4, $4, $4, $4, $3, $3, $3, $3, $3, $2, $2, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $0, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $FF, $0, $0, $0, $0, $1, $1, $1, $1, $1, $2, $2, $2, $2, $3, $3, $3, $3, $3, $4, $4, $4, $4, $4, $5, $5, $5, $5, $5, $6, $6, $6, $6, $6, $6, $7, $7, $7, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $8, $8, $8
 .byte $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $7, $7, $7, $7, $7, $6, $6, $6, $6, $5, $5, $5, $5, $5, $4, $4, $4, $3, $3, $3, $3, $2, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $0, $0, $0, $0, $1, $1, $1, $2, $2, $2, $2, $3, $3, $3, $3, $4, $4, $4, $4, $5, $5, $5, $5, $6, $6, $6, $6, $7, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $9
 
-NEXT_ROW_Y_L:
-; .byte $38, $19, $FA, $D9, $B7, $93, $6F, $49, $22, $FB, $D2, $A8, $7D, $51, $24, $F6, $C7, $97, $66, $35, $3, $D0, $9C, $67, $32, $FC, $C6, $8F, $57, $1F, $E7, $AE, $74, $3B, $0, $C6, $8B, $50, $15, $DA, $9E, $63, $27, $EC, $B0, $74, $39, $FE, $C2, $87, $4D, $12, $D8, $9E, $64, $2B, $F2, $BA, $82, $4B, $15, $DF, $A9, $75, $41, $D, $DB, $A9, $78, $48, $19, $EB, $BD, $91, $66, $3B, $12, $EA, $C3, $9D, $78, $54, $31, $10, $F0, $D1, $B4, $97, $7C, $62, $4A, $33, $1D, $9, $F6, $E5, $D4, $C6, $B8, $AC, $A2, $99, $92, $8B, $87, $84, $82, $82, $83, $86, $8A, $8F, $96, $9F, $A9, $B4, $C1, $CF, $DF, $F0, $3, $16, $2C, $42, $5A, $73, $8E, $AA, $C7, $E6, $5, $26, $48, $6C, $90, $B6, $DD, $4, $2D, $57, $82, $AE, $DB, $9, $38, $68, $99, $CA, $FC, $2F, $63, $98, $CD, $3, $39, $70, $A8, $E0, $18, $51, $8B, $C4, $FF, $39, $74, $AF, $EA, $25, $61, $9C, $D8, $13, $4F, $8B, $C6, $1, $3D, $78, $B2, $ED, $27, $61, $9B, $D4, $D, $45, $7D, $B4, $EA, $20, $56, $8A, $BE, $F2, $24, $56, $87, $B7, $E6, $14, $42, $6E, $99, $C4, $ED, $15, $3C, $62, $87, $AB, $CE, $EF, $F, $2E, $4B, $68, $83, $9D, $B5, $CC, $E2, $F6, $9, $1A, $2B, $39, $47, $53, $5D, $66, $6D, $74, $78, $7B, $7D, $7D, $7C, $79, $75, $70, $69, $60, $56, $4B, $3E, $30, $20, $F, $FC, $E9, $D3, $BD, $A5, $8C, $71, $55
+NEXT_ROW_Y_L: ; 1000
 .byte $CC, $A7, $82, $5A, $32, $8, $DC, $AF, $81, $52, $21, $EF, $BB, $87, $51, $1B, $E3, $AA, $70, $35, $F9, $BC, $7E, $40, $1, $C0, $80, $3E, $FC, $B9, $75, $32, $ED, $A8, $63, $1D, $D7, $91, $4B, $4, $BD, $76, $2F, $E8, $A1, $5A, $13, $CC, $85, $3F, $F9, $B3, $6E, $29, $E4, $A0, $5D, $19, $D7, $95, $54, $14, $D4, $95, $57, $1A, $DE, $A3, $68, $2F, $F7, $C0, $8A, $55, $21, $EF, $BE, $8E, $5F, $32, $6, $DB, $B2, $8A, $64, $3F, $1C, $FA, $DA, $BB, $9E, $83, $69, $51, $3A, $25, $12, $0, $F0, $E2, $D6, $CB, $C2, $BB, $B5, $B2, $B0, $AF, $B1, $B4, $B9, $C0, $C8, $D2, $DE, $EC, $FB, $C, $1F, $33, $49, $61, $7A, $95, $B1, $CF, $EF, $10, $33, $58, $7D, $A5, $CD, $F7, $23, $50, $7E, $AD, $DE, $10, $44, $78, $AE, $E4, $1C, $55, $8F, $CA, $6, $43, $81, $BF, $FE, $3F, $7F, $C1, $3, $46, $8A, $CD, $12, $57, $9C, $E2, $28, $6E, $B4, $FB, $42, $89, $D0, $17, $5E, $A5, $EC, $33, $7A, $C0, $6, $4C, $91, $D6, $1B, $5F, $A2, $E6, $28, $6A, $AB, $EB, $2B, $6A, $A8, $E5, $21, $5C, $97, $D0, $8, $3F, $75, $AA, $DE, $10, $41, $71, $A0, $CD, $F9, $24, $4D, $75, $9B, $C0, $E3, $5, $25, $44, $61, $7C, $96, $AE, $C5, $DA, $ED, $FF, $F, $1D, $29, $34, $3D, $44, $4A, $4D, $4F, $50, $4E, $4B, $46, $3F, $37, $2D, $21, $13, $4, $F3, $E0, $CC, $B6, $9E, $85, $6A, $4E, $30, $10, $EF
 
 
@@ -349,7 +347,7 @@ draw_test:
     EOR #$80
     STA ZP_PTR+17
     ; increments across rows
-    STZ ZP_PTR+16   ; 	is driving me nuts so .. 
+    STZ ZP_PTR+16   ; 	set quad jump index
 
     STZ ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
     STZ ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
@@ -393,7 +391,7 @@ draw_test:
       DEC $7F
       BEQ @next_quad
 
-   LDX #27
+   LDX #8
   	LDA ZP_PTR+12 	;
   	STA ZP_PTR 		;	current row XL
 
@@ -401,11 +399,13 @@ draw_test:
     ADC ZP_PTR+8
     STA ZP_PTR+12 	;	next row XL 
     LDA ZP_PTR+13 	;
+    STA ZP_PTR+1  ;  current row XH
+    ADC ZP_PTR+9  ;
+    STA ZP_PTR+13    ;  next row XH
+
+    LDA ZP_PTR+1
     CMP #201
     BCS @next_quad 		;	off screen
-    STA ZP_PTR+1 	;	current row XH
-    ADC ZP_PTR+9 	;
-    STA ZP_PTR+13 	;	next row XH
 
     CLC  ; clear before doing 16bit add!
     LDA ZP_PTR+14 	
@@ -413,11 +413,13 @@ draw_test:
     ADC ZP_PTR+10 	
     STA ZP_PTR+14 	;	next row YL
     LDA ZP_PTR+15 
+    STA ZP_PTR+3
+    ADC ZP_PTR+11    
+    STA ZP_PTR+15    ;  next row YH 
+
+    LDA ZP_PTR+3
     CMP #153 	
     BCS @next_quad;	off screen 
-    STA ZP_PTR+3
-    ADC ZP_PTR+11 	
-    STA ZP_PTR+15 	;	next row YH 
   @forward_row_loop:
       STZ VERA_data0 ; 	address 12:5
       STZ VERA_data0 ;  mode  | address 16:13
@@ -714,21 +716,21 @@ test_sprite_data:
 .res 8, 0  ; sprite D 
 .res 8, 0  ; sprite E 
 .res 8, 0  ; sprite F
-.byte  33,$00,  8,  0,  9,  0,$0C,$00  ; 0 test    sprite 10
+.byte  33,$00,  8,  0,  9,  0,$0C,$00  ; 0 test    sprite 10   bearing
 .byte  34,$00, 16,  0,  9,  0,$0C,$00  ; 1 test    sprite 11
-.byte  35,$00, 24,  0,  9,  0,$0C,$00  ; 2 test    sprite 12
-.byte  36,$00, 32,  0,  9,  0,$0C,$00  ; 3 test    sprite 13
-.byte  37,$00, 40,  0,  9,  0,$0C,$00  ; 4 test    sprite 14
-.byte  38,$00, 48,  0,  9,  0,$0C,$00  ; 5 test    sprite 15
-.byte  39,$00, 56,  0,  9,  0,$0C,$00  ; 6 test    sprite 16
-.byte  40,$00, 64,  0,  9,  0,$0C,$00  ; 7 test    sprite 17
-.byte  41,$00, 72,  0,  9,  0,$0C,$00  ; 8 test    sprite 18
-.byte  42,$00, 80,  0,  9,  0,$0C,$00  ; 9 test    sprite 19
-.byte  43,$00, 88,  0,  9,  0,$0C,$00  ; A test    sprite 1A
-.byte  44,$00, 96,  0,  9,  0,$0C,$00  ; B test    sprite 1B
-.byte  45,$00,104,  0,  9,  0,$0C,$00  ; C test    sprite 1C
-.byte  46,$00,112,  0,  9,  0,$0C,$00  ; D test    sprite 1D
-.byte  47,$00,120,  0,  9,  0,$0C,$00  ; E test    sprite 1E
+.byte  35,$00,  8,  0, 18,  0,$0C,$00  ; 2 test    sprite 12   Cell X 
+.byte  36,$00, 16,  0, 18,  0,$0C,$00  ; 3 test    sprite 13   
+.byte  37,$00, 28,  0, 18,  0,$0C,$00  ; 4 test    sprite 14   Cell Y
+.byte  38,$00, 36,  0, 18,  0,$0C,$00  ; 5 test    sprite 15   
+.byte  39,$00,  8,  0, 27,  0,$0C,$00  ; 6 test    sprite 16   world XH
+.byte  40,$00, 16,  0, 27,  0,$0C,$00  ; 7 test    sprite 17   
+.byte  41,$00, 28,  0, 27,  0,$0C,$00  ; 8 test    sprite 18   world Xl
+.byte  42,$00, 36,  0, 27,  0,$0C,$00  ; 9 test    sprite 19
+.byte  43,$00, 52,  0, 27,  0,$0C,$00  ; A test    sprite 1A   world YH
+.byte  44,$00, 60,  0, 27,  0,$0C,$00  ; B test    sprite 1B
+.byte  45,$00, 72,  0, 27,  0,$0C,$00  ; C test    sprite 1C   world Yl
+.byte  46,$00, 80,  0, 27,  0,$0C,$00  ; D test    sprite 1D
+.byte  47,$00,120,  0,  9,  0,$0C,$00  ; E test    sprite 1E   unused counters
 .byte  48,$00,128,  0,  9,  0,$0C,$00  ; F test    sprite 1F
 
 test_optimal_pal_data:

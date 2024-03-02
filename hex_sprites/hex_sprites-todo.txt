@@ -119,6 +119,12 @@ TODO 	Switch view to using a more 45* view? currently is 14/8 .. maybe 12/11 ? 1
 	DONE 	set to 45* - X/Y/Z = 13.856/9.798/9.798 OK 
 1305 	commit .. 
 
+		Now setup location for CELL X,Y and WORLD X,Y? using the digital counter sprites..
+BUG 	spaces along X when rotating.. max distance is 11.3 .. so need 12 px. is ok .. to get Xx11 could use X = 15.5563
+		am testing if off screen before I add to do next row -.- line 402.. 
+	FIXED ! woot .. 
+1340 	commit fix 
+
 
 TODO 	sort out that z-buffer object list
 	TODO 	figure out proper calculation of camera_z ... 
@@ -126,4 +132,3 @@ TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
 TODO 	making moving around by hex work 
 TODO 	make moving around by X/Y/Z work 
 
-BUG 	spaces along X when rotating.. max distance is 11.3 .. so need 12 px. is ok .. to get Xx11 could use X = 15.5563
