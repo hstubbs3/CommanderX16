@@ -82,6 +82,43 @@ todo.txt
 0715 	switched test to 215x161 .. if go to 256x192 with like 8 px border.. would be like 256
 0910 	ok is working fine, added border to test and updated how test VRAM data is written .. committing.. 
 
+2024/03/01
+0805 	gonna doof up some sprites to use for showing numbers.. 
+
+2024/03/02
+0800 	want to update the test graphics to use more 45* view ... and better water patch..
+
+		x=16, unit=14, makes unit/Y/Z = 14/10/10 for 45*, 14/11/9, 14/12/8 .. ! well then.. 14/12/8 sounds OK ... hmm..
+
+1015 	is setup so X unit wide = 16 with 45* but seems there's gaps sometimes left/right..
+
+		maybe go to X=15? if X=15 then unit on-screen becomes 15 *2/sqrt(3) *3/4 = 15*sqrt(3)/2 = 12.99038 ... 
+		then 45* view angle
+
+1035 	OK add sprites to show bearing.. .
+
+1045 	ok can see bearing... thinking really should be like X=15.5 .. maybe its not off by so much.. 
+		15.5 - technically centered in the 16 wide px.. 
+		that makes unit ~13.42339 and Y/Z = 9.5 
+
+1135 	still breaks.. so 15? or hmmm.. 15.25 15.5 is ok-ish.. trying 15.25
+
+1205 	oops.. needed to CLC before adds because some of these are adding negs. . meh.. so diameter=16 should be OK .. 
+		OK then switching back to diameter = 16, 45* would make y/z = 9.7979589707430835822048674485242 ..
+		ok generate numbers and move on with life.. 
+1235 	slapped CLC all over the place but 
+1240 	seems issue with adding next row.. 
+		-0.5 	255 128
+		+1.5 	  1 128
+		128+128 = 0 C => C+255+1= 1 	ok.. so works like reg 16 bit addition.. why getting 1 off? weird.. mark as bug..
+
+1300 	OK.. chcking sprite - max distance is 11.3 .. so need 12 px. is ok .. to get Xx11 could use X = 15.5563
+
+TODO 	Switch view to using a more 45* view? currently is 14/8 .. maybe 12/11 ? 13/9? ... 13/10 - x 16.4 .. 12/9 x=15..
+		15/12/9 implies 36.8698* or 26.2185 ( 26 56 BAM) 
+	DONE 	set to 45* - X/Y/Z = 13.856/9.798/9.798 OK 
+1305 	commit .. 
+
 
 TODO 	sort out that z-buffer object list
 	TODO 	figure out proper calculation of camera_z ... 
@@ -89,3 +126,4 @@ TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
 TODO 	making moving around by hex work 
 TODO 	make moving around by X/Y/Z work 
 
+BUG 	spaces along X when rotating.. max distance is 11.3 .. so need 12 px. is ok .. to get Xx11 could use X = 15.5563
