@@ -125,10 +125,35 @@ BUG 	spaces along X when rotating.. max distance is 11.3 .. so need 12 px. is ok
 	FIXED ! woot .. 
 1340 	commit fix 
 
+TODO 	figure out proper calculation of camera_z ... 
+		rotate world X,Z by bearing ( Y is up..)  camera Z=255 is back of screen..
+		There's about 15 full world units along Z on the screen.. so after rotation, Camera Z = Z*16 .. simple. 
+		world Y get's subtracted ... higher=closer ...
+		So ... CameraZ = int((RotatedZ - WorldY)*16)
+		screenX = 215 pixels, screen X = 13.85640646 pixels.. ~16 units across screen, +/8 basically.. 
+
+		screenX = (RotatedX*13.856) + screenHalf - <+/-8 .. could make lookup then ? s3.4 - within 1/16 X? more/less per px..
+
+		ScreenY = 161 px.. unitY is 9.798 pixels ~16 units across screen.. only considering worldY .. negative Y isn't drawn..
+		ScreenY = screenHeight - (worldY*9.798) - RotatedZ*9.798 - ScreenZeroZ
+		ScreenY = screenHeight - ScreenZeroZ - (worldY + RotatedZ)*9.798 	
+		so do lookup - ScreenY= lookup(WorldY + RotatedZ + ScreenZeroZ) - 4.4 .. easy peazy .. 
+
+1435 	OK calling it a day need food anyway.. roughed in google sheets with lookup for the camera Z and stuff. 
+
+2024/03/03
+0755 	ok lets see.. 
+TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
+	DONE 	was completed the other day.. lol reserved ~21 sprites for troubleshooting stuffs
+
+1225 	sorted out moving camera ... at least the numbers..
+
+1340 	moving around by cell value sets world X,Y correctly woot. 
+		world X = ((31-cellY)/2 + CellX) * ratio  
+
+TODO 	FIX code to recalculate cell position from world position. 
 
 TODO 	sort out that z-buffer object list
-	TODO 	figure out proper calculation of camera_z ... 
-TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
 TODO 	making moving around by hex work 
 TODO 	make moving around by X/Y/Z work 
 

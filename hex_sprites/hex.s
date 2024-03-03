@@ -37,6 +37,29 @@ NEXT_ROW_Y_H: ; 0F00
 NEXT_ROW_Y_L: ; 1000
 .byte $CC, $A7, $82, $5A, $32, $8, $DC, $AF, $81, $52, $21, $EF, $BB, $87, $51, $1B, $E3, $AA, $70, $35, $F9, $BC, $7E, $40, $1, $C0, $80, $3E, $FC, $B9, $75, $32, $ED, $A8, $63, $1D, $D7, $91, $4B, $4, $BD, $76, $2F, $E8, $A1, $5A, $13, $CC, $85, $3F, $F9, $B3, $6E, $29, $E4, $A0, $5D, $19, $D7, $95, $54, $14, $D4, $95, $57, $1A, $DE, $A3, $68, $2F, $F7, $C0, $8A, $55, $21, $EF, $BE, $8E, $5F, $32, $6, $DB, $B2, $8A, $64, $3F, $1C, $FA, $DA, $BB, $9E, $83, $69, $51, $3A, $25, $12, $0, $F0, $E2, $D6, $CB, $C2, $BB, $B5, $B2, $B0, $AF, $B1, $B4, $B9, $C0, $C8, $D2, $DE, $EC, $FB, $C, $1F, $33, $49, $61, $7A, $95, $B1, $CF, $EF, $10, $33, $58, $7D, $A5, $CD, $F7, $23, $50, $7E, $AD, $DE, $10, $44, $78, $AE, $E4, $1C, $55, $8F, $CA, $6, $43, $81, $BF, $FE, $3F, $7F, $C1, $3, $46, $8A, $CD, $12, $57, $9C, $E2, $28, $6E, $B4, $FB, $42, $89, $D0, $17, $5E, $A5, $EC, $33, $7A, $C0, $6, $4C, $91, $D6, $1B, $5F, $A2, $E6, $28, $6A, $AB, $EB, $2B, $6A, $A8, $E5, $21, $5C, $97, $D0, $8, $3F, $75, $AA, $DE, $10, $41, $71, $A0, $CD, $F9, $24, $4D, $75, $9B, $C0, $E3, $5, $25, $44, $61, $7C, $96, $AE, $C5, $DA, $ED, $FF, $F, $1D, $29, $34, $3D, $44, $4A, $4D, $4F, $50, $4E, $4B, $46, $3F, $37, $2D, $21, $13, $4, $F3, $E0, $CC, $B6, $9E, $85, $6A, $4E, $30, $10, $EF
 
+WORLD_TO_CELL_XH:
+.byte 0,0,1,2,3,4,5,6,6,7,8,9,10,11,12,12,13,14,15,16,17,18,19,19,20,21,22,23,24,25,25,26,27,28,29,30,31,32,32,33,34,35,36,37,38,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,51,52,53,54,55,56,57,58,58,59,60,61,62,63,64,64,65,66,67,68,69,70,71,71,72,73,74,75,76,77,77,78,79,80,81,82,83,84,84,85,86,87,88,89,90,90,91,92,93,94,95,96,96,97,98,99,100,101,102,103,103,104,105,106,107,108,109,109
+WORLD_TO_CELL_XL:
+.byte 0,221,187,153,118,84,50,15,237,203,169,134,100,66,31,253,219,184,150,116,82,47,13,235,200,166,132,97,63,29,251,216,182,148,113,79,45,10,232,198,164,129,95,61,26,248,214,180,145,111,77,42,8,230,195,161,127,93,58,24,246,211,177,143,108,74,40,6,227,193,159,124,90,56,21,243,209,175,140,106,72,37,3,225,191,156,122,88,53,19,241,206,172,138,104,69,35,1,222,188,154,119,85,51,17,238,204,170,135,101,67,32,254,220,186,151,117,83,48,14,236,202,167,133,99,64,30,252
+
+CELL_TO_WORLD_XH:
+.byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146
+CELL_TO_WORLD_XL:
+.byte 0,39,79,118,158,198,237,21,60,100,140,179,219,2,42,82,121,161,200,240,24,63,103,142,182,222,5,45,84,124,164,203,243,26,66,106,145,185,224,8,48,87,127,166,206,246,29,69,108,148,188,227,11,50,90,130,169,209,248,32,72,111,151,191,230,14,53,93,133,172,212,251,35,75,114,154,193,233,17,56,96,135,175,215,254,38,77,117,157,196,236,19,59,99,138,178,217,1,41,80,120,159,199,239,22,62,101,141,181,220,4,43,83,123,162,202,241,25,65,104,144,184,223,7,46,86,126,165
+
+CELL_LOW_TO_WORLD_XH:
+.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+CELL_LOW_TO_WORLD_XL:
+.byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146,147,148,150,151,152,153,154,155,157,158,159,160,161,162,163,165,166,167,168,169,170,172,173,174,175,176,177,178,180,181,182,183,184,185,187,188,189,190,191,192,193,195,196,197,198,199,200,202,203,204,205,206,207,209,210,211,212,213,214,215,217,218,219,220,221,222,224,225,226,227,228,229,230,232,233,234,235,236,237,239,240,241,242,243,244,245,247,248,249,250,251,252,254,255,0,1,2,3,4,6,7,8,9,10,11,13,14,15,16,17,18,19,21,22,23,24,25,26,28,29,30,31,32,33,34,36,37,38
+
+MOVE_XH:
+.res 256,0
+MOVE_XL:
+.res 256,0
+MOVE_YH:
+.res 256,0
+MOVE_YL:
+.res 256,0
 
 SPRITE_NUM_HIGH_NIBBLE:
 .res 16, 33
@@ -155,10 +178,19 @@ SPACE             = $20
 ZERO_CHAR         = $30
 SIX_CHAR          = $36
 NINE_CHAR         = $39
+
+A_CHAR            = $41
 C_CHAR            = $43
+D_CHAR            = $44
+E_CHAR            = $45
 I_CHAR            = $49
 O_CHAR            = $4F
 T_CHAR            = $54
+W_CHAR            = $57
+X_CHAR            = $58
+Y_CHAR            = $59
+Z_CHAR            = $5A
+
 CLR               = $93
 
 ; 	$0800-$9EFF	BASIC program/variables; available to the user
@@ -174,9 +206,15 @@ SCRATCH_PTR = $7E
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
 camera_facing: 		 .byte 1
-
-camera_cell_x: 		 .byte 32
-camera_cell_y: 		 .byte 15
+camera_world_pos_XH:    .byte $DE
+camera_world_pos_XL:       .byte $AD
+camera_world_pos_YH:        .byte $BE
+camera_world_pos_YL:       .byte $EF 
+camera_cell_x: 		 .byte 0
+camera_cell_xl:       .byte 0
+camera_cell_y: 		 .byte 0
+camera_cell_yl:       .byte 0 
+MASTER_CLOCK:        .addr 0
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
@@ -220,7 +258,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #7   ;   num pages to copy 
+  LDX #16   ;   num pages to copy - 16 pages / 4K  - sprite addr 0-127
   BRA :++
   : 
      INC ZP_PTR+1
@@ -278,32 +316,177 @@ start:
   sta VERA_ien
   cli ; enable IRQ now that vector is properly set
 
+  ; calc movement table - using ACROSS_ROW_* but move 1/16 unit at a time .. at 30fps = 30/16 = ~2 units / second
+  LDX #0 
+ : LDA ACROSS_ROW_Y_L,X
+   STA $7E
+   LDA ACROSS_ROW_Y_H,X
+   LSR
+   ROL $7E  ;  /2
+   LSR
+   ROL $7E  ; /4
+   LSR
+   ROL $7E  ; /8
+   LSR
+   ROL $7E  ; /16
+   TAY
+   CPY #8   ;  if original value was positive, this is the sign bit... 
+   BCC :+
+   LDA #$FF 
+ : STA MOVE_XH,X 
+   LDA $7E
+   STA MOVE_XL,X 
+
+   LDA ACROSS_ROW_X_L,X
+   STA $7E
+   LDA ACROSS_ROW_X_H,X
+   LSR
+   ROL $7E  ;  /2
+   LSR
+   ROL $7E  ; /4
+   LSR
+   ROL $7E  ; /8
+   LSR
+   ROL $7E  ; /16
+   TAY
+   CPY #8   ;  if original value was positive, this is the sign bit... 
+   BCC :+
+   LDA #$FF 
+ : STA MOVE_YH,X 
+   LDA $7E
+   STA MOVE_YL,X 
+   INX 
+   BNE :---
+
   ; main loop here... 
    STz camera_facing
 
+
+@camera_cell_changed:
+   ; zero X is far out there .. need to do (30-cell Y)/2 to cellX before conversion..
+   LDA camera_cell_yl
+   STA camera_world_pos_YL
+   EOR #$FF 
+   INC A ;  negate the low - 30 - Y.L - 0 - .L = -.L BORROW
+   TAX ; stash neg low  
+   LDA camera_cell_y
+   STA camera_world_pos_YH 
+   EOR #$FF ; negate abs(YH)-1 .. 30 1E -> E1 (-31) 0 to -1
+   SEC ; set the carry .. 
+   ADC #31   ; inverted .. so now Y=30 would be Y=0, and Y=0 to Y=30.. cool
+   LSR   ;  do the divide
+   TAY   ;  stash the cell Y high
+   TXA   ;  
+   ROR   ;  cellY/2 ready for ofsetting.. L currently in the hopper
+   CLC 
+   ADC camera_cell_xl   ; add the xl    
+   TAX   ;  stash the  effective cell XL 
+   TYA   ;  grab the negd half YH 
+   ADC camera_cell_x    ;  add the XH 
+   TAY   ;  stash the  effective XH 
+   CLC   ;  jus to be sure
+   LDA   CELL_LOW_TO_WORLD_XL,x   ;  get the XL for cell XL 
+   ADC   CELL_TO_WORLD_XL,Y       ;  add the XL fro cell XH 
+   STA camera_world_pos_XL          ;  finally??!
+   LDA   CELL_LOW_TO_WORLD_XH,x  ;  get that XH for cell XL 
+   ADC   CELL_TO_WORLD_XH,y      ;  get that HX for cell XH 
+   STA camera_world_pos_XH    ;  oh the yeah .. 
+
+
+
+   jmp @do_update
+
+; todo - fix this ! 
+@camera_world_changed:
+   jmp @do_update
+   LDA camera_world_pos_YH ; should be within 1-29 ... 
+   BEQ :+
+   CMP #31 
+   BCC :++
+ : LDA #15 ; stick em in the middle somewhere..
+   STA camera_world_pos_YH
+ : STA camera_cell_y
+   STZ $7E
+   LSR
+   ROR $7E
+   LSR 
+   ROR $7E
+   LSR 
+   ROR $7E ; tub data is 64 per page. 
+   ORA #>TUB_WORLD
+   STA $7F ; $7E is now Y amount to check into array.. 
+   LDA camera_world_pos_YL
+   STA camera_cell_yl
+   LDA camera_world_pos_YH
+   LSR ; pop that low bit 
+   LDA #0 
+   ROR ; effectively making  + (Y%2)/2
+   LDX camera_world_pos_XL
+   ADC WORLD_TO_CELL_XH,X ; get the lil bit the worldpos XL would add.. ? maxes at 109.. so won't overflow yet.. OK .. 
+   LDY camera_world_pos_XH ; worldX is only valid between 0 and 63 ... 
+   BEQ :+
+   CPY #64
+   BCC :++
+ : LDY #32
+   STY camera_world_pos_XH
+ : CLC
+   ADC WORLD_TO_CELL_XL,Y ; get the lil bit the worldpos XL would add.. ? ()
+   STA camera_cell_xl   
+   LDA #0
+   ADC WORLD_TO_CELL_XH,Y 
+   STA camera_cell_x
+   ; verify am within world.. 
+   JMP @do_update ; skipping test for now ..
+   TAY
+   LDA ($7F),y ; attempting world value.. 
+   BPL @do_update
+   CPY #32  ;  identify direction should go.. 
+   BCC :+
+   EOR #$FF 
+   SEC 
+ : ADC camera_cell_x
+   STA camera_cell_x    ;  
+   ; now world position for X is wrong... find matching XH .. will be this or larger..
+   TAX 
+   DEX
+ : INX 
+   CMP WORLD_TO_CELL_XH,X 
+   BCC :- 
+   STX camera_world_pos_XH 
+
 @do_update:
    jsr draw_test
-   lda #128
+   ;  write location datas.. 
+   lda #248
    STA VERA_addr_low
    LDA #$FC
    STA VERA_addr_high
-   LDA #$41
+   LDA #$49
    STA VERA_addr_bank
-   ldx camera_facing
-   LDA SPRITE_NUM_HIGH_NIBBLE,X 
-   STA VERA_data0
+   ldy #9
+ : LDX camera_facing-1,y
    LDA SPRITE_NUM_LOW_NIBBLE,X 
    STA VERA_data0
+   LDA SPRITE_NUM_HIGH_NIBBLE,X 
+   STA VERA_data0
+   dey
+   BNE :-
 
 @FRAME_CHECK:
-   lda #4
-  @frame_A:
    wai
-   ldy VSYNC_counter
-   beq @frame_A
+   lda VSYNC_counter
+   beq @FRAME_CHECK
    stz VSYNC_counter
-   DEC A
-   BNE @frame_A
+   CLC
+   ADC MASTER_CLOCK
+   TAX
+   STA MASTER_CLOCK
+   LDA MASTER_CLOCK+1
+   ADC #0
+   STA MASTER_CLOCK+1
+   TXA
+   AND #1 ; restrict to 30 fps.. don't care missed cycle. 
+   BNE @FRAME_CHECK
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
@@ -314,9 +497,117 @@ start:
    BRA @do_update
    :
    cmp  #$9D 	;	cursor left
-   BNE @do_update
+   BNE :+
    INC camera_facing
-   BRA @do_update
+   JMP @do_update
+ : cmp #$11; cursor down
+   BNE :+
+   LDX camera_facing
+   CLC 
+   LDA camera_world_pos_XL
+   ADC MOVE_XL,X 
+   STA camera_world_pos_XL
+   LDA camera_world_pos_XH
+   ADC MOVE_XH,X 
+   STA camera_world_pos_XH
+   CLC 
+   LDA MOVE_YL,X 
+   ADC camera_world_pos_YL
+   STA camera_world_pos_YL
+   LDA MOVE_YH,X 
+   ADC camera_world_pos_YH
+   STA camera_world_pos_YH
+   jmp @camera_world_changed
+
+ : cmp #$91 ; cursor up 
+   BNE :+
+   LDX camera_facing
+   SEC 
+   LDA camera_world_pos_XL
+   SBC MOVE_XL,X 
+   STA camera_world_pos_XL
+   LDa camera_world_pos_XH
+   SBC MOVE_XH,X 
+   STA camera_world_pos_XH
+   SEC 
+   LDA camera_world_pos_YL
+   SBC MOVE_YL,X 
+   STA camera_world_pos_YL
+   LDA camera_world_pos_YH
+   SBC MOVE_YH,X 
+   STA camera_world_pos_YH
+   jmp @camera_world_changed
+
+ : cmp #W_CHAR ; cell up left 
+   BNE :+++
+   LDA camera_cell_y
+   BEQ :+
+   DEC camera_cell_y
+ : LDA camera_cell_x
+   BEQ :+
+   DEC camera_cell_x
+ : JMP @camera_cell_changed
+
+ : cmp #E_CHAR ; cell up right 
+   BNE :++
+   LDA camera_cell_y
+   BEQ :+
+   DEC camera_cell_y
+ : JMP @camera_cell_changed
+
+ : cmp #A_CHAR ; cell left 
+   BNE :++
+   LDA camera_cell_x
+   BEQ :+
+   DEC camera_cell_x
+ : JMP @camera_cell_changed
+
+ : cmp #D_CHAR ; cell right 
+   BNE :++
+   LDA camera_cell_x 
+   CMP #63
+   BCS :+
+   INC camera_cell_x
+ : JMP @camera_cell_changed
+
+ : cmp #Z_CHAR ; cell down left 
+   BNE :++
+   LDA camera_cell_y
+   CMP #31
+   BCS :+
+   INC camera_cell_y
+ : JMP @camera_cell_changed
+
+ : cmp #X_CHAR ; cell down right 
+   BNE :+++
+   LDA camera_cell_y
+   CMP #31
+   BCS :+
+   INC camera_cell_y
+ : LDA camera_cell_x
+   CMP #63
+   BCS :+
+   INC camera_cell_x
+ : JMP @camera_cell_changed
+
+ : cmp #0 ; 
+   BNE :+
+   JMP @do_update
+
+ : cmp #0 ; 
+   BNE :+
+   JMP @do_update
+
+ : cmp #0 ; 
+   BNE :+
+   JMP @do_update
+
+ : cmp #0 ; 
+   BNE :+
+   JMP @do_update
+
+
+ : JMP @FRAME_CHECK
 
 @cleanup_and_exit:
    ; restore default IRQ vector
@@ -698,7 +989,7 @@ test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  32,$00,104,  0,132,  0,$0C,$00  ;  cursor middle - 8x8  sprite 0
+.byte  66,$00,100,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
 .byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
 .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
@@ -711,36 +1002,37 @@ test_sprite_data:
 .byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
 .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
 .byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-.res 8, 0  ; sprite B 
-.res 8, 0  ; sprite C
-.res 8, 0  ; sprite D 
-.res 8, 0  ; sprite E 
-.res 8, 0  ; sprite F
-.byte  33,$00,  8,  0,  9,  0,$0C,$00  ; 0 test    sprite 10   bearing
-.byte  34,$00, 16,  0,  9,  0,$0C,$00  ; 1 test    sprite 11
-.byte  35,$00,  8,  0, 18,  0,$0C,$00  ; 2 test    sprite 12   Cell X 
-.byte  36,$00, 16,  0, 18,  0,$0C,$00  ; 3 test    sprite 13   
-.byte  37,$00, 28,  0, 18,  0,$0C,$00  ; 4 test    sprite 14   Cell Y
-.byte  38,$00, 36,  0, 18,  0,$0C,$00  ; 5 test    sprite 15   
-.byte  39,$00,  8,  0, 27,  0,$0C,$00  ; 6 test    sprite 16   world XH
-.byte  40,$00, 16,  0, 27,  0,$0C,$00  ; 7 test    sprite 17   
-.byte  41,$00, 28,  0, 27,  0,$0C,$00  ; 8 test    sprite 18   world Xl
-.byte  42,$00, 36,  0, 27,  0,$0C,$00  ; 9 test    sprite 19
-.byte  43,$00, 52,  0, 27,  0,$0C,$00  ; A test    sprite 1A   world YH
-.byte  44,$00, 60,  0, 27,  0,$0C,$00  ; B test    sprite 1B
-.byte  45,$00, 72,  0, 27,  0,$0C,$00  ; C test    sprite 1C   world Yl
-.byte  46,$00, 80,  0, 27,  0,$0C,$00  ; D test    sprite 1D
-.byte  47,$00,120,  0,  9,  0,$0C,$00  ; E test    sprite 1E   unused counters
-.byte  48,$00,128,  0,  9,  0,$0C,$00  ; F test    sprite 1F
+.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
+.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
+.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
+.byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
+.byte  34,$00,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
+.byte  39,$00,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
+.byte  40,$00,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11   
+.byte  41,$00,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
+.byte  42,$00,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
+.byte  43,$00,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
+.byte  44,$00,184,  0,127,  0,$0C,$00  ; B test    sprite 15
+.byte  45,$00,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
+.byte  46,$00,200,  0,127,  0,$0C,$00  ; D test    sprite 17
+.byte  35,$00,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X 
+.byte  36,$00,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19   
+.byte  47,$00,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
+.byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
+.byte  37,$00,176,  0,145,  0,$0C,$00  ; 4 test    sprite 1C   Cell Y
+.byte  38,$00,184,  0,145,  0,$0C,$00  ; 5 test    sprite 1D   
+.byte  48,$00,192,  0,145,  0,$0C,$00  ; F test    sprite 1E   Y Subcell
+.byte  48,$00,200,  0,145,  0,$0C,$00  ; F test    sprite 1F
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
 .byte $00,$00  ; 0 - black/transparent
-.byte $EC,$0F  ; 1 - cream
+.byte $c8,$0f  ; 1 #ffcc88
+
 .byte $04,$06  ; 2 #660044
 .byte $00,$0C  ; 3  #cc0000
 .byte $F0,$0C  ; 4#ccff00
-.byte $c8,$0f  ; 5 #ffcc88
+.byte $42,$03
 .byte $60,$0c   ; 6  #cc6600
 .byte $40,$08   ; 7 #884400
 .byte $c0,$0c   ; 8 #cccc00
@@ -986,7 +1278,7 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $01, $00, $00, $00
 .byte $00, $11, $11, $00   
 
-.byte $00, $11, $11, $00   ; F
+.byte $00, $11, $11, $00   ; F   sprite addr 48
 .byte $01, $00, $00, $00
 .byte $01, $00, $00, $00
 .byte $00, $11, $11, $00
@@ -994,3 +1286,58 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $01, $00, $00, $00
 .byte $01, $00, $00, $00
 .byte $00, $00, $00, $00   
+
+.byte $00, $00, $00, $00  ;  bearing label   sprite addr 49
+.byte $00, $00, $01, $00
+.byte $00, $00, $10, $00
+.byte $00, $01, $00, $00
+.byte $00, $10, $00, $00
+.byte $01, $00, $00, $00
+.byte $11, $11, $11, $00
+.byte $00, $00, $00, $00
+
+; cell position label sprite addr 50-57
+.byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 
+.byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+;     XH                               $XL                            ___  __  YH                              YL
+.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00  
+.byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00  
+.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00  
+
+; world position label 58-65
+;     XH                 $XL                  ___  ___  YH                  YL
+.byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+.byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
+;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+;     XH                               $XL                            ___  __  YH                              YL
+.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00  
+.byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00  
+.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00  
+
+; directional cursor reminder... 16x16 - 66-69
+
+.byte $00, $10, $00, $10, $01, $11, $11, $00
+.byte $00, $10, $00, $10, $01, $00, $00, $00
+.byte $00, $10, $10, $10, $01, $11, $00, $00
+.byte $00, $10, $10, $10, $01, $00, $00, $00
+.byte $00, $01, $01, $00, $01, $11, $11, $00
+.byte $00, $00, $00, $00, $00, $00, $00, $00
+.byte $01, $11, $00, $00, $00, $01, $11, $00
+.byte $10, $00, $10, $00, $00, $01, $00, $01
+.byte $11, $11, $10, $00, $00, $01, $00, $01
+.byte $10, $00, $10, $00, $00, $01, $11, $10
+.byte $00, $00, $00, $00, $00, $00, $00, $00
+.byte $00, $11, $11, $10, $01, $00, $01, $00
+.byte $00, $00, $01, $00, $00, $10, $10, $00
+.byte $00, $00, $10, $00, $00, $01, $00, $00
+.byte $00, $01, $00, $00, $00, $10, $10, $00
+.byte $00, $11, $11, $10, $01, $00, $01, $00
+
+
