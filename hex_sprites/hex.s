@@ -363,7 +363,39 @@ start:
 
 
 @camera_cell_changed:
-   ; zero X is far out there .. need to do (30-cell Y)/2 to cellX before conversion..
+   LDA camera_cell_y
+   STA camera_world_pos_YH
+   LSR
+   STA $7F  ; high byte
+   LDA camera_cell_yl
+   STA camera_world_pos_YL
+   ROR 
+   STA $7E  ; low byte cellY.2 
+   ; worldX = (cellX + 15.5 - cellY/2)*ratio
+   CLC 
+   LDA camera_cell_xl ; +15.5
+   ADC #128
+   TAX 
+   LDA camera_cell_x
+   ADC #15
+   TAY 
+   SEC 
+   TXA 
+   SBC $7E
+   TAX 
+   TYA 
+   SBC $7F
+   TAY 
+   CLC 
+   LDA CELL_LOW_TO_WORLD_XL,X 
+   ADC CELL_TO_WORLD_XL,Y 
+   STA camera_world_pos_XL
+   LDA CELL_LOW_TO_WORLD_XH,X 
+   ADC CELL_TO_WORLD_XH,Y 
+   STA camera_world_pos_XH
+   jmp @do_update
+
+   ; thar be dragons here (old stupid code)
    LDA camera_cell_yl
    STA camera_world_pos_YL
    EOR #$FF 
@@ -373,7 +405,7 @@ start:
    STA camera_world_pos_YH 
    EOR #$FF ; negate abs(YH)-1 .. 30 1E -> E1 (-31) 0 to -1
    SEC ; set the carry .. 
-   ADC #31   ; inverted .. so now Y=30 would be Y=0, and Y=0 to Y=30.. cool
+   ADC #31   ; inverted .. so now Y=31 would be Y=0, and Y=0 to Y=31.. cool
    LSR   ;  do the divide
    TAY   ;  stash the cell Y high
    TXA   ;  
@@ -391,68 +423,43 @@ start:
    LDA   CELL_LOW_TO_WORLD_XH,x  ;  get that XH for cell XL 
    ADC   CELL_TO_WORLD_XH,y      ;  get that HX for cell XH 
    STA camera_world_pos_XH    ;  oh the yeah .. 
-
-
-
    jmp @do_update
 
-; todo - fix this ! 
 @camera_world_changed:
-   jmp @do_update
-   LDA camera_world_pos_YH ; should be within 1-29 ... 
-   BEQ :+
-   CMP #31 
-   BCC :++
- : LDA #15 ; stick em in the middle somewhere..
-   STA camera_world_pos_YH
- : STA camera_cell_y
-   STZ $7E
+   LDA camera_world_pos_YH
+   STA camera_cell_y
    LSR
-   ROR $7E
-   LSR 
-   ROR $7E
-   LSR 
-   ROR $7E ; tub data is 64 per page. 
-   ORA #>TUB_WORLD
-   STA $7F ; $7E is now Y amount to check into array.. 
+   STA $7F  ; high byte
    LDA camera_world_pos_YL
    STA camera_cell_yl
-   LDA camera_world_pos_YH
-   LSR ; pop that low bit 
-   LDA #0 
-   ROR ; effectively making  + (Y%2)/2
-   LDX camera_world_pos_XL
-   ADC WORLD_TO_CELL_XH,X ; get the lil bit the worldpos XL would add.. ? maxes at 109.. so won't overflow yet.. OK .. 
-   LDY camera_world_pos_XH ; worldX is only valid between 0 and 63 ... 
-   BEQ :+
-   CPY #64
-   BCC :++
- : LDY #32
-   STY camera_world_pos_XH
- : CLC
-   ADC WORLD_TO_CELL_XL,Y ; get the lil bit the worldpos XL would add.. ? ()
-   STA camera_cell_xl   
-   LDA #0
-   ADC WORLD_TO_CELL_XH,Y 
-   STA camera_cell_x
-   ; verify am within world.. 
-   JMP @do_update ; skipping test for now ..
-   TAY
-   LDA ($7F),y ; attempting world value.. 
-   BPL @do_update
-   CPY #32  ;  identify direction should go.. 
-   BCC :+
-   EOR #$FF 
+   ROR 
+   STA $7E  ; low byte cellY.2 
+   ; cellX = WORLDX*ratio - (31-cellY)/2
+   ; cellX = WORLDX*ratio - 15.5 + cellY/2
+   LDX camera_world_pos_XH 
+   LDY camera_world_pos_XL
+   CLC 
+   LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
+   ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH 
+   TAY   ;  cellXL from ratio
+   LDA WORLD_TO_CELL_XH,X 
+   ADC #0 ; gotta do that carry and all .. 
+   TAX   ; cellXH from ratio 
    SEC 
- : ADC camera_cell_x
-   STA camera_cell_x    ;  
-   ; now world position for X is wrong... find matching XH .. will be this or larger..
+   TYA   ;  cellXL from ratio
+   SBC #128 ; minus 15.5L 
+   TAY 
+   TXA 
+   SBC #15 ; minus 15.5H 
    TAX 
-   DEX
- : INX 
-   CMP WORLD_TO_CELL_XH,X 
-   BCC :- 
-   STX camera_world_pos_XH 
+   CLC 
+   TYA ; cellXL from ratio minute 15.5 
+   ADC $7E  ; plis cellY/2
+   STA camera_cell_xl
+   TXA 
+   ADC $7F   
+   STA camera_cell_x 
+   jmp @do_update
 
 @do_update:
    jsr draw_test

@@ -150,8 +150,17 @@ TODO 	add some 8x8 sprites to show numbers for troubleshooting - cell, bearing
 
 1340 	moving around by cell value sets world X,Y correctly woot. 
 		world X = ((31-cellY)/2 + CellX) * ratio  
+		committing..
 
+1930 	back at it .. 
+2030 	code working .. conversion from world pos -> cell pos OK 
 TODO 	FIX code to recalculate cell position from world position. 
+	DONE 
+TODO 	fix code for calculating cell pos -> world pps
+	DONE
+2045 	cell -> world pos comes up ~2/256 short vs world -> cell calc. for X ... will consider as within tolerance
+		committing...
+		
 
 TODO 	sort out that z-buffer object list
 TODO 	making moving around by hex work 
