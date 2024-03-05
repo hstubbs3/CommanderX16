@@ -34,6 +34,10 @@ NEXT_ROW_X_L: ; 0E00
 NEXT_ROW_Y_H: ; 0F00
 .byte $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $7, $7, $7, $7, $7, $6, $6, $6, $6, $5, $5, $5, $5, $5, $4, $4, $4, $3, $3, $3, $3, $2, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $0, $0, $0, $0, $1, $1, $1, $2, $2, $2, $2, $3, $3, $3, $3, $4, $4, $4, $4, $5, $5, $5, $5, $6, $6, $6, $6, $7, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $9
 
+TUB_WORLD:
+.include "tub_world.inc"
+
+
 NEXT_ROW_Y_L: ; 1000
 .byte $CC, $A7, $82, $5A, $32, $8, $DC, $AF, $81, $52, $21, $EF, $BB, $87, $51, $1B, $E3, $AA, $70, $35, $F9, $BC, $7E, $40, $1, $C0, $80, $3E, $FC, $B9, $75, $32, $ED, $A8, $63, $1D, $D7, $91, $4B, $4, $BD, $76, $2F, $E8, $A1, $5A, $13, $CC, $85, $3F, $F9, $B3, $6E, $29, $E4, $A0, $5D, $19, $D7, $95, $54, $14, $D4, $95, $57, $1A, $DE, $A3, $68, $2F, $F7, $C0, $8A, $55, $21, $EF, $BE, $8E, $5F, $32, $6, $DB, $B2, $8A, $64, $3F, $1C, $FA, $DA, $BB, $9E, $83, $69, $51, $3A, $25, $12, $0, $F0, $E2, $D6, $CB, $C2, $BB, $B5, $B2, $B0, $AF, $B1, $B4, $B9, $C0, $C8, $D2, $DE, $EC, $FB, $C, $1F, $33, $49, $61, $7A, $95, $B1, $CF, $EF, $10, $33, $58, $7D, $A5, $CD, $F7, $23, $50, $7E, $AD, $DE, $10, $44, $78, $AE, $E4, $1C, $55, $8F, $CA, $6, $43, $81, $BF, $FE, $3F, $7F, $C1, $3, $46, $8A, $CD, $12, $57, $9C, $E2, $28, $6E, $B4, $FB, $42, $89, $D0, $17, $5E, $A5, $EC, $33, $7A, $C0, $6, $4C, $91, $D6, $1B, $5F, $A2, $E6, $28, $6A, $AB, $EB, $2B, $6A, $A8, $E5, $21, $5C, $97, $D0, $8, $3F, $75, $AA, $DE, $10, $41, $71, $A0, $CD, $F9, $24, $4D, $75, $9B, $C0, $E3, $5, $25, $44, $61, $7C, $96, $AE, $C5, $DA, $ED, $FF, $F, $1D, $29, $34, $3D, $44, $4A, $4D, $4F, $50, $4E, $4B, $46, $3F, $37, $2D, $21, $13, $4, $F3, $E0, $CC, $B6, $9E, $85, $6A, $4E, $30, $10, $EF
 
@@ -97,8 +101,6 @@ SPRITE_NUM_LOW_NIBBLE:
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 
-TUB_WORLD:
-.include "tub_world.inc"
 ;constants
 
 ; RAM Interrupt Vectors
@@ -114,6 +116,11 @@ VERA_ctrl         = $9F25
 VERA_ien          = $9F26
 VERA_isr          = $9F27
 VERA_dc_video     = $9F29 ; DCSEL = 0
+FX_CTRL           = $9F29 ; DCSEL = 2
+FX_CACHE_L        = $9F29 ; DCSEL = 6 
+FX_CACHE_M        = $9F2A 
+FX_CACHE_H        = $9F2B
+FX_CACHE_U        = $9F2C 
 ;   Current Field | Sprites Enable | Layer1 Enable  |Layer0 Enable 
 ; NTSC/RGB: 240P  | NTSC: Chroma Disable / RGB: HV Sync Output Mode
 
@@ -206,10 +213,10 @@ SCRATCH_PTR = $7E
 default_irq_vector:  .addr 0
 VSYNC_counter:       .byte 1
 camera_facing: 		 .byte 1
-camera_world_pos_XH:    .byte $DE
-camera_world_pos_XL:       .byte $AD
-camera_world_pos_YH:        .byte $BE
-camera_world_pos_YL:       .byte $EF 
+camera_world_pos_XH:    .byte 19
+camera_world_pos_XL:       .byte 161
+camera_world_pos_YH:        .byte 15
+camera_world_pos_YL:       .byte 0 
 camera_cell_x: 		 .byte 0
 camera_cell_xl:       .byte 0
 camera_cell_y: 		 .byte 0
@@ -286,6 +293,38 @@ start:
    LDA test_sprite_data,X 
    STA VERA_data0 
 
+  ; clear out the overlay sprite .. 
+  LDA #12   ;  DCSEL = 6, addr0
+  STA VERA_ctrl
+  STA FX_CACHE_L
+  STA FX_CACHE_M
+  STA FX_CACHE_H
+  STA FX_CACHE_U
+  STZ VERA_addr_low
+  STZ VERA_addr_high
+  LDA #$41
+  STA VERA_addr_bank ; at 64K in VRAM 
+  LDA #5
+  STA VERA_ctrl ; DCSEL = 2 , addr1 
+  LDA #4
+  STA VERA_addr_low
+  STZ VERA_addr_high
+  LDA #$41
+  STA VERA_addr_bank
+  LDA #%01000000 ; enable cache writes 
+  STA FX_CTRL
+  ; need to write out 2k each to data0 and data1 .. writing 8 bytes at a time = 512 .. so write 16 at a time = 256
+  LDY #0
+  : STZ VERA_data0
+    STZ VERA_data1
+    STZ VERA_data0
+    STZ VERA_data1
+    iny 
+    BNE :-
+  STZ FX_CTRL ; disable cache writes 
+  STZ VERA_ctrl ; reset VERA_CTRL ok 
+
+
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
   LDX #31
   STX VERA_addr_low
@@ -361,6 +400,54 @@ start:
   ; main loop here... 
    STz camera_facing
 
+@camera_world_changed:
+   LDA camera_world_pos_YH
+   STA camera_cell_y
+   LSR
+   STA $7F  ; high byte
+   LDA camera_world_pos_YL
+   STA camera_cell_yl
+   ROR 
+   STA $7E  ; low byte cellY.2 
+   ; cellX = WORLDX*ratio - (31-cellY)/2
+   ; cellX = WORLDX*ratio - 15.5 + cellY/2
+   LDX camera_world_pos_XH 
+   LDY camera_world_pos_XL
+   CLC 
+   LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
+   ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH 
+   TAY   ;  cellXL from ratio
+   LDA WORLD_TO_CELL_XH,X 
+   ADC #0 ; gotta do that carry and all .. 
+   TAX   ; cellXH from ratio 
+   SEC 
+   TYA   ;  cellXL from ratio
+   SBC #128 ; minus 15.5L 
+   TAY 
+   TXA 
+   SBC #15 ; minus 15.5H 
+   TAX 
+   CLC 
+   TYA ; cellXL from ratio minute 15.5 
+   ADC $7E  ; plis cellY/2
+   STA camera_cell_xl
+   TXA 
+   ADC $7F   
+   BNE :+ 
+   INC A 
+ : CMP #64
+   BCC :+
+   LDA #63
+ : STA camera_cell_x 
+   LDA camera_cell_y
+   BNE :+ 
+   INC A 
+ : CMP #30
+   BCC :+
+   LDA #29
+ : STA camera_cell_y
+
+ ;  jmp @do_update
 
 @camera_cell_changed:
    LDA camera_cell_y
@@ -395,71 +482,6 @@ start:
    STA camera_world_pos_XH
    jmp @do_update
 
-   ; thar be dragons here (old stupid code)
-   LDA camera_cell_yl
-   STA camera_world_pos_YL
-   EOR #$FF 
-   INC A ;  negate the low - 30 - Y.L - 0 - .L = -.L BORROW
-   TAX ; stash neg low  
-   LDA camera_cell_y
-   STA camera_world_pos_YH 
-   EOR #$FF ; negate abs(YH)-1 .. 30 1E -> E1 (-31) 0 to -1
-   SEC ; set the carry .. 
-   ADC #31   ; inverted .. so now Y=31 would be Y=0, and Y=0 to Y=31.. cool
-   LSR   ;  do the divide
-   TAY   ;  stash the cell Y high
-   TXA   ;  
-   ROR   ;  cellY/2 ready for ofsetting.. L currently in the hopper
-   CLC 
-   ADC camera_cell_xl   ; add the xl    
-   TAX   ;  stash the  effective cell XL 
-   TYA   ;  grab the negd half YH 
-   ADC camera_cell_x    ;  add the XH 
-   TAY   ;  stash the  effective XH 
-   CLC   ;  jus to be sure
-   LDA   CELL_LOW_TO_WORLD_XL,x   ;  get the XL for cell XL 
-   ADC   CELL_TO_WORLD_XL,Y       ;  add the XL fro cell XH 
-   STA camera_world_pos_XL          ;  finally??!
-   LDA   CELL_LOW_TO_WORLD_XH,x  ;  get that XH for cell XL 
-   ADC   CELL_TO_WORLD_XH,y      ;  get that HX for cell XH 
-   STA camera_world_pos_XH    ;  oh the yeah .. 
-   jmp @do_update
-
-@camera_world_changed:
-   LDA camera_world_pos_YH
-   STA camera_cell_y
-   LSR
-   STA $7F  ; high byte
-   LDA camera_world_pos_YL
-   STA camera_cell_yl
-   ROR 
-   STA $7E  ; low byte cellY.2 
-   ; cellX = WORLDX*ratio - (31-cellY)/2
-   ; cellX = WORLDX*ratio - 15.5 + cellY/2
-   LDX camera_world_pos_XH 
-   LDY camera_world_pos_XL
-   CLC 
-   LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
-   ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH 
-   TAY   ;  cellXL from ratio
-   LDA WORLD_TO_CELL_XH,X 
-   ADC #0 ; gotta do that carry and all .. 
-   TAX   ; cellXH from ratio 
-   SEC 
-   TYA   ;  cellXL from ratio
-   SBC #128 ; minus 15.5L 
-   TAY 
-   TXA 
-   SBC #15 ; minus 15.5H 
-   TAX 
-   CLC 
-   TYA ; cellXL from ratio minute 15.5 
-   ADC $7E  ; plis cellY/2
-   STA camera_cell_xl
-   TXA 
-   ADC $7F   
-   STA camera_cell_x 
-   jmp @do_update
 
 @do_update:
    jsr draw_test
@@ -492,8 +514,8 @@ start:
    ADC #0
    STA MASTER_CLOCK+1
    TXA
-   AND #1 ; restrict to 30 fps.. don't care missed cycle. 
-   BNE @FRAME_CHECK
+   ;AND #1 ; restrict to 20 fps.. don't care missed cycle. 
+   ;BNE @FRAME_CHECK
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
@@ -580,7 +602,7 @@ start:
  : cmp #Z_CHAR ; cell down left 
    BNE :++
    LDA camera_cell_y
-   CMP #31
+   CMP #30
    BCS :+
    INC camera_cell_y
  : JMP @camera_cell_changed
@@ -588,7 +610,7 @@ start:
  : cmp #X_CHAR ; cell down right 
    BNE :+++
    LDA camera_cell_y
-   CMP #31
+   CMP #30
    BCS :+
    INC camera_cell_y
  : LDA camera_cell_x
@@ -597,9 +619,11 @@ start:
    INC camera_cell_x
  : JMP @camera_cell_changed
 
- : cmp #0 ; 
+ : cmp #SPACE; 
    BNE :+
-   JMP @do_update
+   STZ camera_cell_xl
+   STZ camera_cell_yl
+   JMP @camera_cell_changed
 
  : cmp #0 ; 
    BNE :+
@@ -632,16 +656,30 @@ start:
 ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
 
 draw_test:
-	STZ VERA_addr_low
+    STZ VERA_addr_low
     lda #>VRAM_sprite_attributes+1
     sta VERA_addr_high
     lda #$11
     sta VERA_addr_bank
 
-  
+
+    LDA VERA_ctrl
+    EOR #1
+    STA VERA_ctrl ; switch to set addr1 
+    ; 64x64 pixel in the middle would be 32x32.. 2048+32 = 2080 $820
+    LDA #$20
+    STA VERA_addr_low
+    STA ZP_PTR+40
+    LDA #$08
+    STA VERA_addr_high
+    STA ZP_PTR+41
+    LDA #$11            ;  draw 1 to the right at a time..  
+    STA VERA_addr_bank
+
+
     ; load increments and set start position...
     LDX camera_facing
-    TXA 
+    TXA
     EOR #$80
     STA ZP_PTR+17
     ; increments across rows
@@ -676,50 +714,101 @@ draw_test:
     LDA #$50
     STA ZP_PTR+30
 
+    STZ ZP_PTR+32
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR ZP_PTR+32
+    LSR  ; y pages of 64 ! 
+    ROR ZP_PTR+32
+    ORA #>TUB_WORLD
+    STA ZP_PTR+33    
+    STA ZP_PTR+35
+    STA ZP_PTR+37
+    LDA camera_cell_x
+    AND #63
+    ORA ZP_PTR+32
+    STA ZP_PTR+32    ;  lookup pointer configured for start  - for setting up quadrants 
+    STA ZP_PTR+34    ;  this is copy for going to next row 
+    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
+    ; first quadrant increments along the row 
+    LDA #1 
+    STA ZP_PTR+38
+    ; next row goes up-right
+    LDA #192
+    STA ZP_PTR+39
+
     LDY #96		;	amount of sprites we can write max
+
   @quad_loop:
-   LDX #8
+   LDX #10
    STX $7F
   	bra @do_row
   @next_row:
+      SEC
+      LDA ZP_PTR+34
+      SBC #64
+      STA ZP_PTR+34
+      STA ZP_PTR+36
+      LDA ZP_PTR+35
+      SBC #0
+      STA ZP_PTR+35
+      STA ZP_PTR+37
+
+      SEC
+      LDA ZP_PTR+40
+      SBC #64
+      STA ZP_PTR+40
+      STA VERA_addr_low
+      LDA ZP_PTR+41
+      SBC #0
+      STA ZP_PTR+41
+      STA VERA_addr_high
       DEY
       BNE @do_row
       rts
   @do_row:      
       DEC $7F
-      BEQ @next_quad
-
-   LDX #8
+      BNE :+
+      JMP @next_quad
+     :
+   LDX #7
   	LDA ZP_PTR+12 	;
   	STA ZP_PTR 		;	current row XL
 
-    CLC  ; clear before doing 16bit add!
-    ADC ZP_PTR+8
+    SEC  ; clear before doing 16bit add!
+    SBC ZP_PTR+8
     STA ZP_PTR+12 	;	next row XL 
     LDA ZP_PTR+13 	;
     STA ZP_PTR+1  ;  current row XH
-    ADC ZP_PTR+9  ;
+    SBC ZP_PTR+9  ;
     STA ZP_PTR+13    ;  next row XH
 
     LDA ZP_PTR+1
     CMP #201
-    BCS @next_quad 		;	off screen
-
-    CLC  ; clear before doing 16bit add!
+    BCC :+
+    JMP @next_quad 		;	off screen
+    :
+    SEC  ; clear before doing 16bit add!
     LDA ZP_PTR+14 	
     STA ZP_PTR+2 	;	current row YL
-    ADC ZP_PTR+10 	
+    SBC ZP_PTR+10 	
     STA ZP_PTR+14 	;	next row YL
     LDA ZP_PTR+15 
     STA ZP_PTR+3
-    ADC ZP_PTR+11    
+    SBC ZP_PTR+11    
     STA ZP_PTR+15    ;  next row YH 
 
     LDA ZP_PTR+3
     CMP #153 	
     BCS @next_quad;	off screen 
   @forward_row_loop:
-      STZ VERA_data0 ; 	address 12:5
+      LDA (ZP_PTR+36)   ; read the thing  
+      BEQ :+
+      LDA #70
+      BRA :++
+    : LDA #0 ; 	address 12:5
+    : STA VERA_data0
+      STA VERA_data1
       STZ VERA_data0 ;  mode  | address 16:13
       LDA ZP_PTR+1 	
       STA VERA_data0 ; 	X 7:0
@@ -732,6 +821,12 @@ draw_test:
       LDA #$50 			; 	16x8 no palette offset
       LDA ZP_PTR+30;
       STA VERA_data0
+    ; increment along row 
+    CLC 
+    LDA ZP_PTR+36
+    ADC ZP_PTR+38
+    STA ZP_PTR+36 ; this _should_ be only +/- 1 ... right? 
+ 
     ; increment X
     CLC  ; clear before doing 16bit add!
       LDA ZP_PTR 	;	load X_l
@@ -741,9 +836,12 @@ draw_test:
 
       LDA ZP_PTR+1
       ADC ZP_PTR+5
-      CMP #208
-      BCS @next_row		; covers negatives even.. 
-      STA ZP_PTR+1
+      CMP #32
+      BCC :+
+      CMP #167
+      BCC :++
+      : JMP @next_row		; covers negatives even.. 
+      : STA ZP_PTR+1
     ; increment Y
     CLC  ; clear before doing 16bit add!
 
@@ -753,17 +851,27 @@ draw_test:
 
       LDA ZP_PTR+3
       ADC ZP_PTR+7
+      CMP #32
+      BCC :+
       CMP #153
-      BCS @next_row		; 	 covers negatives even.. 
+      BCC :++
+      : JMP @next_row     ; covers negatives even.. 
+      : 
       STA ZP_PTR+3
       DEX 
-      BEQ @next_row
+      BNE :+
+      JMP @next_row     ; covers negatives even.. 
+      :
       DEY
       BNE @forward_row_loop 
   @end:
+    LDA VERA_ctrl
+    EOR #1
+    STA VERA_ctrl ; switch to unset addr1 
      rts
 
   @next_quad: 
+  
   	  inc ZP_PTR+30
   	  LDX ZP_PTR+16 	;	
   	  TXA 
@@ -773,10 +881,31 @@ draw_test:
   	  jmp (@t_quads,X) 	; 
   	@t_quads:
   	  .addr @quad_1
-  	  .addr @quad_2
-  	  .addr @quad_3
+  	  ;.addr @quad_2
+  	  ;.addr @quad_3
   	  .addr @end
   @quad_1: 	;	need invert across row to make next bits . next row stays same
+      ; first quadrant increments along the row 
+    LDA #$1F
+    STA VERA_addr_low
+    STA ZP_PTR+40
+    LDA #$08
+    STA VERA_addr_high
+    STA ZP_PTR+41
+    LDA #$19            ;  draw 1 to the left at a time..  
+    STA VERA_addr_bank
+
+    LDA #255
+    STA ZP_PTR+38
+    LDA ZP_PTR+32
+    DEC A
+    STA ZP_PTR+34    ;  this is copy for going to next row 
+    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
+
+    LDA ZP_PTR+33
+    STA ZP_PTR+35
+    STA ZP_PTR+37
+
 	LDX ZP_PTR+17
     CLC  ; clear before doing 16bit add!
     LDA ACROSS_ROW_X_L,X 
@@ -797,6 +926,20 @@ draw_test:
     jmp @quad_loop
 @quad_2: ; invert next row - start 1 row up 
 	LDX ZP_PTR+17
+
+    LDA #192
+    STA ZP_PTR+39
+
+    LDA ZP_PTR+32
+    SEC 
+    SBC #64
+    STA ZP_PTR+34    ;  this is copy for going to next row 
+    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
+
+    LDA ZP_PTR+33
+    SBC #0
+    STA ZP_PTR+35
+    STA ZP_PTR+37
 
     CLC  ; clear before doing 16bit add!
     LDA NEXT_ROW_X_L,X 
@@ -821,7 +964,20 @@ draw_test:
     STA ZP_PTR+21
     jmp @quad_loop
 @quad_3: ; restore across row and increment .. 
+   LDA #1
+   STA ZP_PTR+38
+   LDA ZP_PTR+32
+   SEC
+   SBC #63 
+   STA ZP_PTR+34
+   STA ZP_PTR+36
+   LDA ZP_PTR+33
+   SBC #0
+    STA ZP_PTR+35
+    STA ZP_PTR+37
+
 	LDX camera_facing
+
 
     CLC  ; clear before doing 16bit add!   
     LDA ACROSS_ROW_X_L,X 
@@ -996,6 +1152,7 @@ test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
+.byte  00,$88,  0,  0,  0,  0,$0C,$F0  ;  overlay - 64x64x8bit =4K 
 .byte  66,$00,100,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
 .byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
@@ -1009,7 +1166,7 @@ test_sprite_data:
 .byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
 .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
 .byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
+;.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
 .byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
 .byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
 .byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
@@ -1347,4 +1504,22 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $00, $01, $00, $00, $00, $10, $10, $00
 .byte $00, $11, $11, $10, $01, $00, $01, $00
 
+; alernate tile graphic to use for tub wall .. 70-73
+.byte $16, $16, $16, $16, $16, $16, $16, $10
+.byte $01, $61, $61, $61, $61, $61, $61, $61
 
+.byte $16, $16, $16, $16, $16, $16, $16, $10
+.byte $01, $61, $61, $61, $61, $61, $61, $61
+
+.byte $16, $16, $16, $16, $16, $16, $16, $10
+.byte $01, $61, $61, $61, $61, $61, $61, $61
+
+.byte $16, $16, $16, $16, $16, $16, $16, $10
+.byte $01, $61, $61, $61, $61, $61, $61, $61
+
+.byte $16, $16, $16, $16, $16, $16, $16, $10
+.byte $01, $61, $61, $61, $61, $61, $61, $61
+
+.byte $10, $10, $10, $10, $10, $10, $10, $10
+.byte $01, $01, $01, $01, $01, $01, $01, $01
+.res 32,0

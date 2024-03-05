@@ -160,9 +160,29 @@ TODO 	fix code for calculating cell pos -> world pps
 	DONE
 2045 	cell -> world pos comes up ~2/256 short vs world -> cell calc. for X ... will consider as within tolerance
 		committing...
-		
+
+2024/03/04
+0205 	can't sleep.. thinking about implementing viewing the level as we drive around.. 
+		plan should be kept simple - will make a variant of the existing level tile and use that for the sprite addr if 
+		world lookup gives non-zero.. 
+		probably just white tbh .. 
+		so color 1 .. 
+
+0315 	yeah that was all sorts of fooked.. going to bed. .
+
+0820 	OK.. new plan.. use a 8bit 64x64 sprite to overlay a view of what the $@#$# damn code is doing.. 
+0946 	running late for work.. gotta jet
+
+2024/03/05
+0010 	OK fix arrow keys up/down movement and then start in on object list.. 
+TODO  	FIX arrow keys up/down to restrict movement to stay within valid world addresses .. if not tub itself.. 
+	DONE
+1300 	Only two quadrants work but at least is all verified.. otay
+TODO 	making moving around by hex work 
+	DONE
+1305 	commit
+
 
 TODO 	sort out that z-buffer object list
-TODO 	making moving around by hex work 
 TODO 	make moving around by X/Y/Z work 
 
