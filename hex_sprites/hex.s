@@ -34,8 +34,28 @@ NEXT_ROW_X_L: ; 0E00
 NEXT_ROW_Y_H: ; 0F00
 .byte $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $7, $7, $7, $7, $7, $6, $6, $6, $6, $5, $5, $5, $5, $5, $4, $4, $4, $3, $3, $3, $3, $2, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $0, $0, $0, $0, $1, $1, $1, $2, $2, $2, $2, $3, $3, $3, $3, $4, $4, $4, $4, $5, $5, $5, $5, $6, $6, $6, $6, $7, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $9
 
-TUB_WORLD:
+TUB_WORLD: ; 32*64 = 2K ... is 1000 to 1800
 .include "tub_world.inc"
+
+
+OBJECT_LIST_Z_START_POINTERS: ; 1900
+.res 256,0
+OBJECT_LIST_BYTE0_ADDRLOW: ; addr low
+.res 256,0
+OBJECT_LIST_BYTE1_MODE: ; mode/addr bank
+.res 256,0
+OBJECT_LIST_BYTE2_X: ; X position onscreen ( assumed positive for now)
+.res 256,0
+OBJECT_LIST_BYTE3_Y: ; y position onscreen 
+.res 256,0
+OBJECT_LIST_BYTE4_ZFLIPS: ; collision / z / flips
+.res 256,0
+OBJECT_LIST_BYTE5_SIZE: ; size / pal offset
+.res 256,0
+OBJECT_LIST_BYTE6_NEXT: ; NEXT 
+.res 256,0
+
+; makes 8*256 = 2k 
 
 
 NEXT_ROW_Y_L: ; 1000
@@ -293,37 +313,6 @@ start:
    LDA test_sprite_data,X 
    STA VERA_data0 
 
-  ; clear out the overlay sprite .. 
-  LDA #12   ;  DCSEL = 6, addr0
-  STA VERA_ctrl
-  STA FX_CACHE_L
-  STA FX_CACHE_M
-  STA FX_CACHE_H
-  STA FX_CACHE_U
-  STZ VERA_addr_low
-  STZ VERA_addr_high
-  LDA #$41
-  STA VERA_addr_bank ; at 64K in VRAM 
-  LDA #5
-  STA VERA_ctrl ; DCSEL = 2 , addr1 
-  LDA #4
-  STA VERA_addr_low
-  STZ VERA_addr_high
-  LDA #$41
-  STA VERA_addr_bank
-  LDA #%01000000 ; enable cache writes 
-  STA FX_CTRL
-  ; need to write out 2k each to data0 and data1 .. writing 8 bytes at a time = 512 .. so write 16 at a time = 256
-  LDY #0
-  : STZ VERA_data0
-    STZ VERA_data1
-    STZ VERA_data0
-    STZ VERA_data1
-    iny 
-    BNE :-
-  STZ FX_CTRL ; disable cache writes 
-  STZ VERA_ctrl ; reset VERA_CTRL ok 
-
 
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
   LDX #31
@@ -484,7 +473,6 @@ start:
 
 
 @do_update:
-   jsr draw_test
    ;  write location datas.. 
    lda #248
    STA VERA_addr_low
@@ -492,7 +480,25 @@ start:
    STA VERA_addr_high
    LDA #$49
    STA VERA_addr_bank
-   ldy #9
+
+   ; value of cell we are in 
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR ZP_PTR
+    LSR  ; y pages of 64 ! 
+    ROR ZP_PTR
+    ORA #>TUB_WORLD
+    STA ZP_PTR+1   
+    LDY camera_cell_x 
+    LDA (ZP_PTR),y
+    TAX 
+   LDA SPRITE_NUM_LOW_NIBBLE,X 
+   STA VERA_data0
+   LDA SPRITE_NUM_HIGH_NIBBLE,X 
+   STA VERA_data0
+
+
+   ldy #8
  : LDX camera_facing-1,y
    LDA SPRITE_NUM_LOW_NIBBLE,X 
    STA VERA_data0
@@ -500,6 +506,17 @@ start:
    STA VERA_data0
    dey
    BNE :-
+
+   ; jsr draw_test
+   ; clear the object list ... 
+    STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
+    LDX #0
+    : STZ OBJECT_LIST_Z_START_POINTERS,X
+      INX 
+      BNE :-
+
+   jsr push_world_to_object_list
+   jsr draw_object_list
 
 @FRAME_CHECK:
    wai
@@ -651,13 +668,369 @@ start:
    jsr CINT
    rts
 
+
+; CURRENT
+push_world_to_object_list: ; as in.. let's try this again?? wait.. missing a STZ ZP_PTR... 
+PWOL_TUB_PTR_L    = ZP_PTR
+PWOL_TUB_PTR_H    = ZP_PTR+1
+PWOL_TUB_PTR_CUR_L= ZP_PTR+2
+PWOL_TUB_PTR_CUR_H= ZP_PTR+3
+PWOL_ROW_START_XL = ZP_PTR+4
+PWOL_ROW_START_XH = ZP_PTR+5
+PWOL_ROW_START_YL = ZP_PTR+6
+PWOL_ROW_START_YH = ZP_PTR+7
+PWOL_CURRENT_XL   = ZP_PTR+8
+PWOL_CURRENT_XH   = ZP_PTR+9
+PWOL_CURRENT_YL   = ZP_PTR+10
+PWOL_CURRENT_YH   = ZP_PTR+11
+PWOL_ACROSS_ROW_XL= ZP_PTR+12
+PWOL_ACROSS_ROW_XH= ZP_PTR+13
+PWOL_ACROSS_ROW_YL= ZP_PTR+14
+PWOL_ACROSS_ROW_YH= ZP_PTR+15
+PWOL_NEXT_ROW_XL  = ZP_PTR+16
+PWOL_NEXT_ROW_XH  = ZP_PTR+17
+PWOL_NEXT_ROW_YL  = ZP_PTR+18
+PWOL_NEXT_ROW_YH  = ZP_PTR+19
+PWOL_Z_STARTS_PTR = ZP_PTR+20
+PWOL_Z_STARTS_PTRH = ZP_PTR+21
+
+   LDA #>OBJECT_LIST_Z_START_POINTERS
+   STA PWOL_Z_STARTS_PTRH
+   LDX camera_facing
+
+   LDA ACROSS_ROW_X_L,x
+   STA PWOL_ACROSS_ROW_XL
+   LDA ACROSS_ROW_X_H,x
+   STA PWOL_ACROSS_ROW_XH
+   LDA ACROSS_ROW_Y_L,x
+   STA PWOL_ACROSS_ROW_YL
+   LDA ACROSS_ROW_Y_H,x
+   STA PWOL_ACROSS_ROW_YH
+
+   LDA NEXT_ROW_X_L,x
+   STA PWOL_NEXT_ROW_XL
+   LDA NEXT_ROW_X_H,x
+   STA PWOL_NEXT_ROW_XH
+   LDA NEXT_ROW_Y_L,x
+   STA PWOL_NEXT_ROW_YL
+   LDA NEXT_ROW_Y_H,x
+   STA PWOL_NEXT_ROW_YH
+
+
+    STZ PWOL_TUB_PTR_L
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR PWOL_TUB_PTR_L
+    LSR  ; y pages of 64 ! 
+    ROR PWOL_TUB_PTR_L
+    ORA #>TUB_WORLD
+    STA PWOL_TUB_PTR_H
+    STA PWOL_TUB_PTR_CUR_H
+    LDA PWOL_TUB_PTR_L
+    STA PWOL_TUB_PTR_CUR_L    ;  this only changes per row not quadrant like the other values.. 
+
+
+;  quadrant A -> left along rows, then row counts down... across row - subtract XY, next row subtract XY
+    STZ PWOL_ROW_START_XL
+    STZ PWOL_CURRENT_XL
+    LDA #100 
+    STA PWOL_ROW_START_XH
+    STA PWOL_CURRENT_XH
+
+    STZ PWOL_ROW_START_YL
+    STZ PWOL_CURRENT_YL
+    LDA #130
+    STA PWOL_ROW_START_YH
+   @QUAD_A_NEW_ROW_LOOP:
+       LDA PWOL_ROW_START_XL
+       STA PWOL_CURRENT_XL
+
+       LDA PWOL_ROW_START_XH
+       STA PWOL_CURRENT_XH
+
+       LDA PWOL_ROW_START_YL
+       STA PWOL_CURRENT_YL
+
+       LDA PWOL_ROW_START_YH
+       STA PWOL_CURRENT_YH
+
+       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
+
+   @QUAD_A_ROW_LOOP:
+       SEC 
+       LDA #255
+       SBC PWOL_CURRENT_YH    ;  current screenY .. to calculate effective Z for the buffer 
+       STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+       LDA (PWOL_Z_STARTS_PTR)
+       INC OBJECT_LIST_BYTE6_NEXT ; 
+       LDX OBJECT_LIST_BYTE6_NEXT ; grabbed next available thingy 
+       STA OBJECT_LIST_BYTE6_NEXT,X ; old next saved to this next object .. sweet ! 
+       TXA 
+       STA (PWOL_Z_STARTS_PTR)   ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
+
+       ; these are all the same.. so 1,2,4,5,6 filled in.. need 0,3 - addr and Y, which will depend on what we find there.. 
+       STZ OBJECT_LIST_BYTE1_MODE,X ; 16 color low address 
+       LDA #$0C 
+       STA OBJECT_LIST_BYTE4_ZFLIPS,X
+       LDA #$50
+       STA OBJECT_LIST_BYTE5_SIZE,X
+       LDA PWOL_CURRENT_XH
+       STA OBJECT_LIST_BYTE2_X,X
+
+       LDA (PWOL_TUB_PTR_CUR_L),y   ; get "height" of object.. for now we only care is it zero or neg.. 
+       BPL @QA_IS_INSIDE_TUB
+         LDA #70
+         STA OBJECT_LIST_BYTE0_ADDRLOW,X
+         LDA PWOL_CURRENT_YH
+         STA OBJECT_LIST_BYTE3_Y,X
+         BRA @NEXT_OBJ
+
+       @QA_IS_INSIDE_TUB:
+         STZ OBJECT_LIST_BYTE0_ADDRLOW,X
+         LDA PWOL_CURRENT_YH
+         STA OBJECT_LIST_BYTE3_Y,X
+       @NEXT_OBJ:
+           SEC
+           LDA PWOL_CURRENT_XL
+           SBC PWOL_ACROSS_ROW_XL
+           STA PWOL_CURRENT_XL
+           LDA PWOL_CURRENT_XH
+           SBC PWOL_ACROSS_ROW_XH
+           CMP #208
+           BCS @quad_A_next_row
+           STA PWOL_CURRENT_XH
+           SEC
+           LDA PWOL_CURRENT_YL
+           SBC PWOL_ACROSS_ROW_YL
+           STA PWOL_CURRENT_YL
+           LDA PWOL_CURRENT_YH
+           SBC PWOL_ACROSS_ROW_YH
+           CMP #153
+           BCS @quad_A_next_row
+           STA PWOL_CURRENT_YH
+           DEY 
+           BNE @QUAD_A_ROW_LOOP
+      @quad_A_next_row:
+         SEC 
+         LDA PWOL_TUB_PTR_CUR_L
+         SBC #64
+         STA PWOL_TUB_PTR_CUR_L
+         LDA PWOL_TUB_PTR_CUR_H
+         SBC #0
+         CMP #$10    ;  did we go out top of world          
+         BCC @quad_B
+         STA PWOL_TUB_PTR_CUR_H
+         SEC
+         LDA PWOL_ROW_START_XL
+         SBC PWOL_NEXT_ROW_XL
+         STA PWOL_ROW_START_XL
+         LDA PWOL_ROW_START_XH
+         SBC PWOL_NEXT_ROW_XH
+         CMP #208
+         BCS @quad_B
+         STA PWOL_ROW_START_XH
+         SEC
+         LDA PWOL_ROW_START_YL
+         SBC PWOL_NEXT_ROW_YL
+         STA PWOL_ROW_START_YL
+         LDA PWOL_ROW_START_YH
+         SBC PWOL_NEXT_ROW_YH
+         CMP #153
+         BCS @quad_B
+         STA PWOL_ROW_START_YH
+         JMP @QUAD_A_NEW_ROW_LOOP
+
+   @quad_B:
+         rts
+; push_world_to_object_list:
+    STZ ZP_PTR
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR ZP_PTR
+    LSR  ; y pages of 64 ! 
+    ROR ZP_PTR
+    ORA #>TUB_WORLD
+    STA ZP_PTR+1   ; for first quadrant start    
+    STA ZP_PTR+5   ; second quadrant starts same row 
+    LDA camera_cell_x
+    AND #63
+    ORA ZP_PTR
+    STA ZP_PTR     ; first quadrant start - center and right/up
+    DEC A 
+    STA ZP_PTR+2   ; second quadrant start - left of center and to left/up
+    CLC 
+    LDA ZP_PTR    ; batter up! 
+    ADC #64       ;  next row time 
+    TAX           ; stash it 
+    STA ZP_PTR+4   ; third quadrant start - row below center going right/down
+    LDA ZP_PTR+1
+    ADC #0
+    STA ZP_PTR+5
+    STA ZP_PTR+7
+    DEX
+    STX ZP_PTR+6   ; forth quadrant start - left center, down/left
+   @quadrant_one_center_right_up:
+       STZ ZP_PTR+8 ; X row start
+       STZ ZP_PTR+12 ; current spot
+       LDA #100 
+       STA ZP_PTR+9  
+       STA ZP_PTR+13
+
+       STZ ZP_PTR+10 ; Y row start
+       STZ ZP_PTR+14 ; current spot
+       LDA #120      
+       STA ZP_PTR+11 
+       STA ZP_PTR+15
+
+       LDX camera_facing
+       LDA ACROSS_ROW_X_L,x
+       STA ZP_PTR+16
+       LDA ACROSS_ROW_X_H,x
+       STA ZP_PTR+17
+       LDA ACROSS_ROW_Y_L,x
+       STA ZP_PTR+18
+       LDA ACROSS_ROW_Y_H,x
+       STA ZP_PTR+19
+
+       LDA NEXT_ROW_X_L,X
+       STA ZP_PTR+20
+       LDA NEXT_ROW_X_H,X
+       STA ZP_PTR+21
+       LDA NEXT_ROW_Y_L,X
+       STA ZP_PTR+22
+       LDA NEXT_ROW_Y_H,X
+       STA ZP_PTR+23
+       LDA ZP_PTR
+       STA ZP_PTR+24 ; for going along the row... right! 
+       LDA ZP_PTR+1
+       STA ZP_PTR+25 
+       bra @quad_one_row_loop
+      @quad_one_row_loop_next:
+            STA ZP_PTR+11
+            STA ZP_PTR+15
+            LDA ZP_PTR
+            SBC #63
+            STA ZP_PTR
+            STA ZP_PTR+24
+            LDA ZP_PTR+1
+            SBC #0
+            STA ZP_PTR+1
+            STA ZP_PTR+25
+      @quad_one_row_loop:
+          INC OBJECT_LIST_BYTE6_NEXT ; 
+          LDX OBJECT_LIST_BYTE6_NEXT ; grabbed next available thingy 
+          LDY ZP_PTR+15 ; current screen Y ... sneaky? maybe.. 
+          LDA OBJECT_LIST_Z_START_POINTERS,Y ; old next pointer 
+          STA OBJECT_LIST_BYTE6_NEXT,X
+          TXA
+          STA OBJECT_LIST_Z_START_POINTERS,Y ; set new next pointer
+          TYA
+          STA OBJECT_LIST_BYTE3_Y,X
+          LDA (ZP_PTR+24)
+          BEQ :+ 
+          LDA #70 ; is non zero.. for now means outside world.. 
+        : STA OBJECT_LIST_BYTE0_ADDRLOW,X 
+          STZ OBJECT_LIST_BYTE1_MODE,X ; 16 color low address 
+          LDA #$0C 
+          STA OBJECT_LIST_BYTE4_ZFLIPS,X
+          LDA #$50
+          STA OBJECT_LIST_BYTE5_SIZE,X
+          ; attempt move along row 
+          CLC 
+          LDA ZP_PTR+12
+          ADC ZP_PTR+16
+          STA ZP_PTR+12
+          LDA ZP_PTR+13
+          STA OBJECT_LIST_BYTE2_X,X 
+          ADC ZP_PTR+17
+          CMP #208
+          BCS @quad_one_next_row
+          STA ZP_PTR+13
+          LDA ZP_PTR+14
+          ADC ZP_PTR+18
+          STA ZP_PTR+13
+          TYA 
+          ADC ZP_PTR+19
+          CMP #154
+          BCC @quad_one_row_loop
+        @quad_one_next_row:
+            CLC
+            LDA ZP_PTR+8
+            ADC ZP_PTR+20
+            STA ZP_PTR+8
+            STA ZP_PTR+12
+            LDA ZP_PTR+9
+            ADC ZP_PTR+21
+            CMP #208
+            STA ZP_PTR+9
+            STA ZP_PTR+13
+            BCS @quad_two 
+            LDA ZP_PTR+10
+            ADC ZP_PTR+22
+            STA ZP_PTR+10
+            STA ZP_PTR+14
+            LDA ZP_PTR+11
+            ADC ZP_PTR+23
+            CMP #154
+            BCS @quad_two 
+            jmp @quad_one_row_loop_next
+      @quad_two:
+
+    rts
+
+draw_object_list:
+    STZ VERA_ctrl
+    STZ VERA_addr_low
+    lda #(>VRAM_sprite_attributes)+1
+    sta VERA_addr_high
+    lda #$11
+    sta VERA_addr_bank
+    STZ ZP_PTR
+    LDA #>OBJECT_LIST_Z_START_POINTERS
+    STA ZP_PTR+1
+    LDY #96 ; num sprites can write
+    BRA @Z_LOOP ; skip to the good stuff 
+  @NEXT_Z:
+      INC ZP_PTR
+      BNE @Z_LOOP
+      rts
+  @Z_LOOP:
+      LDA (ZP_PTR) ; get our first victim
+      TAX
+      LDA #0
+      STA (ZP_PTR) ; zero this Z_next for now 
+      TXA
+     @OBJ_LOOP:
+         TAX
+         BEQ @NEXT_Z ; got a bum next pointer there ... 
+         LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+         STA VERA_data0
+         LDA OBJECT_LIST_BYTE1_MODE,x
+         STA VERA_data0
+         LDA OBJECT_LIST_BYTE2_X,x
+         STA VERA_data0
+         STZ VERA_data0
+         LDA OBJECT_LIST_BYTE3_Y,x
+         STA VERA_data0
+         STZ VERA_data0
+         LDA OBJECT_LIST_BYTE4_ZFLIPS,x
+         STA VERA_data0
+         LDA OBJECT_LIST_BYTE5_SIZE,x
+         STA VERA_data0
+         LDA OBJECT_LIST_BYTE6_NEXT,x
+         DEY ; decrement that Y 
+         BNE @OBJ_LOOP ; still sprite slots left.. woot!
+         STA (ZP_PTR) ; oops.. save that last thing and exit..
+         RTS
+     
+
 ; all the objects need to get into a structure to be drawn at each screen Y..
 ; need object type, screenX .. store back to front .. track # objects to be drawn ?
 ; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
 
 draw_test:
     STZ VERA_addr_low
-    lda #>VRAM_sprite_attributes+1
+    lda #(>VRAM_sprite_attributes)+1
     sta VERA_addr_high
     lda #$11
     sta VERA_addr_bank
@@ -1000,159 +1373,10 @@ draw_test:
     STA ZP_PTR+15
     jmp @quad_loop
 
-draw_world:
-  ; clear first entry for each line... 
-  STZ ZP_PTR 
-  LDA #>SCREEN_buffer
-  STA ZP_PTR+1
-  LDX #30
-  LDA #0
-  @loop:
-    TAY
-    STA (ZP_PTR),y 	;	set first buffer entry for line mod 4 = 0 
-    LDY #64 		; 	move buffer pointer to next line
-    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =1 
-    LDY #128 		; 	move buffer pointer to next line
-    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =2
-    LDY #192 		; 	move buffer pointer to next line
-    STA (ZP_PTR),y 	;	set first buffer entry for line mode 4 =3 
-    INC ZP_PTR+1 	;	next page plz
-    DEX  
-    BNE @loop
-  ; fetch bearing data .. 
-  LDA camera_facing
-  ASL 
-  TAX
-  jmp (@T_BEARINGS,X)
-@T_BEARINGS:
-	.addr BEARING_ZERO
-	.addr BEARING_ONE
-	.addr BEARING_TWO
-
-BEARING_ZERO:
-    LDA #112 ; starting at screen Y=112 
-  @E_loop:
-    STA ZP_PTR+2 ; stash the Y we're working at... 
-      STZ ZP_PTR   ; zero this out to use pointer .. 
-      LSR 
-      ROR ZP_PTR ; 
-      LSR
-      ROR ZP_PTR ; because is 64 avail for each 
-      ORA #>SCREEN_buffer ; making pointer woot! 
-      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
-      LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
-      LDA #8 	;   start at X=0
-    @E_loopE:
-        TAX
-        LDA #2 	;	water type
-        STA (ZP_PTR),y 
-        iny 
-        TXA ;	get X value
-        STA (ZP_PTR),y 
-        iny 
-        CLC
-        adc #16
-        CMP #136
-        BCC @E_loopE 	;kk
-      LDA #0
-      STA (ZP_PTR),y ; stash zero value to end the thing
-      LDA ZP_PTR+2
-      SBC #15 	;	borrow is set ...
-      BCS @E_loop ; still spots left on screen.. otay
-    jmp update_screen 
-BEARING_ONE:
-BEARING_TWO: ; 30 degrees .. 
-    LDA #116 ; starting at screen Y=112 
-  @E_loop:
-    STA ZP_PTR+2 ; stash the Y we're working at... 
-      STZ ZP_PTR   ; zero this out to use pointer .. 
-      LSR 
-      ROR ZP_PTR ; 
-      LSR
-      ROR ZP_PTR ; because is 64 avail for each 
-      ORA #>SCREEN_buffer ; making pointer woot! 
-      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
-      LDY #0 	;	set to first offset in that buffer.. we'll add other objects to the lines later so this will always be null object
-      LDA #12 	;   start at X=0
-    @E_loopE:
-        TAX
-        LDA #2 	;	water type
-        STA (ZP_PTR),y 
-        iny 
-        TXA ;	get X value
-        STA (ZP_PTR),y 
-        iny 
-        CLC
-        adc #28
-        CMP #136
-        BCC @E_loopE 	;kk
-      LDA #0
-      STA (ZP_PTR),y ; stash zero value to end the thing
-      LDA ZP_PTR+2
-      SBC #13 	;	borrow is set ...
-      BCS @E_loop ; still spots left on screen.. otay
-    jmp update_screen 
-
-  rts 
-
-update_screen:
-  stz VERA_addr_low
-  lda #>VRAM_sprite_attributes
-  sta VERA_addr_high
-  lda #$11
-  sta VERA_addr_bank
-    LDA #119
-    STA ZP_PTR+2 ; stash line we at .. 
-      STZ ZP_PTR
-      LSR 
-      ROR ZP_PTR ; 
-      LSR
-      ROR ZP_PTR ; because is 64 avail for each 
-      ORA #>SCREEN_buffer ; making pointer woot! 
-      STA ZP_PTR+1 ; ZP_PTR points to the line.. 
-  @y_line_loop:
-      LDY #0 ; set to check that first point .. 
-      dec ZP_PTR+2
-    @do_check_line:
-        LDA (ZP_PTR),Y ;	get type 
-        INY 
-        TAX 
-        JMP (@T_objtypes,X) ; 
-    @T_objtypes:
-        .addr @end_line 
-        .addr @do_water 
-    @do_water:
-      stz VERA_data0 	; 	address 12:5
-      STZ VERA_data0 	; 	4bit color address 16:13
-      LDA (ZP_PTR),Y  	;	get the X
-      iny 
-      STA VERA_data0 	;	X 
-      STZ VERA_data0 	;	 X 
-      LDA ZP_PTR+2
-      STA VERA_data0 	;	y
-      STZ VERA_data0 	; 	y
-      LDA #$0C 
-      STA VERA_data0 	; 	3 z depth no flip
-      LDA #$D0 			; 	16x64 no palette offset
-      STA VERA_data0
-      bra @do_check_line
-    @end_line:
-        SEC 
-        LDA ZP_PTR
-        SBC #64
-        STA ZP_PTR
-        LDA ZP_PTR+1
-        SBC #0
-        STA ZP_PTR+1
-        CMP #>SCREEN_buffer
-        BCS @y_line_loop
-rts
-
 test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  00,$88,  0,  0,  0,  0,$0C,$F0  ;  overlay - 64x64x8bit =4K 
 .byte  66,$00,100,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
 .byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
@@ -1166,7 +1390,7 @@ test_sprite_data:
 .byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
 .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
 .byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-;.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
+.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
 .byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
 .byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
 .byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
@@ -1185,8 +1409,8 @@ test_sprite_data:
 .byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
 .byte  37,$00,176,  0,145,  0,$0C,$00  ; 4 test    sprite 1C   Cell Y
 .byte  38,$00,184,  0,145,  0,$0C,$00  ; 5 test    sprite 1D   
-.byte  48,$00,192,  0,145,  0,$0C,$00  ; F test    sprite 1E   Y Subcell
-.byte  48,$00,200,  0,145,  0,$0C,$00  ; F test    sprite 1F
+.byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   value at current cell
+.byte  48,$00,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)

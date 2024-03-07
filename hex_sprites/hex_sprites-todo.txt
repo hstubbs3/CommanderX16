@@ -182,6 +182,22 @@ TODO 	making moving around by hex work
 	DONE
 1305 	commit
 
+2230 	Back at it.. start work fleshing out what's going to _read_ the object list .. 
+		each tile top occupies ~16x10 = 160 pixels.. so up to ~215 objects needed for terrain.. 
+2024/03/06
+0020 	Appears push_world_to_object list is borked and the draw world is mucked as well. 
+
+2024/03/07
+0030 	taking a look at stuff .. .
+0045 	draw world had a thing going on because tub world wasn't a whole number of 256B pages.. 
+0050 	appears push_world_to_object_list is endless loop ?
+		all the z next pointers became $46 ...?
+
+0230 	quadA working.. well, at the least isn't showing anything outside the world.. some issues when row goes offscreen.. OK 
+		commit..
+
+
+
 
 TODO 	sort out that z-buffer object list
 TODO 	make moving around by X/Y/Z work 
