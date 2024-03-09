@@ -212,7 +212,10 @@ TODO 	sort out that z-buffer object list
 1340 	oops.. the code to add waves overflowed into the stack
 1450 	ZigZagA is working ... Wow
 		Commit..
+1510 	was playing around a bit more .. isn't doing all the ZigZagA but literally is edge cases now 
+	need food...
 
+	
 
 TODO 	ZigZag terrain renderer to object list
 

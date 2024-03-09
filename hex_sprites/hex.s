@@ -963,10 +963,13 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_LEFT_YH
          STA PWOL_CURRENT_YH
-
-         CPX #208
+         CPX #240
+         BCS :+
+         CPX #215
          BCS @ZAR_RTS
-         CMP #149
+       : CMP #243
+         BCS @zigzag_A_left
+         CMP #161
          BCC @zigzag_A_left
    @ZAR_RTS:
          rts
@@ -1058,11 +1061,15 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_RIGHT_YH
          STA PWOL_CURRENT_YH
-         CPX #208
+         CPX #240
+         BCS :+
+         CPX #215
          BCS @ZAL_RTS
-         CMP #149
+       : CMP #243
+         BCS :+
+         CMP #161
          BCS @ZAL_RTS
-         JMP @zigzag_A_right
+       : JMP @zigzag_A_right
    @ZAL_RTS:
       rts
 
@@ -1096,10 +1103,18 @@ draw_object_list:
          STA VERA_data0
          LDA OBJECT_LIST_BYTE2_X,x
          STA VERA_data0
-         STZ VERA_data0
+         CMP #216
+         LDA #0
+         BCC :+
+         LDA #$FF
+       : STA VERA_data0
          LDA OBJECT_LIST_BYTE3_Y,x
          STA VERA_data0
-         STZ VERA_data0
+         CMP #161
+         LDA #0
+         BCC :+
+         LDA #$FF
+       : STA VERA_data0
          LDA OBJECT_LIST_BYTE4_ZFLIPS,x
          STA VERA_data0
          LDA OBJECT_LIST_BYTE5_SIZE,x
