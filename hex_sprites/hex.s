@@ -9,83 +9,83 @@ SCRATCH128:
 	.byte $DE,$AD,$BE,$EF
 .endrepeat
 
-ACROSS_ROW_X_H: ; 0900  16 wide , 45* tilt
-;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
-.byte $10, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $E, $E, $E, $E, $E, $E, $D, $D, $D, $D, $D, $C, $C, $C, $C, $B, $B, $B, $B, $A, $A, $A, $9, $9, $9, $8, $8, $8, $7, $7, $7, $6, $6, $6, $5, $5, $5, $4, $4, $3, $3, $3, $2, $2, $1, $1, $1, $0, $0, $0, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FC, $FC, $FC, $FB, $FB, $FA, $FA, $FA, $F9, $F9, $F9, $F8, $F8, $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F3, $F3, $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1, $F1, $F1, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1, $F1, $F1, $F1, $F1, $F1, $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9, $F9, $FA, $FA, $FA, $FB, $FB, $FC, $FC, $FC, $FD, $FD, $FE, $FE, $FE, $FF, $FF, $00, $0, $0, $1, $1, $1, $2, $2, $3, $3, $3, $4, $4, $5, $5, $5, $6, $6, $6, $7, $7, $7, $8, $8, $8, $9, $9, $9, $A, $A, $A, $B, $B, $B, $B, $C, $C, $C, $C, $D, $D, $D, $D, $D, $E, $E, $E, $E, $E, $E, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F
-
-ACROSS_ROW_X_L: ; 0A00
+ACROSS_ROW_X_L: ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
 ;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
 .byte $0, $FE, $FB, $F4, $EC, $E1, $D3, $C3, $B1, $9C, $85, $6B, $4F, $31, $10, $ED, $C8, $A0, $76, $4A, $1C, $EB, $B9, $84, $4D, $14, $D9, $9D, $5E, $1D, $DA, $96, $50, $8, $BE, $73, $26, $D7, $87, $36, $E3, $8F, $39, $E2, $8A, $31, $D7, $7B, $1F, $C2, $63, $4, $A5, $44, $E3, $81, $1F, $BC, $59, $F5, $91, $2D, $C8, $64, $0, $9B, $37, $D2, $6E, $A, $A6, $43, $E0, $7E, $1C, $BB, $5A, $FB, $9C, $3D, $E0, $84, $28, $CE, $75, $1D, $C6, $70, $1C, $C9, $78, $28, $D9, $8C, $41, $F7, $AF, $69, $25, $E2, $A1, $62, $26, $EB, $B2, $7B, $46, $14, $E3, $B5, $89, $5F, $37, $12, $EF, $CE, $B0, $94, $7A, $63, $4E, $3C, $2C, $1E, $13, $B, $4, $1, $0, $1, $4, $B, $13, $1E, $2C, $3C, $4E, $63, $7A, $94, $B0, $CE, $EF, $12, $37, $5F, $89, $B5, $E3, $14, $46, $7B, $B2, $EB, $26, $62, $A1, $E2, $25, $69, $AF, $F7, $41, $8C, $D9, $28, $78, $C9, $1C, $70, $C6, $1D, $75, $CE, $28, $84, $E0, $3D, $9C, $FB, $5A, $BB, $1C, $7E, $E0, $43, $A6, $A, $6E, $D2, $37, $9B, $0, $64, $C8, $2D, $91, $F5, $59, $BC, $1F, $81, $E3, $44, $A5, $4, $63, $C2, $1F, $7B, $D7, $31, $8A, $E2, $39, $8F, $E3, $36, $87, $D7, $26, $73, $BE, $8, $50, $96, $DA, $1D, $5E, $9D, $D9, $14, $4D, $84, $B9, $EB, $1C, $4A, $76, $A0, $C8, $ED, $10, $31, $4F, $6B, $85, $9C, $B1, $C3, $D3, $E1, $EC, $F4, $FB, $FE
 
-ACROSS_ROW_Y_H: ; 0B00 
+ACROSS_ROW_X_H: ; 0A00
 ;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
-.byte $0, $0, $0, $0, $1, $1, $1, $1, $2, $2, $2, $3, $3, $3, $3, $4, $4, $4, $4, $5, $5, $5, $5, $6, $6, $6, $6, $6, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $9, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $9, $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $8, $7, $7, $7, $7, $6, $6, $6, $6, $6, $5, $5, $5, $5, $4, $4, $4, $4, $3, $3, $3, $3, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $0, $FF, $FF, $FF, $FE, $FE, $FE, $FE, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF
+.byte $10, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $E, $E, $E, $E, $E, $E, $D, $D, $D, $D, $D, $C, $C, $C, $C, $B, $B, $B, $B, $A, $A, $A, $9, $9, $9, $8, $8, $8, $7, $7, $7, $6, $6, $6, $5, $5, $5, $4, $4, $3, $3, $3, $2, $2, $1, $1, $1, $0, $0, $0, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FC, $FC, $FC, $FB, $FB, $FA, $FA, $FA, $F9, $F9, $F9, $F8, $F8, $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F3, $F3, $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1, $F1, $F1, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1, $F1, $F1, $F1, $F1, $F1, $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9, $F9, $FA, $FA, $FA, $FB, $FB, $FC, $FC, $FC, $FD, $FD, $FE, $FE, $FE, $FF, $FF, $00, $0, $0, $1, $1, $1, $2, $2, $3, $3, $3, $4, $4, $5, $5, $5, $6, $6, $6, $7, $7, $7, $8, $8, $8, $9, $9, $9, $A, $A, $A, $B, $B, $B, $B, $C, $C, $C, $C, $D, $D, $D, $D, $D, $E, $E, $E, $E, $E, $E, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F
 
-ACROSS_ROW_Y_L: ; 0C00
+ACROSS_ROW_Y_L: ; 0B00
 ;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
-.byte $0, $47, $8E, $D5, $1B, $62, $A8, $EF, $35, $7A, $BF, $4, $48, $8C, $CF, $12, $54, $95, $D6, $16, $55, $93, $D1, $D, $49, $83, $BD, $F5, $2D, $63, $99, $CD, $0, $31, $62, $91, $BE, $EB, $16, $3F, $68, $8E, $B4, $D8, $FA, $1B, $3A, $57, $73, $8E, $A7, $BE, $D3, $E7, $F9, $9, $18, $25, $30, $3A, $42, $48, $4C, $4F, $50, $4F, $4C, $48, $42, $3A, $30, $25, $18, $9, $F9, $E7, $D3, $BE, $A7, $8E, $73, $57, $3A, $1B, $FA, $D8, $B4, $8E, $68, $3F, $16, $EB, $BE, $91, $62, $31, $0, $CD, $99, $63, $2D, $F5, $BD, $83, $49, $D, $D1, $93, $55, $16, $D6, $95, $54, $12, $CF, $8C, $48, $4, $BF, $7A, $35, $EF, $A8, $62, $1B, $D5, $8E, $47, $0, $B8, $71, $2A, $E4, $9D, $57, $10, $CA, $85, $40, $FB, $B7, $73, $30, $ED, $AB, $6A, $29, $E9, $AA, $6C, $2E, $F2, $B6, $7C, $42, $A, $D2, $9C, $66, $32, $0, $CE, $9D, $6E, $41, $14, $E9, $C0, $97, $71, $4B, $27, $5, $E4, $C5, $A8, $8C, $71, $58, $41, $2C, $18, $6, $F6, $E7, $DA, $CF, $C5, $BD, $B7, $B3, $B0, $AF, $B0, $B3, $B7, $BD, $C5, $CF, $DA, $E7, $F6, $6, $18, $2C, $41, $58, $71, $8C, $A8, $C5, $E4, $5, $27, $4B, $71, $97, $C0, $E9, $14, $41, $6E, $9D, $CE, $0, $32, $66, $9C, $D2, $A, $42, $7C, $B6, $F2, $2E, $6C, $AA, $E9, $29, $6A, $AB, $ED, $30, $73, $B7, $FB, $40, $85, $CA, $10, $57, $9D, $E4, $2A, $71, $B8
+.byte $0,$B8,$71,$2A,$E4,$9D,$57,$10,$CA,$85,$40,$FB,$B7,$73,$30,$ED,$AB,$6A,$29,$E9,$AA,$6C,$2E,$F2,$B6,$7C,$42,$A,$D2,$9C,$66,$32,$0,$CE,$9D,$6E,$41,$14,$E9,$C0,$97,$71,$4B,$27,$5,$E4,$C5,$A8,$8C,$71,$58,$41,$2C,$18,$6,$F6,$E7,$DA,$CF,$C5,$BD,$B7,$B3,$B0,$AF,$B0,$B3,$B7,$BD,$C5,$CF,$DA,$E7,$F6,$6,$18,$2C,$41,$58,$71,$8C,$A8,$C5,$E4,$5,$27,$4B,$71,$97,$C0,$E9,$14,$41,$6E,$9D,$CE,$0,$32,$66,$9C,$D2,$A,$42,$7C,$B6,$F2,$2E,$6C,$AA,$E9,$29,$6A,$AB,$ED,$30,$73,$B7,$FB,$40,$85,$CA,$10,$57,$9D,$E4,$2A,$71,$B8,$0,$47,$8E,$D5,$1B,$62,$A8,$EF,$35,$7A,$BF,$4,$48,$8C,$CF,$12,$54,$95,$D6,$16,$55,$93,$D1,$D,$49,$83,$BD,$F5,$2D,$63,$99,$CD,$0,$31,$62,$91,$BE,$EB,$16,$3F,$68,$8E,$B4,$D8,$FA,$1B,$3A,$57,$73,$8E,$A7,$BE,$D3,$E7,$F9,$9,$18,$25,$30,$3A,$42,$48,$4C,$4F,$50,$4F,$4C,$48,$42,$3A,$30,$25,$18,$9,$F9,$E7,$D3,$BE,$A7,$8E,$73,$57,$3A,$1B,$FA,$D8,$B4,$8E,$68,$3F,$16,$EB,$BE,$91,$62,$31,$0,$CD,$99,$63,$2D,$F5,$BD,$83,$49,$D,$D1,$93,$55,$16,$D6,$95,$54,$12,$CF,$8C,$48,$4,$BF,$7A,$35,$EF,$A8,$62,$1B,$D5,$8E,$47
 
-NEXT_ROW_X_H: ; 0D00
-.byte $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F3, $F3, $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1, $F1, $F1, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1, $F1, $F1, $F1, $F1, $F1, $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9, $F9, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FD, $FD, $FD, $FE, $FE, $FE, $FF, $FF, $0, $0, $0, $1, $1, $2, $2, $2, $3, $3, $4, $4, $4, $5, $5, $5, $6, $6, $6, $7, $7, $8, $8, $8, $8, $9, $9, $9, $A, $A, $A, $B, $B, $B, $B, $C, $C, $C, $C, $D, $D, $D, $D, $D, $E, $E, $E, $E, $E, $E, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $E, $E, $E, $E, $E, $E, $D, $D, $D, $D, $D, $C, $C, $C, $C, $B, $B, $B, $A, $A, $A, $A, $9, $9, $9, $8, $8, $8, $7, $7, $7, $6, $6, $6, $5, $5, $4, $4, $4, $3, $3, $2, $2, $2, $1, $1, $1, $0, $0, $FF, $FF, $FF, $FE, $FE, $FD, $FD, $FD, $FC, $FC, $FB, $FB, $FB, $FA, $FA, $FA, $F9, $F9, $F9, $F8, $F8
+ACROSS_ROW_Y_H: ; 0C00 
+;     0    1    2    3    4    5    6    7    8    9    A    B    C    D    E    F  
+.byte $0,$FF,$FF,$FF,$FE,$FE,$FE,$FE,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F9,$F8,$F8,$F8,$F8,$F8,$F7,$F7,$F7,$F7,$F7,$F6,$F6,$F6,$F6,$F6,$F6,$F6,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F6,$F6,$F6,$F6,$F6,$F6,$F6,$F7,$F7,$F7,$F7,$F7,$F8,$F8,$F8,$F8,$F8,$F9,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$00,$0,$0,$0,$1,$1,$1,$1,$2,$2,$2,$3,$3,$3,$3,$4,$4,$4,$4,$5,$5,$5,$5,$6,$6,$6,$6,$6,$7,$7,$7,$7,$8,$8,$8,$8,$8,$8,$9,$9,$9,$9,$9,$9,$9,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$9,$9,$9,$9,$9,$9,$9,$8,$8,$8,$8,$8,$8,$7,$7,$7,$7,$6,$6,$6,$6,$6,$5,$5,$5,$5,$4,$4,$4,$4,$3,$3,$3,$3,$2,$2,$2,$1,$1,$1,$1,$0,$0,$0
 
-NEXT_ROW_X_L: ; 0E00
+NEXT_ROW_X_L: ; 0D00 next row LEFT/up when added
 .byte $0, $A9, $54, $0, $AE, $5D, $D, $BF, $73, $28, $DF, $98, $52, $E, $CC, $8C, $4E, $12, $D7, $9F, $69, $35, $3, $D3, $A6, $7B, $51, $2B, $6, $E4, $C4, $A6, $8B, $72, $5C, $48, $36, $27, $1A, $10, $8, $3, $0, $0, $2, $6, $D, $17, $23, $31, $42, $55, $6A, $83, $9D, $BA, $D9, $FA, $1E, $44, $6D, $97, $C4, $F3, $24, $58, $8D, $C5, $FE, $3A, $77, $B7, $F8, $3B, $80, $C7, $10, $5A, $A6, $F3, $42, $93, $E4, $38, $8D, $E3, $3A, $92, $EC, $47, $A2, $FF, $5D, $BB, $1B, $7B, $DB, $3D, $9F, $1, $64, $C8, $2B, $8F, $F4, $58, $BC, $21, $86, $EA, $4E, $B2, $16, $7A, $DD, $3F, $A2, $3, $64, $C5, $24, $83, $E1, $3E, $9A, $F5, $4F, $A8, $0, $56, $AB, $FF, $51, $A2, $F2, $40, $8C, $D7, $20, $67, $AD, $F1, $33, $73, $B1, $ED, $28, $60, $96, $CA, $FC, $2C, $59, $84, $AE, $D4, $F9, $1B, $3B, $59, $74, $8D, $A3, $B7, $C9, $D8, $E5, $EF, $F7, $FC, $FF, $FF, $FD, $F9, $F2, $E8, $DC, $CE, $BD, $AA, $95, $7C, $62, $45, $26, $5, $E1, $BB, $92, $68, $3B, $C, $DB, $A7, $72, $3A, $1, $C5, $88, $48, $7, $C4, $7F, $38, $EF, $A5, $59, $C, $BD, $6C, $1B, $C7, $72, $1C, $C5, $6D, $13, $B8, $5D, $0, $A2, $44, $E4, $84, $24, $C2, $60, $FE, $9B, $37, $D4, $70, $B, $A7, $43, $DE, $79, $15, $B1, $4D, $E9, $85, $22, $C0, $5D, $FC, $9B, $3A, $DB, $7C, $1E, $C1, $65, $A, $B0, $57
 
-NEXT_ROW_Y_H: ; 0F00
-.byte $9, $9, $9, $9, $9, $9, $8, $8, $8, $8, $8, $7, $7, $7, $7, $7, $6, $6, $6, $6, $5, $5, $5, $5, $5, $4, $4, $4, $3, $3, $3, $3, $2, $2, $2, $2, $1, $1, $1, $1, $0, $0, $0, $FF, $FF, $FF, $FF, $FE, $FE, $FE, $FD, $FD, $FD, $FD, $FC, $FC, $FC, $FC, $FB, $FB, $FB, $FB, $FA, $FA, $FA, $FA, $F9, $F9, $F9, $F9, $F8, $F8, $F8, $F8, $F8, $F7, $F7, $F7, $F7, $F7, $F7, $F6, $F6, $F6, $F6, $F6, $F6, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F6, $F6, $F6, $F6, $F7, $F7, $F7, $F7, $F7, $F8, $F8, $F8, $F8, $F8, $F9, $F9, $F9, $F9, $FA, $FA, $FA, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FC, $FC, $FD, $FD, $FD, $FD, $FE, $FE, $FE, $FE, $FF, $FF, $FF, $0, $0, $0, $0, $1, $1, $1, $2, $2, $2, $2, $3, $3, $3, $3, $4, $4, $4, $4, $5, $5, $5, $5, $6, $6, $6, $6, $7, $7, $7, $7, $7, $8, $8, $8, $8, $8, $8, $9, $9, $9, $9, $9, $9, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $B, $A, $A, $A, $A, $A, $A, $A, $A, $A, $A, $9
+NEXT_ROW_X_H: ; 0E00
+.byte $F8, $F7, $F7, $F7, $F6, $F6, $F6, $F5, $F5, $F5, $F4, $F4, $F4, $F4, $F3, $F3, $F3, $F3, $F2, $F2, $F2, $F2, $F2, $F1, $F1, $F1, $F1, $F1, $F1, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F0, $F1, $F1, $F1, $F1, $F1, $F1, $F2, $F2, $F2, $F2, $F2, $F3, $F3, $F3, $F3, $F4, $F4, $F4, $F5, $F5, $F5, $F5, $F6, $F6, $F6, $F7, $F7, $F7, $F8, $F8, $F8, $F9, $F9, $F9, $FA, $FA, $FB, $FB, $FB, $FC, $FC, $FD, $FD, $FD, $FE, $FE, $FE, $FF, $FF, $0, $0, $0, $1, $1, $2, $2, $2, $3, $3, $4, $4, $4, $5, $5, $5, $6, $6, $6, $7, $7, $8, $8, $8, $8, $9, $9, $9, $A, $A, $A, $B, $B, $B, $B, $C, $C, $C, $C, $D, $D, $D, $D, $D, $E, $E, $E, $E, $E, $E, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $F, $E, $E, $E, $E, $E, $E, $D, $D, $D, $D, $D, $C, $C, $C, $C, $B, $B, $B, $A, $A, $A, $A, $9, $9, $9, $8, $8, $8, $7, $7, $7, $6, $6, $6, $5, $5, $4, $4, $4, $3, $3, $2, $2, $2, $1, $1, $1, $0, $0, $FF, $FF, $FF, $FE, $FE, $FD, $FD, $FD, $FC, $FC, $FB, $FB, $FB, $FA, $FA, $FA, $F9, $F9, $F9, $F8, $F8
 
-TUB_WORLD: ; 32*64 = 2K ... is 1000 to 1800
-.include "tub_world.inc"
+NEXT_ROW_Y_L: ; 0F00
+.byte $33,$58,$7D,$A5,$CD,$F7,$23,$50,$7E,$AD,$DE,$10,$44,$78,$AE,$E4,$1C,$55,$8F,$CA,$6,$43,$81,$BF,$FE,$3F,$7F,$C1,$3,$46,$8A,$CD,$12,$57,$9C,$E2,$28,$6E,$B4,$FB,$42,$89,$D0,$17,$5E,$A5,$EC,$33,$7A,$C0,$6,$4C,$91,$D6,$1B,$5F,$A2,$E6,$28,$6A,$AB,$EB,$2B,$6A,$A8,$E5,$21,$5C,$97,$D0,$8,$3F,$75,$AA,$DE,$10,$41,$71,$A0,$CD,$F9,$24,$4D,$75,$9B,$C0,$E3,$5,$25,$44,$61,$7C,$96,$AE,$C5,$DA,$ED,$FF,$F,$1D,$29,$34,$3D,$44,$4A,$4D,$4F,$50,$4E,$4B,$46,$3F,$37,$2D,$21,$13,$4,$F3,$E0,$CC,$B6,$9E,$85,$6A,$4E,$30,$10,$EF,$CC,$A7,$82,$5A,$32,$8,$DC,$AF,$81,$52,$21,$EF,$BB,$87,$51,$1B,$E3,$AA,$70,$35,$F9,$BC,$7E,$40,$1,$C0,$80,$3E,$FC,$B9,$75,$32,$ED,$A8,$63,$1D,$D7,$91,$4B,$4,$BD,$76,$2F,$E8,$A1,$5A,$13,$CC,$85,$3F,$F9,$B3,$6E,$29,$E4,$A0,$5D,$19,$D7,$95,$54,$14,$D4,$95,$57,$1A,$DE,$A3,$68,$2F,$F7,$C0,$8A,$55,$21,$EF,$BE,$8E,$5F,$32,$6,$DB,$B2,$8A,$64,$3F,$1C,$FA,$DA,$BB,$9E,$83,$69,$51,$3A,$25,$12,$0,$F0,$E2,$D6,$CB,$C2,$BB,$B5,$B2,$B0,$AF,$B1,$B4,$B9,$C0,$C8,$D2,$DE,$EC,$FB,$C,$1F,$33,$49,$61,$7A,$95,$B1,$CF,$EF,$10
 
+NEXT_ROW_Y_H: ; 1000
+.byte $F6,$F6,$F6,$F6,$F6,$F6,$F7,$F7,$F7,$F7,$F7,$F8,$F8,$F8,$F8,$F8,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$0,$0,$0,$0,$1,$1,$1,$2,$2,$2,$2,$3,$3,$3,$3,$4,$4,$4,$4,$5,$5,$5,$5,$6,$6,$6,$6,$7,$7,$7,$7,$7,$8,$8,$8,$8,$8,$8,$9,$9,$9,$9,$9,$9,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$9,$9,$9,$9,$9,$9,$9,$8,$8,$8,$8,$8,$7,$7,$7,$7,$7,$6,$6,$6,$6,$5,$5,$5,$5,$5,$4,$4,$4,$3,$3,$3,$3,$2,$2,$2,$2,$1,$1,$1,$1,$0,$0,$0,$FF,$FF,$FF,$FF,$FE,$FE,$FE,$FD,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F8,$F8,$F8,$F8,$F8,$F7,$F7,$F7,$F7,$F7,$F7,$F6,$F6,$F6,$F6,$F6,$F6,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F6
+
+TUB_WORLD: ; 32*64 = 2K ... is 1100 to 1900-1
+.include "tub_world_hieghts.inc"
+
+; 1900
 
 OBJECT_LIST_Z_START_POINTERS: ; 1900
 .res 256,0
-OBJECT_LIST_BYTE0_ADDRLOW: ; addr low
+OBJECT_LIST_BYTE0_ADDRLOW: ; 1A00 addr low
 .res 256,0
-OBJECT_LIST_BYTE1_MODE: ; mode/addr bank
+OBJECT_LIST_BYTE1_MODE: ; 1B00 mode/addr bank
 .res 256,0
-OBJECT_LIST_BYTE2_X: ; X position onscreen ( assumed positive for now)
+OBJECT_LIST_BYTE2_X: ; 1C00 X position onscreen ( assumed positive for now)
 .res 256,0
-OBJECT_LIST_BYTE3_Y: ; y position onscreen 
+OBJECT_LIST_BYTE3_Y: ; 1D00 y position onscreen 
 .res 256,0
-OBJECT_LIST_BYTE4_ZFLIPS: ; collision / z / flips
+OBJECT_LIST_BYTE4_ZFLIPS: ; 1E00 collision / z / flips
 .res 256,0
-OBJECT_LIST_BYTE5_SIZE: ; size / pal offset
+OBJECT_LIST_BYTE5_SIZE: ; 1F00 size / pal offset
 .res 256,0
-OBJECT_LIST_BYTE6_NEXT: ; NEXT 
+OBJECT_LIST_BYTE6_NEXT: ; 2000 NEXT 
 .res 256,0
 
-; makes 8*256 = 2k 
 
 
-NEXT_ROW_Y_L: ; 1000
-.byte $CC, $A7, $82, $5A, $32, $8, $DC, $AF, $81, $52, $21, $EF, $BB, $87, $51, $1B, $E3, $AA, $70, $35, $F9, $BC, $7E, $40, $1, $C0, $80, $3E, $FC, $B9, $75, $32, $ED, $A8, $63, $1D, $D7, $91, $4B, $4, $BD, $76, $2F, $E8, $A1, $5A, $13, $CC, $85, $3F, $F9, $B3, $6E, $29, $E4, $A0, $5D, $19, $D7, $95, $54, $14, $D4, $95, $57, $1A, $DE, $A3, $68, $2F, $F7, $C0, $8A, $55, $21, $EF, $BE, $8E, $5F, $32, $6, $DB, $B2, $8A, $64, $3F, $1C, $FA, $DA, $BB, $9E, $83, $69, $51, $3A, $25, $12, $0, $F0, $E2, $D6, $CB, $C2, $BB, $B5, $B2, $B0, $AF, $B1, $B4, $B9, $C0, $C8, $D2, $DE, $EC, $FB, $C, $1F, $33, $49, $61, $7A, $95, $B1, $CF, $EF, $10, $33, $58, $7D, $A5, $CD, $F7, $23, $50, $7E, $AD, $DE, $10, $44, $78, $AE, $E4, $1C, $55, $8F, $CA, $6, $43, $81, $BF, $FE, $3F, $7F, $C1, $3, $46, $8A, $CD, $12, $57, $9C, $E2, $28, $6E, $B4, $FB, $42, $89, $D0, $17, $5E, $A5, $EC, $33, $7A, $C0, $6, $4C, $91, $D6, $1B, $5F, $A2, $E6, $28, $6A, $AB, $EB, $2B, $6A, $A8, $E5, $21, $5C, $97, $D0, $8, $3F, $75, $AA, $DE, $10, $41, $71, $A0, $CD, $F9, $24, $4D, $75, $9B, $C0, $E3, $5, $25, $44, $61, $7C, $96, $AE, $C5, $DA, $ED, $FF, $F, $1D, $29, $34, $3D, $44, $4A, $4D, $4F, $50, $4E, $4B, $46, $3F, $37, $2D, $21, $13, $4, $F3, $E0, $CC, $B6, $9E, $85, $6A, $4E, $30, $10, $EF
-
-WORLD_TO_CELL_XH:
+WORLD_TO_CELL_XH: ; 2100
 .byte 0,0,1,2,3,4,5,6,6,7,8,9,10,11,12,12,13,14,15,16,17,18,19,19,20,21,22,23,24,25,25,26,27,28,29,30,31,32,32,33,34,35,36,37,38,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,51,52,53,54,55,56,57,58,58,59,60,61,62,63,64,64,65,66,67,68,69,70,71,71,72,73,74,75,76,77,77,78,79,80,81,82,83,84,84,85,86,87,88,89,90,90,91,92,93,94,95,96,96,97,98,99,100,101,102,103,103,104,105,106,107,108,109,109
 WORLD_TO_CELL_XL:
 .byte 0,221,187,153,118,84,50,15,237,203,169,134,100,66,31,253,219,184,150,116,82,47,13,235,200,166,132,97,63,29,251,216,182,148,113,79,45,10,232,198,164,129,95,61,26,248,214,180,145,111,77,42,8,230,195,161,127,93,58,24,246,211,177,143,108,74,40,6,227,193,159,124,90,56,21,243,209,175,140,106,72,37,3,225,191,156,122,88,53,19,241,206,172,138,104,69,35,1,222,188,154,119,85,51,17,238,204,170,135,101,67,32,254,220,186,151,117,83,48,14,236,202,167,133,99,64,30,252
 
-CELL_TO_WORLD_XH:
+CELL_TO_WORLD_XH: ; 2200
 .byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146
-CELL_TO_WORLD_XL:
+CELL_TO_WORLD_XL: ; 2280
 .byte 0,39,79,118,158,198,237,21,60,100,140,179,219,2,42,82,121,161,200,240,24,63,103,142,182,222,5,45,84,124,164,203,243,26,66,106,145,185,224,8,48,87,127,166,206,246,29,69,108,148,188,227,11,50,90,130,169,209,248,32,72,111,151,191,230,14,53,93,133,172,212,251,35,75,114,154,193,233,17,56,96,135,175,215,254,38,77,117,157,196,236,19,59,99,138,178,217,1,41,80,120,159,199,239,22,62,101,141,181,220,4,43,83,123,162,202,241,25,65,104,144,184,223,7,46,86,126,165
 
-CELL_LOW_TO_WORLD_XH:
+CELL_LOW_TO_WORLD_XH: ; 2300
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-CELL_LOW_TO_WORLD_XL:
+CELL_LOW_TO_WORLD_XL: ; 2400
 .byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146,147,148,150,151,152,153,154,155,157,158,159,160,161,162,163,165,166,167,168,169,170,172,173,174,175,176,177,178,180,181,182,183,184,185,187,188,189,190,191,192,193,195,196,197,198,199,200,202,203,204,205,206,207,209,210,211,212,213,214,215,217,218,219,220,221,222,224,225,226,227,228,229,230,232,233,234,235,236,237,239,240,241,242,243,244,245,247,248,249,250,251,252,254,255,0,1,2,3,4,6,7,8,9,10,11,13,14,15,16,17,18,19,21,22,23,24,25,26,28,29,30,31,32,33,34,36,37,38
 
-MOVE_XH:
+MOVE_XH: ; 2500
 .res 256,0
-MOVE_XL:
+MOVE_XL: ; 2600
 .res 256,0
-MOVE_YH:
+MOVE_YH: ; 2700
 .res 256,0
-MOVE_YL:
+MOVE_YL: ; 2800
 .res 256,0
 
-SPRITE_NUM_HIGH_NIBBLE:
+SPRITE_NUM_HIGH_NIBBLE: ; 2900
 .res 16, 33
 .res 16, 34
 .res 16, 35
@@ -103,7 +103,7 @@ SPRITE_NUM_HIGH_NIBBLE:
 .res 16, 47
 .res 16, 48
 
-SPRITE_NUM_LOW_NIBBLE:
+SPRITE_NUM_LOW_NIBBLE: ; 2A00
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
@@ -121,6 +121,14 @@ SPRITE_NUM_LOW_NIBBLE:
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 .byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
 
+SCREEN_Y_TO_Z: ; 2B00
+.byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+
+CONVERT_HEIGHTS_PIXELS: ; 2C00
+.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+
+CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
+.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 ;constants
 
 ; RAM Interrupt Vectors
@@ -228,27 +236,27 @@ SCREEN_buffer = $8000
 ZP_PTR = $22 
 SCRATCH_PTR = $7E
 
-; global data
-.byte $DE,$AD,$BE,$EF
-default_irq_vector:  .addr 0
-VSYNC_counter:       .byte 1
-camera_facing: 		 .byte 1
-camera_world_pos_XH:    .byte 19
-camera_world_pos_XL:       .byte 161
-camera_world_pos_YH:        .byte 15
-camera_world_pos_YL:       .byte 0 
-camera_cell_x: 		 .byte 0
-camera_cell_xl:       .byte 0
-camera_cell_y: 		 .byte 0
-camera_cell_yl:       .byte 0 
-MASTER_CLOCK:        .addr 0
+; global data ; 2E00
+.byte $DE,$AD,$BE,$EF ; 0-3
+default_irq_vector:  .addr 0 ; 4-5 
+VSYNC_counter:       .byte 1 ; 6
+camera_facing: 		 .byte 1 ; 7
+camera_world_pos_XH:    .byte 38 ; 8
+camera_world_pos_XL:       .byte 0 ; 9
+camera_world_pos_YH:        .byte 15 ; A
+camera_world_pos_YL:       .byte 0  ; B
+camera_cell_x: 		 .byte 0 ; c
+camera_cell_xl:       .byte 0 ; d
+camera_cell_y: 		 .byte 0 ; e
+camera_cell_yl:       .byte 0 ; f
+MASTER_CLOCK:        .addr 0 ; 10-11
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
     INC SCRATCH_PTR
 .endmacro
 
-custom_irq_handler:
+custom_irq_handler: ; 2E12
    lda VERA_isr
    and #VSYNC_BIT
    beq @continue ; non-VSYNC IRQ, no tick update
@@ -264,6 +272,7 @@ start:
   sta default_irq_vector
   lda IRQVec+1
   sta default_irq_vector+1
+
   stz VERA_dc_video   ; disable display
   lda #43 ; set scale for bitmap mode - going for 215x161 mode
   sta VERA_dc_hscale
@@ -285,7 +294,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #16   ;   num pages to copy - 16 pages / 4K  - sprite addr 0-127
+  LDX #32   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
   BRA :++
   : 
      INC ZP_PTR+1
@@ -297,6 +306,40 @@ start:
      DEX 
      BNE :--
 
+  ; initialize some waves 
+  STZ ZP_PTR
+  LDA #>TUB_WORLD
+  STA ZP_PTR+1
+  LDA #8
+  STA ZP_PTR+2 ; for use as page counter.. 
+  LDX #16
+  : LDA (ZP_PTR),y ; grab world data
+    CMP #128       ; is outside or inside tub? 
+    BCS :+         ; skip this one 
+    TXA 
+    STA (ZP_PTR),y 
+    INX
+    CPX #16       
+    BCS :++
+  : INY
+    BNE :--
+    INC ZP_PTR+1
+    DEC ZP_PTR+2
+    BNE :--
+    BRA :+++
+  : LDA (ZP_PTR),y 
+    CMP #128       ; is outside or inside tub? 
+    BCS :+         ; skip this one 
+    TXA 
+    STA (ZP_PTR),y 
+    DEX
+    BEQ :--
+  : INY
+    BNE :--
+    INC ZP_PTR+1
+    DEC ZP_PTR+2
+    BNE :--
+  :
   ; write sprite test data 
   LDA #255
   STA VERA_addr_low
@@ -344,6 +387,7 @@ start:
   sta VERA_ien
   cli ; enable IRQ now that vector is properly set
 
+
   ; calc movement table - using ACROSS_ROW_* but move 1/16 unit at a time .. at 30fps = 30/16 = ~2 units / second
   LDX #0 
  : LDA ACROSS_ROW_Y_L,X
@@ -387,7 +431,7 @@ start:
    BNE :---
 
   ; main loop here... 
-   STz camera_facing
+   STZ camera_facing
 
 @camera_world_changed:
    LDA camera_world_pos_YH
@@ -473,6 +517,19 @@ start:
 
 
 @do_update:
+
+   ; clear the object list ... 
+    STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
+    LDX #0
+    LDA #$0C ; is basis for all the z_flips
+    : STZ OBJECT_LIST_Z_START_POINTERS,X
+      STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
+      STA OBJECT_LIST_BYTE4_ZFLIPS,X
+      INX 
+      BNE :-
+
+   jsr push_world_to_object_list
+
    ;  write location datas.. 
    lda #248
    STA VERA_addr_low
@@ -480,23 +537,30 @@ start:
    STA VERA_addr_high
    LDA #$49
    STA VERA_addr_bank
+   
+   LDX OBJECT_LIST_BYTE6_NEXT
+;   LDA SPRITE_NUM_LOW_NIBBLE,X 
+;   STA VERA_data0
+;   LDA SPRITE_NUM_HIGH_NIBBLE,X 
+;   STA VERA_data0
 
-   ; value of cell we are in 
+
+    ;  set up tub pointer 
+    STZ ZP_PTR
     LDA camera_cell_y
     LSR  ;  y pages of 128
     ROR ZP_PTR
     LSR  ; y pages of 64 ! 
     ROR ZP_PTR
     ORA #>TUB_WORLD
-    STA ZP_PTR+1   
-    LDY camera_cell_x 
-    LDA (ZP_PTR),y
-    TAX 
+    STA ZP_PTR
+    LDY camera_cell_x
+    LDA (ZP_PTR),y 
+;    TAX 
    LDA SPRITE_NUM_LOW_NIBBLE,X 
    STA VERA_data0
    LDA SPRITE_NUM_HIGH_NIBBLE,X 
    STA VERA_data0
-
 
    ldy #8
  : LDX camera_facing-1,y
@@ -507,16 +571,9 @@ start:
    dey
    BNE :-
 
-   ; jsr draw_test
-   ; clear the object list ... 
-    STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
-    LDX #0
-    : STZ OBJECT_LIST_Z_START_POINTERS,X
-      INX 
-      BNE :-
 
-   jsr push_world_to_object_list
    jsr draw_object_list
+
 
 @FRAME_CHECK:
    wai
@@ -540,7 +597,7 @@ start:
    cmp #$1D 	;	cursor right
    BNE :+
    DEC camera_facing
-   BRA @do_update
+   JMP @do_update
    :
    cmp  #$9D 	;	cursor left
    BNE :+
@@ -671,35 +728,52 @@ start:
 
 ; CURRENT
 push_world_to_object_list: ; as in.. let's try this again?? wait.. missing a STZ ZP_PTR... 
-PWOL_TUB_PTR_L    = ZP_PTR
-PWOL_TUB_PTR_H    = ZP_PTR+1
-PWOL_TUB_PTR_CUR_L= ZP_PTR+2
-PWOL_TUB_PTR_CUR_H= ZP_PTR+3
-PWOL_ROW_START_XL = ZP_PTR+4
-PWOL_ROW_START_XH = ZP_PTR+5
-PWOL_ROW_START_YL = ZP_PTR+6
-PWOL_ROW_START_YH = ZP_PTR+7
-PWOL_CURRENT_XL   = ZP_PTR+8
-PWOL_CURRENT_XH   = ZP_PTR+9
-PWOL_CURRENT_YL   = ZP_PTR+10
-PWOL_CURRENT_YH   = ZP_PTR+11
-PWOL_ACROSS_ROW_XL= ZP_PTR+12
-PWOL_ACROSS_ROW_XH= ZP_PTR+13
-PWOL_ACROSS_ROW_YL= ZP_PTR+14
-PWOL_ACROSS_ROW_YH= ZP_PTR+15
-PWOL_NEXT_ROW_XL  = ZP_PTR+16
-PWOL_NEXT_ROW_XH  = ZP_PTR+17
-PWOL_NEXT_ROW_YL  = ZP_PTR+18
-PWOL_NEXT_ROW_YH  = ZP_PTR+19
-PWOL_Z_STARTS_PTR = ZP_PTR+20
-PWOL_Z_STARTS_PTRH = ZP_PTR+21
+PWOL_TUB_PTR_AL   = ZP_PTR
+PWOL_TUB_PTR_AH   = ZP_PTR+1
+PWOL_TUB_PTR_BL   = ZP_PTR+2
+PWOL_TUB_PTR_BH   = ZP_PTR+3
+PWOL_CURRENT_XL   = ZP_PTR+4
+PWOL_CURRENT_XH   = ZP_PTR+5
+PWOL_CURRENT_YL   = ZP_PTR+6
+PWOL_CURRENT_YH   = ZP_PTR+7
+PWOL_ACROSS_ROW_XL= ZP_PTR+8
+PWOL_ACROSS_ROW_XH= ZP_PTR+9
+PWOL_ACROSS_ROW_YL= ZP_PTR+10
+PWOL_ACROSS_ROW_YH= ZP_PTR+11
+PWOL_NEXT_ROW_A_LEFT_XL  = ZP_PTR+12
+PWOL_NEXT_ROW_A_LEFT_XH  = ZP_PTR+13
+PWOL_NEXT_ROW_A_LEFT_YL  = ZP_PTR+14
+PWOL_NEXT_ROW_A_LEFT_YH  = ZP_PTR+15
+PWOL_NEXT_ROW_A_RIGHT_XL  = ZP_PTR+16
+PWOL_NEXT_ROW_A_RIGHT_XH  = ZP_PTR+17
+PWOL_NEXT_ROW_A_RIGHT_YL  = ZP_PTR+18
+PWOL_NEXT_ROW_A_RIGHT_YH  = ZP_PTR+19
+PWOL_NEXT_ROW_B_LEFT_XL  = ZP_PTR+20
+PWOL_NEXT_ROW_B_LEFT_XH  = ZP_PTR+21
+PWOL_NEXT_ROW_B_LEFT_YL  = ZP_PTR+22
+PWOL_NEXT_ROW_B_LEFT_YH  = ZP_PTR+23
+PWOL_NEXT_ROW_B_RIGHT_XL  = ZP_PTR+24
+PWOL_NEXT_ROW_B_RIGHT_XH  = ZP_PTR+25
+PWOL_NEXT_ROW_B_RIGHT_YL  = ZP_PTR+26
+PWOL_NEXT_ROW_B_RIGHT_YH  = ZP_PTR+27
+PWOL_Z_STARTS_PTR = ZP_PTR+28
+PWOL_Z_STARTS_PTRH = ZP_PTR+29
+PWOL_CONVERT_HEIGHTS = ZP_PTR+30
+PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
+PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
+PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
 
+   LDA #>CONVERT_HEIGHTS_PIXELS_SECONDARY
+   STA PWOL_CONVERT_HEIGHTS_SECONDARYH
+   LDA #>CONVERT_HEIGHTS_PIXELS
+   STA PWOL_CONVERT_HEIGHTSH
    LDA #>OBJECT_LIST_Z_START_POINTERS
    STA PWOL_Z_STARTS_PTRH
+
    LDX camera_facing
 
-   LDA ACROSS_ROW_X_L,x
-   STA PWOL_ACROSS_ROW_XL
+   LDA ACROSS_ROW_X_L,x    ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
+   STA PWOL_ACROSS_ROW_XL  
    LDA ACROSS_ROW_X_H,x
    STA PWOL_ACROSS_ROW_XH
    LDA ACROSS_ROW_Y_L,x
@@ -707,276 +781,290 @@ PWOL_Z_STARTS_PTRH = ZP_PTR+21
    LDA ACROSS_ROW_Y_H,x
    STA PWOL_ACROSS_ROW_YH
 
-   LDA NEXT_ROW_X_L,x
-   STA PWOL_NEXT_ROW_XL
+   LDA NEXT_ROW_X_L,X  ; 0D00 next row LEFT/up when added
+   STA PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen
+   CLC 
+   ADC PWOL_ACROSS_ROW_XL   ; across row is for right   
+   STA PWOL_NEXT_ROW_A_RIGHT_XL  ;  -> next row is right, going up the screen 
    LDA NEXT_ROW_X_H,x
-   STA PWOL_NEXT_ROW_XH
-   LDA NEXT_ROW_Y_L,x
-   STA PWOL_NEXT_ROW_YL
+   STA PWOL_NEXT_ROW_A_LEFT_XH
+   ADC PWOL_ACROSS_ROW_XH
+   STA PWOL_NEXT_ROW_A_RIGHT_XH
+
+   LDA NEXT_ROW_Y_L,X  ; 0F00 next row LEFT/up when added
+   STA PWOL_NEXT_ROW_A_LEFT_YL   ; -> next row is left, going up the screen
+   CLC 
+   ADC PWOL_ACROSS_ROW_YL   ; across row is for right   
+   STA PWOL_NEXT_ROW_A_RIGHT_YL  ;  -> next row is right, going up the screen 
    LDA NEXT_ROW_Y_H,x
-   STA PWOL_NEXT_ROW_YH
+   STA PWOL_NEXT_ROW_A_LEFT_YH
+   ADC PWOL_ACROSS_ROW_YH
+   STA PWOL_NEXT_ROW_A_RIGHT_YH
+
+   ; when switching left/right, need to also undo the last across.. or need to go up and back ? 
+   SEC
+   LDA PWOL_NEXT_ROW_A_LEFT_XL
+   SBC PWOL_ACROSS_ROW_XL
+   STA PWOL_NEXT_ROW_A_LEFT_XL
+   LDA PWOL_NEXT_ROW_A_LEFT_XH
+   SBC PWOL_ACROSS_ROW_XH
+   STA PWOL_NEXT_ROW_A_LEFT_XH
+
+   CLC
+   LDA PWOL_NEXT_ROW_A_RIGHT_XL
+   ADC PWOL_ACROSS_ROW_XL
+   STA PWOL_NEXT_ROW_A_RIGHT_XL
+   LDA PWOL_NEXT_ROW_A_RIGHT_XH
+   ADC PWOL_ACROSS_ROW_XH
+   STA PWOL_NEXT_ROW_A_RIGHT_XH
+
+   SEC
+   LDA PWOL_NEXT_ROW_A_LEFT_YL
+   SBC PWOL_ACROSS_ROW_YL
+   STA PWOL_NEXT_ROW_A_LEFT_YL
+   LDA PWOL_NEXT_ROW_A_LEFT_YH
+   SBC PWOL_ACROSS_ROW_YH
+   STA PWOL_NEXT_ROW_A_LEFT_YH
+
+   CLC
+   LDA PWOL_NEXT_ROW_A_RIGHT_YL
+   ADC PWOL_ACROSS_ROW_YL
+   STA PWOL_NEXT_ROW_A_RIGHT_YL
+   LDA PWOL_NEXT_ROW_A_RIGHT_YH
+   ADC PWOL_ACROSS_ROW_YH
+   STA PWOL_NEXT_ROW_A_RIGHT_YH
 
 
-    STZ PWOL_TUB_PTR_L
+
+
+; for zig B , the opposite of left/up is right/down.. 
+   SEC
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_LEFT_XL
+   STA PWOL_NEXT_ROW_B_RIGHT_XL
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_LEFT_XH
+   STA PWOL_NEXT_ROW_B_RIGHT_XH
+
+   SEC
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_RIGHT_XL
+   STA PWOL_NEXT_ROW_B_LEFT_XL
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_RIGHT_XH
+   STA PWOL_NEXT_ROW_B_LEFT_XH
+
+   ;  set up tub pointer 
+    STZ PWOL_TUB_PTR_AL
     LDA camera_cell_y
     LSR  ;  y pages of 128
-    ROR PWOL_TUB_PTR_L
+    ROR PWOL_TUB_PTR_AL
     LSR  ; y pages of 64 ! 
-    ROR PWOL_TUB_PTR_L
+    ROR PWOL_TUB_PTR_AL
     ORA #>TUB_WORLD
-    STA PWOL_TUB_PTR_H
-    STA PWOL_TUB_PTR_CUR_H
-    LDA PWOL_TUB_PTR_L
-    STA PWOL_TUB_PTR_CUR_L    ;  this only changes per row not quadrant like the other values.. 
+    STA PWOL_TUB_PTR_AH
+    STA PWOL_TUB_PTR_BH
+    LDA PWOL_TUB_PTR_AL
+    STA PWOL_TUB_PTR_BL    
 
+  @zigzag_A: ; going to right and up the screen, including where we are currently.. 
+      STZ PWOL_CURRENT_XL
+      LDA #104
+      STA PWOL_CURRENT_XH
+  
+      STZ PWOL_CURRENT_YL
+      LDA #130
+      STA PWOL_CURRENT_YH
 
-;  quadrant A -> left along rows, then row counts down... across row - subtract XY, next row subtract XY
-    STZ PWOL_ROW_START_XL
-    STZ PWOL_CURRENT_XL
-    LDA #100 
-    STA PWOL_ROW_START_XH
-    STA PWOL_CURRENT_XH
+      LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
+    @zigzag_A_right:
+        CPY #64  ;  make sure we don't go outside level.. 
+        BCS @ZAR_NEXT ; if we're outside we'll just skip is OK 
+        LDA (PWOL_TUB_PTR_AL),y
+        CMP #129
+        BCS @ZAR_NEXT ; we're outside level. 
 
-    STZ PWOL_ROW_START_YL
-    STZ PWOL_CURRENT_YL
-    LDA #130
-    STA PWOL_ROW_START_YH
-   @QUAD_A_NEW_ROW_LOOP:
-       LDA PWOL_ROW_START_XL
-       STA PWOL_CURRENT_XL
+        ; bytes 1 and 4 were updated when we cleared the object list
+        INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
+        BNE :++
+      : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out.. 
+        rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen... 
+      : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer 
+        LDA SCREEN_Y_TO_Z,x 
+        BEQ :-- ; we shouldn't be outside the screen... 
+        STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+        LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+        LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+        STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+        TXA ; push new next to the Z buffer spot
+        STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
+        ; bytes .1..4.6 filled in already.. 
 
-       LDA PWOL_ROW_START_XH
-       STA PWOL_CURRENT_XH
-
-       LDA PWOL_ROW_START_YL
-       STA PWOL_CURRENT_YL
-
-       LDA PWOL_ROW_START_YH
-       STA PWOL_CURRENT_YH
-
-       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
-
-   @QUAD_A_ROW_LOOP:
-       SEC 
-       LDA #255
-       SBC PWOL_CURRENT_YH    ;  current screenY .. to calculate effective Z for the buffer 
-       STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
-       LDA (PWOL_Z_STARTS_PTR)
-       INC OBJECT_LIST_BYTE6_NEXT ; 
-       LDX OBJECT_LIST_BYTE6_NEXT ; grabbed next available thingy 
-       STA OBJECT_LIST_BYTE6_NEXT,X ; old next saved to this next object .. sweet ! 
-       TXA 
-       STA (PWOL_Z_STARTS_PTR)   ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
-
-       ; these are all the same.. so 1,2,4,5,6 filled in.. need 0,3 - addr and Y, which will depend on what we find there.. 
-       STZ OBJECT_LIST_BYTE1_MODE,X ; 16 color low address 
-       LDA #$0C 
-       STA OBJECT_LIST_BYTE4_ZFLIPS,X
-       LDA #$50
-       STA OBJECT_LIST_BYTE5_SIZE,X
-       LDA PWOL_CURRENT_XH
-       STA OBJECT_LIST_BYTE2_X,X
-
-       LDA (PWOL_TUB_PTR_CUR_L),y   ; get "height" of object.. for now we only care is it zero or neg.. 
-       BPL @QA_IS_INSIDE_TUB
-         LDA #70
-         STA OBJECT_LIST_BYTE0_ADDRLOW,X
+        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BPL @ZAR_INSIDE_TUB 
+      @ZAR_HIT_WALL_OUCH:
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+      @ZAR_INSIDE_TUB:
+          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+          SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+          SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          LDA #$D0
+          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+          LDA PWOL_CURRENT_XH
+          STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
+     @ZAR_NEXT:
+         ; calc next to the right.. 
+         INY
+         CLC
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         CLC
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
-         STA OBJECT_LIST_BYTE3_Y,X
-         BRA @NEXT_OBJ
-
-       @QA_IS_INSIDE_TUB:
-         STZ OBJECT_LIST_BYTE0_ADDRLOW,X
-         LDA PWOL_CURRENT_YH
-         STA OBJECT_LIST_BYTE3_Y,X
-       @NEXT_OBJ:
-           SEC
-           LDA PWOL_CURRENT_XL
-           SBC PWOL_ACROSS_ROW_XL
-           STA PWOL_CURRENT_XL
-           LDA PWOL_CURRENT_XH
-           SBC PWOL_ACROSS_ROW_XH
-           CMP #208
-           BCS @quad_A_next_row
-           STA PWOL_CURRENT_XH
-           SEC
-           LDA PWOL_CURRENT_YL
-           SBC PWOL_ACROSS_ROW_YL
-           STA PWOL_CURRENT_YL
-           LDA PWOL_CURRENT_YH
-           SBC PWOL_ACROSS_ROW_YH
-           CMP #153
-           BCS @quad_A_next_row
-           STA PWOL_CURRENT_YH
-           DEY 
-           BNE @QUAD_A_ROW_LOOP
-      @quad_A_next_row:
+         ADC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+         CPX #208
+         BCS @ZAR_ZIG_LEFT_SWITCH
+         CMP #149
+         BCC @zigzag_A_right
+     @ZAR_ZIG_LEFT_SWITCH:
+         DEY
          SEC 
-         LDA PWOL_TUB_PTR_CUR_L
+         LDA PWOL_TUB_PTR_AL
          SBC #64
-         STA PWOL_TUB_PTR_CUR_L
-         LDA PWOL_TUB_PTR_CUR_H
+         STA PWOL_TUB_PTR_AL
+         LDA PWOL_TUB_PTR_AH
          SBC #0
-         CMP #$10    ;  did we go out top of world          
-         BCC @quad_B
-         STA PWOL_TUB_PTR_CUR_H
-         SEC
-         LDA PWOL_ROW_START_XL
-         SBC PWOL_NEXT_ROW_XL
-         STA PWOL_ROW_START_XL
-         LDA PWOL_ROW_START_XH
-         SBC PWOL_NEXT_ROW_XH
-         CMP #208
-         BCS @quad_B
-         STA PWOL_ROW_START_XH
-         SEC
-         LDA PWOL_ROW_START_YL
-         SBC PWOL_NEXT_ROW_YL
-         STA PWOL_ROW_START_YL
-         LDA PWOL_ROW_START_YH
-         SBC PWOL_NEXT_ROW_YH
-         CMP #153
-         BCS @quad_B
-         STA PWOL_ROW_START_YH
-         JMP @QUAD_A_NEW_ROW_LOOP
+         STA PWOL_TUB_PTR_AH
 
-   @quad_B:
+         CLC 
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_NEXT_ROW_A_LEFT_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_NEXT_ROW_A_LEFT_XH
+         STA PWOL_CURRENT_XH
+         TAX
+         CLC 
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_NEXT_ROW_A_LEFT_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_NEXT_ROW_A_LEFT_YH
+         STA PWOL_CURRENT_YH
+
+         CPX #208
+         BCS @ZAR_RTS
+         CMP #149
+         BCC @zigzag_A_left
+   @ZAR_RTS:
          rts
-; push_world_to_object_list:
-    STZ ZP_PTR
-    LDA camera_cell_y
-    LSR  ;  y pages of 128
-    ROR ZP_PTR
-    LSR  ; y pages of 64 ! 
-    ROR ZP_PTR
-    ORA #>TUB_WORLD
-    STA ZP_PTR+1   ; for first quadrant start    
-    STA ZP_PTR+5   ; second quadrant starts same row 
-    LDA camera_cell_x
-    AND #63
-    ORA ZP_PTR
-    STA ZP_PTR     ; first quadrant start - center and right/up
-    DEC A 
-    STA ZP_PTR+2   ; second quadrant start - left of center and to left/up
-    CLC 
-    LDA ZP_PTR    ; batter up! 
-    ADC #64       ;  next row time 
-    TAX           ; stash it 
-    STA ZP_PTR+4   ; third quadrant start - row below center going right/down
-    LDA ZP_PTR+1
-    ADC #0
-    STA ZP_PTR+5
-    STA ZP_PTR+7
-    DEX
-    STX ZP_PTR+6   ; forth quadrant start - left center, down/left
-   @quadrant_one_center_right_up:
-       STZ ZP_PTR+8 ; X row start
-       STZ ZP_PTR+12 ; current spot
-       LDA #100 
-       STA ZP_PTR+9  
-       STA ZP_PTR+13
 
-       STZ ZP_PTR+10 ; Y row start
-       STZ ZP_PTR+14 ; current spot
-       LDA #120      
-       STA ZP_PTR+11 
-       STA ZP_PTR+15
+   @zigzag_A_left:
+        CPY #64  ;  make sure we don't go outside level.. 
+        BCS @ZAL_NEXT ; if we're outside we'll just skip is OK 
+        LDA (PWOL_TUB_PTR_AL),y
+        CMP #129
+        BCS @ZAR_NEXT ; we're outside level. 
 
-       LDX camera_facing
-       LDA ACROSS_ROW_X_L,x
-       STA ZP_PTR+16
-       LDA ACROSS_ROW_X_H,x
-       STA ZP_PTR+17
-       LDA ACROSS_ROW_Y_L,x
-       STA ZP_PTR+18
-       LDA ACROSS_ROW_Y_H,x
-       STA ZP_PTR+19
+        ; bytes 1 and 4 were updated when we cleared the object list
+        INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
+        BNE :++
+      : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out.. 
+        rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen... 
+      : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer 
+        LDA SCREEN_Y_TO_Z,x 
+        BEQ :-- ; we shouldn't be outside the screen... 
+        STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+        LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+        LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+        STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+        TXA ; push new next to the Z buffer spot
+        STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
+        ; bytes .1..4.6 filled in already.. 
 
-       LDA NEXT_ROW_X_L,X
-       STA ZP_PTR+20
-       LDA NEXT_ROW_X_H,X
-       STA ZP_PTR+21
-       LDA NEXT_ROW_Y_L,X
-       STA ZP_PTR+22
-       LDA NEXT_ROW_Y_H,X
-       STA ZP_PTR+23
-       LDA ZP_PTR
-       STA ZP_PTR+24 ; for going along the row... right! 
-       LDA ZP_PTR+1
-       STA ZP_PTR+25 
-       bra @quad_one_row_loop
-      @quad_one_row_loop_next:
-            STA ZP_PTR+11
-            STA ZP_PTR+15
-            LDA ZP_PTR
-            SBC #63
-            STA ZP_PTR
-            STA ZP_PTR+24
-            LDA ZP_PTR+1
-            SBC #0
-            STA ZP_PTR+1
-            STA ZP_PTR+25
-      @quad_one_row_loop:
-          INC OBJECT_LIST_BYTE6_NEXT ; 
-          LDX OBJECT_LIST_BYTE6_NEXT ; grabbed next available thingy 
-          LDY ZP_PTR+15 ; current screen Y ... sneaky? maybe.. 
-          LDA OBJECT_LIST_Z_START_POINTERS,Y ; old next pointer 
-          STA OBJECT_LIST_BYTE6_NEXT,X
-          TXA
-          STA OBJECT_LIST_Z_START_POINTERS,Y ; set new next pointer
-          TYA
-          STA OBJECT_LIST_BYTE3_Y,X
-          LDA (ZP_PTR+24)
-          BEQ :+ 
-          LDA #70 ; is non zero.. for now means outside world.. 
-        : STA OBJECT_LIST_BYTE0_ADDRLOW,X 
-          STZ OBJECT_LIST_BYTE1_MODE,X ; 16 color low address 
-          LDA #$0C 
-          STA OBJECT_LIST_BYTE4_ZFLIPS,X
-          LDA #$50
-          STA OBJECT_LIST_BYTE5_SIZE,X
-          ; attempt move along row 
-          CLC 
-          LDA ZP_PTR+12
-          ADC ZP_PTR+16
-          STA ZP_PTR+12
-          LDA ZP_PTR+13
-          STA OBJECT_LIST_BYTE2_X,X 
-          ADC ZP_PTR+17
-          CMP #208
-          BCS @quad_one_next_row
-          STA ZP_PTR+13
-          LDA ZP_PTR+14
-          ADC ZP_PTR+18
-          STA ZP_PTR+13
-          TYA 
-          ADC ZP_PTR+19
-          CMP #154
-          BCC @quad_one_row_loop
-        @quad_one_next_row:
-            CLC
-            LDA ZP_PTR+8
-            ADC ZP_PTR+20
-            STA ZP_PTR+8
-            STA ZP_PTR+12
-            LDA ZP_PTR+9
-            ADC ZP_PTR+21
-            CMP #208
-            STA ZP_PTR+9
-            STA ZP_PTR+13
-            BCS @quad_two 
-            LDA ZP_PTR+10
-            ADC ZP_PTR+22
-            STA ZP_PTR+10
-            STA ZP_PTR+14
-            LDA ZP_PTR+11
-            ADC ZP_PTR+23
-            CMP #154
-            BCS @quad_two 
-            jmp @quad_one_row_loop_next
-      @quad_two:
+        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BPL @ZAL_INSIDE_TUB 
+      @ZAL_HIT_WALL_OUCH:
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+      @ZAL_INSIDE_TUB:
+          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+          SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+          SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          LDA #$D0
+          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+          LDA PWOL_CURRENT_XH
+          STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
+     @ZAL_NEXT:
+         ; calc next to the LEFT
+         DEY
+         SEC
+         LDA PWOL_CURRENT_XL
+         SBC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         SBC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         SEC
+         LDA PWOL_CURRENT_YL
+         SBC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         SBC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+         CPX #208
+         BCS @ZAL_ZIG_RIGHT_SWITCH
+         CMP #149
+         BCC @zigzag_A_left
+     @ZAL_ZIG_RIGHT_SWITCH:
+         INY
+         SEC 
+         LDA PWOL_TUB_PTR_AL
+         SBC #64
+         STA PWOL_TUB_PTR_AL
+         LDA PWOL_TUB_PTR_AH
+         SBC #0
+         STA PWOL_TUB_PTR_AH
 
-    rts
+         CLC 
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_NEXT_ROW_A_RIGHT_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_NEXT_ROW_A_RIGHT_XH
+         STA PWOL_CURRENT_XH
+         TAX
+
+         CLC 
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_NEXT_ROW_A_RIGHT_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_NEXT_ROW_A_RIGHT_YH
+         STA PWOL_CURRENT_YH
+         CPX #208
+         BCS @ZAL_RTS
+         CMP #149
+         BCS @ZAL_RTS
+         JMP @zigzag_A_right
+   @ZAL_RTS:
+      rts
 
 draw_object_list:
     STZ VERA_ctrl
@@ -989,8 +1077,7 @@ draw_object_list:
     LDA #>OBJECT_LIST_Z_START_POINTERS
     STA ZP_PTR+1
     LDY #96 ; num sprites can write
-    BRA @Z_LOOP ; skip to the good stuff 
-  @NEXT_Z:
+  @NEXT_Z: ; Z=0 is invalid...
       INC ZP_PTR
       BNE @Z_LOOP
       rts
@@ -1024,360 +1111,12 @@ draw_object_list:
          RTS
      
 
-; all the objects need to get into a structure to be drawn at each screen Y..
-; need object type, screenX .. store back to front .. track # objects to be drawn ?
-; there's 120 lines on screen.. up to say 32 objects per line would need about 8K RAM for the list.. each line needs 64 bytes
-
-draw_test:
-    STZ VERA_addr_low
-    lda #(>VRAM_sprite_attributes)+1
-    sta VERA_addr_high
-    lda #$11
-    sta VERA_addr_bank
-
-
-    LDA VERA_ctrl
-    EOR #1
-    STA VERA_ctrl ; switch to set addr1 
-    ; 64x64 pixel in the middle would be 32x32.. 2048+32 = 2080 $820
-    LDA #$20
-    STA VERA_addr_low
-    STA ZP_PTR+40
-    LDA #$08
-    STA VERA_addr_high
-    STA ZP_PTR+41
-    LDA #$11            ;  draw 1 to the right at a time..  
-    STA VERA_addr_bank
-
-
-    ; load increments and set start position...
-    LDX camera_facing
-    TXA
-    EOR #$80
-    STA ZP_PTR+17
-    ; increments across rows
-    STZ ZP_PTR+16   ; 	set quad jump index
-
-    STZ ZP_PTR+12 	;	next row  start XL at ZP_PTR+12
-    STZ ZP_PTR+14 	;	next row  start YL at ZP_PTR+14
- 
-    LDA #100
-    STA ZP_PTR+13 	;	next row start at XH ZP_PTR+13
-    LDA #132
- 	 STA ZP_PTR+15 	;	next row start YH at ZP_PTR+15
-
-    LDA ACROSS_ROW_X_L,X 
-    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-    LDA ACROSS_ROW_X_H,X 
-    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-    LDA ACROSS_ROW_Y_L,X 
-    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-    LDA ACROSS_ROW_Y_H,X 
-    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
-    ; increments o next rows 
-    LDA NEXT_ROW_X_L,X 
-    STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
-    LDA NEXT_ROW_X_H,X 
-    STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
-    LDA NEXT_ROW_Y_L,X 
-    STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
-    LDA NEXT_ROW_Y_H,X 
-    STA ZP_PTR+11	; 	ZP_PTR+3 = spriteY increment 
-
-    LDA #$50
-    STA ZP_PTR+30
-
-    STZ ZP_PTR+32
-    LDA camera_cell_y
-    LSR  ;  y pages of 128
-    ROR ZP_PTR+32
-    LSR  ; y pages of 64 ! 
-    ROR ZP_PTR+32
-    ORA #>TUB_WORLD
-    STA ZP_PTR+33    
-    STA ZP_PTR+35
-    STA ZP_PTR+37
-    LDA camera_cell_x
-    AND #63
-    ORA ZP_PTR+32
-    STA ZP_PTR+32    ;  lookup pointer configured for start  - for setting up quadrants 
-    STA ZP_PTR+34    ;  this is copy for going to next row 
-    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
-    ; first quadrant increments along the row 
-    LDA #1 
-    STA ZP_PTR+38
-    ; next row goes up-right
-    LDA #192
-    STA ZP_PTR+39
-
-    LDY #96		;	amount of sprites we can write max
-
-  @quad_loop:
-   LDX #10
-   STX $7F
-  	bra @do_row
-  @next_row:
-      SEC
-      LDA ZP_PTR+34
-      SBC #64
-      STA ZP_PTR+34
-      STA ZP_PTR+36
-      LDA ZP_PTR+35
-      SBC #0
-      STA ZP_PTR+35
-      STA ZP_PTR+37
-
-      SEC
-      LDA ZP_PTR+40
-      SBC #64
-      STA ZP_PTR+40
-      STA VERA_addr_low
-      LDA ZP_PTR+41
-      SBC #0
-      STA ZP_PTR+41
-      STA VERA_addr_high
-      DEY
-      BNE @do_row
-      rts
-  @do_row:      
-      DEC $7F
-      BNE :+
-      JMP @next_quad
-     :
-   LDX #7
-  	LDA ZP_PTR+12 	;
-  	STA ZP_PTR 		;	current row XL
-
-    SEC  ; clear before doing 16bit add!
-    SBC ZP_PTR+8
-    STA ZP_PTR+12 	;	next row XL 
-    LDA ZP_PTR+13 	;
-    STA ZP_PTR+1  ;  current row XH
-    SBC ZP_PTR+9  ;
-    STA ZP_PTR+13    ;  next row XH
-
-    LDA ZP_PTR+1
-    CMP #201
-    BCC :+
-    JMP @next_quad 		;	off screen
-    :
-    SEC  ; clear before doing 16bit add!
-    LDA ZP_PTR+14 	
-    STA ZP_PTR+2 	;	current row YL
-    SBC ZP_PTR+10 	
-    STA ZP_PTR+14 	;	next row YL
-    LDA ZP_PTR+15 
-    STA ZP_PTR+3
-    SBC ZP_PTR+11    
-    STA ZP_PTR+15    ;  next row YH 
-
-    LDA ZP_PTR+3
-    CMP #153 	
-    BCS @next_quad;	off screen 
-  @forward_row_loop:
-      LDA (ZP_PTR+36)   ; read the thing  
-      BEQ :+
-      LDA #70
-      BRA :++
-    : LDA #0 ; 	address 12:5
-    : STA VERA_data0
-      STA VERA_data1
-      STZ VERA_data0 ;  mode  | address 16:13
-      LDA ZP_PTR+1 	
-      STA VERA_data0 ; 	X 7:0
-      STZ VERA_data0 ; 	X 9:8
-      LDA ZP_PTR+3  ; 	spriteY
-      STA VERA_data0 ;  Y 7:0
-      STZ VERA_data0 ; 	Y 9:8
-      LDA #$0C 
-      STA VERA_data0 	; 	3 z depth no flip
-      LDA #$50 			; 	16x8 no palette offset
-      LDA ZP_PTR+30;
-      STA VERA_data0
-    ; increment along row 
-    CLC 
-    LDA ZP_PTR+36
-    ADC ZP_PTR+38
-    STA ZP_PTR+36 ; this _should_ be only +/- 1 ... right? 
- 
-    ; increment X
-    CLC  ; clear before doing 16bit add!
-      LDA ZP_PTR 	;	load X_l
-
-      ADC ZP_PTR+4 	
-      STA ZP_PTR
-
-      LDA ZP_PTR+1
-      ADC ZP_PTR+5
-      CMP #32
-      BCC :+
-      CMP #167
-      BCC :++
-      : JMP @next_row		; covers negatives even.. 
-      : STA ZP_PTR+1
-    ; increment Y
-    CLC  ; clear before doing 16bit add!
-
-      LDA ZP_PTR+2 	;
-      ADC ZP_PTR+6
-      STA ZP_PTR+2
-
-      LDA ZP_PTR+3
-      ADC ZP_PTR+7
-      CMP #32
-      BCC :+
-      CMP #153
-      BCC :++
-      : JMP @next_row     ; covers negatives even.. 
-      : 
-      STA ZP_PTR+3
-      DEX 
-      BNE :+
-      JMP @next_row     ; covers negatives even.. 
-      :
-      DEY
-      BNE @forward_row_loop 
-  @end:
-    LDA VERA_ctrl
-    EOR #1
-    STA VERA_ctrl ; switch to unset addr1 
-     rts
-
-  @next_quad: 
-  
-  	  inc ZP_PTR+30
-  	  LDX ZP_PTR+16 	;	
-  	  TXA 
-  	  CLC 
-  	  ADC #2
-  	  STA ZP_PTR+16
-  	  jmp (@t_quads,X) 	; 
-  	@t_quads:
-  	  .addr @quad_1
-  	  ;.addr @quad_2
-  	  ;.addr @quad_3
-  	  .addr @end
-  @quad_1: 	;	need invert across row to make next bits . next row stays same
-      ; first quadrant increments along the row 
-    LDA #$1F
-    STA VERA_addr_low
-    STA ZP_PTR+40
-    LDA #$08
-    STA VERA_addr_high
-    STA ZP_PTR+41
-    LDA #$19            ;  draw 1 to the left at a time..  
-    STA VERA_addr_bank
-
-    LDA #255
-    STA ZP_PTR+38
-    LDA ZP_PTR+32
-    DEC A
-    STA ZP_PTR+34    ;  this is copy for going to next row 
-    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
-
-    LDA ZP_PTR+33
-    STA ZP_PTR+35
-    STA ZP_PTR+37
-
-	LDX ZP_PTR+17
-    CLC  ; clear before doing 16bit add!
-    LDA ACROSS_ROW_X_L,X 
-    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-    STA ZP_PTR+12
-    LDA ACROSS_ROW_X_H,X 
-    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-    ADC #100
-    STA ZP_PTR+13
-    CLC  ; clear before doing 16bit add!
-    LDA ACROSS_ROW_Y_L,X 
-    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-    STA ZP_PTR+14
-    LDA ACROSS_ROW_Y_H,X 
-    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
-    ADC #132
-    STA ZP_PTR+15
-    jmp @quad_loop
-@quad_2: ; invert next row - start 1 row up 
-	LDX ZP_PTR+17
-
-    LDA #192
-    STA ZP_PTR+39
-
-    LDA ZP_PTR+32
-    SEC 
-    SBC #64
-    STA ZP_PTR+34    ;  this is copy for going to next row 
-    STA ZP_PTR+36    ;  this one's for incrementing along the row.. 
-
-    LDA ZP_PTR+33
-    SBC #0
-    STA ZP_PTR+35
-    STA ZP_PTR+37
-
-    CLC  ; clear before doing 16bit add!
-    LDA NEXT_ROW_X_L,X 
-    STA ZP_PTR+8 	; 	ZP_PTR+4 = spriteX increment Low byte
-    STA ZP_PTR+12
-    STA ZP_PTR+18
-    LDA NEXT_ROW_X_H,X 
-    STA ZP_PTR+9 	;	ZP_PTR+4 = spriteX increment high byte
-    ADC #100
-    STA ZP_PTR+13
-    STA ZP_PTR+19
-
-    CLC  ; clear before doing 16bit add!
-    LDA NEXT_ROW_Y_L,X 
-    STA ZP_PTR+10 	; 	ZP_PTR+6 = spriteY increment low byte
-    STA ZP_PTR+14
-    STA ZP_PTR+20
-    LDA NEXT_ROW_Y_H,X 
-    STA ZP_PTR+11 	; 	ZP_PTR+3 = spriteY increment 
-    ADC #132
-    STA ZP_PTR+15
-    STA ZP_PTR+21
-    jmp @quad_loop
-@quad_3: ; restore across row and increment .. 
-   LDA #1
-   STA ZP_PTR+38
-   LDA ZP_PTR+32
-   SEC
-   SBC #63 
-   STA ZP_PTR+34
-   STA ZP_PTR+36
-   LDA ZP_PTR+33
-   SBC #0
-    STA ZP_PTR+35
-    STA ZP_PTR+37
-
-	LDX camera_facing
-
-
-    CLC  ; clear before doing 16bit add!   
-    LDA ACROSS_ROW_X_L,X 
-    STA ZP_PTR+4 	; 	ZP_PTR+4 = spriteX increment Low byte
-    ADC ZP_PTR+18
-    STA ZP_PTR+12
-    LDA ACROSS_ROW_X_H,X 
-    STA ZP_PTR+5 	;	ZP_PTR+4 = spriteX increment high byte
-    ADC ZP_PTR+19
-    STA ZP_PTR+13
-
-    CLC  ; clear before doing 16bit add!
-    LDA ACROSS_ROW_Y_L,X 
-    STA ZP_PTR+6 	; 	ZP_PTR+6 = spriteY increment low byte
-    ADC ZP_PTR+20
-    STA ZP_PTR+14
-    LDA ACROSS_ROW_Y_H,X 
-    STA ZP_PTR+7 	; 	ZP_PTR+3 = spriteY increment 
-    ADC ZP_PTR+21
-    STA ZP_PTR+15
-    jmp @quad_loop
 
 test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  66,$00,100,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
+.byte  66,$00,104,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
 .byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
 .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
@@ -1446,70 +1185,14 @@ test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0
 .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 .. 
 .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
 .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-.byte $90, $09, $90, $09, $90, $09, $90, $09   ; 11
-.res 32, 0  ;  5 lines zeroed
+.byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
 
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	16
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	20
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	24
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	28
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	32
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	36
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	40
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	44
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	48
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	52
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	56
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63
-
-.byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $EE 	; 	60
-.byte $EE, $EE, $66, $EE, $EE, $66, $EE, $EE 	;  	61
-.byte $EE, $66, $EE, $66, $66, $EE, $66, $EE 	; 	62
-.byte $66, $EE, $EE, $EE, $EE, $EE, $EE, $66 	; 	63   512 bytes - next sprite addr = 16
-
+.repeat 13
+    .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
+    .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;     
+    .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;  
+    .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;  
+.endrepeat
 
 test_border:
 .repeat 64
@@ -1728,22 +1411,12 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $00, $01, $00, $00, $00, $10, $10, $00
 .byte $00, $11, $11, $10, $01, $00, $01, $00
 
-; alernate tile graphic to use for tub wall .. 70-73
-.byte $16, $16, $16, $16, $16, $16, $16, $10
-.byte $01, $61, $61, $61, $61, $61, $61, $61
+.repeat 58 ; 128-70
+    .res 32,$80
+.endrepeat
 
-.byte $16, $16, $16, $16, $16, $16, $16, $10
-.byte $01, $61, $61, $61, $61, $61, $61, $61
-
-.byte $16, $16, $16, $16, $16, $16, $16, $10
-.byte $01, $61, $61, $61, $61, $61, $61, $61
-
-.byte $16, $16, $16, $16, $16, $16, $16, $10
-.byte $01, $61, $61, $61, $61, $61, $61, $61
-
-.byte $16, $16, $16, $16, $16, $16, $16, $10
-.byte $01, $61, $61, $61, $61, $61, $61, $61
-
-.byte $10, $10, $10, $10, $10, $10, $10, $10
-.byte $01, $01, $01, $01, $01, $01, $01, $01
-.res 32,0
+; alernate tile graphic to use for tub wall .. 128 to 159 16x64
+.repeat 32
+    .byte $16, $16, $16, $16, $16, $16, $16, $16
+    .byte $61, $61, $61, $61, $61, $61, $61, $61
+.endrepeat

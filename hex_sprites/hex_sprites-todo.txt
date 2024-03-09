@@ -196,9 +196,26 @@ TODO 	making moving around by hex work
 0230 	quadA working.. well, at the least isn't showing anything outside the world.. some issues when row goes offscreen.. OK 
 		commit..
 
+2300 	OK... maybe not quads... but zig zag starting to left and then to right.. 
 
+2024/03/08
+0120 	Ummm... ok... I got it go left then right but left again not working... hmm.. stuck a ; so it returns after the switch..
 
+0145	next row for switching left needs 2 undos not 1 
+0205 	OK that's a little better now but not really? seems has trouble getting back to visible locations.. 
 
+2024/03/09
 TODO 	sort out that z-buffer object list
+	DONE 	that's pretty much working
+0730 	started working on stuff
+1335 	am fucking stuck.. something is just mangled the stack.. 
+1340 	oops.. the code to add waves overflowed into the stack
+1450 	ZigZagA is working ... Wow
+		Commit..
+
+
+TODO 	ZigZag terrain renderer to object list
+
+
 TODO 	make moving around by X/Y/Z work 
 
