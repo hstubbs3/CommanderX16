@@ -125,8 +125,8 @@ SCREEN_Y_TO_Z: ; 2B00
 .byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
-.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
-
+;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+.res 256,0
 CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 ;constants
@@ -247,6 +247,10 @@ camera_world_pos_YH:        .byte 15 ; A
 camera_world_pos_YL:       .byte 0  ; B
 camera_cell_x: 		 .byte 0 ; c
 camera_cell_xl:       .byte 0 ; d
+DEBUG_A: .byte 0  ; 12
+DEBUG_B: .byte 0  ; 13
+DEBUG_C: .byte 0
+DEBUG_D: .byte 0
 camera_cell_y: 		 .byte 0 ; e
 camera_cell_yl:       .byte 0 ; f
 MASTER_CLOCK:        .addr 0 ; 10-11
@@ -312,14 +316,14 @@ start:
   STA ZP_PTR+1
   LDA #8
   STA ZP_PTR+2 ; for use as page counter.. 
-  LDX #16
+  LDX #0
   : LDA (ZP_PTR),y ; grab world data
     CMP #128       ; is outside or inside tub? 
     BCS :+         ; skip this one 
     TXA 
     STA (ZP_PTR),y 
     INX
-    CPX #16       
+    CPX #15       
     BCS :++
   : INY
     BNE :--
@@ -524,11 +528,15 @@ start:
     LDA #$0C ; is basis for all the z_flips
     : STZ OBJECT_LIST_Z_START_POINTERS,X
       STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
+      STZ OBJECT_LIST_BYTE2_X
       STA OBJECT_LIST_BYTE4_ZFLIPS,X
       INX 
       BNE :-
 
    jsr push_world_to_object_list
+
+   LDX OBJECT_LIST_BYTE6_NEXT
+   STX DEBUG_C   
 
    ;  write location datas.. 
    lda #248
@@ -537,32 +545,9 @@ start:
    STA VERA_addr_high
    LDA #$49
    STA VERA_addr_bank
-   
-   LDX OBJECT_LIST_BYTE6_NEXT
-;   LDA SPRITE_NUM_LOW_NIBBLE,X 
-;   STA VERA_data0
-;   LDA SPRITE_NUM_HIGH_NIBBLE,X 
-;   STA VERA_data0
 
-
-    ;  set up tub pointer 
-    STZ ZP_PTR
-    LDA camera_cell_y
-    LSR  ;  y pages of 128
-    ROR ZP_PTR
-    LSR  ; y pages of 64 ! 
-    ROR ZP_PTR
-    ORA #>TUB_WORLD
-    STA ZP_PTR
-    LDY camera_cell_x
-    LDA (ZP_PTR),y 
-;    TAX 
-   LDA SPRITE_NUM_LOW_NIBBLE,X 
-   STA VERA_data0
-   LDA SPRITE_NUM_HIGH_NIBBLE,X 
-   STA VERA_data0
-
-   ldy #8
+ 
+   ldy #10
  : LDX camera_facing-1,y
    LDA SPRITE_NUM_LOW_NIBBLE,X 
    STA VERA_data0
@@ -762,6 +747,14 @@ PWOL_CONVERT_HEIGHTS = ZP_PTR+30
 PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
 PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
 PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
+PWOL_TRIES_COUNTER = ZP_PTR+34
+TRY_AGAIN = 6
+SCREEN_START_X = 100
+SCREEN_START_Y =  80
+SCREEN_OUT_RIGHT  = 164 ; right of middle is 116, +48 = 164
+SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_TOP     = 24
+SCREEN_OUT_BOTTOM  = 136
 
    LDA #>CONVERT_HEIGHTS_PIXELS_SECONDARY
    STA PWOL_CONVERT_HEIGHTS_SECONDARYH
@@ -781,19 +774,19 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
    LDA ACROSS_ROW_Y_H,x
    STA PWOL_ACROSS_ROW_YH
 
+   CLC
    LDA NEXT_ROW_X_L,X  ; 0D00 next row LEFT/up when added
-   STA PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen
-   CLC 
-   ADC PWOL_ACROSS_ROW_XL   ; across row is for right   
-   STA PWOL_NEXT_ROW_A_RIGHT_XL  ;  -> next row is right, going up the screen 
+   STA PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  -1,-1
+   ADC PWOL_ACROSS_ROW_XL   ; across row is for right , subtract to go left  +1 -> 0,1
+   STA PWOL_NEXT_ROW_A_RIGHT_XL  ;  -> next row is right, going up the screen .. -1,-1
    LDA NEXT_ROW_X_H,x
    STA PWOL_NEXT_ROW_A_LEFT_XH
    ADC PWOL_ACROSS_ROW_XH
    STA PWOL_NEXT_ROW_A_RIGHT_XH
 
+   CLC 
    LDA NEXT_ROW_Y_L,X  ; 0F00 next row LEFT/up when added
    STA PWOL_NEXT_ROW_A_LEFT_YL   ; -> next row is left, going up the screen
-   CLC 
    ADC PWOL_ACROSS_ROW_YL   ; across row is for right   
    STA PWOL_NEXT_ROW_A_RIGHT_YL  ;  -> next row is right, going up the screen 
    LDA NEXT_ROW_Y_H,x
@@ -801,44 +794,10 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
    ADC PWOL_ACROSS_ROW_YH
    STA PWOL_NEXT_ROW_A_RIGHT_YH
 
-   ; when switching left/right, need to also undo the last across.. or need to go up and back ? 
-   SEC
-   LDA PWOL_NEXT_ROW_A_LEFT_XL
-   SBC PWOL_ACROSS_ROW_XL
-   STA PWOL_NEXT_ROW_A_LEFT_XL
-   LDA PWOL_NEXT_ROW_A_LEFT_XH
-   SBC PWOL_ACROSS_ROW_XH
-   STA PWOL_NEXT_ROW_A_LEFT_XH
-
-   CLC
-   LDA PWOL_NEXT_ROW_A_RIGHT_XL
-   ADC PWOL_ACROSS_ROW_XL
-   STA PWOL_NEXT_ROW_A_RIGHT_XL
-   LDA PWOL_NEXT_ROW_A_RIGHT_XH
-   ADC PWOL_ACROSS_ROW_XH
-   STA PWOL_NEXT_ROW_A_RIGHT_XH
-
-   SEC
-   LDA PWOL_NEXT_ROW_A_LEFT_YL
-   SBC PWOL_ACROSS_ROW_YL
-   STA PWOL_NEXT_ROW_A_LEFT_YL
-   LDA PWOL_NEXT_ROW_A_LEFT_YH
-   SBC PWOL_ACROSS_ROW_YH
-   STA PWOL_NEXT_ROW_A_LEFT_YH
-
-   CLC
-   LDA PWOL_NEXT_ROW_A_RIGHT_YL
-   ADC PWOL_ACROSS_ROW_YL
-   STA PWOL_NEXT_ROW_A_RIGHT_YL
-   LDA PWOL_NEXT_ROW_A_RIGHT_YH
-   ADC PWOL_ACROSS_ROW_YH
-   STA PWOL_NEXT_ROW_A_RIGHT_YH
 
 
-
-
-; for zig B , the opposite of left/up is right/down.. 
-   SEC
+; for zig B , the opposite of left/up is right/down.. so A_LEFT * -1 = B_RIGHT
+   SEC ; flip A_LEFT X to B_RIGHT X
    LDA #0
    SBC PWOL_NEXT_ROW_A_LEFT_XL
    STA PWOL_NEXT_ROW_B_RIGHT_XL
@@ -846,13 +805,29 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
    SBC PWOL_NEXT_ROW_A_LEFT_XH
    STA PWOL_NEXT_ROW_B_RIGHT_XH
 
-   SEC
+   SEC ; flip A_LEFT Y to B_RIGHT Y
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_LEFT_YL
+   STA PWOL_NEXT_ROW_B_RIGHT_YL
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_LEFT_YH
+   STA PWOL_NEXT_ROW_B_RIGHT_YH
+
+   SEC ; flip A_RIGHT X to B_LEFT X 
    LDA #0
    SBC PWOL_NEXT_ROW_A_RIGHT_XL
    STA PWOL_NEXT_ROW_B_LEFT_XL
    LDA #0
    SBC PWOL_NEXT_ROW_A_RIGHT_XH
    STA PWOL_NEXT_ROW_B_LEFT_XH
+
+   SEC ; flip A_RIGHT Y to B_LEFT Y 
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_RIGHT_YL
+   STA PWOL_NEXT_ROW_B_LEFT_YL
+   LDA #0
+   SBC PWOL_NEXT_ROW_A_RIGHT_YH
+   STA PWOL_NEXT_ROW_B_LEFT_YH
 
    ;  set up tub pointer 
     STZ PWOL_TUB_PTR_AL
@@ -869,12 +844,13 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
 
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
       STZ PWOL_CURRENT_XL
-      LDA #104
+      LDA #SCREEN_START_X
       STA PWOL_CURRENT_XH
   
       STZ PWOL_CURRENT_YL
-      LDA #130
+      LDA #SCREEN_START_Y
       STA PWOL_CURRENT_YH
+
 
       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
     @zigzag_A_right:
@@ -907,13 +883,18 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
       @ZAR_INSIDE_TUB:
           ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          SEC        
-          LDA PWOL_CURRENT_YH ; set er up
-          SBC (PWOL_CONVERT_HEIGHTS)
-          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
-          LDA #$D0
+          TYA
+          AND #$0F
+          ORA #$50 ; #$D0
           STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+
+          ;STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+          ;SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+          ;SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          ;LDA #$D0
+          ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
           LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZAR_NEXT:
@@ -934,15 +915,25 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          ADC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
-         CPX #208
+
+         STX DEBUG_A
+         STA DEBUG_B
+
+         CPX #SCREEN_OUT_RIGHT
          BCS @ZAR_ZIG_LEFT_SWITCH
-         CMP #149
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAR_ZIG_LEFT_SWITCH
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAR_ZIG_LEFT_SWITCH
+         CMP #SCREEN_OUT_BOTTOM
          BCC @zigzag_A_right
-     @ZAR_ZIG_LEFT_SWITCH:
-         DEY
+     @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
+         LDA #TRY_AGAIN
+         STA PWOL_TRIES_COUNTER
+         DEY ; have to go this to match where the thing is going .. 0,0
          SEC 
          LDA PWOL_TUB_PTR_AL
-         SBC #64
+         SBC #64 ;   0,-1
          STA PWOL_TUB_PTR_AL
          LDA PWOL_TUB_PTR_AH
          SBC #0
@@ -963,23 +954,52 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_LEFT_YH
          STA PWOL_CURRENT_YH
-         CPX #240
-         BCS :+
-         CPX #215
-         BCS @ZAR_RTS
-       : CMP #243
-         BCS @zigzag_A_left
-         CMP #161
+         ; check if we're outside ..  
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
          BCC @zigzag_A_left
+   @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
+         DEC PWOL_TRIES_COUNTER 
+         BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
    @ZAR_RTS:
          rts
-
+   @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
+         DEY
+         SEC
+         LDA PWOL_CURRENT_XL
+         SBC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         SBC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         SEC
+         LDA PWOL_CURRENT_YL
+         SBC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         SBC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
    @zigzag_A_left:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAL_NEXT ; if we're outside we'll just skip is OK 
         LDA (PWOL_TUB_PTR_AL),y
         CMP #129
-        BCS @ZAR_NEXT ; we're outside level. 
+        BCS @ZAL_NEXT ; we're outside level. 
 
         ; bytes 1 and 4 were updated when we cleared the object list
         INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
@@ -1004,17 +1024,22 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
       @ZAL_INSIDE_TUB:
           ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          SEC        
-          LDA PWOL_CURRENT_YH ; set er up
-          SBC (PWOL_CONVERT_HEIGHTS)
-          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
-          LDA #$D0
+          TYA
+          AND #$0F
+          ORA #$50 ; #$D0
           STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+
+       ;   STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+       ;   SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+        ;  SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+        ;  LDA #$D0
+        ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
           LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZAL_NEXT:
-         ; calc next to the LEFT
+         ; calc next to the LEFT 
          DEY
          SEC
          LDA PWOL_CURRENT_XL
@@ -1031,12 +1056,22 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          SBC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
-         CPX #208
+
+         STX DEBUG_A
+         STA DEBUG_B
+
+         CPX #SCREEN_OUT_RIGHT
          BCS @ZAL_ZIG_RIGHT_SWITCH
-         CMP #149
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAL_ZIG_RIGHT_SWITCH
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAL_ZIG_RIGHT_SWITCH
+         CMP #SCREEN_OUT_BOTTOM
          BCC @zigzag_A_left
-     @ZAL_ZIG_RIGHT_SWITCH:
-         INY
+     @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +0,+1  from where we is right now .. 
+         LDA #TRY_AGAIN
+         STA PWOL_TRIES_COUNTER
+
          SEC 
          LDA PWOL_TUB_PTR_AL
          SBC #64
@@ -1045,14 +1080,18 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          SBC #0
          STA PWOL_TUB_PTR_AH
 
+
          CLC 
+
          LDA PWOL_CURRENT_XL
          ADC PWOL_NEXT_ROW_A_RIGHT_XL
          STA PWOL_CURRENT_XL
+
          LDA PWOL_CURRENT_XH
          ADC PWOL_NEXT_ROW_A_RIGHT_XH
          STA PWOL_CURRENT_XH
          TAX
+
 
          CLC 
          LDA PWOL_CURRENT_YL
@@ -1061,17 +1100,48 @@ PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_RIGHT_YH
          STA PWOL_CURRENT_YH
-         CPX #240
-         BCS :+
-         CPX #215
-         BCS @ZAL_RTS
-       : CMP #243
-         BCS :+
-         CMP #161
-         BCS @ZAL_RTS
-       : JMP @zigzag_A_right
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         JMP @zigzag_A_right
+   @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
+         DEC PWOL_TRIES_COUNTER 
+         BNE @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
    @ZAL_RTS:
       rts
+   @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
+         INY
+         CLC
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         CLC
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         JMP @zigzag_A_right
 
 draw_object_list:
     STZ VERA_ctrl
@@ -1087,6 +1157,17 @@ draw_object_list:
   @NEXT_Z: ; Z=0 is invalid...
       INC ZP_PTR
       BNE @Z_LOOP
+      : LDA VERA_data0
+        LDA VERA_data0
+        STZ VERA_data0
+        STZ VERA_data0
+        LDA VERA_data0
+        LDA VERA_data0
+        LDA VERA_data0
+        LDA VERA_data0
+        DEY
+        BNE :-
+
       rts
   @Z_LOOP:
       LDA (ZP_PTR) ; get our first victim
@@ -1103,18 +1184,20 @@ draw_object_list:
          STA VERA_data0
          LDA OBJECT_LIST_BYTE2_X,x
          STA VERA_data0
-         CMP #216
-         LDA #0
-         BCC :+
-         LDA #$FF
-       : STA VERA_data0
+;         CMP #216
+  ;       LDA #0
+ ;        BCC :+
+ ;        LDA #$FF
+  ;     : STA VERA_data0
+         STZ VERA_data0
          LDA OBJECT_LIST_BYTE3_Y,x
          STA VERA_data0
-         CMP #161
-         LDA #0
-         BCC :+
-         LDA #$FF
-       : STA VERA_data0
+;         CMP #161
+ ;        LDA #0
+  ;       BCC :+
+   ;      LDA #$FF
+    ;   : STA VERA_data0
+         STZ VERA_data0
          LDA OBJECT_LIST_BYTE4_ZFLIPS,x
          STA VERA_data0
          LDA OBJECT_LIST_BYTE5_SIZE,x
@@ -1131,22 +1214,22 @@ test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  66,$00,104,  0,128,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
+.byte  66,$00,SCREEN_START_X,  0,SCREEN_START_Y,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
-.byte  16,$00, 76,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 2
+.byte  16,$00, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
 .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
 
 .byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
-.byte  16,$00, 76,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
+.byte  16,$00, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
 .byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
 
 .byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
-.byte  16,$00,  0,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
+.byte  16,$00,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
 .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
-.byte  16,$00,208,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
+.byte  16,$00,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
 .byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
-.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
-.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
+;.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
+;.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
 .byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
 .byte  34,$00,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
 .byte  39,$00,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
@@ -1161,10 +1244,12 @@ test_sprite_data:
 .byte  36,$00,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19   
 .byte  47,$00,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
 .byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
-.byte  37,$00,176,  0,145,  0,$0C,$00  ; 4 test    sprite 1C   Cell Y
-.byte  38,$00,184,  0,145,  0,$0C,$00  ; 5 test    sprite 1D   
-.byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   value at current cell
+.byte  37,$00,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
+.byte  38,$00,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D   
+.byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
 .byte  48,$00,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
+.byte  33,$00,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
+.byte  33,$00,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)

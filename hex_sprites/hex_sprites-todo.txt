@@ -215,7 +215,10 @@ TODO 	sort out that z-buffer object list
 1510 	was playing around a bit more .. isn't doing all the ZigZagA but literally is edge cases now 
 	need food...
 
-	
+2024/03/10
+0710 	Back at it.. want to sort out the zig zag logic. 
+1015 	ZigZag A working
+	Commit
 
 TODO 	ZigZag terrain renderer to object list
 
