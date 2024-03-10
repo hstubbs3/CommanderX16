@@ -125,8 +125,9 @@ SCREEN_Y_TO_Z: ; 2B00
 .byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
-;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
-.res 256,0
+;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+.res 128,0
+.res 128,0
 CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 ;constants
@@ -242,9 +243,9 @@ default_irq_vector:  .addr 0 ; 4-5
 VSYNC_counter:       .byte 1 ; 6
 camera_facing: 		 .byte 1 ; 7
 camera_world_pos_XH:    .byte 38 ; 8
-camera_world_pos_XL:       .byte 0 ; 9
+camera_world_pos_XL:       .byte 128 ; 9
 camera_world_pos_YH:        .byte 15 ; A
-camera_world_pos_YL:       .byte 0  ; B
+camera_world_pos_YL:       .byte 128  ; B
 camera_cell_x: 		 .byte 0 ; c
 camera_cell_xl:       .byte 0 ; d
 DEBUG_A: .byte 0  ; 12
@@ -394,26 +395,8 @@ start:
 
   ; calc movement table - using ACROSS_ROW_* but move 1/16 unit at a time .. at 30fps = 30/16 = ~2 units / second
   LDX #0 
- : LDA ACROSS_ROW_Y_L,X
-   STA $7E
-   LDA ACROSS_ROW_Y_H,X
-   LSR
-   ROL $7E  ;  /2
-   LSR
-   ROL $7E  ; /4
-   LSR
-   ROL $7E  ; /8
-   LSR
-   ROL $7E  ; /16
-   TAY
-   CPY #8   ;  if original value was positive, this is the sign bit... 
-   BCC :+
-   LDA #$FF 
- : STA MOVE_XH,X 
-   LDA $7E
-   STA MOVE_XL,X 
-
-   LDA ACROSS_ROW_X_L,X
+  LDY #64
+ : LDA ACROSS_ROW_X_L,X
    STA $7E
    LDA ACROSS_ROW_X_H,X
    LSR
@@ -424,13 +407,35 @@ start:
    ROL $7E  ; /8
    LSR
    ROL $7E  ; /16
-   TAY
-   CPY #8   ;  if original value was positive, this is the sign bit... 
+   LSR 
+   ROL $7E  ; /32   
+   CMP #4   ;  if original value was positive, this is the sign bit... 
    BCC :+
    LDA #$FF 
  : STA MOVE_YH,X 
    LDA $7E
    STA MOVE_YL,X 
+
+   LDA ACROSS_ROW_X_L,Y
+   STA $7E
+   LDA ACROSS_ROW_X_H,Y
+   LSR
+   ROL $7E  ;  /2
+   LSR
+   ROL $7E  ; /4
+   LSR
+   ROL $7E  ; /8
+   LSR
+   ROL $7E  ; /16
+   LSR 
+   ROL $7E  ; /32   
+   CMP #4   ;  if original value was positive, this is the sign bit... 
+   BCC :+
+   LDA #$FF 
+ : STA MOVE_XH,X
+   LDA $7E
+   STA MOVE_XL,X
+   INY
    INX 
    BNE :---
 
@@ -573,20 +578,20 @@ start:
    ADC #0
    STA MASTER_CLOCK+1
    TXA
-   ;AND #1 ; restrict to 20 fps.. don't care missed cycle. 
-   ;BNE @FRAME_CHECK
+   AND #1 ; restrict to 20 fps.. don't care missed cycle. 
+   BNE @FRAME_CHECK
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
    beq @FRAME_CHECK
    cmp #$1D 	;	cursor right
    BNE :+
-   DEC camera_facing
+   INC camera_facing
    JMP @do_update
    :
    cmp  #$9D 	;	cursor left
    BNE :+
-   INC camera_facing
+   DEC camera_facing
    JMP @do_update
  : cmp #$11; cursor down
    BNE :+
@@ -748,6 +753,11 @@ PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
 PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
 PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
 PWOL_TRIES_COUNTER = ZP_PTR+34
+PWOL_START_XL = ZP_PTR+35
+PWOL_START_YL = ZP_PTR+36
+PWOL_START_XH = ZP_PTR+37
+PWOL_START_YH = ZP_PTR+38
+
 TRY_AGAIN = 6
 SCREEN_START_X = 100
 SCREEN_START_Y =  80
@@ -764,6 +774,7 @@ SCREEN_OUT_BOTTOM  = 136
    STA PWOL_Z_STARTS_PTRH
 
    LDX camera_facing
+
 
    LDA ACROSS_ROW_X_L,x    ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
    STA PWOL_ACROSS_ROW_XL  
@@ -844,13 +855,132 @@ SCREEN_OUT_BOTTOM  = 136
 
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
       STZ PWOL_CURRENT_XL
-      LDA #SCREEN_START_X
+      LDA #108
       STA PWOL_CURRENT_XH
   
       STZ PWOL_CURRENT_YL
-      LDA #SCREEN_START_Y
+      LDA #80
       STA PWOL_CURRENT_YH
 
+      LDX #$FF
+      STZ PWOL_START_XH
+      LDA PWOL_ACROSS_ROW_XH
+      STA PWOL_START_XL ; value for cos.. 
+      BPL :+
+      STX PWOL_START_XH
+    : STZ PWOL_START_YH 
+      LDA PWOL_ACROSS_ROW_YH
+      STA PWOL_START_YL ; value for sin 
+      BPL :+
+      STX PWOL_START_XH
+    : SEC
+      LDA camera_cell_xl   ; subcell offsetX = cos(x)+sin(y)
+      SBC #128 ; need a modulus ..
+      BCS :++   ; if  subcell >=.5 - move this far left from center point ..
+      EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
+      INC A    ;  1
+      LSR
+      LSR 
+      LSR 
+      LSR 
+      BEQ :++++
+    : CLC  ; we're < half  so this center goes right .. add X  X*cos - y*sin  Y is X*sin + Y*Cos
+      LDA PWOL_CURRENT_XL
+      ADC PWOL_START_XL
+      STA PWOL_CURRENT_XL 
+      LDA PWOL_CURRENT_XH
+      ADC PWOL_START_XH
+      STA PWOL_CURRENT_XH
+      CLC  ; we're < half  so this center goes right .. add X * cos/sin 
+      LDA PWOL_CURRENT_YL
+      ADC PWOL_START_YL
+      STA PWOL_CURRENT_YL 
+      LDA PWOL_CURRENT_YH
+      ADC PWOL_START_YH
+      STA PWOL_CURRENT_YH      
+      DEX 
+      BNE :-
+      BRA :+++
+    : LSR ; Carry set, so we will be subtracting this many times 
+      LSR 
+      LSR
+      LSR 
+      BEQ :++
+    : SEC 
+      LDA PWOL_CURRENT_XL
+      SBC PWOL_START_XL
+      STA PWOL_CURRENT_XL 
+      LDA PWOL_CURRENT_XH
+      SBC PWOL_START_XH
+      STA PWOL_CURRENT_XH
+      SEC  ; we're < half  so this center goes right .. add X * cos/sin 
+      LDA PWOL_CURRENT_YL
+      SBC PWOL_START_YL
+      STA PWOL_CURRENT_YL 
+      LDA PWOL_CURRENT_YH
+      SBC PWOL_START_YH
+      STA PWOL_CURRENT_YH      
+      DEX 
+      BNE :-
+    : SEC
+      LDA camera_cell_yl   ; subcell offsetX = cos(x)+sin(y)
+      SBC #128 ; need a modulus ..
+      BCS :++   ; if  subcell >=.5 - move this far left from center point ..
+      EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
+      INC A    ;  1
+      LSR
+      LSR 
+      LSR 
+      LSR 
+      BEQ :++++
+    : SEC  ; we're < half  so this center goes right ..X  X*cos - y*sin  Y is X*sin + Y*Cos
+      LDA PWOL_CURRENT_XL
+      SBC PWOL_START_YL
+      STA PWOL_CURRENT_XL 
+      LDA PWOL_CURRENT_XH
+      SBC PWOL_START_YH
+      STA PWOL_CURRENT_XH
+      CLC  ; we're < half  so this center goes right .. add X * cos/sin 
+      LDA PWOL_CURRENT_YL
+      ADC PWOL_START_XL
+      STA PWOL_CURRENT_YL 
+      LDA PWOL_CURRENT_YH
+      ADC PWOL_START_XH
+      STA PWOL_CURRENT_YH      
+      DEX 
+      BNE :-
+      BRA :+++
+    : LSR ; Carry set, so we will be subtracting this many times 
+      LSR 
+      LSR
+      LSR 
+      BEQ :++
+    : CLC 
+      LDA PWOL_CURRENT_XL
+      ADC PWOL_START_YL
+      STA PWOL_CURRENT_XL 
+      LDA PWOL_CURRENT_XH
+      ADC PWOL_START_YH
+      STA PWOL_CURRENT_XH
+      SEC  ; we're < half  so this center goes right .. add X * cos/sin 
+      LDA PWOL_CURRENT_YL
+      SBC PWOL_START_XL
+      STA PWOL_CURRENT_YL 
+      LDA PWOL_CURRENT_YH
+      SBC PWOL_START_XH
+      STA PWOL_CURRENT_YH      
+      DEX 
+      BNE :-
+
+      LDA PWOL_CURRENT_XL 
+      STA PWOL_START_XL 
+      LDA PWOL_CURRENT_YL 
+      STA PWOL_START_YL 
+
+      LDA PWOL_CURRENT_XH 
+      STA PWOL_START_XH 
+      LDA PWOL_CURRENT_YH 
+      STA PWOL_START_YH 
 
       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
     @zigzag_A_right:
@@ -882,16 +1012,16 @@ SCREEN_OUT_BOTTOM  = 136
       @ZAR_HIT_WALL_OUCH:
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
       @ZAR_INSIDE_TUB:
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
           ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
           TYA
           AND #$0F
-          ORA #$50 ; #$D0
+          ORA #$D0 ; #$D0
           STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
 
-          ;STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          ;SEC        
+          SEC        
           LDA PWOL_CURRENT_YH ; set er up
-          ;SBC (PWOL_CONVERT_HEIGHTS)
+          SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           ;LDA #$D0
           ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
@@ -967,8 +1097,7 @@ SCREEN_OUT_BOTTOM  = 136
    @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
-   @ZAR_RTS:
-         rts
+         JMP @zigzag_B
    @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
          DEY
          SEC
@@ -1024,15 +1153,15 @@ SCREEN_OUT_BOTTOM  = 136
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
       @ZAL_INSIDE_TUB:
           ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
           TYA
           AND #$0F
-          ORA #$50 ; #$D0
+          ORA #$D0 ; #$D0
           STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
 
-       ;   STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-       ;   SEC        
+          SEC        
           LDA PWOL_CURRENT_YH ; set er up
-        ;  SBC (PWOL_CONVERT_HEIGHTS)
+          SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
         ;  LDA #$D0
         ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
@@ -1112,9 +1241,7 @@ SCREEN_OUT_BOTTOM  = 136
          JMP @zigzag_A_right
    @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
-         BNE @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
-   @ZAL_RTS:
-      rts
+         BEQ @zigzag_B
    @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
          INY
          CLC
@@ -1142,6 +1269,322 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_BOTTOM
          BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          JMP @zigzag_A_right
+
+
+
+  @zigzag_B: ; going to left and down the screen, including where we are currently.. 
+
+      SEC 
+      LDA PWOL_START_XL
+      SBC PWOL_ACROSS_ROW_XL
+      STA PWOL_CURRENT_XL
+      LDA PWOL_START_XH
+      SBC PWOL_ACROSS_ROW_XH
+      STA PWOL_CURRENT_XH
+  
+
+      SEC
+      LDA PWOL_START_YL
+      SBC PWOL_ACROSS_ROW_YL
+      STA PWOL_CURRENT_YL
+      LDA PWOL_START_YH
+      SBC PWOL_ACROSS_ROW_YH
+      STA PWOL_CURRENT_YH
+
+      LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
+      DEY ; start left
+
+   @zigzag_B_left:
+        CPY #64  ;  make sure we don't go outside level.. 
+        BCS @ZBL_NEXT ; if we're outside we'll just skip is OK 
+        LDA (PWOL_TUB_PTR_BL),y
+        CMP #129
+        BCS @ZBL_NEXT ; we're outside level. 
+
+        ; bytes 1 and 4 were updated when we cleared the object list
+        INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
+        BNE :++
+      : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out.. 
+        rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen... 
+      : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer 
+        LDA SCREEN_Y_TO_Z,x 
+        BEQ :-- ; we shouldn't be outside the screen... 
+        STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+        LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+        LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+        STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+        TXA ; push new next to the Z buffer spot
+        STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
+        ; bytes .1..4.6 filled in already.. 
+
+        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BPL @ZBL_INSIDE_TUB 
+      @ZBL_HIT_WALL_OUCH:
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+      @ZBL_INSIDE_TUB:
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
+          TYA
+          AND #$0F
+          ORA #$D0 ; #$D0
+          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+
+          SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+          SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+        ;  LDA #$D0
+        ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+          LDA PWOL_CURRENT_XH
+          STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
+     @ZBL_NEXT:
+         ; calc next to the LEFT 
+         DEY
+         SEC
+         LDA PWOL_CURRENT_XL
+         SBC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         SBC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         SEC
+         LDA PWOL_CURRENT_YL
+         SBC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         SBC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+
+         STX DEBUG_A
+         STA DEBUG_B
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBL_ZIG_RIGHT_SWITCH
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBL_ZIG_RIGHT_SWITCH
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBL_ZIG_RIGHT_SWITCH
+         CMP #SCREEN_OUT_BOTTOM
+         BCC @zigzag_B_left
+     @ZBL_ZIG_RIGHT_SWITCH: ; DOWN/LEFT to start right is is 0,+1  from where we is right now .. 
+         INY
+         LDA #TRY_AGAIN
+         STA PWOL_TRIES_COUNTER
+         CLC
+         LDA PWOL_TUB_PTR_BL
+         ADC #64
+         STA PWOL_TUB_PTR_BL
+         LDA PWOL_TUB_PTR_BH
+         ADC #0
+         STA PWOL_TUB_PTR_BH
+
+
+         CLC 
+
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_NEXT_ROW_B_RIGHT_XL
+         STA PWOL_CURRENT_XL
+
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_NEXT_ROW_B_RIGHT_XH
+         STA PWOL_CURRENT_XH
+         TAX
+
+
+         CLC 
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_NEXT_ROW_B_RIGHT_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_NEXT_ROW_B_RIGHT_YH
+         STA PWOL_CURRENT_YH
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         JMP @zigzag_B_right
+   @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
+         DEC PWOL_TRIES_COUNTER 
+         BNE @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
+   @ZBL_RTS:
+      rts
+   @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
+         INY
+         CLC
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         CLC
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+
+    @zigzag_B_right:
+        CPY #64  ;  make sure we don't go outside level.. 
+        BCS @ZBR_NEXT ; if we're outside we'll just skip is OK 
+        LDA (PWOL_TUB_PTR_BL),y
+        CMP #129
+        BCS @ZBR_NEXT ; we're outside level. 
+
+        ; bytes 1 and 4 were updated when we cleared the object list
+        INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
+        BNE :++
+      : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out.. 
+        rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen... 
+      : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer 
+        LDA SCREEN_Y_TO_Z,x 
+        BEQ :-- ; we shouldn't be outside the screen... 
+        STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+        LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+        LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+        STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+        TXA ; push new next to the Z buffer spot
+        STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
+        ; bytes .1..4.6 filled in already.. 
+
+        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BPL @ZBR_INSIDE_TUB 
+      @ZBR_HIT_WALL_OUCH:
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+      @ZBR_INSIDE_TUB:
+          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
+          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
+          TYA
+          AND #$0F
+          ORA #$D0 ; #$D0
+          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+
+          SEC        
+          LDA PWOL_CURRENT_YH ; set er up
+          SBC (PWOL_CONVERT_HEIGHTS)
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          ;LDA #$D0
+          ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+          LDA PWOL_CURRENT_XH
+          STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
+     @ZBR_NEXT:
+         ; calc next to the right.. 
+         INY
+         CLC
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         CLC
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+
+         STX DEBUG_A
+         STA DEBUG_B
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBR_ZIG_LEFT_SWITCH
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBR_ZIG_LEFT_SWITCH
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBR_ZIG_LEFT_SWITCH
+         CMP #SCREEN_OUT_BOTTOM
+         BCC @zigzag_B_right
+     @ZBR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going down the screen ..  +1,+1
+         LDA #TRY_AGAIN
+         STA PWOL_TRIES_COUNTER
+;        INY ; have to go this to match where the thing is going .. 0,0
+         CLC 
+         LDA PWOL_TUB_PTR_BL
+         ADC #64 ;   0,-1
+         STA PWOL_TUB_PTR_BL
+         LDA PWOL_TUB_PTR_BH
+         ADC #0
+         STA PWOL_TUB_PTR_BH
+
+         CLC 
+         LDA PWOL_CURRENT_XL
+         ADC PWOL_NEXT_ROW_B_LEFT_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         ADC PWOL_NEXT_ROW_B_LEFT_XH
+         STA PWOL_CURRENT_XH
+         TAX
+         CLC 
+         LDA PWOL_CURRENT_YL
+         ADC PWOL_NEXT_ROW_B_LEFT_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         ADC PWOL_NEXT_ROW_B_LEFT_YH
+         STA PWOL_CURRENT_YH
+         ; check if we're outside ..  
+
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         jmp @zigzag_B_left
+   @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN:
+         DEC PWOL_TRIES_COUNTER 
+         BNE @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
+   @ZBR_RTS:
+         rts
+   @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
+         DEY
+         SEC
+         LDA PWOL_CURRENT_XL
+         SBC PWOL_ACROSS_ROW_XL
+         STA PWOL_CURRENT_XL
+         LDA PWOL_CURRENT_XH
+         SBC PWOL_ACROSS_ROW_XH
+         STA PWOL_CURRENT_XH
+         TAX 
+         SEC
+         LDA PWOL_CURRENT_YL
+         SBC PWOL_ACROSS_ROW_YL
+         STA PWOL_CURRENT_YL
+         LDA PWOL_CURRENT_YH
+         SBC PWOL_ACROSS_ROW_YH
+         STA PWOL_CURRENT_YH
+         CPX #SCREEN_OUT_RIGHT
+         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CPX #SCREEN_OUT_LEFT
+         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_TOP
+         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         JMP @zigzag_B_left
 
 draw_object_list:
     STZ VERA_ctrl

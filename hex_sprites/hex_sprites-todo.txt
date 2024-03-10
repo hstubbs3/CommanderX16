@@ -219,9 +219,12 @@ TODO 	sort out that z-buffer object list
 0710 	Back at it.. want to sort out the zig zag logic. 
 1015 	ZigZag A working
 	Commit
-
 TODO 	ZigZag terrain renderer to object list
-
+1115 DONE! 
+1310 	sub-cell sort of working but its messed so... ? 
+	commit
+	
+TODO 	sub-cell rending for start ... 
 
 TODO 	make moving around by X/Y/Z work 
 

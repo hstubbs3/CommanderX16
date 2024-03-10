@@ -353,10 +353,13 @@ Current file: hex.s
 0022FBr 1  F2 F0 EF ED  
 0023F3r 1               
 0023F3r 1               CONVERT_HEIGHTS_PIXELS: ; 2C00
-0023F3r 1               ;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
-0023F3r 1  00 00 00 00  .res 256,0
+0023F3r 1               ;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+0023F3r 1  00 00 00 00  .res 128,0
 0023F7r 1  00 00 00 00  
 0023FBr 1  00 00 00 00  
+002473r 1  00 00 00 00  .res 128,0
+002477r 1  00 00 00 00  
+00247Br 1  00 00 00 00  
 0024F3r 1               CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 0024F3r 1  00 00 00 00  .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 0024F7r 1  00 00 00 00  
@@ -474,9 +477,9 @@ Current file: hex.s
 0025F9r 1  01           VSYNC_counter:       .byte 1 ; 6
 0025FAr 1  01           camera_facing: 		 .byte 1 ; 7
 0025FBr 1  26           camera_world_pos_XH:    .byte 38 ; 8
-0025FCr 1  00           camera_world_pos_XL:       .byte 0 ; 9
+0025FCr 1  80           camera_world_pos_XL:       .byte 128 ; 9
 0025FDr 1  0F           camera_world_pos_YH:        .byte 15 ; A
-0025FEr 1  00           camera_world_pos_YL:       .byte 0  ; B
+0025FEr 1  80           camera_world_pos_YL:       .byte 128  ; B
 0025FFr 1  00           camera_cell_x: 		 .byte 0 ; c
 002600r 1  00           camera_cell_xl:       .byte 0 ; d
 002601r 1  00           DEBUG_A: .byte 0  ; 12
@@ -626,1230 +629,1672 @@ Current file: hex.s
 0026E7r 1               
 0026E7r 1                 ; calc movement table - using ACROSS_ROW_* but move 1/16 unit at a time .. at 30fps = 30/16 = ~2 units / second
 0026E7r 1  A2 00          LDX #0
-0026E9r 1  BD rr rr      : LDA ACROSS_ROW_Y_L,X
-0026ECr 1  85 7E           STA $7E
-0026EEr 1  BD rr rr        LDA ACROSS_ROW_Y_H,X
-0026F1r 1  4A              LSR
-0026F2r 1  26 7E           ROL $7E  ;  /2
-0026F4r 1  4A              LSR
-0026F5r 1  26 7E           ROL $7E  ; /4
-0026F7r 1  4A              LSR
-0026F8r 1  26 7E           ROL $7E  ; /8
-0026FAr 1  4A              LSR
-0026FBr 1  26 7E           ROL $7E  ; /16
-0026FDr 1  A8              TAY
-0026FEr 1  C0 08           CPY #8   ;  if original value was positive, this is the sign bit...
-002700r 1  90 02           BCC :+
-002702r 1  A9 FF           LDA #$FF
-002704r 1  9D rr rr      : STA MOVE_XH,X
-002707r 1  A5 7E           LDA $7E
-002709r 1  9D rr rr        STA MOVE_XL,X
-00270Cr 1               
-00270Cr 1  BD rr rr        LDA ACROSS_ROW_X_L,X
-00270Fr 1  85 7E           STA $7E
-002711r 1  BD rr rr        LDA ACROSS_ROW_X_H,X
-002714r 1  4A              LSR
-002715r 1  26 7E           ROL $7E  ;  /2
-002717r 1  4A              LSR
-002718r 1  26 7E           ROL $7E  ; /4
-00271Ar 1  4A              LSR
-00271Br 1  26 7E           ROL $7E  ; /8
-00271Dr 1  4A              LSR
-00271Er 1  26 7E           ROL $7E  ; /16
-002720r 1  A8              TAY
-002721r 1  C0 08           CPY #8   ;  if original value was positive, this is the sign bit...
-002723r 1  90 02           BCC :+
-002725r 1  A9 FF           LDA #$FF
-002727r 1  9D rr rr      : STA MOVE_YH,X
-00272Ar 1  A5 7E           LDA $7E
-00272Cr 1  9D rr rr        STA MOVE_YL,X
-00272Fr 1  E8              INX
-002730r 1  D0 B7           BNE :---
-002732r 1               
-002732r 1                 ; main loop here...
-002732r 1  9C rr rr        STZ camera_facing
-002735r 1               
-002735r 1               @camera_world_changed:
-002735r 1  AD rr rr        LDA camera_world_pos_YH
-002738r 1  8D rr rr        STA camera_cell_y
-00273Br 1  4A              LSR
-00273Cr 1  85 7F           STA $7F  ; high byte
-00273Er 1  AD rr rr        LDA camera_world_pos_YL
-002741r 1  8D rr rr        STA camera_cell_yl
-002744r 1  6A              ROR
-002745r 1  85 7E           STA $7E  ; low byte cellY.2
-002747r 1                  ; cellX = WORLDX*ratio - (31-cellY)/2
-002747r 1                  ; cellX = WORLDX*ratio - 15.5 + cellY/2
-002747r 1  AE rr rr        LDX camera_world_pos_XH
-00274Ar 1  AC rr rr        LDY camera_world_pos_XL
-00274Dr 1  18              CLC
-00274Er 1  B9 rr rr        LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
-002751r 1  7D rr rr        ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH
-002754r 1  A8              TAY   ;  cellXL from ratio
-002755r 1  BD rr rr        LDA WORLD_TO_CELL_XH,X
-002758r 1  69 00           ADC #0 ; gotta do that carry and all ..
-00275Ar 1  AA              TAX   ; cellXH from ratio
-00275Br 1  38              SEC
-00275Cr 1  98              TYA   ;  cellXL from ratio
-00275Dr 1  E9 80           SBC #128 ; minus 15.5L
-00275Fr 1  A8              TAY
-002760r 1  8A              TXA
-002761r 1  E9 0F           SBC #15 ; minus 15.5H
-002763r 1  AA              TAX
-002764r 1  18              CLC
-002765r 1  98              TYA ; cellXL from ratio minute 15.5
-002766r 1  65 7E           ADC $7E  ; plis cellY/2
-002768r 1  8D rr rr        STA camera_cell_xl
-00276Br 1  8A              TXA
-00276Cr 1  65 7F           ADC $7F
-00276Er 1  D0 01           BNE :+
-002770r 1  1A              INC A
-002771r 1  C9 40         : CMP #64
-002773r 1  90 02           BCC :+
-002775r 1  A9 3F           LDA #63
-002777r 1  8D rr rr      : STA camera_cell_x
-00277Ar 1  AD rr rr        LDA camera_cell_y
-00277Dr 1  D0 01           BNE :+
-00277Fr 1  1A              INC A
-002780r 1  C9 1E         : CMP #30
-002782r 1  90 02           BCC :+
-002784r 1  A9 1D           LDA #29
-002786r 1  8D rr rr      : STA camera_cell_y
-002789r 1               
-002789r 1                ;  jmp @do_update
-002789r 1               
-002789r 1               @camera_cell_changed:
-002789r 1  AD rr rr        LDA camera_cell_y
-00278Cr 1  8D rr rr        STA camera_world_pos_YH
-00278Fr 1  4A              LSR
-002790r 1  85 7F           STA $7F  ; high byte
-002792r 1  AD rr rr        LDA camera_cell_yl
-002795r 1  8D rr rr        STA camera_world_pos_YL
-002798r 1  6A              ROR
-002799r 1  85 7E           STA $7E  ; low byte cellY.2
-00279Br 1                  ; worldX = (cellX + 15.5 - cellY/2)*ratio
-00279Br 1  18              CLC
-00279Cr 1  AD rr rr        LDA camera_cell_xl ; +15.5
-00279Fr 1  69 80           ADC #128
-0027A1r 1  AA              TAX
-0027A2r 1  AD rr rr        LDA camera_cell_x
-0027A5r 1  69 0F           ADC #15
-0027A7r 1  A8              TAY
-0027A8r 1  38              SEC
-0027A9r 1  8A              TXA
-0027AAr 1  E5 7E           SBC $7E
-0027ACr 1  AA              TAX
-0027ADr 1  98              TYA
-0027AEr 1  E5 7F           SBC $7F
-0027B0r 1  A8              TAY
-0027B1r 1  18              CLC
-0027B2r 1  BD rr rr        LDA CELL_LOW_TO_WORLD_XL,X
-0027B5r 1  79 rr rr        ADC CELL_TO_WORLD_XL,Y
-0027B8r 1  8D rr rr        STA camera_world_pos_XL
-0027BBr 1  BD rr rr        LDA CELL_LOW_TO_WORLD_XH,X
-0027BEr 1  79 rr rr        ADC CELL_TO_WORLD_XH,Y
-0027C1r 1  8D rr rr        STA camera_world_pos_XH
-0027C4r 1  4C rr rr        jmp @do_update
-0027C7r 1               
-0027C7r 1               
-0027C7r 1               @do_update:
-0027C7r 1               
-0027C7r 1                  ; clear the object list ...
-0027C7r 1  9C rr rr         STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
-0027CAr 1  A2 00            LDX #0
-0027CCr 1  A9 0C            LDA #$0C ; is basis for all the z_flips
-0027CEr 1  9E rr rr         : STZ OBJECT_LIST_Z_START_POINTERS,X
-0027D1r 1  9E rr rr           STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address
-0027D4r 1  9C rr rr           STZ OBJECT_LIST_BYTE2_X
-0027D7r 1  9D rr rr           STA OBJECT_LIST_BYTE4_ZFLIPS,X
-0027DAr 1  E8                 INX
-0027DBr 1  D0 F1              BNE :-
-0027DDr 1               
-0027DDr 1  20 rr rr        jsr push_world_to_object_list
-0027E0r 1               
-0027E0r 1  AE rr rr        LDX OBJECT_LIST_BYTE6_NEXT
-0027E3r 1  8E rr rr        STX DEBUG_C
-0027E6r 1               
-0027E6r 1                  ;  write location datas..
-0027E6r 1  A9 F8           lda #248
-0027E8r 1  8D 20 9F        STA VERA_addr_low
-0027EBr 1  A9 FC           LDA #$FC
-0027EDr 1  8D 21 9F        STA VERA_addr_high
-0027F0r 1  A9 49           LDA #$49
-0027F2r 1  8D 22 9F        STA VERA_addr_bank
-0027F5r 1               
-0027F5r 1               
-0027F5r 1  A0 0A           ldy #10
-0027F7r 1  BE rr rr      : LDX camera_facing-1,y
-0027FAr 1  BD rr rr        LDA SPRITE_NUM_LOW_NIBBLE,X
-0027FDr 1  8D 23 9F        STA VERA_data0
-002800r 1  BD rr rr        LDA SPRITE_NUM_HIGH_NIBBLE,X
-002803r 1  8D 23 9F        STA VERA_data0
-002806r 1  88              dey
-002807r 1  D0 EE           BNE :-
-002809r 1               
-002809r 1               
-002809r 1  20 rr rr        jsr draw_object_list
-00280Cr 1               
-00280Cr 1               
-00280Cr 1               @FRAME_CHECK:
-00280Cr 1  CB              wai
-00280Dr 1  AD rr rr        lda VSYNC_counter
-002810r 1  F0 FA           beq @FRAME_CHECK
-002812r 1  9C rr rr        stz VSYNC_counter
-002815r 1  18              CLC
-002816r 1  6D rr rr        ADC MASTER_CLOCK
-002819r 1  AA              TAX
-00281Ar 1  8D rr rr        STA MASTER_CLOCK
-00281Dr 1  AD rr rr        LDA MASTER_CLOCK+1
-002820r 1  69 00           ADC #0
-002822r 1  8D rr rr        STA MASTER_CLOCK+1
-002825r 1  8A              TXA
-002826r 1                  ;AND #1 ; restrict to 20 fps.. don't care missed cycle.
-002826r 1                  ;BNE @FRAME_CHECK
-002826r 1                  ; poll keyboard for input
-002826r 1  20 E4 FF        jsr GETIN
-002829r 1  C9 00           cmp #0
-00282Br 1  F0 DF           beq @FRAME_CHECK
-00282Dr 1  C9 1D           cmp #$1D 	;	cursor right
-00282Fr 1  D0 06           BNE :+
-002831r 1  CE rr rr        DEC camera_facing
-002834r 1  4C rr rr        JMP @do_update
-002837r 1                  :
-002837r 1  C9 9D           cmp  #$9D 	;	cursor left
-002839r 1  D0 06           BNE :+
-00283Br 1  EE rr rr        INC camera_facing
-00283Er 1  4C rr rr        JMP @do_update
-002841r 1  C9 11         : cmp #$11; cursor down
-002843r 1  D0 2C           BNE :+
-002845r 1  AE rr rr        LDX camera_facing
-002848r 1  18              CLC
-002849r 1  AD rr rr        LDA camera_world_pos_XL
-00284Cr 1  7D rr rr        ADC MOVE_XL,X
-00284Fr 1  8D rr rr        STA camera_world_pos_XL
-002852r 1  AD rr rr        LDA camera_world_pos_XH
-002855r 1  7D rr rr        ADC MOVE_XH,X
-002858r 1  8D rr rr        STA camera_world_pos_XH
-00285Br 1  18              CLC
-00285Cr 1  BD rr rr        LDA MOVE_YL,X
-00285Fr 1  6D rr rr        ADC camera_world_pos_YL
-002862r 1  8D rr rr        STA camera_world_pos_YL
-002865r 1  BD rr rr        LDA MOVE_YH,X
-002868r 1  6D rr rr        ADC camera_world_pos_YH
-00286Br 1  8D rr rr        STA camera_world_pos_YH
-00286Er 1  4C rr rr        jmp @camera_world_changed
-002871r 1               
-002871r 1  C9 91         : cmp #$91 ; cursor up
-002873r 1  D0 2C           BNE :+
-002875r 1  AE rr rr        LDX camera_facing
-002878r 1  38              SEC
-002879r 1  AD rr rr        LDA camera_world_pos_XL
-00287Cr 1  FD rr rr        SBC MOVE_XL,X
-00287Fr 1  8D rr rr        STA camera_world_pos_XL
-002882r 1  AD rr rr        LDa camera_world_pos_XH
-002885r 1  FD rr rr        SBC MOVE_XH,X
-002888r 1  8D rr rr        STA camera_world_pos_XH
-00288Br 1  38              SEC
-00288Cr 1  AD rr rr        LDA camera_world_pos_YL
-00288Fr 1  FD rr rr        SBC MOVE_YL,X
-002892r 1  8D rr rr        STA camera_world_pos_YL
-002895r 1  AD rr rr        LDA camera_world_pos_YH
-002898r 1  FD rr rr        SBC MOVE_YH,X
-00289Br 1  8D rr rr        STA camera_world_pos_YH
-00289Er 1  4C rr rr        jmp @camera_world_changed
-0028A1r 1               
-0028A1r 1  C9 57         : cmp #W_CHAR ; cell up left
-0028A3r 1  D0 13           BNE :+++
-0028A5r 1  AD rr rr        LDA camera_cell_y
-0028A8r 1  F0 03           BEQ :+
-0028AAr 1  CE rr rr        DEC camera_cell_y
-0028ADr 1  AD rr rr      : LDA camera_cell_x
-0028B0r 1  F0 03           BEQ :+
-0028B2r 1  CE rr rr        DEC camera_cell_x
-0028B5r 1  4C rr rr      : JMP @camera_cell_changed
-0028B8r 1               
-0028B8r 1  C9 45         : cmp #E_CHAR ; cell up right
-0028BAr 1  D0 0B           BNE :++
-0028BCr 1  AD rr rr        LDA camera_cell_y
-0028BFr 1  F0 03           BEQ :+
-0028C1r 1  CE rr rr        DEC camera_cell_y
-0028C4r 1  4C rr rr      : JMP @camera_cell_changed
-0028C7r 1               
-0028C7r 1  C9 41         : cmp #A_CHAR ; cell left
-0028C9r 1  D0 0B           BNE :++
-0028CBr 1  AD rr rr        LDA camera_cell_x
-0028CEr 1  F0 03           BEQ :+
-0028D0r 1  CE rr rr        DEC camera_cell_x
-0028D3r 1  4C rr rr      : JMP @camera_cell_changed
-0028D6r 1               
-0028D6r 1  C9 44         : cmp #D_CHAR ; cell right
-0028D8r 1  D0 0D           BNE :++
-0028DAr 1  AD rr rr        LDA camera_cell_x
-0028DDr 1  C9 3F           CMP #63
-0028DFr 1  B0 03           BCS :+
-0028E1r 1  EE rr rr        INC camera_cell_x
-0028E4r 1  4C rr rr      : JMP @camera_cell_changed
-0028E7r 1               
-0028E7r 1  C9 5A         : cmp #Z_CHAR ; cell down left
-0028E9r 1  D0 0D           BNE :++
-0028EBr 1  AD rr rr        LDA camera_cell_y
-0028EEr 1  C9 1E           CMP #30
-0028F0r 1  B0 03           BCS :+
-0028F2r 1  EE rr rr        INC camera_cell_y
-0028F5r 1  4C rr rr      : JMP @camera_cell_changed
-0028F8r 1               
-0028F8r 1  C9 58         : cmp #X_CHAR ; cell down right
-0028FAr 1  D0 17           BNE :+++
-0028FCr 1  AD rr rr        LDA camera_cell_y
-0028FFr 1  C9 1E           CMP #30
-002901r 1  B0 03           BCS :+
-002903r 1  EE rr rr        INC camera_cell_y
-002906r 1  AD rr rr      : LDA camera_cell_x
-002909r 1  C9 3F           CMP #63
-00290Br 1  B0 03           BCS :+
-00290Dr 1  EE rr rr        INC camera_cell_x
-002910r 1  4C rr rr      : JMP @camera_cell_changed
-002913r 1               
-002913r 1  C9 20         : cmp #SPACE;
-002915r 1  D0 09           BNE :+
-002917r 1  9C rr rr        STZ camera_cell_xl
-00291Ar 1  9C rr rr        STZ camera_cell_yl
-00291Dr 1  4C rr rr        JMP @camera_cell_changed
-002920r 1               
-002920r 1  C9 00         : cmp #0 ;
-002922r 1  D0 03           BNE :+
-002924r 1  4C rr rr        JMP @do_update
-002927r 1               
-002927r 1  C9 00         : cmp #0 ;
-002929r 1  D0 03           BNE :+
-00292Br 1  4C rr rr        JMP @do_update
-00292Er 1               
-00292Er 1  C9 00         : cmp #0 ;
-002930r 1  D0 03           BNE :+
-002932r 1  4C rr rr        JMP @do_update
-002935r 1               
-002935r 1               
-002935r 1  4C rr rr      : JMP @FRAME_CHECK
-002938r 1               
-002938r 1               @cleanup_and_exit:
-002938r 1                  ; restore default IRQ vector
-002938r 1  78              sei
-002939r 1  AD rr rr        lda default_irq_vector
-00293Cr 1  8D 14 03        sta IRQVec
-00293Fr 1  AD rr rr        lda default_irq_vector+1
-002942r 1  8D 15 03        sta IRQVec+1
-002945r 1  58              cli
-002946r 1  20 81 FF        jsr CINT
-002949r 1  60              rts
-00294Ar 1               
-00294Ar 1               
-00294Ar 1               ; CURRENT
-00294Ar 1               push_world_to_object_list: ; as in.. let's try this again?? wait.. missing a STZ ZP_PTR...
-00294Ar 1               PWOL_TUB_PTR_AL   = ZP_PTR
-00294Ar 1               PWOL_TUB_PTR_AH   = ZP_PTR+1
-00294Ar 1               PWOL_TUB_PTR_BL   = ZP_PTR+2
-00294Ar 1               PWOL_TUB_PTR_BH   = ZP_PTR+3
-00294Ar 1               PWOL_CURRENT_XL   = ZP_PTR+4
-00294Ar 1               PWOL_CURRENT_XH   = ZP_PTR+5
-00294Ar 1               PWOL_CURRENT_YL   = ZP_PTR+6
-00294Ar 1               PWOL_CURRENT_YH   = ZP_PTR+7
-00294Ar 1               PWOL_ACROSS_ROW_XL= ZP_PTR+8
-00294Ar 1               PWOL_ACROSS_ROW_XH= ZP_PTR+9
-00294Ar 1               PWOL_ACROSS_ROW_YL= ZP_PTR+10
-00294Ar 1               PWOL_ACROSS_ROW_YH= ZP_PTR+11
-00294Ar 1               PWOL_NEXT_ROW_A_LEFT_XL  = ZP_PTR+12
-00294Ar 1               PWOL_NEXT_ROW_A_LEFT_XH  = ZP_PTR+13
-00294Ar 1               PWOL_NEXT_ROW_A_LEFT_YL  = ZP_PTR+14
-00294Ar 1               PWOL_NEXT_ROW_A_LEFT_YH  = ZP_PTR+15
-00294Ar 1               PWOL_NEXT_ROW_A_RIGHT_XL  = ZP_PTR+16
-00294Ar 1               PWOL_NEXT_ROW_A_RIGHT_XH  = ZP_PTR+17
-00294Ar 1               PWOL_NEXT_ROW_A_RIGHT_YL  = ZP_PTR+18
-00294Ar 1               PWOL_NEXT_ROW_A_RIGHT_YH  = ZP_PTR+19
-00294Ar 1               PWOL_NEXT_ROW_B_LEFT_XL  = ZP_PTR+20
-00294Ar 1               PWOL_NEXT_ROW_B_LEFT_XH  = ZP_PTR+21
-00294Ar 1               PWOL_NEXT_ROW_B_LEFT_YL  = ZP_PTR+22
-00294Ar 1               PWOL_NEXT_ROW_B_LEFT_YH  = ZP_PTR+23
-00294Ar 1               PWOL_NEXT_ROW_B_RIGHT_XL  = ZP_PTR+24
-00294Ar 1               PWOL_NEXT_ROW_B_RIGHT_XH  = ZP_PTR+25
-00294Ar 1               PWOL_NEXT_ROW_B_RIGHT_YL  = ZP_PTR+26
-00294Ar 1               PWOL_NEXT_ROW_B_RIGHT_YH  = ZP_PTR+27
-00294Ar 1               PWOL_Z_STARTS_PTR = ZP_PTR+28
-00294Ar 1               PWOL_Z_STARTS_PTRH = ZP_PTR+29
-00294Ar 1               PWOL_CONVERT_HEIGHTS = ZP_PTR+30
-00294Ar 1               PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
-00294Ar 1               PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
-00294Ar 1               PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
-00294Ar 1               PWOL_TRIES_COUNTER = ZP_PTR+34
-00294Ar 1               TRY_AGAIN = 6
-00294Ar 1               SCREEN_START_X = 100
-00294Ar 1               SCREEN_START_Y =  80
-00294Ar 1               SCREEN_OUT_RIGHT  = 164 ; right of middle is 116, +48 = 164
-00294Ar 1               SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36
-00294Ar 1               SCREEN_OUT_TOP     = 24
-00294Ar 1               SCREEN_OUT_BOTTOM  = 136
-00294Ar 1               
-00294Ar 1  A9 rr           LDA #>CONVERT_HEIGHTS_PIXELS_SECONDARY
-00294Cr 1  85 43           STA PWOL_CONVERT_HEIGHTS_SECONDARYH
-00294Er 1  A9 rr           LDA #>CONVERT_HEIGHTS_PIXELS
-002950r 1  85 41           STA PWOL_CONVERT_HEIGHTSH
-002952r 1  A9 rr           LDA #>OBJECT_LIST_Z_START_POINTERS
-002954r 1  85 3F           STA PWOL_Z_STARTS_PTRH
-002956r 1               
-002956r 1  AE rr rr        LDX camera_facing
-002959r 1               
-002959r 1  BD rr rr        LDA ACROSS_ROW_X_L,x    ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
-00295Cr 1  85 2A           STA PWOL_ACROSS_ROW_XL
-00295Er 1  BD rr rr        LDA ACROSS_ROW_X_H,x
-002961r 1  85 2B           STA PWOL_ACROSS_ROW_XH
-002963r 1  BD rr rr        LDA ACROSS_ROW_Y_L,x
-002966r 1  85 2C           STA PWOL_ACROSS_ROW_YL
-002968r 1  BD rr rr        LDA ACROSS_ROW_Y_H,x
-00296Br 1  85 2D           STA PWOL_ACROSS_ROW_YH
-00296Dr 1               
-00296Dr 1  18              CLC
-00296Er 1  BD rr rr        LDA NEXT_ROW_X_L,X  ; 0D00 next row LEFT/up when added
-002971r 1  85 2E           STA PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  -1,-1
-002973r 1  65 2A           ADC PWOL_ACROSS_ROW_XL   ; across row is for right , subtract to go left  +1 -> 0,1
-002975r 1  85 32           STA PWOL_NEXT_ROW_A_RIGHT_XL  ;  -> next row is right, going up the screen .. -1,-1
-002977r 1  BD rr rr        LDA NEXT_ROW_X_H,x
-00297Ar 1  85 2F           STA PWOL_NEXT_ROW_A_LEFT_XH
-00297Cr 1  65 2B           ADC PWOL_ACROSS_ROW_XH
-00297Er 1  85 33           STA PWOL_NEXT_ROW_A_RIGHT_XH
-002980r 1               
-002980r 1  18              CLC
-002981r 1  BD rr rr        LDA NEXT_ROW_Y_L,X  ; 0F00 next row LEFT/up when added
-002984r 1  85 30           STA PWOL_NEXT_ROW_A_LEFT_YL   ; -> next row is left, going up the screen
-002986r 1  65 2C           ADC PWOL_ACROSS_ROW_YL   ; across row is for right
-002988r 1  85 34           STA PWOL_NEXT_ROW_A_RIGHT_YL  ;  -> next row is right, going up the screen
-00298Ar 1  BD rr rr        LDA NEXT_ROW_Y_H,x
-00298Dr 1  85 31           STA PWOL_NEXT_ROW_A_LEFT_YH
-00298Fr 1  65 2D           ADC PWOL_ACROSS_ROW_YH
-002991r 1  85 35           STA PWOL_NEXT_ROW_A_RIGHT_YH
-002993r 1               
-002993r 1               
-002993r 1               
-002993r 1               ; for zig B , the opposite of left/up is right/down.. so A_LEFT * -1 = B_RIGHT
-002993r 1  38              SEC ; flip A_LEFT X to B_RIGHT X
-002994r 1  A9 00           LDA #0
-002996r 1  E5 2E           SBC PWOL_NEXT_ROW_A_LEFT_XL
-002998r 1  85 3A           STA PWOL_NEXT_ROW_B_RIGHT_XL
-00299Ar 1  A9 00           LDA #0
-00299Cr 1  E5 2F           SBC PWOL_NEXT_ROW_A_LEFT_XH
-00299Er 1  85 3B           STA PWOL_NEXT_ROW_B_RIGHT_XH
-0029A0r 1               
-0029A0r 1  38              SEC ; flip A_LEFT Y to B_RIGHT Y
-0029A1r 1  A9 00           LDA #0
-0029A3r 1  E5 30           SBC PWOL_NEXT_ROW_A_LEFT_YL
-0029A5r 1  85 3C           STA PWOL_NEXT_ROW_B_RIGHT_YL
-0029A7r 1  A9 00           LDA #0
-0029A9r 1  E5 31           SBC PWOL_NEXT_ROW_A_LEFT_YH
-0029ABr 1  85 3D           STA PWOL_NEXT_ROW_B_RIGHT_YH
-0029ADr 1               
-0029ADr 1  38              SEC ; flip A_RIGHT X to B_LEFT X
-0029AEr 1  A9 00           LDA #0
-0029B0r 1  E5 32           SBC PWOL_NEXT_ROW_A_RIGHT_XL
-0029B2r 1  85 36           STA PWOL_NEXT_ROW_B_LEFT_XL
-0029B4r 1  A9 00           LDA #0
-0029B6r 1  E5 33           SBC PWOL_NEXT_ROW_A_RIGHT_XH
-0029B8r 1  85 37           STA PWOL_NEXT_ROW_B_LEFT_XH
-0029BAr 1               
-0029BAr 1  38              SEC ; flip A_RIGHT Y to B_LEFT Y
-0029BBr 1  A9 00           LDA #0
-0029BDr 1  E5 34           SBC PWOL_NEXT_ROW_A_RIGHT_YL
-0029BFr 1  85 38           STA PWOL_NEXT_ROW_B_LEFT_YL
-0029C1r 1  A9 00           LDA #0
-0029C3r 1  E5 35           SBC PWOL_NEXT_ROW_A_RIGHT_YH
-0029C5r 1  85 39           STA PWOL_NEXT_ROW_B_LEFT_YH
-0029C7r 1               
-0029C7r 1                  ;  set up tub pointer
-0029C7r 1  64 22            STZ PWOL_TUB_PTR_AL
-0029C9r 1  AD rr rr         LDA camera_cell_y
-0029CCr 1  4A               LSR  ;  y pages of 128
-0029CDr 1  66 22            ROR PWOL_TUB_PTR_AL
-0029CFr 1  4A               LSR  ; y pages of 64 !
-0029D0r 1  66 22            ROR PWOL_TUB_PTR_AL
-0029D2r 1  09 rr            ORA #>TUB_WORLD
-0029D4r 1  85 23            STA PWOL_TUB_PTR_AH
-0029D6r 1  85 25            STA PWOL_TUB_PTR_BH
-0029D8r 1  A5 22            LDA PWOL_TUB_PTR_AL
-0029DAr 1  85 24            STA PWOL_TUB_PTR_BL
-0029DCr 1               
-0029DCr 1                 @zigzag_A: ; going to right and up the screen, including where we are currently..
-0029DCr 1  64 26              STZ PWOL_CURRENT_XL
-0029DEr 1  A9 64              LDA #SCREEN_START_X
-0029E0r 1  85 27              STA PWOL_CURRENT_XH
-0029E2r 1               
-0029E2r 1  64 28              STZ PWOL_CURRENT_YL
-0029E4r 1  A9 50              LDA #SCREEN_START_Y
-0029E6r 1  85 29              STA PWOL_CURRENT_YH
-0029E8r 1               
-0029E8r 1               
-0029E8r 1  AC rr rr           LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!
-0029EBr 1                   @zigzag_A_right:
-0029EBr 1  C0 40                CPY #64  ;  make sure we don't go outside level..
-0029EDr 1  B0 3F                BCS @ZAR_NEXT ; if we're outside we'll just skip is OK
-0029EFr 1  B1 22                LDA (PWOL_TUB_PTR_AL),y
-0029F1r 1  C9 81                CMP #129
-0029F3r 1  B0 39                BCS @ZAR_NEXT ; we're outside level.
-0029F5r 1               
-0029F5r 1                       ; bytes 1 and 4 were updated when we cleared the object list
-0029F5r 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
-0029F8r 1  D0 04                BNE :++
-0029FAr 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
-0029FDr 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
-0029FEr 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
-002A00r 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
-002A03r 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
-002A05r 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
-002A07r 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
-002A09r 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
-002A0Cr 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
-002A0Fr 1  8A                   TXA ; push new next to the Z buffer spot
-002A10r 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
-002A12r 1                       ; bytes .1..4.6 filled in already..
-002A12r 1               
-002A12r 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
-002A15r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-002A17r 1  10 03                BPL @ZAR_INSIDE_TUB
-002A19r 1                     @ZAR_HIT_WALL_OUCH:
-002A19r 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
-002A1Cr 1                     @ZAR_INSIDE_TUB:
-002A1Cr 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
-002A1Cr 1  98                     TYA
-002A1Dr 1  29 0F                  AND #$0F
-002A1Fr 1  09 50                  ORA #$50 ; #$D0
-002A21r 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
-002A24r 1               
-002A24r 1                         ;STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
-002A24r 1                         ;SEC
-002A24r 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
-002A26r 1                         ;SBC (PWOL_CONVERT_HEIGHTS)
-002A26r 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
-002A29r 1                         ;LDA #$D0
-002A29r 1                         ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
-002A29r 1  A5 27                  LDA PWOL_CURRENT_XH
-002A2Br 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
-002A2Er 1                    @ZAR_NEXT:
-002A2Er 1                        ; calc next to the right..
-002A2Er 1  C8                    INY
-002A2Fr 1  18                    CLC
-002A30r 1  A5 26                 LDA PWOL_CURRENT_XL
-002A32r 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
-002A34r 1  85 26                 STA PWOL_CURRENT_XL
-002A36r 1  A5 27                 LDA PWOL_CURRENT_XH
-002A38r 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
-002A3Ar 1  85 27                 STA PWOL_CURRENT_XH
-002A3Cr 1  AA                    TAX
-002A3Dr 1  18                    CLC
-002A3Er 1  A5 28                 LDA PWOL_CURRENT_YL
-002A40r 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
-002A42r 1  85 28                 STA PWOL_CURRENT_YL
-002A44r 1  A5 29                 LDA PWOL_CURRENT_YH
-002A46r 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
-002A48r 1  85 29                 STA PWOL_CURRENT_YH
-002A4Ar 1               
-002A4Ar 1  8E rr rr              STX DEBUG_A
-002A4Dr 1  8D rr rr              STA DEBUG_B
-002A50r 1               
-002A50r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002A52r 1  B0 0C                 BCS @ZAR_ZIG_LEFT_SWITCH
-002A54r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002A56r 1  90 08                 BCC @ZAR_ZIG_LEFT_SWITCH
-002A58r 1  C9 18                 CMP #SCREEN_OUT_TOP
-002A5Ar 1  90 04                 BCC @ZAR_ZIG_LEFT_SWITCH
-002A5Cr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002A5Er 1  90 8B                 BCC @zigzag_A_right
-002A60r 1                    @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
-002A60r 1  A9 06                 LDA #TRY_AGAIN
-002A62r 1  85 44                 STA PWOL_TRIES_COUNTER
-002A64r 1  88                    DEY ; have to go this to match where the thing is going .. 0,0
-002A65r 1  38                    SEC
-002A66r 1  A5 22                 LDA PWOL_TUB_PTR_AL
-002A68r 1  E9 40                 SBC #64 ;   0,-1
-002A6Ar 1  85 22                 STA PWOL_TUB_PTR_AL
-002A6Cr 1  A5 23                 LDA PWOL_TUB_PTR_AH
-002A6Er 1  E9 00                 SBC #0
-002A70r 1  85 23                 STA PWOL_TUB_PTR_AH
-002A72r 1               
-002A72r 1  18                    CLC
-002A73r 1  A5 26                 LDA PWOL_CURRENT_XL
-002A75r 1  65 2E                 ADC PWOL_NEXT_ROW_A_LEFT_XL
-002A77r 1  85 26                 STA PWOL_CURRENT_XL
-002A79r 1  A5 27                 LDA PWOL_CURRENT_XH
-002A7Br 1  65 2F                 ADC PWOL_NEXT_ROW_A_LEFT_XH
-002A7Dr 1  85 27                 STA PWOL_CURRENT_XH
-002A7Fr 1  AA                    TAX
-002A80r 1  18                    CLC
-002A81r 1  A5 28                 LDA PWOL_CURRENT_YL
-002A83r 1  65 30                 ADC PWOL_NEXT_ROW_A_LEFT_YL
-002A85r 1  85 28                 STA PWOL_CURRENT_YL
-002A87r 1  A5 29                 LDA PWOL_CURRENT_YH
-002A89r 1  65 31                 ADC PWOL_NEXT_ROW_A_LEFT_YH
-002A8Br 1  85 29                 STA PWOL_CURRENT_YH
-002A8Dr 1                        ; check if we're outside ..
-002A8Dr 1               
-002A8Dr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002A8Fr 1  B0 0C                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002A91r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002A93r 1  90 08                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002A95r 1  C9 18                 CMP #SCREEN_OUT_TOP
-002A97r 1  90 04                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002A99r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002A9Br 1  90 31                 BCC @zigzag_A_left
-002A9Dr 1                  @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
-002A9Dr 1  C6 44                 DEC PWOL_TRIES_COUNTER
-002A9Fr 1  D0 01                 BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
-002AA1r 1                  @ZAR_RTS:
-002AA1r 1  60                    rts
-002AA2r 1                  @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
-002AA2r 1  88                    DEY
-002AA3r 1  38                    SEC
-002AA4r 1  A5 26                 LDA PWOL_CURRENT_XL
-002AA6r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
-002AA8r 1  85 26                 STA PWOL_CURRENT_XL
-002AAAr 1  A5 27                 LDA PWOL_CURRENT_XH
-002AACr 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
-002AAEr 1  85 27                 STA PWOL_CURRENT_XH
-002AB0r 1  AA                    TAX
-002AB1r 1  38                    SEC
-002AB2r 1  A5 28                 LDA PWOL_CURRENT_YL
-002AB4r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
-002AB6r 1  85 28                 STA PWOL_CURRENT_YL
-002AB8r 1  A5 29                 LDA PWOL_CURRENT_YH
-002ABAr 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
-002ABCr 1  85 29                 STA PWOL_CURRENT_YH
-002ABEr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002AC0r 1  B0 DB                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002AC2r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002AC4r 1  90 D7                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002AC6r 1  C9 18                 CMP #SCREEN_OUT_TOP
-002AC8r 1  90 D3                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002ACAr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002ACCr 1  B0 CF                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-002ACEr 1                  @zigzag_A_left:
-002ACEr 1  C0 40                CPY #64  ;  make sure we don't go outside level..
-002AD0r 1  B0 3F                BCS @ZAL_NEXT ; if we're outside we'll just skip is OK
-002AD2r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y
-002AD4r 1  C9 81                CMP #129
-002AD6r 1  B0 39                BCS @ZAL_NEXT ; we're outside level.
-002AD8r 1               
-002AD8r 1                       ; bytes 1 and 4 were updated when we cleared the object list
-002AD8r 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
-002ADBr 1  D0 04                BNE :++
-002ADDr 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
-002AE0r 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
-002AE1r 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
-002AE3r 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
-002AE6r 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
-002AE8r 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
-002AEAr 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
-002AECr 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
-002AEFr 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
-002AF2r 1  8A                   TXA ; push new next to the Z buffer spot
-002AF3r 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
-002AF5r 1                       ; bytes .1..4.6 filled in already..
-002AF5r 1               
-002AF5r 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
-002AF8r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-002AFAr 1  10 03                BPL @ZAL_INSIDE_TUB
-002AFCr 1                     @ZAL_HIT_WALL_OUCH:
-002AFCr 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
-002AFFr 1                     @ZAL_INSIDE_TUB:
-002AFFr 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
-002AFFr 1  98                     TYA
-002B00r 1  29 0F                  AND #$0F
-002B02r 1  09 50                  ORA #$50 ; #$D0
-002B04r 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
-002B07r 1               
-002B07r 1                      ;   STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
-002B07r 1                      ;   SEC
-002B07r 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
-002B09r 1                       ;  SBC (PWOL_CONVERT_HEIGHTS)
-002B09r 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
-002B0Cr 1                       ;  LDA #$D0
-002B0Cr 1                       ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
-002B0Cr 1  A5 27                  LDA PWOL_CURRENT_XH
-002B0Er 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
-002B11r 1                    @ZAL_NEXT:
-002B11r 1                        ; calc next to the LEFT
-002B11r 1  88                    DEY
-002B12r 1  38                    SEC
-002B13r 1  A5 26                 LDA PWOL_CURRENT_XL
-002B15r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
-002B17r 1  85 26                 STA PWOL_CURRENT_XL
-002B19r 1  A5 27                 LDA PWOL_CURRENT_XH
-002B1Br 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
-002B1Dr 1  85 27                 STA PWOL_CURRENT_XH
-002B1Fr 1  AA                    TAX
-002B20r 1  38                    SEC
-002B21r 1  A5 28                 LDA PWOL_CURRENT_YL
-002B23r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
-002B25r 1  85 28                 STA PWOL_CURRENT_YL
-002B27r 1  A5 29                 LDA PWOL_CURRENT_YH
-002B29r 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
-002B2Br 1  85 29                 STA PWOL_CURRENT_YH
-002B2Dr 1               
-002B2Dr 1  8E rr rr              STX DEBUG_A
-002B30r 1  8D rr rr              STA DEBUG_B
-002B33r 1               
-002B33r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002B35r 1  B0 0C                 BCS @ZAL_ZIG_RIGHT_SWITCH
-002B37r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002B39r 1  90 08                 BCC @ZAL_ZIG_RIGHT_SWITCH
-002B3Br 1  C9 18                 CMP #SCREEN_OUT_TOP
-002B3Dr 1  90 04                 BCC @ZAL_ZIG_RIGHT_SWITCH
-002B3Fr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002B41r 1  90 8B                 BCC @zigzag_A_left
-002B43r 1                    @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +0,+1  from where we is right now ..
-002B43r 1  A9 06                 LDA #TRY_AGAIN
-002B45r 1  85 44                 STA PWOL_TRIES_COUNTER
-002B47r 1               
-002B47r 1  38                    SEC
-002B48r 1  A5 22                 LDA PWOL_TUB_PTR_AL
-002B4Ar 1  E9 40                 SBC #64
-002B4Cr 1  85 22                 STA PWOL_TUB_PTR_AL
-002B4Er 1  A5 23                 LDA PWOL_TUB_PTR_AH
-002B50r 1  E9 00                 SBC #0
-002B52r 1  85 23                 STA PWOL_TUB_PTR_AH
-002B54r 1               
-002B54r 1               
-002B54r 1  18                    CLC
-002B55r 1               
-002B55r 1  A5 26                 LDA PWOL_CURRENT_XL
-002B57r 1  65 32                 ADC PWOL_NEXT_ROW_A_RIGHT_XL
-002B59r 1  85 26                 STA PWOL_CURRENT_XL
-002B5Br 1               
-002B5Br 1  A5 27                 LDA PWOL_CURRENT_XH
-002B5Dr 1  65 33                 ADC PWOL_NEXT_ROW_A_RIGHT_XH
-002B5Fr 1  85 27                 STA PWOL_CURRENT_XH
-002B61r 1  AA                    TAX
-002B62r 1               
-002B62r 1               
-002B62r 1  18                    CLC
-002B63r 1  A5 28                 LDA PWOL_CURRENT_YL
-002B65r 1  65 34                 ADC PWOL_NEXT_ROW_A_RIGHT_YL
-002B67r 1  85 28                 STA PWOL_CURRENT_YL
-002B69r 1  A5 29                 LDA PWOL_CURRENT_YH
-002B6Br 1  65 35                 ADC PWOL_NEXT_ROW_A_RIGHT_YH
-002B6Dr 1  85 29                 STA PWOL_CURRENT_YH
-002B6Fr 1               
-002B6Fr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002B71r 1  B0 0F                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002B73r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002B75r 1  90 0B                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002B77r 1  C9 18                 CMP #SCREEN_OUT_TOP
-002B79r 1  90 07                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002B7Br 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002B7Dr 1  B0 03                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002B7Fr 1  4C rr rr              JMP @zigzag_A_right
-002B82r 1                  @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
-002B82r 1  C6 44                 DEC PWOL_TRIES_COUNTER
-002B84r 1  D0 01                 BNE @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
-002B86r 1                  @ZAL_RTS:
-002B86r 1  60                 rts
-002B87r 1                  @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
-002B87r 1  C8                    INY
-002B88r 1  18                    CLC
-002B89r 1  A5 26                 LDA PWOL_CURRENT_XL
-002B8Br 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
-002B8Dr 1  85 26                 STA PWOL_CURRENT_XL
-002B8Fr 1  A5 27                 LDA PWOL_CURRENT_XH
-002B91r 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
-002B93r 1  85 27                 STA PWOL_CURRENT_XH
-002B95r 1  AA                    TAX
-002B96r 1  18                    CLC
-002B97r 1  A5 28                 LDA PWOL_CURRENT_YL
-002B99r 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
-002B9Br 1  85 28                 STA PWOL_CURRENT_YL
-002B9Dr 1  A5 29                 LDA PWOL_CURRENT_YH
-002B9Fr 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
-002BA1r 1  85 29                 STA PWOL_CURRENT_YH
-002BA3r 1               
-002BA3r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
-002BA5r 1  B0 DB                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002BA7r 1  E0 24                 CPX #SCREEN_OUT_LEFT
-002BA9r 1  90 D7                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002BABr 1  C9 18                 CMP #SCREEN_OUT_TOP
-002BADr 1  90 D3                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002BAFr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
-002BB1r 1  B0 CF                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-002BB3r 1  4C rr rr              JMP @zigzag_A_right
+0026E9r 1  A0 40          LDY #64
+0026EBr 1  BD rr rr      : LDA ACROSS_ROW_X_L,X
+0026EEr 1  85 7E           STA $7E
+0026F0r 1  BD rr rr        LDA ACROSS_ROW_X_H,X
+0026F3r 1  4A              LSR
+0026F4r 1  26 7E           ROL $7E  ;  /2
+0026F6r 1  4A              LSR
+0026F7r 1  26 7E           ROL $7E  ; /4
+0026F9r 1  4A              LSR
+0026FAr 1  26 7E           ROL $7E  ; /8
+0026FCr 1  4A              LSR
+0026FDr 1  26 7E           ROL $7E  ; /16
+0026FFr 1  4A              LSR
+002700r 1  26 7E           ROL $7E  ; /32
+002702r 1  C9 04           CMP #4   ;  if original value was positive, this is the sign bit...
+002704r 1  90 02           BCC :+
+002706r 1  A9 FF           LDA #$FF
+002708r 1  9D rr rr      : STA MOVE_YH,X
+00270Br 1  A5 7E           LDA $7E
+00270Dr 1  9D rr rr        STA MOVE_YL,X
+002710r 1               
+002710r 1  B9 rr rr        LDA ACROSS_ROW_X_L,Y
+002713r 1  85 7E           STA $7E
+002715r 1  B9 rr rr        LDA ACROSS_ROW_X_H,Y
+002718r 1  4A              LSR
+002719r 1  26 7E           ROL $7E  ;  /2
+00271Br 1  4A              LSR
+00271Cr 1  26 7E           ROL $7E  ; /4
+00271Er 1  4A              LSR
+00271Fr 1  26 7E           ROL $7E  ; /8
+002721r 1  4A              LSR
+002722r 1  26 7E           ROL $7E  ; /16
+002724r 1  4A              LSR
+002725r 1  26 7E           ROL $7E  ; /32
+002727r 1  C9 04           CMP #4   ;  if original value was positive, this is the sign bit...
+002729r 1  90 02           BCC :+
+00272Br 1  A9 FF           LDA #$FF
+00272Dr 1  9D rr rr      : STA MOVE_XH,X
+002730r 1  A5 7E           LDA $7E
+002732r 1  9D rr rr        STA MOVE_XL,X
+002735r 1  C8              INY
+002736r 1  E8              INX
+002737r 1  D0 B2           BNE :---
+002739r 1               
+002739r 1                 ; main loop here...
+002739r 1  9C rr rr        STZ camera_facing
+00273Cr 1               
+00273Cr 1               @camera_world_changed:
+00273Cr 1  AD rr rr        LDA camera_world_pos_YH
+00273Fr 1  8D rr rr        STA camera_cell_y
+002742r 1  4A              LSR
+002743r 1  85 7F           STA $7F  ; high byte
+002745r 1  AD rr rr        LDA camera_world_pos_YL
+002748r 1  8D rr rr        STA camera_cell_yl
+00274Br 1  6A              ROR
+00274Cr 1  85 7E           STA $7E  ; low byte cellY.2
+00274Er 1                  ; cellX = WORLDX*ratio - (31-cellY)/2
+00274Er 1                  ; cellX = WORLDX*ratio - 15.5 + cellY/2
+00274Er 1  AE rr rr        LDX camera_world_pos_XH
+002751r 1  AC rr rr        LDY camera_world_pos_XL
+002754r 1  18              CLC
+002755r 1  B9 rr rr        LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
+002758r 1  7D rr rr        ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH
+00275Br 1  A8              TAY   ;  cellXL from ratio
+00275Cr 1  BD rr rr        LDA WORLD_TO_CELL_XH,X
+00275Fr 1  69 00           ADC #0 ; gotta do that carry and all ..
+002761r 1  AA              TAX   ; cellXH from ratio
+002762r 1  38              SEC
+002763r 1  98              TYA   ;  cellXL from ratio
+002764r 1  E9 80           SBC #128 ; minus 15.5L
+002766r 1  A8              TAY
+002767r 1  8A              TXA
+002768r 1  E9 0F           SBC #15 ; minus 15.5H
+00276Ar 1  AA              TAX
+00276Br 1  18              CLC
+00276Cr 1  98              TYA ; cellXL from ratio minute 15.5
+00276Dr 1  65 7E           ADC $7E  ; plis cellY/2
+00276Fr 1  8D rr rr        STA camera_cell_xl
+002772r 1  8A              TXA
+002773r 1  65 7F           ADC $7F
+002775r 1  D0 01           BNE :+
+002777r 1  1A              INC A
+002778r 1  C9 40         : CMP #64
+00277Ar 1  90 02           BCC :+
+00277Cr 1  A9 3F           LDA #63
+00277Er 1  8D rr rr      : STA camera_cell_x
+002781r 1  AD rr rr        LDA camera_cell_y
+002784r 1  D0 01           BNE :+
+002786r 1  1A              INC A
+002787r 1  C9 1E         : CMP #30
+002789r 1  90 02           BCC :+
+00278Br 1  A9 1D           LDA #29
+00278Dr 1  8D rr rr      : STA camera_cell_y
+002790r 1               
+002790r 1                ;  jmp @do_update
+002790r 1               
+002790r 1               @camera_cell_changed:
+002790r 1  AD rr rr        LDA camera_cell_y
+002793r 1  8D rr rr        STA camera_world_pos_YH
+002796r 1  4A              LSR
+002797r 1  85 7F           STA $7F  ; high byte
+002799r 1  AD rr rr        LDA camera_cell_yl
+00279Cr 1  8D rr rr        STA camera_world_pos_YL
+00279Fr 1  6A              ROR
+0027A0r 1  85 7E           STA $7E  ; low byte cellY.2
+0027A2r 1                  ; worldX = (cellX + 15.5 - cellY/2)*ratio
+0027A2r 1  18              CLC
+0027A3r 1  AD rr rr        LDA camera_cell_xl ; +15.5
+0027A6r 1  69 80           ADC #128
+0027A8r 1  AA              TAX
+0027A9r 1  AD rr rr        LDA camera_cell_x
+0027ACr 1  69 0F           ADC #15
+0027AEr 1  A8              TAY
+0027AFr 1  38              SEC
+0027B0r 1  8A              TXA
+0027B1r 1  E5 7E           SBC $7E
+0027B3r 1  AA              TAX
+0027B4r 1  98              TYA
+0027B5r 1  E5 7F           SBC $7F
+0027B7r 1  A8              TAY
+0027B8r 1  18              CLC
+0027B9r 1  BD rr rr        LDA CELL_LOW_TO_WORLD_XL,X
+0027BCr 1  79 rr rr        ADC CELL_TO_WORLD_XL,Y
+0027BFr 1  8D rr rr        STA camera_world_pos_XL
+0027C2r 1  BD rr rr        LDA CELL_LOW_TO_WORLD_XH,X
+0027C5r 1  79 rr rr        ADC CELL_TO_WORLD_XH,Y
+0027C8r 1  8D rr rr        STA camera_world_pos_XH
+0027CBr 1  4C rr rr        jmp @do_update
+0027CEr 1               
+0027CEr 1               
+0027CEr 1               @do_update:
+0027CEr 1               
+0027CEr 1                  ; clear the object list ...
+0027CEr 1  9C rr rr         STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
+0027D1r 1  A2 00            LDX #0
+0027D3r 1  A9 0C            LDA #$0C ; is basis for all the z_flips
+0027D5r 1  9E rr rr         : STZ OBJECT_LIST_Z_START_POINTERS,X
+0027D8r 1  9E rr rr           STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address
+0027DBr 1  9C rr rr           STZ OBJECT_LIST_BYTE2_X
+0027DEr 1  9D rr rr           STA OBJECT_LIST_BYTE4_ZFLIPS,X
+0027E1r 1  E8                 INX
+0027E2r 1  D0 F1              BNE :-
+0027E4r 1               
+0027E4r 1  20 rr rr        jsr push_world_to_object_list
+0027E7r 1               
+0027E7r 1  AE rr rr        LDX OBJECT_LIST_BYTE6_NEXT
+0027EAr 1  8E rr rr        STX DEBUG_C
+0027EDr 1               
+0027EDr 1                  ;  write location datas..
+0027EDr 1  A9 F8           lda #248
+0027EFr 1  8D 20 9F        STA VERA_addr_low
+0027F2r 1  A9 FC           LDA #$FC
+0027F4r 1  8D 21 9F        STA VERA_addr_high
+0027F7r 1  A9 49           LDA #$49
+0027F9r 1  8D 22 9F        STA VERA_addr_bank
+0027FCr 1               
+0027FCr 1               
+0027FCr 1  A0 0A           ldy #10
+0027FEr 1  BE rr rr      : LDX camera_facing-1,y
+002801r 1  BD rr rr        LDA SPRITE_NUM_LOW_NIBBLE,X
+002804r 1  8D 23 9F        STA VERA_data0
+002807r 1  BD rr rr        LDA SPRITE_NUM_HIGH_NIBBLE,X
+00280Ar 1  8D 23 9F        STA VERA_data0
+00280Dr 1  88              dey
+00280Er 1  D0 EE           BNE :-
+002810r 1               
+002810r 1               
+002810r 1  20 rr rr        jsr draw_object_list
+002813r 1               
+002813r 1               
+002813r 1               @FRAME_CHECK:
+002813r 1  CB              wai
+002814r 1  AD rr rr        lda VSYNC_counter
+002817r 1  F0 FA           beq @FRAME_CHECK
+002819r 1  9C rr rr        stz VSYNC_counter
+00281Cr 1  18              CLC
+00281Dr 1  6D rr rr        ADC MASTER_CLOCK
+002820r 1  AA              TAX
+002821r 1  8D rr rr        STA MASTER_CLOCK
+002824r 1  AD rr rr        LDA MASTER_CLOCK+1
+002827r 1  69 00           ADC #0
+002829r 1  8D rr rr        STA MASTER_CLOCK+1
+00282Cr 1  8A              TXA
+00282Dr 1  29 01           AND #1 ; restrict to 20 fps.. don't care missed cycle.
+00282Fr 1  D0 E2           BNE @FRAME_CHECK
+002831r 1                  ; poll keyboard for input
+002831r 1  20 E4 FF        jsr GETIN
+002834r 1  C9 00           cmp #0
+002836r 1  F0 DB           beq @FRAME_CHECK
+002838r 1  C9 1D           cmp #$1D 	;	cursor right
+00283Ar 1  D0 06           BNE :+
+00283Cr 1  EE rr rr        INC camera_facing
+00283Fr 1  4C rr rr        JMP @do_update
+002842r 1                  :
+002842r 1  C9 9D           cmp  #$9D 	;	cursor left
+002844r 1  D0 06           BNE :+
+002846r 1  CE rr rr        DEC camera_facing
+002849r 1  4C rr rr        JMP @do_update
+00284Cr 1  C9 11         : cmp #$11; cursor down
+00284Er 1  D0 2C           BNE :+
+002850r 1  AE rr rr        LDX camera_facing
+002853r 1  18              CLC
+002854r 1  AD rr rr        LDA camera_world_pos_XL
+002857r 1  7D rr rr        ADC MOVE_XL,X
+00285Ar 1  8D rr rr        STA camera_world_pos_XL
+00285Dr 1  AD rr rr        LDA camera_world_pos_XH
+002860r 1  7D rr rr        ADC MOVE_XH,X
+002863r 1  8D rr rr        STA camera_world_pos_XH
+002866r 1  18              CLC
+002867r 1  BD rr rr        LDA MOVE_YL,X
+00286Ar 1  6D rr rr        ADC camera_world_pos_YL
+00286Dr 1  8D rr rr        STA camera_world_pos_YL
+002870r 1  BD rr rr        LDA MOVE_YH,X
+002873r 1  6D rr rr        ADC camera_world_pos_YH
+002876r 1  8D rr rr        STA camera_world_pos_YH
+002879r 1  4C rr rr        jmp @camera_world_changed
+00287Cr 1               
+00287Cr 1  C9 91         : cmp #$91 ; cursor up
+00287Er 1  D0 2C           BNE :+
+002880r 1  AE rr rr        LDX camera_facing
+002883r 1  38              SEC
+002884r 1  AD rr rr        LDA camera_world_pos_XL
+002887r 1  FD rr rr        SBC MOVE_XL,X
+00288Ar 1  8D rr rr        STA camera_world_pos_XL
+00288Dr 1  AD rr rr        LDa camera_world_pos_XH
+002890r 1  FD rr rr        SBC MOVE_XH,X
+002893r 1  8D rr rr        STA camera_world_pos_XH
+002896r 1  38              SEC
+002897r 1  AD rr rr        LDA camera_world_pos_YL
+00289Ar 1  FD rr rr        SBC MOVE_YL,X
+00289Dr 1  8D rr rr        STA camera_world_pos_YL
+0028A0r 1  AD rr rr        LDA camera_world_pos_YH
+0028A3r 1  FD rr rr        SBC MOVE_YH,X
+0028A6r 1  8D rr rr        STA camera_world_pos_YH
+0028A9r 1  4C rr rr        jmp @camera_world_changed
+0028ACr 1               
+0028ACr 1  C9 57         : cmp #W_CHAR ; cell up left
+0028AEr 1  D0 13           BNE :+++
+0028B0r 1  AD rr rr        LDA camera_cell_y
+0028B3r 1  F0 03           BEQ :+
+0028B5r 1  CE rr rr        DEC camera_cell_y
+0028B8r 1  AD rr rr      : LDA camera_cell_x
+0028BBr 1  F0 03           BEQ :+
+0028BDr 1  CE rr rr        DEC camera_cell_x
+0028C0r 1  4C rr rr      : JMP @camera_cell_changed
+0028C3r 1               
+0028C3r 1  C9 45         : cmp #E_CHAR ; cell up right
+0028C5r 1  D0 0B           BNE :++
+0028C7r 1  AD rr rr        LDA camera_cell_y
+0028CAr 1  F0 03           BEQ :+
+0028CCr 1  CE rr rr        DEC camera_cell_y
+0028CFr 1  4C rr rr      : JMP @camera_cell_changed
+0028D2r 1               
+0028D2r 1  C9 41         : cmp #A_CHAR ; cell left
+0028D4r 1  D0 0B           BNE :++
+0028D6r 1  AD rr rr        LDA camera_cell_x
+0028D9r 1  F0 03           BEQ :+
+0028DBr 1  CE rr rr        DEC camera_cell_x
+0028DEr 1  4C rr rr      : JMP @camera_cell_changed
+0028E1r 1               
+0028E1r 1  C9 44         : cmp #D_CHAR ; cell right
+0028E3r 1  D0 0D           BNE :++
+0028E5r 1  AD rr rr        LDA camera_cell_x
+0028E8r 1  C9 3F           CMP #63
+0028EAr 1  B0 03           BCS :+
+0028ECr 1  EE rr rr        INC camera_cell_x
+0028EFr 1  4C rr rr      : JMP @camera_cell_changed
+0028F2r 1               
+0028F2r 1  C9 5A         : cmp #Z_CHAR ; cell down left
+0028F4r 1  D0 0D           BNE :++
+0028F6r 1  AD rr rr        LDA camera_cell_y
+0028F9r 1  C9 1E           CMP #30
+0028FBr 1  B0 03           BCS :+
+0028FDr 1  EE rr rr        INC camera_cell_y
+002900r 1  4C rr rr      : JMP @camera_cell_changed
+002903r 1               
+002903r 1  C9 58         : cmp #X_CHAR ; cell down right
+002905r 1  D0 17           BNE :+++
+002907r 1  AD rr rr        LDA camera_cell_y
+00290Ar 1  C9 1E           CMP #30
+00290Cr 1  B0 03           BCS :+
+00290Er 1  EE rr rr        INC camera_cell_y
+002911r 1  AD rr rr      : LDA camera_cell_x
+002914r 1  C9 3F           CMP #63
+002916r 1  B0 03           BCS :+
+002918r 1  EE rr rr        INC camera_cell_x
+00291Br 1  4C rr rr      : JMP @camera_cell_changed
+00291Er 1               
+00291Er 1  C9 20         : cmp #SPACE;
+002920r 1  D0 09           BNE :+
+002922r 1  9C rr rr        STZ camera_cell_xl
+002925r 1  9C rr rr        STZ camera_cell_yl
+002928r 1  4C rr rr        JMP @camera_cell_changed
+00292Br 1               
+00292Br 1  C9 00         : cmp #0 ;
+00292Dr 1  D0 03           BNE :+
+00292Fr 1  4C rr rr        JMP @do_update
+002932r 1               
+002932r 1  C9 00         : cmp #0 ;
+002934r 1  D0 03           BNE :+
+002936r 1  4C rr rr        JMP @do_update
+002939r 1               
+002939r 1  C9 00         : cmp #0 ;
+00293Br 1  D0 03           BNE :+
+00293Dr 1  4C rr rr        JMP @do_update
+002940r 1               
+002940r 1               
+002940r 1  4C rr rr      : JMP @FRAME_CHECK
+002943r 1               
+002943r 1               @cleanup_and_exit:
+002943r 1                  ; restore default IRQ vector
+002943r 1  78              sei
+002944r 1  AD rr rr        lda default_irq_vector
+002947r 1  8D 14 03        sta IRQVec
+00294Ar 1  AD rr rr        lda default_irq_vector+1
+00294Dr 1  8D 15 03        sta IRQVec+1
+002950r 1  58              cli
+002951r 1  20 81 FF        jsr CINT
+002954r 1  60              rts
+002955r 1               
+002955r 1               
+002955r 1               ; CURRENT
+002955r 1               push_world_to_object_list: ; as in.. let's try this again?? wait.. missing a STZ ZP_PTR...
+002955r 1               PWOL_TUB_PTR_AL   = ZP_PTR
+002955r 1               PWOL_TUB_PTR_AH   = ZP_PTR+1
+002955r 1               PWOL_TUB_PTR_BL   = ZP_PTR+2
+002955r 1               PWOL_TUB_PTR_BH   = ZP_PTR+3
+002955r 1               PWOL_CURRENT_XL   = ZP_PTR+4
+002955r 1               PWOL_CURRENT_XH   = ZP_PTR+5
+002955r 1               PWOL_CURRENT_YL   = ZP_PTR+6
+002955r 1               PWOL_CURRENT_YH   = ZP_PTR+7
+002955r 1               PWOL_ACROSS_ROW_XL= ZP_PTR+8
+002955r 1               PWOL_ACROSS_ROW_XH= ZP_PTR+9
+002955r 1               PWOL_ACROSS_ROW_YL= ZP_PTR+10
+002955r 1               PWOL_ACROSS_ROW_YH= ZP_PTR+11
+002955r 1               PWOL_NEXT_ROW_A_LEFT_XL  = ZP_PTR+12
+002955r 1               PWOL_NEXT_ROW_A_LEFT_XH  = ZP_PTR+13
+002955r 1               PWOL_NEXT_ROW_A_LEFT_YL  = ZP_PTR+14
+002955r 1               PWOL_NEXT_ROW_A_LEFT_YH  = ZP_PTR+15
+002955r 1               PWOL_NEXT_ROW_A_RIGHT_XL  = ZP_PTR+16
+002955r 1               PWOL_NEXT_ROW_A_RIGHT_XH  = ZP_PTR+17
+002955r 1               PWOL_NEXT_ROW_A_RIGHT_YL  = ZP_PTR+18
+002955r 1               PWOL_NEXT_ROW_A_RIGHT_YH  = ZP_PTR+19
+002955r 1               PWOL_NEXT_ROW_B_LEFT_XL  = ZP_PTR+20
+002955r 1               PWOL_NEXT_ROW_B_LEFT_XH  = ZP_PTR+21
+002955r 1               PWOL_NEXT_ROW_B_LEFT_YL  = ZP_PTR+22
+002955r 1               PWOL_NEXT_ROW_B_LEFT_YH  = ZP_PTR+23
+002955r 1               PWOL_NEXT_ROW_B_RIGHT_XL  = ZP_PTR+24
+002955r 1               PWOL_NEXT_ROW_B_RIGHT_XH  = ZP_PTR+25
+002955r 1               PWOL_NEXT_ROW_B_RIGHT_YL  = ZP_PTR+26
+002955r 1               PWOL_NEXT_ROW_B_RIGHT_YH  = ZP_PTR+27
+002955r 1               PWOL_Z_STARTS_PTR = ZP_PTR+28
+002955r 1               PWOL_Z_STARTS_PTRH = ZP_PTR+29
+002955r 1               PWOL_CONVERT_HEIGHTS = ZP_PTR+30
+002955r 1               PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
+002955r 1               PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
+002955r 1               PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
+002955r 1               PWOL_TRIES_COUNTER = ZP_PTR+34
+002955r 1               PWOL_START_XL = ZP_PTR+35
+002955r 1               PWOL_START_YL = ZP_PTR+36
+002955r 1               PWOL_START_XH = ZP_PTR+37
+002955r 1               PWOL_START_YH = ZP_PTR+38
+002955r 1               
+002955r 1               TRY_AGAIN = 6
+002955r 1               SCREEN_START_X = 100
+002955r 1               SCREEN_START_Y =  80
+002955r 1               SCREEN_OUT_RIGHT  = 164 ; right of middle is 116, +48 = 164
+002955r 1               SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36
+002955r 1               SCREEN_OUT_TOP     = 24
+002955r 1               SCREEN_OUT_BOTTOM  = 136
+002955r 1               
+002955r 1  A9 rr           LDA #>CONVERT_HEIGHTS_PIXELS_SECONDARY
+002957r 1  85 43           STA PWOL_CONVERT_HEIGHTS_SECONDARYH
+002959r 1  A9 rr           LDA #>CONVERT_HEIGHTS_PIXELS
+00295Br 1  85 41           STA PWOL_CONVERT_HEIGHTSH
+00295Dr 1  A9 rr           LDA #>OBJECT_LIST_Z_START_POINTERS
+00295Fr 1  85 3F           STA PWOL_Z_STARTS_PTRH
+002961r 1               
+002961r 1  AE rr rr        LDX camera_facing
+002964r 1               
+002964r 1               
+002964r 1  BD rr rr        LDA ACROSS_ROW_X_L,x    ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
+002967r 1  85 2A           STA PWOL_ACROSS_ROW_XL
+002969r 1  BD rr rr        LDA ACROSS_ROW_X_H,x
+00296Cr 1  85 2B           STA PWOL_ACROSS_ROW_XH
+00296Er 1  BD rr rr        LDA ACROSS_ROW_Y_L,x
+002971r 1  85 2C           STA PWOL_ACROSS_ROW_YL
+002973r 1  BD rr rr        LDA ACROSS_ROW_Y_H,x
+002976r 1  85 2D           STA PWOL_ACROSS_ROW_YH
+002978r 1               
+002978r 1  18              CLC
+002979r 1  BD rr rr        LDA NEXT_ROW_X_L,X  ; 0D00 next row LEFT/up when added
+00297Cr 1  85 2E           STA PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  -1,-1
+00297Er 1  65 2A           ADC PWOL_ACROSS_ROW_XL   ; across row is for right , subtract to go left  +1 -> 0,1
+002980r 1  85 32           STA PWOL_NEXT_ROW_A_RIGHT_XL  ;  -> next row is right, going up the screen .. -1,-1
+002982r 1  BD rr rr        LDA NEXT_ROW_X_H,x
+002985r 1  85 2F           STA PWOL_NEXT_ROW_A_LEFT_XH
+002987r 1  65 2B           ADC PWOL_ACROSS_ROW_XH
+002989r 1  85 33           STA PWOL_NEXT_ROW_A_RIGHT_XH
+00298Br 1               
+00298Br 1  18              CLC
+00298Cr 1  BD rr rr        LDA NEXT_ROW_Y_L,X  ; 0F00 next row LEFT/up when added
+00298Fr 1  85 30           STA PWOL_NEXT_ROW_A_LEFT_YL   ; -> next row is left, going up the screen
+002991r 1  65 2C           ADC PWOL_ACROSS_ROW_YL   ; across row is for right
+002993r 1  85 34           STA PWOL_NEXT_ROW_A_RIGHT_YL  ;  -> next row is right, going up the screen
+002995r 1  BD rr rr        LDA NEXT_ROW_Y_H,x
+002998r 1  85 31           STA PWOL_NEXT_ROW_A_LEFT_YH
+00299Ar 1  65 2D           ADC PWOL_ACROSS_ROW_YH
+00299Cr 1  85 35           STA PWOL_NEXT_ROW_A_RIGHT_YH
+00299Er 1               
+00299Er 1               
+00299Er 1               
+00299Er 1               ; for zig B , the opposite of left/up is right/down.. so A_LEFT * -1 = B_RIGHT
+00299Er 1  38              SEC ; flip A_LEFT X to B_RIGHT X
+00299Fr 1  A9 00           LDA #0
+0029A1r 1  E5 2E           SBC PWOL_NEXT_ROW_A_LEFT_XL
+0029A3r 1  85 3A           STA PWOL_NEXT_ROW_B_RIGHT_XL
+0029A5r 1  A9 00           LDA #0
+0029A7r 1  E5 2F           SBC PWOL_NEXT_ROW_A_LEFT_XH
+0029A9r 1  85 3B           STA PWOL_NEXT_ROW_B_RIGHT_XH
+0029ABr 1               
+0029ABr 1  38              SEC ; flip A_LEFT Y to B_RIGHT Y
+0029ACr 1  A9 00           LDA #0
+0029AEr 1  E5 30           SBC PWOL_NEXT_ROW_A_LEFT_YL
+0029B0r 1  85 3C           STA PWOL_NEXT_ROW_B_RIGHT_YL
+0029B2r 1  A9 00           LDA #0
+0029B4r 1  E5 31           SBC PWOL_NEXT_ROW_A_LEFT_YH
+0029B6r 1  85 3D           STA PWOL_NEXT_ROW_B_RIGHT_YH
+0029B8r 1               
+0029B8r 1  38              SEC ; flip A_RIGHT X to B_LEFT X
+0029B9r 1  A9 00           LDA #0
+0029BBr 1  E5 32           SBC PWOL_NEXT_ROW_A_RIGHT_XL
+0029BDr 1  85 36           STA PWOL_NEXT_ROW_B_LEFT_XL
+0029BFr 1  A9 00           LDA #0
+0029C1r 1  E5 33           SBC PWOL_NEXT_ROW_A_RIGHT_XH
+0029C3r 1  85 37           STA PWOL_NEXT_ROW_B_LEFT_XH
+0029C5r 1               
+0029C5r 1  38              SEC ; flip A_RIGHT Y to B_LEFT Y
+0029C6r 1  A9 00           LDA #0
+0029C8r 1  E5 34           SBC PWOL_NEXT_ROW_A_RIGHT_YL
+0029CAr 1  85 38           STA PWOL_NEXT_ROW_B_LEFT_YL
+0029CCr 1  A9 00           LDA #0
+0029CEr 1  E5 35           SBC PWOL_NEXT_ROW_A_RIGHT_YH
+0029D0r 1  85 39           STA PWOL_NEXT_ROW_B_LEFT_YH
+0029D2r 1               
+0029D2r 1                  ;  set up tub pointer
+0029D2r 1  64 22            STZ PWOL_TUB_PTR_AL
+0029D4r 1  AD rr rr         LDA camera_cell_y
+0029D7r 1  4A               LSR  ;  y pages of 128
+0029D8r 1  66 22            ROR PWOL_TUB_PTR_AL
+0029DAr 1  4A               LSR  ; y pages of 64 !
+0029DBr 1  66 22            ROR PWOL_TUB_PTR_AL
+0029DDr 1  09 rr            ORA #>TUB_WORLD
+0029DFr 1  85 23            STA PWOL_TUB_PTR_AH
+0029E1r 1  85 25            STA PWOL_TUB_PTR_BH
+0029E3r 1  A5 22            LDA PWOL_TUB_PTR_AL
+0029E5r 1  85 24            STA PWOL_TUB_PTR_BL
+0029E7r 1               
+0029E7r 1                 @zigzag_A: ; going to right and up the screen, including where we are currently..
+0029E7r 1  64 26              STZ PWOL_CURRENT_XL
+0029E9r 1  A9 6C              LDA #108
+0029EBr 1  85 27              STA PWOL_CURRENT_XH
+0029EDr 1               
+0029EDr 1  64 28              STZ PWOL_CURRENT_YL
+0029EFr 1  A9 50              LDA #80
+0029F1r 1  85 29              STA PWOL_CURRENT_YH
+0029F3r 1               
+0029F3r 1  A2 FF              LDX #$FF
+0029F5r 1  64 47              STZ PWOL_START_XH
+0029F7r 1  A5 2B              LDA PWOL_ACROSS_ROW_XH
+0029F9r 1  85 45              STA PWOL_START_XL ; value for cos..
+0029FBr 1  10 02              BPL :+
+0029FDr 1  86 47              STX PWOL_START_XH
+0029FFr 1  64 48            : STZ PWOL_START_YH
+002A01r 1  A5 2D              LDA PWOL_ACROSS_ROW_YH
+002A03r 1  85 46              STA PWOL_START_YL ; value for sin
+002A05r 1  10 02              BPL :+
+002A07r 1  86 47              STX PWOL_START_XH
+002A09r 1  38               : SEC
+002A0Ar 1  AD rr rr           LDA camera_cell_xl   ; subcell offsetX = cos(x)+sin(y)
+002A0Dr 1  E9 80              SBC #128 ; need a modulus ..
+002A0Fr 1  B0 28              BCS :++   ; if  subcell >=.5 - move this far left from center point ..
+002A11r 1  49 FF              EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
+002A13r 1  1A                 INC A    ;  1
+002A14r 1  4A                 LSR
+002A15r 1  4A                 LSR
+002A16r 1  4A                 LSR
+002A17r 1  4A                 LSR
+002A18r 1  F0 42              BEQ :++++
+002A1Ar 1  18               : CLC  ; we're < half  so this center goes right .. add X  X*cos - y*sin  Y is X*sin + Y*Cos
+002A1Br 1  A5 26              LDA PWOL_CURRENT_XL
+002A1Dr 1  65 45              ADC PWOL_START_XL
+002A1Fr 1  85 26              STA PWOL_CURRENT_XL
+002A21r 1  A5 27              LDA PWOL_CURRENT_XH
+002A23r 1  65 47              ADC PWOL_START_XH
+002A25r 1  85 27              STA PWOL_CURRENT_XH
+002A27r 1  18                 CLC  ; we're < half  so this center goes right .. add X * cos/sin
+002A28r 1  A5 28              LDA PWOL_CURRENT_YL
+002A2Ar 1  65 46              ADC PWOL_START_YL
+002A2Cr 1  85 28              STA PWOL_CURRENT_YL
+002A2Er 1  A5 29              LDA PWOL_CURRENT_YH
+002A30r 1  65 48              ADC PWOL_START_YH
+002A32r 1  85 29              STA PWOL_CURRENT_YH
+002A34r 1  CA                 DEX
+002A35r 1  D0 E3              BNE :-
+002A37r 1  80 23              BRA :+++
+002A39r 1  4A               : LSR ; Carry set, so we will be subtracting this many times
+002A3Ar 1  4A                 LSR
+002A3Br 1  4A                 LSR
+002A3Cr 1  4A                 LSR
+002A3Dr 1  F0 1D              BEQ :++
+002A3Fr 1  38               : SEC
+002A40r 1  A5 26              LDA PWOL_CURRENT_XL
+002A42r 1  E5 45              SBC PWOL_START_XL
+002A44r 1  85 26              STA PWOL_CURRENT_XL
+002A46r 1  A5 27              LDA PWOL_CURRENT_XH
+002A48r 1  E5 47              SBC PWOL_START_XH
+002A4Ar 1  85 27              STA PWOL_CURRENT_XH
+002A4Cr 1  38                 SEC  ; we're < half  so this center goes right .. add X * cos/sin
+002A4Dr 1  A5 28              LDA PWOL_CURRENT_YL
+002A4Fr 1  E5 46              SBC PWOL_START_YL
+002A51r 1  85 28              STA PWOL_CURRENT_YL
+002A53r 1  A5 29              LDA PWOL_CURRENT_YH
+002A55r 1  E5 48              SBC PWOL_START_YH
+002A57r 1  85 29              STA PWOL_CURRENT_YH
+002A59r 1  CA                 DEX
+002A5Ar 1  D0 E3              BNE :-
+002A5Cr 1  38               : SEC
+002A5Dr 1  AD rr rr           LDA camera_cell_yl   ; subcell offsetX = cos(x)+sin(y)
+002A60r 1  E9 80              SBC #128 ; need a modulus ..
+002A62r 1  B0 28              BCS :++   ; if  subcell >=.5 - move this far left from center point ..
+002A64r 1  49 FF              EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
+002A66r 1  1A                 INC A    ;  1
+002A67r 1  4A                 LSR
+002A68r 1  4A                 LSR
+002A69r 1  4A                 LSR
+002A6Ar 1  4A                 LSR
+002A6Br 1  F0 64              BEQ :++++
+002A6Dr 1  38               : SEC  ; we're < half  so this center goes right ..X  X*cos - y*sin  Y is X*sin + Y*Cos
+002A6Er 1  A5 26              LDA PWOL_CURRENT_XL
+002A70r 1  E5 46              SBC PWOL_START_YL
+002A72r 1  85 26              STA PWOL_CURRENT_XL
+002A74r 1  A5 27              LDA PWOL_CURRENT_XH
+002A76r 1  E5 48              SBC PWOL_START_YH
+002A78r 1  85 27              STA PWOL_CURRENT_XH
+002A7Ar 1  18                 CLC  ; we're < half  so this center goes right .. add X * cos/sin
+002A7Br 1  A5 28              LDA PWOL_CURRENT_YL
+002A7Dr 1  65 45              ADC PWOL_START_XL
+002A7Fr 1  85 28              STA PWOL_CURRENT_YL
+002A81r 1  A5 29              LDA PWOL_CURRENT_YH
+002A83r 1  65 47              ADC PWOL_START_XH
+002A85r 1  85 29              STA PWOL_CURRENT_YH
+002A87r 1  CA                 DEX
+002A88r 1  D0 E3              BNE :-
+002A8Ar 1  80 45              BRA :+++
+002A8Cr 1  4A               : LSR ; Carry set, so we will be subtracting this many times
+002A8Dr 1  4A                 LSR
+002A8Er 1  4A                 LSR
+002A8Fr 1  4A                 LSR
+002A90r 1  F0 3F              BEQ :++
+002A92r 1  18               : CLC
+002A93r 1  A5 26              LDA PWOL_CURRENT_XL
+002A95r 1  65 46              ADC PWOL_START_YL
+002A97r 1  85 26              STA PWOL_CURRENT_XL
+002A99r 1  A5 27              LDA PWOL_CURRENT_XH
+002A9Br 1  65 48              ADC PWOL_START_YH
+002A9Dr 1  85 27              STA PWOL_CURRENT_XH
+002A9Fr 1  38                 SEC  ; we're < half  so this center goes right .. add X * cos/sin
+002AA0r 1  A5 28              LDA PWOL_CURRENT_YL
+002AA2r 1  E5 45              SBC PWOL_START_XL
+002AA4r 1  85 28              STA PWOL_CURRENT_YL
+002AA6r 1  A5 29              LDA PWOL_CURRENT_YH
+002AA8r 1  E5 47              SBC PWOL_START_XH
+002AAAr 1  85 29              STA PWOL_CURRENT_YH
+002AACr 1  CA                 DEX
+002AADr 1  D0 E3              BNE :-
+002AAFr 1               
+002AAFr 1  A5 26              LDA PWOL_CURRENT_XL
+002AB1r 1  85 45              STA PWOL_START_XL
+002AB3r 1  A5 28              LDA PWOL_CURRENT_YL
+002AB5r 1  85 46              STA PWOL_START_YL
+002AB7r 1               
+002AB7r 1  A5 27              LDA PWOL_CURRENT_XH
+002AB9r 1  85 47              STA PWOL_START_XH
+002ABBr 1  A5 29              LDA PWOL_CURRENT_YH
+002ABDr 1  85 48              STA PWOL_START_YH
+002ABFr 1               
+002ABFr 1  AC rr rr           LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!
+002AC2r 1                   @zigzag_A_right:
+002AC2r 1  C0 40                CPY #64  ;  make sure we don't go outside level..
+002AC4r 1  B0 44                BCS @ZAR_NEXT ; if we're outside we'll just skip is OK
+002AC6r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y
+002AC8r 1  C9 81                CMP #129
+002ACAr 1  B0 3E                BCS @ZAR_NEXT ; we're outside level.
+002ACCr 1               
+002ACCr 1                       ; bytes 1 and 4 were updated when we cleared the object list
+002ACCr 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
+002ACFr 1  D0 04                BNE :++
+002AD1r 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
+002AD4r 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
+002AD5r 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
+002AD7r 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
+002ADAr 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
+002ADCr 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+002ADEr 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+002AE0r 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+002AE3r 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+002AE6r 1  8A                   TXA ; push new next to the Z buffer spot
+002AE7r 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
+002AE9r 1                       ; bytes .1..4.6 filled in already..
+002AE9r 1               
+002AE9r 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
+002AECr 1  B1 22                LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+002AEEr 1  10 03                BPL @ZAR_INSIDE_TUB
+002AF0r 1                     @ZAR_HIT_WALL_OUCH:
+002AF0r 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+002AF3r 1                     @ZAR_INSIDE_TUB:
+002AF3r 1  85 40                  STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
+002AF5r 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
+002AF5r 1  98                     TYA
+002AF6r 1  29 0F                  AND #$0F
+002AF8r 1  09 D0                  ORA #$D0 ; #$D0
+002AFAr 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002AFDr 1               
+002AFDr 1  38                     SEC
+002AFEr 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
+002B00r 1  F2 40                  SBC (PWOL_CONVERT_HEIGHTS)
+002B02r 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
+002B05r 1                         ;LDA #$D0
+002B05r 1                         ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002B05r 1  A5 27                  LDA PWOL_CURRENT_XH
+002B07r 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
+002B0Ar 1                    @ZAR_NEXT:
+002B0Ar 1                        ; calc next to the right..
+002B0Ar 1  C8                    INY
+002B0Br 1  18                    CLC
+002B0Cr 1  A5 26                 LDA PWOL_CURRENT_XL
+002B0Er 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
+002B10r 1  85 26                 STA PWOL_CURRENT_XL
+002B12r 1  A5 27                 LDA PWOL_CURRENT_XH
+002B14r 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
+002B16r 1  85 27                 STA PWOL_CURRENT_XH
+002B18r 1  AA                    TAX
+002B19r 1  18                    CLC
+002B1Ar 1  A5 28                 LDA PWOL_CURRENT_YL
+002B1Cr 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
+002B1Er 1  85 28                 STA PWOL_CURRENT_YL
+002B20r 1  A5 29                 LDA PWOL_CURRENT_YH
+002B22r 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
+002B24r 1  85 29                 STA PWOL_CURRENT_YH
+002B26r 1               
+002B26r 1  8E rr rr              STX DEBUG_A
+002B29r 1  8D rr rr              STA DEBUG_B
+002B2Cr 1               
+002B2Cr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002B2Er 1  B0 0C                 BCS @ZAR_ZIG_LEFT_SWITCH
+002B30r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002B32r 1  90 08                 BCC @ZAR_ZIG_LEFT_SWITCH
+002B34r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002B36r 1  90 04                 BCC @ZAR_ZIG_LEFT_SWITCH
+002B38r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002B3Ar 1  90 86                 BCC @zigzag_A_right
+002B3Cr 1                    @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
+002B3Cr 1  A9 06                 LDA #TRY_AGAIN
+002B3Er 1  85 44                 STA PWOL_TRIES_COUNTER
+002B40r 1  88                    DEY ; have to go this to match where the thing is going .. 0,0
+002B41r 1  38                    SEC
+002B42r 1  A5 22                 LDA PWOL_TUB_PTR_AL
+002B44r 1  E9 40                 SBC #64 ;   0,-1
+002B46r 1  85 22                 STA PWOL_TUB_PTR_AL
+002B48r 1  A5 23                 LDA PWOL_TUB_PTR_AH
+002B4Ar 1  E9 00                 SBC #0
+002B4Cr 1  85 23                 STA PWOL_TUB_PTR_AH
+002B4Er 1               
+002B4Er 1  18                    CLC
+002B4Fr 1  A5 26                 LDA PWOL_CURRENT_XL
+002B51r 1  65 2E                 ADC PWOL_NEXT_ROW_A_LEFT_XL
+002B53r 1  85 26                 STA PWOL_CURRENT_XL
+002B55r 1  A5 27                 LDA PWOL_CURRENT_XH
+002B57r 1  65 2F                 ADC PWOL_NEXT_ROW_A_LEFT_XH
+002B59r 1  85 27                 STA PWOL_CURRENT_XH
+002B5Br 1  AA                    TAX
+002B5Cr 1  18                    CLC
+002B5Dr 1  A5 28                 LDA PWOL_CURRENT_YL
+002B5Fr 1  65 30                 ADC PWOL_NEXT_ROW_A_LEFT_YL
+002B61r 1  85 28                 STA PWOL_CURRENT_YL
+002B63r 1  A5 29                 LDA PWOL_CURRENT_YH
+002B65r 1  65 31                 ADC PWOL_NEXT_ROW_A_LEFT_YH
+002B67r 1  85 29                 STA PWOL_CURRENT_YH
+002B69r 1                        ; check if we're outside ..
+002B69r 1               
+002B69r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002B6Br 1  B0 0C                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002B6Dr 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002B6Fr 1  90 08                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002B71r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002B73r 1  90 04                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002B75r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002B77r 1  90 33                 BCC @zigzag_A_left
+002B79r 1                  @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
+002B79r 1  C6 44                 DEC PWOL_TRIES_COUNTER
+002B7Br 1  D0 03                 BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
+002B7Dr 1  4C rr rr              JMP @zigzag_B
+002B80r 1                  @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
+002B80r 1  88                    DEY
+002B81r 1  38                    SEC
+002B82r 1  A5 26                 LDA PWOL_CURRENT_XL
+002B84r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
+002B86r 1  85 26                 STA PWOL_CURRENT_XL
+002B88r 1  A5 27                 LDA PWOL_CURRENT_XH
+002B8Ar 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
+002B8Cr 1  85 27                 STA PWOL_CURRENT_XH
+002B8Er 1  AA                    TAX
+002B8Fr 1  38                    SEC
+002B90r 1  A5 28                 LDA PWOL_CURRENT_YL
+002B92r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
+002B94r 1  85 28                 STA PWOL_CURRENT_YL
+002B96r 1  A5 29                 LDA PWOL_CURRENT_YH
+002B98r 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
+002B9Ar 1  85 29                 STA PWOL_CURRENT_YH
+002B9Cr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002B9Er 1  B0 D9                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002BA0r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002BA2r 1  90 D5                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002BA4r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002BA6r 1  90 D1                 BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002BA8r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002BAAr 1  B0 CD                 BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002BACr 1                  @zigzag_A_left:
+002BACr 1  C0 40                CPY #64  ;  make sure we don't go outside level..
+002BAEr 1  B0 44                BCS @ZAL_NEXT ; if we're outside we'll just skip is OK
+002BB0r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y
+002BB2r 1  C9 81                CMP #129
+002BB4r 1  B0 3E                BCS @ZAL_NEXT ; we're outside level.
 002BB6r 1               
-002BB6r 1               draw_object_list:
-002BB6r 1  9C 25 9F         STZ VERA_ctrl
-002BB9r 1  9C 20 9F         STZ VERA_addr_low
-002BBCr 1  A9 FD            lda #(>VRAM_sprite_attributes)+1
-002BBEr 1  8D 21 9F         sta VERA_addr_high
-002BC1r 1  A9 11            lda #$11
-002BC3r 1  8D 22 9F         sta VERA_addr_bank
-002BC6r 1  64 22            STZ ZP_PTR
-002BC8r 1  A9 rr            LDA #>OBJECT_LIST_Z_START_POINTERS
-002BCAr 1  85 23            STA ZP_PTR+1
-002BCCr 1  A0 60            LDY #96 ; num sprites can write
-002BCEr 1                 @NEXT_Z: ; Z=0 is invalid...
-002BCEr 1  E6 22              INC ZP_PTR
-002BD0r 1  D0 1C              BNE @Z_LOOP
-002BD2r 1  AD 23 9F           : LDA VERA_data0
-002BD5r 1  AD 23 9F             LDA VERA_data0
-002BD8r 1  9C 23 9F             STZ VERA_data0
-002BDBr 1  9C 23 9F             STZ VERA_data0
-002BDEr 1  AD 23 9F             LDA VERA_data0
-002BE1r 1  AD 23 9F             LDA VERA_data0
-002BE4r 1  AD 23 9F             LDA VERA_data0
-002BE7r 1  AD 23 9F             LDA VERA_data0
-002BEAr 1  88                   DEY
-002BEBr 1  D0 E5                BNE :-
-002BEDr 1               
-002BEDr 1  60                 rts
-002BEEr 1                 @Z_LOOP:
-002BEEr 1  B2 22              LDA (ZP_PTR) ; get our first victim
-002BF0r 1  AA                 TAX
-002BF1r 1  A9 00              LDA #0
-002BF3r 1  92 22              STA (ZP_PTR) ; zero this Z_next for now
-002BF5r 1  8A                 TXA
-002BF6r 1                    @OBJ_LOOP:
-002BF6r 1  AA                    TAX
-002BF7r 1  F0 D5                 BEQ @NEXT_Z ; got a bum next pointer there ...
-002BF9r 1  BD rr rr              LDA OBJECT_LIST_BYTE0_ADDRLOW,X
-002BFCr 1  8D 23 9F              STA VERA_data0
-002BFFr 1  BD rr rr              LDA OBJECT_LIST_BYTE1_MODE,x
-002C02r 1  8D 23 9F              STA VERA_data0
-002C05r 1  BD rr rr              LDA OBJECT_LIST_BYTE2_X,x
-002C08r 1  8D 23 9F              STA VERA_data0
-002C0Br 1               ;         CMP #216
-002C0Br 1                 ;       LDA #0
-002C0Br 1                ;        BCC :+
-002C0Br 1                ;        LDA #$FF
-002C0Br 1                 ;     : STA VERA_data0
-002C0Br 1  9C 23 9F              STZ VERA_data0
-002C0Er 1  BD rr rr              LDA OBJECT_LIST_BYTE3_Y,x
-002C11r 1  8D 23 9F              STA VERA_data0
-002C14r 1               ;         CMP #161
-002C14r 1                ;        LDA #0
-002C14r 1                 ;       BCC :+
-002C14r 1                  ;      LDA #$FF
-002C14r 1                   ;   : STA VERA_data0
-002C14r 1  9C 23 9F              STZ VERA_data0
-002C17r 1  BD rr rr              LDA OBJECT_LIST_BYTE4_ZFLIPS,x
-002C1Ar 1  8D 23 9F              STA VERA_data0
-002C1Dr 1  BD rr rr              LDA OBJECT_LIST_BYTE5_SIZE,x
-002C20r 1  8D 23 9F              STA VERA_data0
-002C23r 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x
-002C26r 1  88                    DEY ; decrement that Y
-002C27r 1  D0 CD                 BNE @OBJ_LOOP ; still sprite slots left.. woot!
-002C29r 1  92 22                 STA (ZP_PTR) ; oops.. save that last thing and exit..
-002C2Br 1  60                    RTS
-002C2Cr 1               
-002C2Cr 1               
-002C2Cr 1               
-002C2Cr 1               test_sprite_data:
-002C2Cr 1               ; first 16 sprites reserved ...
-002C2Cr 1               ;      0   1   2   3   4   5   6  7
-002C2Cr 1               ;     add,mod, XL, XH, YL, YH,msk,hwp
-002C2Cr 1  42 00 64 00  .byte  66,$00,SCREEN_START_X,  0,SCREEN_START_Y,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
-002C30r 1  50 00 0C 50  
-002C34r 1  10 00 0C 00  .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
-002C38r 1  00 00 0C 30  
-002C3Cr 1  10 00 4C 00  .byte  16,$00, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
-002C40r 1  18 00 0C 30  
-002C44r 1  10 00 8C 00  .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
-002C48r 1  00 00 0C 30  
-002C4Cr 1               
-002C4Cr 1  10 00 0C 00  .byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
-002C50r 1  99 00 0F 30  
-002C54r 1  10 00 4C 00  .byte  16,$00, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
-002C58r 1  88 00 0F 30  
-002C5Cr 1  10 00 8C 00  .byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
-002C60r 1  99 00 0F 30  
-002C64r 1               
-002C64r 1  10 00 00 00  .byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
-002C68r 1  10 00 0C C0  
-002C6Cr 1  10 00 2C 00  .byte  16,$00,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
-002C70r 1  50 00 0C C0  
-002C74r 1  10 00 D0 00  .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
-002C78r 1  10 00 0F C0  
-002C7Cr 1  10 00 A4 00  .byte  16,$00,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-002C80r 1  50 00 0F C0  
-002C84r 1  31 00 8C 00  .byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
-002C88r 1  6D 00 0C 00  
-002C8Cr 1               ;.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
-002C8Cr 1               ;.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
-002C8Cr 1  21 00 94 00  .byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
-002C90r 1  6D 00 0C 00  
-002C94r 1  22 00 9C 00  .byte  34,$00,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
-002C98r 1  6D 00 0C 00  
-002C9Cr 1  27 00 8C 00  .byte  39,$00,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
-002CA0r 1  7F 00 0C 00  
-002CA4r 1  28 00 94 00  .byte  40,$00,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11
-002CA8r 1  7F 00 0C 00  
-002CACr 1  29 00 9C 00  .byte  41,$00,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
-002CB0r 1  7F 00 0C 00  
-002CB4r 1  2A 00 A4 00  .byte  42,$00,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
-002CB8r 1  7F 00 0C 00  
-002CBCr 1  2B 00 B0 00  .byte  43,$00,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
-002CC0r 1  7F 00 0C 00  
-002CC4r 1  2C 00 B8 00  .byte  44,$00,184,  0,127,  0,$0C,$00  ; B test    sprite 15
-002CC8r 1  7F 00 0C 00  
-002CCCr 1  2D 00 C0 00  .byte  45,$00,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
-002CD0r 1  7F 00 0C 00  
-002CD4r 1  2E 00 C8 00  .byte  46,$00,200,  0,127,  0,$0C,$00  ; D test    sprite 17
-002CD8r 1  7F 00 0C 00  
-002CDCr 1  23 00 8C 00  .byte  35,$00,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X
-002CE0r 1  91 00 0C 00  
-002CE4r 1  24 00 94 00  .byte  36,$00,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19
-002CE8r 1  91 00 0C 00  
-002CECr 1  2F 00 9C 00  .byte  47,$00,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
-002CF0r 1  91 00 0C 00  
-002CF4r 1  2F 00 A4 00  .byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A
-002CF8r 1  91 00 0C 00  
-002CFCr 1  25 00 B0 00  .byte  37,$00,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
-002D00r 1  64 00 0C 00  
-002D04r 1  26 00 B8 00  .byte  38,$00,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D
-002D08r 1  64 00 0C 00  
-002D0Cr 1  30 00 C0 00  .byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
-002D10r 1  64 00 0C 00  
-002D14r 1  30 00 C8 00  .byte  48,$00,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
-002D18r 1  64 00 0C 00  
-002D1Cr 1  21 00 C0 00  .byte  33,$00,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
-002D20r 1  5B 00 0C 00  
-002D24r 1  21 00 C8 00  .byte  33,$00,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E
-002D28r 1  5B 00 0C 00  
-002D2Cr 1               
-002D2Cr 1               test_optimal_pal_data:
-002D2Cr 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
-002D2Cr 1  00 00        .byte $00,$00  ; 0 - black/transparent
-002D2Er 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
-002D30r 1               
-002D30r 1  04 06        .byte $04,$06  ; 2 #660044
-002D32r 1  00 0C        .byte $00,$0C  ; 3  #cc0000
-002D34r 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
-002D36r 1  42 03        .byte $42,$03
-002D38r 1  60 0C        .byte $60,$0c   ; 6  #cc6600
-002D3Ar 1  40 08        .byte $40,$08   ; 7 #884400
-002D3Cr 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
-002D3Er 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
-002D40r 1  C0 00        .byte $c0,$00   ; A #00cc00
-002D42r 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
-002D44r 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
-002D46r 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
-002D48r 1  88 08        .byte $88,$08   ; E #888888
-002D4Ar 1  22 02        .byte $22,$02   ; F #222222
-002D4Cr 1               
-002D4Cr 1               test_vram_data:
-002D4Cr 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0
-002D4Cr 1               ; 	   01   23   45   67   89   AB   CD   EF
-002D4Cr 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
-002D50r 1  CC C9 CC C0  
-002D54r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
-002D58r 1  99 9B 99 9C  
-002D5Cr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
-002D60r 1  BB BC BB B0  
-002D64r 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
-002D68r 1  CC C9 CC CC  
-002D6Cr 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
-002D70r 1  99 9B 99 90  
-002D74r 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
-002D78r 1  BB BC BB BC  
-002D7Cr 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
-002D80r 1  CC C9 CC C0  
-002D84r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
-002D88r 1  99 9B 99 9C  
-002D8Cr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
-002D90r 1  BB BC BB B0  
-002D94r 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
-002D98r 1  0C 09 0C 0C  
-002D9Cr 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-002DA0r 1  09 90 09 90  
-002DA4r 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
-002DA8r 1  E9 9E E9 9E  
-002DACr 1               
-002DACr 1  EE EE EE EE  .repeat 13
-002DB0r 1  EE EE EE E0  
-002DB4r 1  0E EE 66 EE  
-002F4Cr 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
-002F4Cr 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
-002F4Cr 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
-002F4Cr 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
-002F4Cr 1               .endrepeat
-002F4Cr 1               
-002F4Cr 1               test_border:
-002F4Cr 1  0B 0B 0B 0B  .repeat 64
-002F50r 1  B0 B0 B0 B0  
-002F54r 1  0B 0B 0B 0B  
-00314Cr 1                  .res 4, $0B
-00314Cr 1                  .res 4, $B0
-00314Cr 1               .endrepeat
-00314Cr 1               
-00314Cr 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 32
-00314Cr 1               ;     01   23   45   67
-00314Cr 1  11 00 00 11  .byte $11, $00, $00, $11
-003150r 1  10 00 00 01  .byte $10, $00, $00, $01
-003154r 1  00 00 00 00  .byte $00, $00, $00, $00
-003158r 1  00 01 10 00  .byte $00, $01, $10, $00
-00315Cr 1  00 01 10 00  .byte $00, $01, $10, $00
-003160r 1  00 00 00 00  .byte $00, $00, $00, $00
-003164r 1  10 00 00 01  .byte $10, $00, $00, $01
-003168r 1  11 00 00 11  .byte $11, $00, $00, $11
-00316Cr 1               
-00316Cr 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
-00316Cr 1               ;     01   23   45   67
-00316Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
-003170r 1  01 00 00 10  .byte $01, $00, $00, $10
-003174r 1  01 00 00 10  .byte $01, $00, $00, $10
-003178r 1  00 00 00 00  .byte $00, $00, $00, $00
-00317Cr 1  01 00 00 10  .byte $01, $00, $00, $10
-003180r 1  01 00 00 10  .byte $01, $00, $00, $10
-003184r 1  01 00 00 10  .byte $01, $00, $00, $10
-003188r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
-00318Cr 1               
-00318Cr 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
-003190r 1  00 00 00 10  .byte $00, $00, $00, $10
-003194r 1  00 00 00 10  .byte $00, $00, $00, $10
-003198r 1  00 00 00 00  .byte $00, $00, $00, $00
-00319Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-0031A0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031A4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031A8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0031ACr 1               
-0031ACr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
-0031B0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031B4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031B8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0031BCr 1  01 00 00 00  .byte $01, $00, $00, $00
-0031C0r 1  01 00 00 00  .byte $01, $00, $00, $00
-0031C4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0031C8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0031CCr 1               
-0031CCr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
-0031D0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031D4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031D8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0031DCr 1  00 00 00 10  .byte $00, $00, $00, $10
-0031E0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031E4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0031E8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0031ECr 1               
-0031ECr 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
-0031F0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0031F4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0031F8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0031FCr 1  00 00 00 10  .byte $00, $00, $00, $10
-003200r 1  00 00 00 10  .byte $00, $00, $00, $10
-003204r 1  00 00 00 10  .byte $00, $00, $00, $10
-003208r 1  00 00 00 00  .byte $00, $00, $00, $00
-00320Cr 1               
-00320Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
-003210r 1  01 00 00 00  .byte $01, $00, $00, $00
-003214r 1  01 00 00 00  .byte $01, $00, $00, $00
-003218r 1  00 11 11 00  .byte $00, $11, $11, $00
-00321Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-003220r 1  00 00 00 10  .byte $00, $00, $00, $10
-003224r 1  00 00 00 10  .byte $00, $00, $00, $10
-003228r 1  00 11 11 00  .byte $00, $11, $11, $00
-00322Cr 1               
-00322Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
-003230r 1  01 00 00 00  .byte $01, $00, $00, $00
-003234r 1  01 00 00 00  .byte $01, $00, $00, $00
-003238r 1  00 11 11 00  .byte $00, $11, $11, $00
-00323Cr 1  01 00 00 10  .byte $01, $00, $00, $10
-003240r 1  01 00 00 10  .byte $01, $00, $00, $10
-003244r 1  01 00 00 10  .byte $01, $00, $00, $10
-003248r 1  00 11 11 00  .byte $00, $11, $11, $00
-00324Cr 1               
-00324Cr 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
-003250r 1  00 00 00 10  .byte $00, $00, $00, $10
-003254r 1  00 00 00 10  .byte $00, $00, $00, $10
-003258r 1  00 00 00 00  .byte $00, $00, $00, $00
-00325Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-003260r 1  00 00 00 10  .byte $00, $00, $00, $10
-003264r 1  00 00 00 10  .byte $00, $00, $00, $10
-003268r 1  00 00 00 00  .byte $00, $00, $00, $00
-00326Cr 1               
-00326Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
-003270r 1  01 00 00 10  .byte $01, $00, $00, $10
-003274r 1  01 00 00 10  .byte $01, $00, $00, $10
-003278r 1  00 11 11 00  .byte $00, $11, $11, $00
-00327Cr 1  01 00 00 10  .byte $01, $00, $00, $10
-003280r 1  01 00 00 10  .byte $01, $00, $00, $10
-003284r 1  01 00 00 10  .byte $01, $00, $00, $10
-003288r 1  00 11 11 00  .byte $00, $11, $11, $00
-00328Cr 1               
-00328Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
-003290r 1  01 00 00 10  .byte $01, $00, $00, $10
-003294r 1  01 00 00 10  .byte $01, $00, $00, $10
-003298r 1  00 11 11 00  .byte $00, $11, $11, $00
-00329Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-0032A0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0032A4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0032A8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0032ACr 1               
-0032ACr 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
-0032B0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032B4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032B8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0032BCr 1  01 00 00 10  .byte $01, $00, $00, $10
-0032C0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032C4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032C8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0032CCr 1               
-0032CCr 1               
-0032CCr 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
-0032D0r 1  01 00 00 00  .byte $01, $00, $00, $00
-0032D4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0032D8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0032DCr 1  01 00 00 10  .byte $01, $00, $00, $10
-0032E0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032E4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0032E8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0032ECr 1               
-0032ECr 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
-0032F0r 1  01 00 00 00  .byte $01, $00, $00, $00
-0032F4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0032F8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0032FCr 1  01 00 00 00  .byte $01, $00, $00, $00
-003300r 1  01 00 00 00  .byte $01, $00, $00, $00
-003304r 1  01 00 00 00  .byte $01, $00, $00, $00
-003308r 1  00 11 11 00  .byte $00, $11, $11, $00
-00330Cr 1               
-00330Cr 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
-003310r 1  00 00 00 10  .byte $00, $00, $00, $10
-003314r 1  00 00 00 10  .byte $00, $00, $00, $10
-003318r 1  00 11 11 00  .byte $00, $11, $11, $00
-00331Cr 1  01 00 00 10  .byte $01, $00, $00, $10
-003320r 1  01 00 00 10  .byte $01, $00, $00, $10
-003324r 1  01 00 00 10  .byte $01, $00, $00, $10
-003328r 1  00 11 11 00  .byte $00, $11, $11, $00
-00332Cr 1               
-00332Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
-003330r 1  01 00 00 00  .byte $01, $00, $00, $00
-003334r 1  01 00 00 00  .byte $01, $00, $00, $00
-003338r 1  00 11 11 00  .byte $00, $11, $11, $00
-00333Cr 1  01 00 00 00  .byte $01, $00, $00, $00
-003340r 1  01 00 00 00  .byte $01, $00, $00, $00
-003344r 1  01 00 00 00  .byte $01, $00, $00, $00
-003348r 1  00 11 11 00  .byte $00, $11, $11, $00
-00334Cr 1               
-00334Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
-003350r 1  01 00 00 00  .byte $01, $00, $00, $00
-003354r 1  01 00 00 00  .byte $01, $00, $00, $00
-003358r 1  00 11 11 00  .byte $00, $11, $11, $00
-00335Cr 1  01 00 00 00  .byte $01, $00, $00, $00
-003360r 1  01 00 00 00  .byte $01, $00, $00, $00
-003364r 1  01 00 00 00  .byte $01, $00, $00, $00
-003368r 1  00 00 00 00  .byte $00, $00, $00, $00
-00336Cr 1               
-00336Cr 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 49
-003370r 1  00 00 01 00  .byte $00, $00, $01, $00
-003374r 1  00 00 10 00  .byte $00, $00, $10, $00
-003378r 1  00 01 00 00  .byte $00, $01, $00, $00
-00337Cr 1  00 10 00 00  .byte $00, $10, $00, $00
-003380r 1  01 00 00 00  .byte $01, $00, $00, $00
-003384r 1  11 11 11 00  .byte $11, $11, $11, $00
-003388r 1  00 00 00 00  .byte $00, $00, $00, $00
-00338Cr 1               
-00338Cr 1               ; cell position label sprite addr 50-57
-00338Cr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-003390r 1  FF 00 FF 00  
-003394r 1  00 FF 00 00  
-0033ACr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0033B0r 1  00 00 FF 00  
-0033B4r 1  00 FF 00 00  
-0033CCr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0033D0r 1  FF 00 FF 00  
-0033D4r 1  00 FF 00 00  
-0033ECr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0033F0r 1  00 00 FF 00  
-0033F4r 1  00 FF 00 00  
-00340Cr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-003410r 1  FF 00 FF FF  
-003414r 1  00 FF FF 00  
-00342Cr 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-00342Cr 1               ;     XH                               $XL                            ___  __  YH                              YL
-00342Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-003430r 1  00 00 00 00  
-003434r 1  10 10 10 00  
-00344Cr 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-003450r 1  00 00 00 00  
-003454r 1  01 00 10 00  
-00346Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-003470r 1  00 00 00 00  
-003474r 1  10 10 11 10  
-00348Cr 1               
-00348Cr 1               ; world position label 58-65
-00348Cr 1               ;     XH                 $XL                  ___  ___  YH                  YL
-00348Cr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-003490r 1  FF 00 00 FF  
-003494r 1  00 00 FF FF  
-0034ACr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0034B0r 1  FF 00 FF 00  
-0034B4r 1  FF 00 FF 00  
-0034CCr 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0034D0r 1  FF 00 FF 00  
-0034D4r 1  FF 00 FF FF  
-0034ECr 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0034F0r 1  FF 00 FF 00  
-0034F4r 1  FF 00 FF 00  
-00350Cr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-003510r 1  00 00 00 FF  
-003514r 1  00 00 FF 00  
-00352Cr 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-00352Cr 1               ;     XH                               $XL                            ___  __  YH                              YL
-00352Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-003530r 1  00 00 00 00  
-003534r 1  10 10 10 00  
-00354Cr 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-003550r 1  00 00 00 00  
-003554r 1  01 00 10 00  
-00356Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-003570r 1  00 00 00 00  
-003574r 1  10 10 11 10  
-00358Cr 1               
-00358Cr 1               ; directional cursor reminder... 16x16 - 66-69
-00358Cr 1               
-00358Cr 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
-003590r 1  01 11 11 00  
-003594r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
-003598r 1  01 00 00 00  
-00359Cr 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
-0035A0r 1  01 11 00 00  
-0035A4r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
-0035A8r 1  01 00 00 00  
-0035ACr 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
-0035B0r 1  01 11 11 00  
-0035B4r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-0035B8r 1  00 00 00 00  
-0035BCr 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
-0035C0r 1  00 01 11 00  
-0035C4r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $00, $01
-0035C8r 1  00 01 00 01  
-0035CCr 1  11 11 10 00  .byte $11, $11, $10, $00, $00, $01, $00, $01
-0035D0r 1  00 01 00 01  
-0035D4r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
-0035D8r 1  00 01 11 10  
-0035DCr 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-0035E0r 1  00 00 00 00  
-0035E4r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-0035E8r 1  01 00 01 00  
-0035ECr 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
-0035F0r 1  00 10 10 00  
-0035F4r 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
-0035F8r 1  00 01 00 00  
-0035FCr 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
-003600r 1  00 10 10 00  
-003604r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-003608r 1  01 00 01 00  
-00360Cr 1               
-00360Cr 1  80 80 80 80  .repeat 58 ; 128-70
-003610r 1  80 80 80 80  
-003614r 1  80 80 80 80  
-003D4Cr 1                   .res 32,$80
-003D4Cr 1               .endrepeat
-003D4Cr 1               
-003D4Cr 1               ; alernate tile graphic to use for tub wall .. 128 to 159 16x64
-003D4Cr 1  16 16 16 16  .repeat 32
-003D50r 1  16 16 16 16  
-003D54r 1  61 61 61 61  
-003D4Cr 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
-003D4Cr 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
-003D4Cr 1               .endrepeat
-003D4Cr 1               
+002BB6r 1                       ; bytes 1 and 4 were updated when we cleared the object list
+002BB6r 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
+002BB9r 1  D0 04                BNE :++
+002BBBr 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
+002BBEr 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
+002BBFr 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
+002BC1r 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
+002BC4r 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
+002BC6r 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+002BC8r 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+002BCAr 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+002BCDr 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+002BD0r 1  8A                   TXA ; push new next to the Z buffer spot
+002BD1r 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
+002BD3r 1                       ; bytes .1..4.6 filled in already..
+002BD3r 1               
+002BD3r 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
+002BD6r 1  B1 22                LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+002BD8r 1  10 03                BPL @ZAL_INSIDE_TUB
+002BDAr 1                     @ZAL_HIT_WALL_OUCH:
+002BDAr 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+002BDDr 1                     @ZAL_INSIDE_TUB:
+002BDDr 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
+002BDDr 1  85 40                  STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
+002BDFr 1  98                     TYA
+002BE0r 1  29 0F                  AND #$0F
+002BE2r 1  09 D0                  ORA #$D0 ; #$D0
+002BE4r 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002BE7r 1               
+002BE7r 1  38                     SEC
+002BE8r 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
+002BEAr 1  F2 40                  SBC (PWOL_CONVERT_HEIGHTS)
+002BECr 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
+002BEFr 1                       ;  LDA #$D0
+002BEFr 1                       ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002BEFr 1  A5 27                  LDA PWOL_CURRENT_XH
+002BF1r 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
+002BF4r 1                    @ZAL_NEXT:
+002BF4r 1                        ; calc next to the LEFT
+002BF4r 1  88                    DEY
+002BF5r 1  38                    SEC
+002BF6r 1  A5 26                 LDA PWOL_CURRENT_XL
+002BF8r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
+002BFAr 1  85 26                 STA PWOL_CURRENT_XL
+002BFCr 1  A5 27                 LDA PWOL_CURRENT_XH
+002BFEr 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
+002C00r 1  85 27                 STA PWOL_CURRENT_XH
+002C02r 1  AA                    TAX
+002C03r 1  38                    SEC
+002C04r 1  A5 28                 LDA PWOL_CURRENT_YL
+002C06r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
+002C08r 1  85 28                 STA PWOL_CURRENT_YL
+002C0Ar 1  A5 29                 LDA PWOL_CURRENT_YH
+002C0Cr 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
+002C0Er 1  85 29                 STA PWOL_CURRENT_YH
+002C10r 1               
+002C10r 1  8E rr rr              STX DEBUG_A
+002C13r 1  8D rr rr              STA DEBUG_B
+002C16r 1               
+002C16r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002C18r 1  B0 0C                 BCS @ZAL_ZIG_RIGHT_SWITCH
+002C1Ar 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002C1Cr 1  90 08                 BCC @ZAL_ZIG_RIGHT_SWITCH
+002C1Er 1  C9 18                 CMP #SCREEN_OUT_TOP
+002C20r 1  90 04                 BCC @ZAL_ZIG_RIGHT_SWITCH
+002C22r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002C24r 1  90 86                 BCC @zigzag_A_left
+002C26r 1                    @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +0,+1  from where we is right now ..
+002C26r 1  A9 06                 LDA #TRY_AGAIN
+002C28r 1  85 44                 STA PWOL_TRIES_COUNTER
+002C2Ar 1               
+002C2Ar 1  38                    SEC
+002C2Br 1  A5 22                 LDA PWOL_TUB_PTR_AL
+002C2Dr 1  E9 40                 SBC #64
+002C2Fr 1  85 22                 STA PWOL_TUB_PTR_AL
+002C31r 1  A5 23                 LDA PWOL_TUB_PTR_AH
+002C33r 1  E9 00                 SBC #0
+002C35r 1  85 23                 STA PWOL_TUB_PTR_AH
+002C37r 1               
+002C37r 1               
+002C37r 1  18                    CLC
+002C38r 1               
+002C38r 1  A5 26                 LDA PWOL_CURRENT_XL
+002C3Ar 1  65 32                 ADC PWOL_NEXT_ROW_A_RIGHT_XL
+002C3Cr 1  85 26                 STA PWOL_CURRENT_XL
+002C3Er 1               
+002C3Er 1  A5 27                 LDA PWOL_CURRENT_XH
+002C40r 1  65 33                 ADC PWOL_NEXT_ROW_A_RIGHT_XH
+002C42r 1  85 27                 STA PWOL_CURRENT_XH
+002C44r 1  AA                    TAX
+002C45r 1               
+002C45r 1               
+002C45r 1  18                    CLC
+002C46r 1  A5 28                 LDA PWOL_CURRENT_YL
+002C48r 1  65 34                 ADC PWOL_NEXT_ROW_A_RIGHT_YL
+002C4Ar 1  85 28                 STA PWOL_CURRENT_YL
+002C4Cr 1  A5 29                 LDA PWOL_CURRENT_YH
+002C4Er 1  65 35                 ADC PWOL_NEXT_ROW_A_RIGHT_YH
+002C50r 1  85 29                 STA PWOL_CURRENT_YH
+002C52r 1               
+002C52r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002C54r 1  B0 0F                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C56r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002C58r 1  90 0B                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C5Ar 1  C9 18                 CMP #SCREEN_OUT_TOP
+002C5Cr 1  90 07                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C5Er 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002C60r 1  B0 03                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C62r 1  4C rr rr              JMP @zigzag_A_right
+002C65r 1                  @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
+002C65r 1  C6 44                 DEC PWOL_TRIES_COUNTER
+002C67r 1  F0 2F                 BEQ @zigzag_B
+002C69r 1                  @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
+002C69r 1  C8                    INY
+002C6Ar 1  18                    CLC
+002C6Br 1  A5 26                 LDA PWOL_CURRENT_XL
+002C6Dr 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
+002C6Fr 1  85 26                 STA PWOL_CURRENT_XL
+002C71r 1  A5 27                 LDA PWOL_CURRENT_XH
+002C73r 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
+002C75r 1  85 27                 STA PWOL_CURRENT_XH
+002C77r 1  AA                    TAX
+002C78r 1  18                    CLC
+002C79r 1  A5 28                 LDA PWOL_CURRENT_YL
+002C7Br 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
+002C7Dr 1  85 28                 STA PWOL_CURRENT_YL
+002C7Fr 1  A5 29                 LDA PWOL_CURRENT_YH
+002C81r 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
+002C83r 1  85 29                 STA PWOL_CURRENT_YH
+002C85r 1               
+002C85r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002C87r 1  B0 DC                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C89r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002C8Br 1  90 D8                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C8Dr 1  C9 18                 CMP #SCREEN_OUT_TOP
+002C8Fr 1  90 D4                 BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C91r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002C93r 1  B0 D0                 BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002C95r 1  4C rr rr              JMP @zigzag_A_right
+002C98r 1               
+002C98r 1               
+002C98r 1               
+002C98r 1                 @zigzag_B: ; going to left and down the screen, including where we are currently..
+002C98r 1               
+002C98r 1  38                 SEC
+002C99r 1  A5 45              LDA PWOL_START_XL
+002C9Br 1  E5 2A              SBC PWOL_ACROSS_ROW_XL
+002C9Dr 1  85 26              STA PWOL_CURRENT_XL
+002C9Fr 1  A5 47              LDA PWOL_START_XH
+002CA1r 1  E5 2B              SBC PWOL_ACROSS_ROW_XH
+002CA3r 1  85 27              STA PWOL_CURRENT_XH
+002CA5r 1               
+002CA5r 1               
+002CA5r 1  38                 SEC
+002CA6r 1  A5 46              LDA PWOL_START_YL
+002CA8r 1  E5 2C              SBC PWOL_ACROSS_ROW_YL
+002CAAr 1  85 28              STA PWOL_CURRENT_YL
+002CACr 1  A5 48              LDA PWOL_START_YH
+002CAEr 1  E5 2D              SBC PWOL_ACROSS_ROW_YH
+002CB0r 1  85 29              STA PWOL_CURRENT_YH
+002CB2r 1               
+002CB2r 1  AC rr rr           LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!
+002CB5r 1  88                 DEY ; start left
+002CB6r 1               
+002CB6r 1                  @zigzag_B_left:
+002CB6r 1  C0 40                CPY #64  ;  make sure we don't go outside level..
+002CB8r 1  B0 44                BCS @ZBL_NEXT ; if we're outside we'll just skip is OK
+002CBAr 1  B1 24                LDA (PWOL_TUB_PTR_BL),y
+002CBCr 1  C9 81                CMP #129
+002CBEr 1  B0 3E                BCS @ZBL_NEXT ; we're outside level.
+002CC0r 1               
+002CC0r 1                       ; bytes 1 and 4 were updated when we cleared the object list
+002CC0r 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
+002CC3r 1  D0 04                BNE :++
+002CC5r 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
+002CC8r 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
+002CC9r 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
+002CCBr 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
+002CCEr 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
+002CD0r 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+002CD2r 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+002CD4r 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+002CD7r 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+002CDAr 1  8A                   TXA ; push new next to the Z buffer spot
+002CDBr 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
+002CDDr 1                       ; bytes .1..4.6 filled in already..
+002CDDr 1               
+002CDDr 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
+002CE0r 1  B1 24                LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+002CE2r 1  10 03                BPL @ZBL_INSIDE_TUB
+002CE4r 1                     @ZBL_HIT_WALL_OUCH:
+002CE4r 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+002CE7r 1                     @ZBL_INSIDE_TUB:
+002CE7r 1  85 40                  STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
+002CE9r 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
+002CE9r 1  98                     TYA
+002CEAr 1  29 0F                  AND #$0F
+002CECr 1  09 D0                  ORA #$D0 ; #$D0
+002CEEr 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002CF1r 1               
+002CF1r 1  38                     SEC
+002CF2r 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
+002CF4r 1  F2 40                  SBC (PWOL_CONVERT_HEIGHTS)
+002CF6r 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
+002CF9r 1                       ;  LDA #$D0
+002CF9r 1                       ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002CF9r 1  A5 27                  LDA PWOL_CURRENT_XH
+002CFBr 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
+002CFEr 1                    @ZBL_NEXT:
+002CFEr 1                        ; calc next to the LEFT
+002CFEr 1  88                    DEY
+002CFFr 1  38                    SEC
+002D00r 1  A5 26                 LDA PWOL_CURRENT_XL
+002D02r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
+002D04r 1  85 26                 STA PWOL_CURRENT_XL
+002D06r 1  A5 27                 LDA PWOL_CURRENT_XH
+002D08r 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
+002D0Ar 1  85 27                 STA PWOL_CURRENT_XH
+002D0Cr 1  AA                    TAX
+002D0Dr 1  38                    SEC
+002D0Er 1  A5 28                 LDA PWOL_CURRENT_YL
+002D10r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
+002D12r 1  85 28                 STA PWOL_CURRENT_YL
+002D14r 1  A5 29                 LDA PWOL_CURRENT_YH
+002D16r 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
+002D18r 1  85 29                 STA PWOL_CURRENT_YH
+002D1Ar 1               
+002D1Ar 1  8E rr rr              STX DEBUG_A
+002D1Dr 1  8D rr rr              STA DEBUG_B
+002D20r 1               
+002D20r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002D22r 1  B0 0C                 BCS @ZBL_ZIG_RIGHT_SWITCH
+002D24r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002D26r 1  90 08                 BCC @ZBL_ZIG_RIGHT_SWITCH
+002D28r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002D2Ar 1  90 04                 BCC @ZBL_ZIG_RIGHT_SWITCH
+002D2Cr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002D2Er 1  90 86                 BCC @zigzag_B_left
+002D30r 1                    @ZBL_ZIG_RIGHT_SWITCH: ; DOWN/LEFT to start right is is 0,+1  from where we is right now ..
+002D30r 1  C8                    INY
+002D31r 1  A9 06                 LDA #TRY_AGAIN
+002D33r 1  85 44                 STA PWOL_TRIES_COUNTER
+002D35r 1  18                    CLC
+002D36r 1  A5 24                 LDA PWOL_TUB_PTR_BL
+002D38r 1  69 40                 ADC #64
+002D3Ar 1  85 24                 STA PWOL_TUB_PTR_BL
+002D3Cr 1  A5 25                 LDA PWOL_TUB_PTR_BH
+002D3Er 1  69 00                 ADC #0
+002D40r 1  85 25                 STA PWOL_TUB_PTR_BH
+002D42r 1               
+002D42r 1               
+002D42r 1  18                    CLC
+002D43r 1               
+002D43r 1  A5 26                 LDA PWOL_CURRENT_XL
+002D45r 1  65 3A                 ADC PWOL_NEXT_ROW_B_RIGHT_XL
+002D47r 1  85 26                 STA PWOL_CURRENT_XL
+002D49r 1               
+002D49r 1  A5 27                 LDA PWOL_CURRENT_XH
+002D4Br 1  65 3B                 ADC PWOL_NEXT_ROW_B_RIGHT_XH
+002D4Dr 1  85 27                 STA PWOL_CURRENT_XH
+002D4Fr 1  AA                    TAX
+002D50r 1               
+002D50r 1               
+002D50r 1  18                    CLC
+002D51r 1  A5 28                 LDA PWOL_CURRENT_YL
+002D53r 1  65 3C                 ADC PWOL_NEXT_ROW_B_RIGHT_YL
+002D55r 1  85 28                 STA PWOL_CURRENT_YL
+002D57r 1  A5 29                 LDA PWOL_CURRENT_YH
+002D59r 1  65 3D                 ADC PWOL_NEXT_ROW_B_RIGHT_YH
+002D5Br 1  85 29                 STA PWOL_CURRENT_YH
+002D5Dr 1               
+002D5Dr 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002D5Fr 1  B0 0F                 BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D61r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002D63r 1  90 0B                 BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D65r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002D67r 1  90 07                 BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D69r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002D6Br 1  B0 03                 BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D6Dr 1  4C rr rr              JMP @zigzag_B_right
+002D70r 1                  @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
+002D70r 1  C6 44                 DEC PWOL_TRIES_COUNTER
+002D72r 1  D0 01                 BNE @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
+002D74r 1                  @ZBL_RTS:
+002D74r 1  60                 rts
+002D75r 1                  @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
+002D75r 1  C8                    INY
+002D76r 1  18                    CLC
+002D77r 1  A5 26                 LDA PWOL_CURRENT_XL
+002D79r 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
+002D7Br 1  85 26                 STA PWOL_CURRENT_XL
+002D7Dr 1  A5 27                 LDA PWOL_CURRENT_XH
+002D7Fr 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
+002D81r 1  85 27                 STA PWOL_CURRENT_XH
+002D83r 1  AA                    TAX
+002D84r 1  18                    CLC
+002D85r 1  A5 28                 LDA PWOL_CURRENT_YL
+002D87r 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
+002D89r 1  85 28                 STA PWOL_CURRENT_YL
+002D8Br 1  A5 29                 LDA PWOL_CURRENT_YH
+002D8Dr 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
+002D8Fr 1  85 29                 STA PWOL_CURRENT_YH
+002D91r 1               
+002D91r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002D93r 1  B0 DB                 BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D95r 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002D97r 1  90 D7                 BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D99r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002D9Br 1  90 D3                 BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002D9Dr 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002D9Fr 1  B0 CF                 BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+002DA1r 1               
+002DA1r 1                   @zigzag_B_right:
+002DA1r 1  C0 40                CPY #64  ;  make sure we don't go outside level..
+002DA3r 1  B0 44                BCS @ZBR_NEXT ; if we're outside we'll just skip is OK
+002DA5r 1  B1 24                LDA (PWOL_TUB_PTR_BL),y
+002DA7r 1  C9 81                CMP #129
+002DA9r 1  B0 3E                BCS @ZBR_NEXT ; we're outside level.
+002DABr 1               
+002DABr 1                       ; bytes 1 and 4 were updated when we cleared the object list
+002DABr 1  EE rr rr             INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next?
+002DAEr 1  D0 04                BNE :++
+002DB0r 1  CE rr rr           : DEC OBJECT_LIST_BYTE6_NEXT ; so we can do this check again if out..
+002DB3r 1  60                   rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen...
+002DB4r 1  A6 29              : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer
+002DB6r 1  BD rr rr             LDA SCREEN_Y_TO_Z,x
+002DB9r 1  F0 F5                BEQ :-- ; we shouldn't be outside the screen...
+002DBBr 1  85 3E                STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
+002DBDr 1  B2 3E                LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
+002DBFr 1  AE rr rr             LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
+002DC2r 1  9D rr rr             STA OBJECT_LIST_BYTE6_NEXT,X ; old next becomes this object's next
+002DC5r 1  8A                   TXA ; push new next to the Z buffer spot
+002DC6r 1  92 3E                STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..
+002DC8r 1                       ; bytes .1..4.6 filled in already..
+002DC8r 1               
+002DC8r 1  9E rr rr             STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway..
+002DCBr 1  B1 24                LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+002DCDr 1  10 03                BPL @ZBR_INSIDE_TUB
+002DCFr 1                     @ZBR_HIT_WALL_OUCH:
+002DCFr 1  9D rr rr               STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+002DD2r 1                     @ZBR_INSIDE_TUB:
+002DD2r 1  85 40                  STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though?
+002DD4r 1                         ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be..
+002DD4r 1  98                     TYA
+002DD5r 1  29 0F                  AND #$0F
+002DD7r 1  09 D0                  ORA #$D0 ; #$D0
+002DD9r 1  9D rr rr               STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002DDCr 1               
+002DDCr 1  38                     SEC
+002DDDr 1  A5 29                  LDA PWOL_CURRENT_YH ; set er up
+002DDFr 1  F2 40                  SBC (PWOL_CONVERT_HEIGHTS)
+002DE1r 1  9D rr rr               STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now
+002DE4r 1                         ;LDA #$D0
+002DE4r 1                         ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done .
+002DE4r 1  A5 27                  LDA PWOL_CURRENT_XH
+002DE6r 1  9D rr rr               STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete.
+002DE9r 1                    @ZBR_NEXT:
+002DE9r 1                        ; calc next to the right..
+002DE9r 1  C8                    INY
+002DEAr 1  18                    CLC
+002DEBr 1  A5 26                 LDA PWOL_CURRENT_XL
+002DEDr 1  65 2A                 ADC PWOL_ACROSS_ROW_XL
+002DEFr 1  85 26                 STA PWOL_CURRENT_XL
+002DF1r 1  A5 27                 LDA PWOL_CURRENT_XH
+002DF3r 1  65 2B                 ADC PWOL_ACROSS_ROW_XH
+002DF5r 1  85 27                 STA PWOL_CURRENT_XH
+002DF7r 1  AA                    TAX
+002DF8r 1  18                    CLC
+002DF9r 1  A5 28                 LDA PWOL_CURRENT_YL
+002DFBr 1  65 2C                 ADC PWOL_ACROSS_ROW_YL
+002DFDr 1  85 28                 STA PWOL_CURRENT_YL
+002DFFr 1  A5 29                 LDA PWOL_CURRENT_YH
+002E01r 1  65 2D                 ADC PWOL_ACROSS_ROW_YH
+002E03r 1  85 29                 STA PWOL_CURRENT_YH
+002E05r 1               
+002E05r 1  8E rr rr              STX DEBUG_A
+002E08r 1  8D rr rr              STA DEBUG_B
+002E0Br 1               
+002E0Br 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002E0Dr 1  B0 0C                 BCS @ZBR_ZIG_LEFT_SWITCH
+002E0Fr 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002E11r 1  90 08                 BCC @ZBR_ZIG_LEFT_SWITCH
+002E13r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002E15r 1  90 04                 BCC @ZBR_ZIG_LEFT_SWITCH
+002E17r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002E19r 1  90 86                 BCC @zigzag_B_right
+002E1Br 1                    @ZBR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going down the screen ..  +1,+1
+002E1Br 1  A9 06                 LDA #TRY_AGAIN
+002E1Dr 1  85 44                 STA PWOL_TRIES_COUNTER
+002E1Fr 1               ;        INY ; have to go this to match where the thing is going .. 0,0
+002E1Fr 1  18                    CLC
+002E20r 1  A5 24                 LDA PWOL_TUB_PTR_BL
+002E22r 1  69 40                 ADC #64 ;   0,-1
+002E24r 1  85 24                 STA PWOL_TUB_PTR_BL
+002E26r 1  A5 25                 LDA PWOL_TUB_PTR_BH
+002E28r 1  69 00                 ADC #0
+002E2Ar 1  85 25                 STA PWOL_TUB_PTR_BH
+002E2Cr 1               
+002E2Cr 1  18                    CLC
+002E2Dr 1  A5 26                 LDA PWOL_CURRENT_XL
+002E2Fr 1  65 36                 ADC PWOL_NEXT_ROW_B_LEFT_XL
+002E31r 1  85 26                 STA PWOL_CURRENT_XL
+002E33r 1  A5 27                 LDA PWOL_CURRENT_XH
+002E35r 1  65 37                 ADC PWOL_NEXT_ROW_B_LEFT_XH
+002E37r 1  85 27                 STA PWOL_CURRENT_XH
+002E39r 1  AA                    TAX
+002E3Ar 1  18                    CLC
+002E3Br 1  A5 28                 LDA PWOL_CURRENT_YL
+002E3Dr 1  65 38                 ADC PWOL_NEXT_ROW_B_LEFT_YL
+002E3Fr 1  85 28                 STA PWOL_CURRENT_YL
+002E41r 1  A5 29                 LDA PWOL_CURRENT_YH
+002E43r 1  65 39                 ADC PWOL_NEXT_ROW_B_LEFT_YH
+002E45r 1  85 29                 STA PWOL_CURRENT_YH
+002E47r 1                        ; check if we're outside ..
+002E47r 1               
+002E47r 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002E49r 1  B0 0F                 BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E4Br 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002E4Dr 1  90 0B                 BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E4Fr 1  C9 18                 CMP #SCREEN_OUT_TOP
+002E51r 1  90 07                 BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E53r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002E55r 1  B0 03                 BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E57r 1  4C rr rr              jmp @zigzag_B_left
+002E5Ar 1                  @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN:
+002E5Ar 1  C6 44                 DEC PWOL_TRIES_COUNTER
+002E5Cr 1  D0 01                 BNE @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
+002E5Er 1                  @ZBR_RTS:
+002E5Er 1  60                    rts
+002E5Fr 1                  @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
+002E5Fr 1  88                    DEY
+002E60r 1  38                    SEC
+002E61r 1  A5 26                 LDA PWOL_CURRENT_XL
+002E63r 1  E5 2A                 SBC PWOL_ACROSS_ROW_XL
+002E65r 1  85 26                 STA PWOL_CURRENT_XL
+002E67r 1  A5 27                 LDA PWOL_CURRENT_XH
+002E69r 1  E5 2B                 SBC PWOL_ACROSS_ROW_XH
+002E6Br 1  85 27                 STA PWOL_CURRENT_XH
+002E6Dr 1  AA                    TAX
+002E6Er 1  38                    SEC
+002E6Fr 1  A5 28                 LDA PWOL_CURRENT_YL
+002E71r 1  E5 2C                 SBC PWOL_ACROSS_ROW_YL
+002E73r 1  85 28                 STA PWOL_CURRENT_YL
+002E75r 1  A5 29                 LDA PWOL_CURRENT_YH
+002E77r 1  E5 2D                 SBC PWOL_ACROSS_ROW_YH
+002E79r 1  85 29                 STA PWOL_CURRENT_YH
+002E7Br 1  E0 A4                 CPX #SCREEN_OUT_RIGHT
+002E7Dr 1  B0 DB                 BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E7Fr 1  E0 24                 CPX #SCREEN_OUT_LEFT
+002E81r 1  90 D7                 BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E83r 1  C9 18                 CMP #SCREEN_OUT_TOP
+002E85r 1  90 D3                 BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E87r 1  C9 88                 CMP #SCREEN_OUT_BOTTOM
+002E89r 1  B0 CF                 BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
+002E8Br 1  4C rr rr              JMP @zigzag_B_left
+002E8Er 1               
+002E8Er 1               draw_object_list:
+002E8Er 1  9C 25 9F         STZ VERA_ctrl
+002E91r 1  9C 20 9F         STZ VERA_addr_low
+002E94r 1  A9 FD            lda #(>VRAM_sprite_attributes)+1
+002E96r 1  8D 21 9F         sta VERA_addr_high
+002E99r 1  A9 11            lda #$11
+002E9Br 1  8D 22 9F         sta VERA_addr_bank
+002E9Er 1  64 22            STZ ZP_PTR
+002EA0r 1  A9 rr            LDA #>OBJECT_LIST_Z_START_POINTERS
+002EA2r 1  85 23            STA ZP_PTR+1
+002EA4r 1  A0 60            LDY #96 ; num sprites can write
+002EA6r 1                 @NEXT_Z: ; Z=0 is invalid...
+002EA6r 1  E6 22              INC ZP_PTR
+002EA8r 1  D0 1C              BNE @Z_LOOP
+002EAAr 1  AD 23 9F           : LDA VERA_data0
+002EADr 1  AD 23 9F             LDA VERA_data0
+002EB0r 1  9C 23 9F             STZ VERA_data0
+002EB3r 1  9C 23 9F             STZ VERA_data0
+002EB6r 1  AD 23 9F             LDA VERA_data0
+002EB9r 1  AD 23 9F             LDA VERA_data0
+002EBCr 1  AD 23 9F             LDA VERA_data0
+002EBFr 1  AD 23 9F             LDA VERA_data0
+002EC2r 1  88                   DEY
+002EC3r 1  D0 E5                BNE :-
+002EC5r 1               
+002EC5r 1  60                 rts
+002EC6r 1                 @Z_LOOP:
+002EC6r 1  B2 22              LDA (ZP_PTR) ; get our first victim
+002EC8r 1  AA                 TAX
+002EC9r 1  A9 00              LDA #0
+002ECBr 1  92 22              STA (ZP_PTR) ; zero this Z_next for now
+002ECDr 1  8A                 TXA
+002ECEr 1                    @OBJ_LOOP:
+002ECEr 1  AA                    TAX
+002ECFr 1  F0 D5                 BEQ @NEXT_Z ; got a bum next pointer there ...
+002ED1r 1  BD rr rr              LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+002ED4r 1  8D 23 9F              STA VERA_data0
+002ED7r 1  BD rr rr              LDA OBJECT_LIST_BYTE1_MODE,x
+002EDAr 1  8D 23 9F              STA VERA_data0
+002EDDr 1  BD rr rr              LDA OBJECT_LIST_BYTE2_X,x
+002EE0r 1  8D 23 9F              STA VERA_data0
+002EE3r 1               ;         CMP #216
+002EE3r 1                 ;       LDA #0
+002EE3r 1                ;        BCC :+
+002EE3r 1                ;        LDA #$FF
+002EE3r 1                 ;     : STA VERA_data0
+002EE3r 1  9C 23 9F              STZ VERA_data0
+002EE6r 1  BD rr rr              LDA OBJECT_LIST_BYTE3_Y,x
+002EE9r 1  8D 23 9F              STA VERA_data0
+002EECr 1               ;         CMP #161
+002EECr 1                ;        LDA #0
+002EECr 1                 ;       BCC :+
+002EECr 1                  ;      LDA #$FF
+002EECr 1                   ;   : STA VERA_data0
+002EECr 1  9C 23 9F              STZ VERA_data0
+002EEFr 1  BD rr rr              LDA OBJECT_LIST_BYTE4_ZFLIPS,x
+002EF2r 1  8D 23 9F              STA VERA_data0
+002EF5r 1  BD rr rr              LDA OBJECT_LIST_BYTE5_SIZE,x
+002EF8r 1  8D 23 9F              STA VERA_data0
+002EFBr 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x
+002EFEr 1  88                    DEY ; decrement that Y
+002EFFr 1  D0 CD                 BNE @OBJ_LOOP ; still sprite slots left.. woot!
+002F01r 1  92 22                 STA (ZP_PTR) ; oops.. save that last thing and exit..
+002F03r 1  60                    RTS
+002F04r 1               
+002F04r 1               
+002F04r 1               
+002F04r 1               test_sprite_data:
+002F04r 1               ; first 16 sprites reserved ...
+002F04r 1               ;      0   1   2   3   4   5   6  7
+002F04r 1               ;     add,mod, XL, XH, YL, YH,msk,hwp
+002F04r 1  42 00 64 00  .byte  66,$00,SCREEN_START_X,  0,SCREEN_START_Y,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
+002F08r 1  50 00 0C 50  
+002F0Cr 1  10 00 0C 00  .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
+002F10r 1  00 00 0C 30  
+002F14r 1  10 00 4C 00  .byte  16,$00, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
+002F18r 1  18 00 0C 30  
+002F1Cr 1  10 00 8C 00  .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
+002F20r 1  00 00 0C 30  
+002F24r 1               
+002F24r 1  10 00 0C 00  .byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
+002F28r 1  99 00 0F 30  
+002F2Cr 1  10 00 4C 00  .byte  16,$00, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
+002F30r 1  88 00 0F 30  
+002F34r 1  10 00 8C 00  .byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
+002F38r 1  99 00 0F 30  
+002F3Cr 1               
+002F3Cr 1  10 00 00 00  .byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
+002F40r 1  10 00 0C C0  
+002F44r 1  10 00 2C 00  .byte  16,$00,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
+002F48r 1  50 00 0C C0  
+002F4Cr 1  10 00 D0 00  .byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
+002F50r 1  10 00 0F C0  
+002F54r 1  10 00 A4 00  .byte  16,$00,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
+002F58r 1  50 00 0F C0  
+002F5Cr 1  31 00 8C 00  .byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
+002F60r 1  6D 00 0C 00  
+002F64r 1               ;.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
+002F64r 1               ;.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
+002F64r 1  21 00 94 00  .byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
+002F68r 1  6D 00 0C 00  
+002F6Cr 1  22 00 9C 00  .byte  34,$00,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
+002F70r 1  6D 00 0C 00  
+002F74r 1  27 00 8C 00  .byte  39,$00,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
+002F78r 1  7F 00 0C 00  
+002F7Cr 1  28 00 94 00  .byte  40,$00,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11
+002F80r 1  7F 00 0C 00  
+002F84r 1  29 00 9C 00  .byte  41,$00,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
+002F88r 1  7F 00 0C 00  
+002F8Cr 1  2A 00 A4 00  .byte  42,$00,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
+002F90r 1  7F 00 0C 00  
+002F94r 1  2B 00 B0 00  .byte  43,$00,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
+002F98r 1  7F 00 0C 00  
+002F9Cr 1  2C 00 B8 00  .byte  44,$00,184,  0,127,  0,$0C,$00  ; B test    sprite 15
+002FA0r 1  7F 00 0C 00  
+002FA4r 1  2D 00 C0 00  .byte  45,$00,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
+002FA8r 1  7F 00 0C 00  
+002FACr 1  2E 00 C8 00  .byte  46,$00,200,  0,127,  0,$0C,$00  ; D test    sprite 17
+002FB0r 1  7F 00 0C 00  
+002FB4r 1  23 00 8C 00  .byte  35,$00,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X
+002FB8r 1  91 00 0C 00  
+002FBCr 1  24 00 94 00  .byte  36,$00,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19
+002FC0r 1  91 00 0C 00  
+002FC4r 1  2F 00 9C 00  .byte  47,$00,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
+002FC8r 1  91 00 0C 00  
+002FCCr 1  2F 00 A4 00  .byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A
+002FD0r 1  91 00 0C 00  
+002FD4r 1  25 00 B0 00  .byte  37,$00,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
+002FD8r 1  64 00 0C 00  
+002FDCr 1  26 00 B8 00  .byte  38,$00,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D
+002FE0r 1  64 00 0C 00  
+002FE4r 1  30 00 C0 00  .byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
+002FE8r 1  64 00 0C 00  
+002FECr 1  30 00 C8 00  .byte  48,$00,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
+002FF0r 1  64 00 0C 00  
+002FF4r 1  21 00 C0 00  .byte  33,$00,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
+002FF8r 1  5B 00 0C 00  
+002FFCr 1  21 00 C8 00  .byte  33,$00,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E
+003000r 1  5B 00 0C 00  
+003004r 1               
+003004r 1               test_optimal_pal_data:
+003004r 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
+003004r 1  00 00        .byte $00,$00  ; 0 - black/transparent
+003006r 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
+003008r 1               
+003008r 1  04 06        .byte $04,$06  ; 2 #660044
+00300Ar 1  00 0C        .byte $00,$0C  ; 3  #cc0000
+00300Cr 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
+00300Er 1  42 03        .byte $42,$03
+003010r 1  60 0C        .byte $60,$0c   ; 6  #cc6600
+003012r 1  40 08        .byte $40,$08   ; 7 #884400
+003014r 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
+003016r 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
+003018r 1  C0 00        .byte $c0,$00   ; A #00cc00
+00301Ar 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
+00301Cr 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
+00301Er 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
+003020r 1  88 08        .byte $88,$08   ; E #888888
+003022r 1  22 02        .byte $22,$02   ; F #222222
+003024r 1               
+003024r 1               test_vram_data:
+003024r 1               test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0
+003024r 1               ; 	   01   23   45   67   89   AB   CD   EF
+003024r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
+003028r 1  CC C9 CC C0  
+00302Cr 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
+003030r 1  99 9B 99 9C  
+003034r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
+003038r 1  BB BC BB B0  
+00303Cr 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
+003040r 1  CC C9 CC CC  
+003044r 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
+003048r 1  99 9B 99 90  
+00304Cr 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
+003050r 1  BB BC BB BC  
+003054r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
+003058r 1  CC C9 CC C0  
+00305Cr 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
+003060r 1  99 9B 99 9C  
+003064r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
+003068r 1  BB BC BB B0  
+00306Cr 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
+003070r 1  0C 09 0C 0C  
+003074r 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
+003078r 1  09 90 09 90  
+00307Cr 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
+003080r 1  E9 9E E9 9E  
+003084r 1               
+003084r 1  EE EE EE EE  .repeat 13
+003088r 1  EE EE EE E0  
+00308Cr 1  0E EE 66 EE  
+003224r 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
+003224r 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
+003224r 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
+003224r 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
+003224r 1               .endrepeat
+003224r 1               
+003224r 1               test_border:
+003224r 1  0B 0B 0B 0B  .repeat 64
+003228r 1  B0 B0 B0 B0  
+00322Cr 1  0B 0B 0B 0B  
+003424r 1                  .res 4, $0B
+003424r 1                  .res 4, $B0
+003424r 1               .endrepeat
+003424r 1               
+003424r 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 32
+003424r 1               ;     01   23   45   67
+003424r 1  11 00 00 11  .byte $11, $00, $00, $11
+003428r 1  10 00 00 01  .byte $10, $00, $00, $01
+00342Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+003430r 1  00 01 10 00  .byte $00, $01, $10, $00
+003434r 1  00 01 10 00  .byte $00, $01, $10, $00
+003438r 1  00 00 00 00  .byte $00, $00, $00, $00
+00343Cr 1  10 00 00 01  .byte $10, $00, $00, $01
+003440r 1  11 00 00 11  .byte $11, $00, $00, $11
+003444r 1               
+003444r 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
+003444r 1               ;     01   23   45   67
+003444r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
+003448r 1  01 00 00 10  .byte $01, $00, $00, $10
+00344Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003450r 1  00 00 00 00  .byte $00, $00, $00, $00
+003454r 1  01 00 00 10  .byte $01, $00, $00, $10
+003458r 1  01 00 00 10  .byte $01, $00, $00, $10
+00345Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003460r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
+003464r 1               
+003464r 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
+003468r 1  00 00 00 10  .byte $00, $00, $00, $10
+00346Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003470r 1  00 00 00 00  .byte $00, $00, $00, $00
+003474r 1  00 00 00 10  .byte $00, $00, $00, $10
+003478r 1  00 00 00 10  .byte $00, $00, $00, $10
+00347Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003480r 1  00 00 00 00  .byte $00, $00, $00, $00
+003484r 1               
+003484r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
+003488r 1  00 00 00 10  .byte $00, $00, $00, $10
+00348Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003490r 1  00 11 11 00  .byte $00, $11, $11, $00
+003494r 1  01 00 00 00  .byte $01, $00, $00, $00
+003498r 1  01 00 00 00  .byte $01, $00, $00, $00
+00349Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+0034A0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0034A4r 1               
+0034A4r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
+0034A8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034ACr 1  00 00 00 10  .byte $00, $00, $00, $10
+0034B0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0034B4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034B8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034BCr 1  00 00 00 10  .byte $00, $00, $00, $10
+0034C0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0034C4r 1               
+0034C4r 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
+0034C8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0034CCr 1  01 00 00 10  .byte $01, $00, $00, $10
+0034D0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0034D4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034D8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034DCr 1  00 00 00 10  .byte $00, $00, $00, $10
+0034E0r 1  00 00 00 00  .byte $00, $00, $00, $00
+0034E4r 1               
+0034E4r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
+0034E8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0034ECr 1  01 00 00 00  .byte $01, $00, $00, $00
+0034F0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0034F4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034F8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0034FCr 1  00 00 00 10  .byte $00, $00, $00, $10
+003500r 1  00 11 11 00  .byte $00, $11, $11, $00
+003504r 1               
+003504r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
+003508r 1  01 00 00 00  .byte $01, $00, $00, $00
+00350Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+003510r 1  00 11 11 00  .byte $00, $11, $11, $00
+003514r 1  01 00 00 10  .byte $01, $00, $00, $10
+003518r 1  01 00 00 10  .byte $01, $00, $00, $10
+00351Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003520r 1  00 11 11 00  .byte $00, $11, $11, $00
+003524r 1               
+003524r 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
+003528r 1  00 00 00 10  .byte $00, $00, $00, $10
+00352Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003530r 1  00 00 00 00  .byte $00, $00, $00, $00
+003534r 1  00 00 00 10  .byte $00, $00, $00, $10
+003538r 1  00 00 00 10  .byte $00, $00, $00, $10
+00353Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003540r 1  00 00 00 00  .byte $00, $00, $00, $00
+003544r 1               
+003544r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
+003548r 1  01 00 00 10  .byte $01, $00, $00, $10
+00354Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003550r 1  00 11 11 00  .byte $00, $11, $11, $00
+003554r 1  01 00 00 10  .byte $01, $00, $00, $10
+003558r 1  01 00 00 10  .byte $01, $00, $00, $10
+00355Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003560r 1  00 11 11 00  .byte $00, $11, $11, $00
+003564r 1               
+003564r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
+003568r 1  01 00 00 10  .byte $01, $00, $00, $10
+00356Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003570r 1  00 11 11 00  .byte $00, $11, $11, $00
+003574r 1  00 00 00 10  .byte $00, $00, $00, $10
+003578r 1  00 00 00 10  .byte $00, $00, $00, $10
+00357Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+003580r 1  00 11 11 00  .byte $00, $11, $11, $00
+003584r 1               
+003584r 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
+003588r 1  01 00 00 10  .byte $01, $00, $00, $10
+00358Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+003590r 1  00 11 11 00  .byte $00, $11, $11, $00
+003594r 1  01 00 00 10  .byte $01, $00, $00, $10
+003598r 1  01 00 00 10  .byte $01, $00, $00, $10
+00359Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+0035A0r 1  00 00 00 00  .byte $00, $00, $00, $00
+0035A4r 1               
+0035A4r 1               
+0035A4r 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
+0035A8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0035ACr 1  01 00 00 00  .byte $01, $00, $00, $00
+0035B0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0035B4r 1  01 00 00 10  .byte $01, $00, $00, $10
+0035B8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0035BCr 1  01 00 00 10  .byte $01, $00, $00, $10
+0035C0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0035C4r 1               
+0035C4r 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
+0035C8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0035CCr 1  01 00 00 00  .byte $01, $00, $00, $00
+0035D0r 1  00 00 00 00  .byte $00, $00, $00, $00
+0035D4r 1  01 00 00 00  .byte $01, $00, $00, $00
+0035D8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0035DCr 1  01 00 00 00  .byte $01, $00, $00, $00
+0035E0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0035E4r 1               
+0035E4r 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
+0035E8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0035ECr 1  00 00 00 10  .byte $00, $00, $00, $10
+0035F0r 1  00 11 11 00  .byte $00, $11, $11, $00
+0035F4r 1  01 00 00 10  .byte $01, $00, $00, $10
+0035F8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0035FCr 1  01 00 00 10  .byte $01, $00, $00, $10
+003600r 1  00 11 11 00  .byte $00, $11, $11, $00
+003604r 1               
+003604r 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
+003608r 1  01 00 00 00  .byte $01, $00, $00, $00
+00360Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+003610r 1  00 11 11 00  .byte $00, $11, $11, $00
+003614r 1  01 00 00 00  .byte $01, $00, $00, $00
+003618r 1  01 00 00 00  .byte $01, $00, $00, $00
+00361Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+003620r 1  00 11 11 00  .byte $00, $11, $11, $00
+003624r 1               
+003624r 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
+003628r 1  01 00 00 00  .byte $01, $00, $00, $00
+00362Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+003630r 1  00 11 11 00  .byte $00, $11, $11, $00
+003634r 1  01 00 00 00  .byte $01, $00, $00, $00
+003638r 1  01 00 00 00  .byte $01, $00, $00, $00
+00363Cr 1  01 00 00 00  .byte $01, $00, $00, $00
+003640r 1  00 00 00 00  .byte $00, $00, $00, $00
+003644r 1               
+003644r 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 49
+003648r 1  00 00 01 00  .byte $00, $00, $01, $00
+00364Cr 1  00 00 10 00  .byte $00, $00, $10, $00
+003650r 1  00 01 00 00  .byte $00, $01, $00, $00
+003654r 1  00 10 00 00  .byte $00, $10, $00, $00
+003658r 1  01 00 00 00  .byte $01, $00, $00, $00
+00365Cr 1  11 11 11 00  .byte $11, $11, $11, $00
+003660r 1  00 00 00 00  .byte $00, $00, $00, $00
+003664r 1               
+003664r 1               ; cell position label sprite addr 50-57
+003664r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+003668r 1  FF 00 FF 00  
+00366Cr 1  00 FF 00 00  
+003684r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+003688r 1  00 00 FF 00  
+00368Cr 1  00 FF 00 00  
+0036A4r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0036A8r 1  FF 00 FF 00  
+0036ACr 1  00 FF 00 00  
+0036C4r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0036C8r 1  00 00 FF 00  
+0036CCr 1  00 FF 00 00  
+0036E4r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0036E8r 1  FF 00 FF FF  
+0036ECr 1  00 FF FF 00  
+003704r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+003704r 1               ;     XH                               $XL                            ___  __  YH                              YL
+003704r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+003708r 1  00 00 00 00  
+00370Cr 1  10 10 10 00  
+003724r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+003728r 1  00 00 00 00  
+00372Cr 1  01 00 10 00  
+003744r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+003748r 1  00 00 00 00  
+00374Cr 1  10 10 11 10  
+003764r 1               
+003764r 1               ; world position label 58-65
+003764r 1               ;     XH                 $XL                  ___  ___  YH                  YL
+003764r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+003768r 1  FF 00 00 FF  
+00376Cr 1  00 00 FF FF  
+003784r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+003788r 1  FF 00 FF 00  
+00378Cr 1  FF 00 FF 00  
+0037A4r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0037A8r 1  FF 00 FF 00  
+0037ACr 1  FF 00 FF FF  
+0037C4r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0037C8r 1  FF 00 FF 00  
+0037CCr 1  FF 00 FF 00  
+0037E4r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+0037E8r 1  00 00 00 FF  
+0037ECr 1  00 00 FF 00  
+003804r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+003804r 1               ;     XH                               $XL                            ___  __  YH                              YL
+003804r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+003808r 1  00 00 00 00  
+00380Cr 1  10 10 10 00  
+003824r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+003828r 1  00 00 00 00  
+00382Cr 1  01 00 10 00  
+003844r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+003848r 1  00 00 00 00  
+00384Cr 1  10 10 11 10  
+003864r 1               
+003864r 1               ; directional cursor reminder... 16x16 - 66-69
+003864r 1               
+003864r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
+003868r 1  01 11 11 00  
+00386Cr 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
+003870r 1  01 00 00 00  
+003874r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
+003878r 1  01 11 00 00  
+00387Cr 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
+003880r 1  01 00 00 00  
+003884r 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
+003888r 1  01 11 11 00  
+00388Cr 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+003890r 1  00 00 00 00  
+003894r 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
+003898r 1  00 01 11 00  
+00389Cr 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $00, $01
+0038A0r 1  00 01 00 01  
+0038A4r 1  11 11 10 00  .byte $11, $11, $10, $00, $00, $01, $00, $01
+0038A8r 1  00 01 00 01  
+0038ACr 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
+0038B0r 1  00 01 11 10  
+0038B4r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+0038B8r 1  00 00 00 00  
+0038BCr 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+0038C0r 1  01 00 01 00  
+0038C4r 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
+0038C8r 1  00 10 10 00  
+0038CCr 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
+0038D0r 1  00 01 00 00  
+0038D4r 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
+0038D8r 1  00 10 10 00  
+0038DCr 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+0038E0r 1  01 00 01 00  
+0038E4r 1               
+0038E4r 1  80 80 80 80  .repeat 58 ; 128-70
+0038E8r 1  80 80 80 80  
+0038ECr 1  80 80 80 80  
+004024r 1                   .res 32,$80
+004024r 1               .endrepeat
+004024r 1               
+004024r 1               ; alernate tile graphic to use for tub wall .. 128 to 159 16x64
+004024r 1  16 16 16 16  .repeat 32
+004028r 1  16 16 16 16  
+00402Cr 1  61 61 61 61  
+004024r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
+004024r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
+004024r 1               .endrepeat
+004024r 1               
