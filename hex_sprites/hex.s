@@ -130,6 +130,33 @@ CONVERT_HEIGHTS_PIXELS: ; 2C00
 .res 128,0
 CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+
+
+SUBCELL_X_COS_L:
+.byte $FF,$FC,$F8,$F4,$F1,$ED,$E9,$E5,$E1,$DD,$D9,$D5,$CF,$C9,$C3,$BD,$B8,$B2,$AD,$A7,$A2,$9D,$9D,$9E,$9E,$9E,$9E,$9E,$9E,$9E,$9D,$9D,$9C,$9A,$98,$96,$93,$91,$8E,$8B,$88,$85,$81,$7E,$76,$6F,$68,$61,$5A,$54,$4D,$47,$41,$3B,$34,$2E,$28,$23,$1D,$18,$13,$E,$9,$4,$0,$FB,$F6,$F1,$EC,$E7,$E2,$DC,$D7,$D1,$CB,$C4,$BE,$B8,$B2,$AB,$A5,$9E,$97,$90,$89,$81,$7E,$7A,$77,$74,$71,$6E,$6C,$69,$67,$65,$63,$62,$62,$61,$61,$61,$61,$61,$61,$61,$62,$62,$5D,$58,$52,$4D,$47,$42,$3C,$36,$30,$2A,$26,$22,$1E,$1A,$16,$12,$E,$B,$7,$3,$0,$3,$7,$B,$E,$12,$16,$1A,$1E,$22,$26,$2A,$30,$36,$3C,$42,$47,$4D,$52,$58,$5D,$62,$62,$61,$61,$61,$61,$61,$61,$61,$62,$62,$63,$65,$67,$69,$6C,$6E,$71,$74,$77,$7A,$7E,$81,$89,$90,$97,$9E,$A5,$AB,$B2,$B8,$BE,$C4,$CB,$D1,$D7,$DC,$E2,$E7,$EC,$F1,$F6,$FB,$0,$4,$9,$E,$13,$18,$1D,$23,$28,$2E,$34,$3B,$41,$47,$4D,$54,$5A,$61,$68,$6F,$76,$7E,$81,$85,$88,$8B,$8E,$91,$93,$96,$98,$9A,$9C,$9D,$9D,$9E,$9E,$9E,$9E,$9E,$9E,$9E,$9D,$9D,$A2,$A7,$AD,$B2,$B8,$BD,$C3,$C9,$CF,$D5,$D9,$DD,$E1,$E5,$E9,$ED,$F1,$F4,$F8,$FC
+
+SUBCELL_X_COS_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+
+SUBCELL_X_SIN_L:
+.byte $0,$6,$C,$12,$17,$1D,$22,$27,$2C,$31,$36,$3B,$3E,$42,$45,$49,$4C,$4F,$51,$54,$56,$59,$5E,$64,$69,$6F,$75,$7B,$82,$88,$8F,$95,$9C,$A2,$A8,$AE,$B4,$BA,$C0,$C6,$CC,$D2,$D8,$DE,$DE,$DD,$DD,$DC,$DB,$DA,$D9,$D8,$D7,$D5,$D2,$CF,$CC,$C9,$C6,$C4,$C1,$BE,$BB,$B8,$B5,$B8,$BB,$BE,$C1,$C4,$C6,$C9,$CC,$CF,$D2,$D5,$D7,$D8,$D9,$DA,$DB,$DC,$DD,$DD,$DE,$DE,$D8,$D2,$CC,$C6,$C0,$BA,$B4,$AE,$A8,$A2,$9C,$95,$8F,$88,$82,$7B,$75,$6F,$69,$64,$5E,$59,$56,$54,$51,$4F,$4C,$49,$45,$42,$3E,$3B,$36,$31,$2C,$27,$22,$1D,$17,$12,$C,$6,$0,$F9,$F3,$ED,$E8,$E2,$DD,$D8,$D3,$CE,$C9,$C4,$C1,$BD,$BA,$B6,$B3,$B0,$AE,$AB,$A9,$A6,$A1,$9B,$96,$90,$8A,$84,$7D,$77,$70,$6A,$63,$5D,$57,$51,$4B,$45,$3F,$39,$33,$2D,$27,$21,$21,$22,$22,$23,$24,$25,$26,$27,$28,$2A,$2D,$30,$33,$36,$39,$3B,$3E,$41,$44,$47,$4A,$47,$44,$41,$3E,$3B,$39,$36,$33,$30,$2D,$2A,$28,$27,$26,$25,$24,$23,$22,$22,$21,$21,$27,$2D,$33,$39,$3F,$45,$4B,$51,$57,$5D,$63,$6A,$70,$77,$7D,$84,$8A,$90,$96,$9B,$A1,$A6,$A9,$AB,$AE,$B0,$B3,$B6,$BA,$BD,$C1,$C4,$C9,$CE,$D3,$D8,$DD,$E2,$E8,$ED,$F3,$F9
+
+SUBCELL_X_SIN_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+SUBCELL_Y_COS_L:
+.byte $9C,$9E,$A0,$A2,$A4,$A6,$A8,$A9,$AB,$AC,$AD,$AE,$B1,$B3,$B5,$B8,$BA,$BB,$BD,$BE,$BF,$C0,$BA,$B5,$AF,$A9,$A3,$9D,$97,$91,$8B,$85,$7F,$7B,$76,$71,$6D,$68,$63,$5F,$5A,$56,$51,$4D,$4B,$48,$46,$43,$40,$3D,$3A,$37,$33,$30,$2C,$29,$25,$21,$1D,$18,$14,$F,$A,$5,$0,$FA,$F5,$F0,$EB,$E7,$E2,$DE,$DA,$D6,$D3,$CF,$CC,$C8,$C5,$C2,$BF,$BC,$B9,$B7,$B4,$B2,$AE,$A9,$A5,$A0,$9C,$97,$92,$8E,$89,$84,$80,$7A,$74,$6E,$68,$62,$5C,$56,$50,$4A,$45,$3F,$40,$41,$42,$44,$45,$47,$4A,$4C,$4E,$51,$52,$53,$54,$56,$57,$59,$5B,$5D,$5F,$61,$63,$61,$5F,$5D,$5B,$59,$57,$56,$54,$53,$52,$51,$4E,$4C,$4A,$47,$45,$44,$42,$41,$40,$3F,$45,$4A,$50,$56,$5C,$62,$68,$6E,$74,$7A,$80,$84,$89,$8E,$92,$97,$9C,$A0,$A5,$A9,$AE,$B2,$B4,$B7,$B9,$BC,$BF,$C2,$C5,$C8,$CC,$CF,$D3,$D6,$DA,$DE,$E2,$E7,$EB,$F0,$F5,$FA,$0,$5,$A,$F,$14,$18,$1D,$21,$25,$29,$2C,$30,$33,$37,$3A,$3D,$40,$43,$46,$48,$4B,$4D,$51,$56,$5A,$5F,$63,$68,$6D,$71,$76,$7B,$7F,$85,$8B,$91,$97,$9D,$A3,$A9,$AF,$B5,$BA,$C0,$BF,$BE,$BD,$BB,$BA,$B8,$B5,$B3,$B1,$AE,$AD,$AC,$AB,$A9,$A8,$A6,$A4,$A2,$A0,$9E
+
+SUBCELL_Y_COS_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+
+SUBCELL_Y_SIN_L:
+.byte $0,$3,$7,$C,$10,$14,$18,$1D,$22,$26,$2B,$30,$35,$3B,$41,$47,$4D,$53,$59,$60,$66,$6D,$70,$72,$75,$77,$79,$7A,$7C,$7D,$7E,$7F,$7F,$81,$82,$84,$85,$86,$86,$87,$87,$88,$88,$88,$8C,$90,$94,$98,$9C,$9F,$A3,$A7,$AA,$AE,$B3,$B7,$BC,$C0,$C5,$C9,$CD,$D2,$D6,$D9,$DD,$D9,$D6,$D2,$CD,$C9,$C5,$C0,$BC,$B7,$B3,$AE,$AA,$A7,$A3,$9F,$9C,$98,$94,$90,$8C,$88,$88,$88,$87,$87,$86,$86,$85,$84,$82,$81,$7F,$7F,$7E,$7D,$7C,$7A,$79,$77,$75,$72,$70,$6D,$66,$60,$59,$53,$4D,$47,$41,$3B,$35,$30,$2B,$26,$22,$1D,$18,$14,$10,$C,$7,$3,$0,$FC,$F8,$F3,$EF,$EB,$E7,$E2,$DD,$D9,$D4,$CF,$CA,$C4,$BE,$B8,$B2,$AC,$A6,$9F,$99,$92,$8F,$8D,$8A,$88,$86,$85,$83,$82,$81,$80,$80,$7E,$7D,$7B,$7A,$79,$79,$78,$78,$77,$77,$77,$73,$6F,$6B,$67,$63,$60,$5C,$58,$55,$51,$4C,$48,$43,$3F,$3A,$36,$32,$2D,$29,$26,$22,$26,$29,$2D,$32,$36,$3A,$3F,$43,$48,$4C,$51,$55,$58,$5C,$60,$63,$67,$6B,$6F,$73,$77,$77,$77,$78,$78,$79,$79,$7A,$7B,$7D,$7E,$80,$80,$81,$82,$83,$85,$86,$88,$8A,$8D,$8F,$92,$99,$9F,$A6,$AC,$B2,$B8,$BE,$C4,$CA,$CF,$D4,$D9,$DD,$E2,$E7,$EB,$EF,$F3,$F8,$FC
+
+SUBCELL_Y_SIN_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+
+
 ;constants
 
 ; RAM Interrupt Vectors
@@ -242,8 +269,8 @@ SCRATCH_PTR = $7E
 default_irq_vector:  .addr 0 ; 4-5 
 VSYNC_counter:       .byte 1 ; 6
 camera_facing: 		 .byte 1 ; 7
-camera_world_pos_XH:    .byte 38 ; 8
-camera_world_pos_XL:       .byte 128 ; 9
+camera_world_pos_XH:    .byte 44 ; 8
+camera_world_pos_XL:       .byte 48 ; 9
 camera_world_pos_YH:        .byte 15 ; A
 camera_world_pos_YL:       .byte 128  ; B
 camera_cell_x: 		 .byte 0 ; c
@@ -578,7 +605,7 @@ start:
    ADC #0
    STA MASTER_CLOCK+1
    TXA
-   AND #1 ; restrict to 20 fps.. don't care missed cycle. 
+   AND #3 ; restrict to 20 fps.. don't care missed cycle. 
    BNE @FRAME_CHECK
    ; poll keyboard for input 
    jsr GETIN
@@ -758,9 +785,21 @@ PWOL_START_YL = ZP_PTR+36
 PWOL_START_XH = ZP_PTR+37
 PWOL_START_YH = ZP_PTR+38
 
+PWOL_START_COS_XL = ZP_PTR+39
+PWOL_START_COS_XH = ZP_PTR+40
+PWOL_START_COS_YL = ZP_PTR+41
+PWOL_START_COS_YH = ZP_PTR+42
+PWOL_START_SIN_XL = ZP_PTR+43
+PWOL_START_SIN_XH = ZP_PTR+44
+PWOL_START_SIN_YL = ZP_PTR+45
+PWOL_START_SIN_YH = ZP_PTR+46
+
+PWOL_camera_cell_xl = ZP_PTR+47
+PWOL_camera_cell_yl = ZP_PTR+48
+
 TRY_AGAIN = 6
-SCREEN_START_X = 100
-SCREEN_START_Y =  80
+SCREEN_MID_X = 108
+SCREEN_MID_Y =  80
 SCREEN_OUT_RIGHT  = 164 ; right of middle is 116, +48 = 164
 SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36 
 SCREEN_OUT_TOP     = 24
@@ -806,6 +845,25 @@ SCREEN_OUT_BOTTOM  = 136
    STA PWOL_NEXT_ROW_A_RIGHT_YH
 
 
+   LDA SUBCELL_X_COS_L,X
+   STA PWOL_START_COS_XL
+   LDA SUBCELL_X_COS_H,X
+   STA PWOL_START_COS_XH
+
+   LDA SUBCELL_X_SIN_L,X
+   STA PWOL_START_SIN_XL
+   LDA SUBCELL_X_SIN_H,X
+   STA PWOL_START_SIN_XH
+
+   LDA SUBCELL_Y_COS_L,X
+   STA PWOL_START_COS_YL
+   LDA SUBCELL_Y_COS_H,X
+   STA PWOL_START_COS_YH
+
+   LDA SUBCELL_Y_SIN_L,X
+   STA PWOL_START_SIN_YL
+   LDA SUBCELL_Y_SIN_H,X
+   STA PWOL_START_SIN_YH
 
 ; for zig B , the opposite of left/up is right/down.. so A_LEFT * -1 = B_RIGHT
    SEC ; flip A_LEFT X to B_RIGHT X
@@ -853,135 +911,92 @@ SCREEN_OUT_BOTTOM  = 136
     LDA PWOL_TUB_PTR_AL
     STA PWOL_TUB_PTR_BL    
 
+
+    STZ PWOL_CURRENT_XL
+    LDA #SCREEN_MID_X-8
+    STA PWOL_CURRENT_XH
+
+
+
+    STZ PWOL_CURRENT_YL
+    LDA #SCREEN_MID_Y-5
+    STA PWOL_CURRENT_YH
+
+
+    LDA camera_cell_xl
+;    EOR #$FF
+    LSR
+    LSR
+    LSR
+    LSR 
+    STA PWOL_camera_cell_xl
+    LDA camera_cell_yl
+ ;   EOR #$FF
+    LSR
+    LSR
+    LSR
+    LSR
+    STA PWOL_camera_cell_yl
+
+      ; startX - COS * X - SIN Y
+      ; startY- SIN * X + COS Y 
+    LDX #4
+   : LSR PWOL_camera_cell_xl ; StartX - needs cosX*X , startY = SINY*X 
+     BCC :+ ; digit? 
+     LDA PWOL_CURRENT_XL   ;  X = - COS*X
+     ADC PWOL_START_COS_XL
+     STA PWOL_CURRENT_XL
+     LDA PWOL_CURRENT_XH
+     ADC PWOL_START_COS_XH
+     STA PWOL_CURRENT_XH
+     LDA PWOL_CURRENT_YL   ;  Y = - SINY X 
+     SBC PWOL_START_SIN_YL
+     STA PWOL_CURRENT_YL
+     LDA PWOL_CURRENT_YH
+     SBC PWOL_START_SIN_YH
+     STA PWOL_CURRENT_YH
+   : ; skip the X digit..  
+     ASL PWOL_START_COS_XL
+     ROL PWOL_START_COS_XH
+     ASL PWOL_START_SIN_YL
+     ROL PWOL_START_SIN_YH
+
+     LSR PWOL_camera_cell_yl ; StartX - needs sinX*Y, startY needs COSY*Y
+     BCC :+
+     LDA PWOL_CURRENT_XL 
+     SBC PWOL_START_SIN_XL
+     STA PWOL_CURRENT_XL
+     LDA PWOL_CURRENT_XH
+     SBC PWOL_START_SIN_XH
+     STA PWOL_CURRENT_XH
+     LDA PWOL_CURRENT_YL
+     SBC PWOL_START_COS_YL 
+     STA PWOL_CURRENT_YL
+     LDA PWOL_CURRENT_YH
+     SBC PWOL_START_COS_YH
+     STA PWOL_CURRENT_YH
+   : ; skip y digit.. do shit 
+     ASL PWOL_START_SIN_XL
+     ROL PWOL_START_SIN_XH
+     ASL PWOL_START_COS_YL
+     ROL PWOL_START_COS_YH
+
+     DEX 
+     BNE :--- ; back to start of loop .. 
+
+
+
+    LDA PWOL_CURRENT_XL
+    STA PWOL_START_XL
+    LDA PWOL_CURRENT_XH
+    STA PWOL_START_XH
+
+    LDA PWOL_CURRENT_YL
+    STA PWOL_START_YL
+    LDA PWOL_CURRENT_YH
+    STA PWOL_START_YH
+
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
-      STZ PWOL_CURRENT_XL
-      LDA #108
-      STA PWOL_CURRENT_XH
-  
-      STZ PWOL_CURRENT_YL
-      LDA #80
-      STA PWOL_CURRENT_YH
-
-      LDX #$FF
-      STZ PWOL_START_XH
-      LDA PWOL_ACROSS_ROW_XH
-      STA PWOL_START_XL ; value for cos.. 
-      BPL :+
-      STX PWOL_START_XH
-    : STZ PWOL_START_YH 
-      LDA PWOL_ACROSS_ROW_YH
-      STA PWOL_START_YL ; value for sin 
-      BPL :+
-      STX PWOL_START_XH
-    : SEC
-      LDA camera_cell_xl   ; subcell offsetX = cos(x)+sin(y)
-      SBC #128 ; need a modulus ..
-      BCS :++   ; if  subcell >=.5 - move this far left from center point ..
-      EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
-      INC A    ;  1
-      LSR
-      LSR 
-      LSR 
-      LSR 
-      BEQ :++++
-    : CLC  ; we're < half  so this center goes right .. add X  X*cos - y*sin  Y is X*sin + Y*Cos
-      LDA PWOL_CURRENT_XL
-      ADC PWOL_START_XL
-      STA PWOL_CURRENT_XL 
-      LDA PWOL_CURRENT_XH
-      ADC PWOL_START_XH
-      STA PWOL_CURRENT_XH
-      CLC  ; we're < half  so this center goes right .. add X * cos/sin 
-      LDA PWOL_CURRENT_YL
-      ADC PWOL_START_YL
-      STA PWOL_CURRENT_YL 
-      LDA PWOL_CURRENT_YH
-      ADC PWOL_START_YH
-      STA PWOL_CURRENT_YH      
-      DEX 
-      BNE :-
-      BRA :+++
-    : LSR ; Carry set, so we will be subtracting this many times 
-      LSR 
-      LSR
-      LSR 
-      BEQ :++
-    : SEC 
-      LDA PWOL_CURRENT_XL
-      SBC PWOL_START_XL
-      STA PWOL_CURRENT_XL 
-      LDA PWOL_CURRENT_XH
-      SBC PWOL_START_XH
-      STA PWOL_CURRENT_XH
-      SEC  ; we're < half  so this center goes right .. add X * cos/sin 
-      LDA PWOL_CURRENT_YL
-      SBC PWOL_START_YL
-      STA PWOL_CURRENT_YL 
-      LDA PWOL_CURRENT_YH
-      SBC PWOL_START_YH
-      STA PWOL_CURRENT_YH      
-      DEX 
-      BNE :-
-    : SEC
-      LDA camera_cell_yl   ; subcell offsetX = cos(x)+sin(y)
-      SBC #128 ; need a modulus ..
-      BCS :++   ; if  subcell >=.5 - move this far left from center point ..
-      EOR #$FF ; so if it was 7 becomes -1 .. becomes 0 ; we add offset.. but if neg?
-      INC A    ;  1
-      LSR
-      LSR 
-      LSR 
-      LSR 
-      BEQ :++++
-    : SEC  ; we're < half  so this center goes right ..X  X*cos - y*sin  Y is X*sin + Y*Cos
-      LDA PWOL_CURRENT_XL
-      SBC PWOL_START_YL
-      STA PWOL_CURRENT_XL 
-      LDA PWOL_CURRENT_XH
-      SBC PWOL_START_YH
-      STA PWOL_CURRENT_XH
-      CLC  ; we're < half  so this center goes right .. add X * cos/sin 
-      LDA PWOL_CURRENT_YL
-      ADC PWOL_START_XL
-      STA PWOL_CURRENT_YL 
-      LDA PWOL_CURRENT_YH
-      ADC PWOL_START_XH
-      STA PWOL_CURRENT_YH      
-      DEX 
-      BNE :-
-      BRA :+++
-    : LSR ; Carry set, so we will be subtracting this many times 
-      LSR 
-      LSR
-      LSR 
-      BEQ :++
-    : CLC 
-      LDA PWOL_CURRENT_XL
-      ADC PWOL_START_YL
-      STA PWOL_CURRENT_XL 
-      LDA PWOL_CURRENT_XH
-      ADC PWOL_START_YH
-      STA PWOL_CURRENT_XH
-      SEC  ; we're < half  so this center goes right .. add X * cos/sin 
-      LDA PWOL_CURRENT_YL
-      SBC PWOL_START_XL
-      STA PWOL_CURRENT_YL 
-      LDA PWOL_CURRENT_YH
-      SBC PWOL_START_XH
-      STA PWOL_CURRENT_YH      
-      DEX 
-      BNE :-
-
-      LDA PWOL_CURRENT_XL 
-      STA PWOL_START_XL 
-      LDA PWOL_CURRENT_YL 
-      STA PWOL_START_YL 
-
-      LDA PWOL_CURRENT_XH 
-      STA PWOL_START_XH 
-      LDA PWOL_CURRENT_YH 
-      STA PWOL_START_YH 
-
       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
     @zigzag_A_right:
         CPY #64  ;  make sure we don't go outside level.. 
@@ -1657,7 +1672,7 @@ test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  66,$00,SCREEN_START_X,  0,SCREEN_START_Y,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
+.byte  66,$00,100,  0,72,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
 .byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
 .byte  16,$00, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
 .byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
@@ -1944,8 +1959,8 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $00, $01, $01, $00, $01, $11, $11, $00
 .byte $00, $00, $00, $00, $00, $00, $00, $00
 .byte $01, $11, $00, $00, $00, $01, $11, $00
-.byte $10, $00, $10, $00, $00, $01, $00, $01
-.byte $11, $11, $10, $00, $00, $01, $00, $01
+.byte $10, $00, $10, $01, $10, $01, $00, $01
+.byte $11, $11, $10, $01, $10, $01, $00, $01
 .byte $10, $00, $10, $00, $00, $01, $11, $10
 .byte $00, $00, $00, $00, $00, $00, $00, $00
 .byte $00, $11, $11, $10, $01, $00, $01, $00

@@ -223,6 +223,9 @@ TODO 	ZigZag terrain renderer to object list
 1115 DONE! 
 1310 	sub-cell sort of working but its messed so... ? 
 	commit
+1330
+1900 	OK just call it alrady
+	commit
 	
 TODO 	sub-cell rending for start ... 
 
