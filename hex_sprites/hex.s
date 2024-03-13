@@ -38,7 +38,7 @@ NEXT_ROW_Y_H: ; 1000
 .byte $F6,$F6,$F6,$F6,$F6,$F6,$F7,$F7,$F7,$F7,$F7,$F8,$F8,$F8,$F8,$F8,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$0,$0,$0,$0,$1,$1,$1,$2,$2,$2,$2,$3,$3,$3,$3,$4,$4,$4,$4,$5,$5,$5,$5,$6,$6,$6,$6,$7,$7,$7,$7,$7,$8,$8,$8,$8,$8,$8,$9,$9,$9,$9,$9,$9,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$B,$A,$A,$A,$A,$A,$A,$A,$A,$A,$A,$9,$9,$9,$9,$9,$9,$9,$8,$8,$8,$8,$8,$7,$7,$7,$7,$7,$6,$6,$6,$6,$5,$5,$5,$5,$5,$4,$4,$4,$3,$3,$3,$3,$2,$2,$2,$2,$1,$1,$1,$1,$0,$0,$0,$FF,$FF,$FF,$FF,$FE,$FE,$FE,$FD,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F8,$F8,$F8,$F8,$F8,$F7,$F7,$F7,$F7,$F7,$F7,$F6,$F6,$F6,$F6,$F6,$F6,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F4,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F5,$F6
 
 TUB_WORLD: ; 32*64 = 2K ... is 1100 to 1900-1
-.include "tub_world_hieghts.inc"
+.include "tub_world_hieghts_01.inc"
 
 ; 1900
 
@@ -470,16 +470,6 @@ start:
    STZ camera_facing
 
 @camera_world_changed:
-   LDA camera_world_pos_YH
-   STA camera_cell_y
-   LSR
-   STA $7F  ; high byte
-   LDA camera_world_pos_YL
-   STA camera_cell_yl
-   ROR 
-   STA $7E  ; low byte cellY.2 
-   ; cellX = WORLDX*ratio - (31-cellY)/2
-   ; cellX = WORLDX*ratio - 15.5 + cellY/2
    LDX camera_world_pos_XH 
    LDY camera_world_pos_XL
    CLC 
@@ -489,67 +479,47 @@ start:
    LDA WORLD_TO_CELL_XH,X 
    ADC #0 ; gotta do that carry and all .. 
    TAX   ; cellXH from ratio 
-   SEC 
-   TYA   ;  cellXL from ratio
-   SBC #128 ; minus 15.5L 
-   TAY 
-   TXA 
-   SBC #15 ; minus 15.5H 
-   TAX 
-   CLC 
-   TYA ; cellXL from ratio minute 15.5 
-   ADC $7E  ; plis cellY/2
-   STA camera_cell_xl
-   TXA 
-   ADC $7F   
-   BNE :+ 
-   INC A 
- : CMP #64
-   BCC :+
-   LDA #63
- : STA camera_cell_x 
-   LDA camera_cell_y
-   BNE :+ 
-   INC A 
- : CMP #30
-   BCC :+
-   LDA #29
- : STA camera_cell_y
 
- ;  jmp @do_update
+   ; copy over cell YL as-is
+   LDA camera_world_pos_YL
+   STA camera_cell_yl
+   ; YH gets copied over .. 
+   LDA camera_world_pos_YH
+   STA camera_cell_y
+   ; cellX = WORLDX*ratio - floor(cellY)/2
+   ;  halve floor(cellY)
+   LSR 
+   STA $7F ; stash it for scratch
+   BCS :+ ; did we have a thing from before? 
+   STY camera_cell_xl
+   SEC ; no half to subtract.. OK 
+   BRA :++
+ : TYA   ;  cellXL from ratio
+   SBC #128 ; subtract the half
+   STA camera_cell_xl 
+ : TXA
+   SBC $7F ; now either carry is set because cellXL >=128 or was no half to sub.. subtract halfY 
+   STA camera_cell_x
 
-@camera_cell_changed:
+@camera_cell_changed: ; run through this more as a normalization step for camera..
+   ; worldX = scaled(floor(cellY)/2 + cellX )
    LDA camera_cell_y
-   STA camera_world_pos_YH
    LSR
-   STA $7F  ; high byte
-   LDA camera_cell_yl
-   STA camera_world_pos_YL
-   ROR 
-   STA $7E  ; low byte cellY.2 
-   ; worldX = (cellX + 15.5 - cellY/2)*ratio
-   CLC 
-   LDA camera_cell_xl ; +15.5
-   ADC #128
-   TAX 
-   LDA camera_cell_x
-   ADC #15
-   TAY 
-   SEC 
-   TXA 
-   SBC $7E
-   TAX 
-   TYA 
-   SBC $7F
-   TAY 
-   CLC 
-   LDA CELL_LOW_TO_WORLD_XL,X 
-   ADC CELL_TO_WORLD_XL,Y 
+   TAX  ; high byte floor(Y)/2
+   LDA #0
+   ROR ; either is zero or 128 now ... either way, carry is cleared.
+   ADC camera_cell_xl 
+   TAY ; stash the low to byte 
+   TXA ; high byte floor (Y)/2 .. ready for adding 
+   ADC camera_cell_x
+   TAX ; stash high byte ... carry _should_ be cleared unless X >255 ... ?
+   LDA CELL_LOW_TO_WORLD_XL,Y
+   ADC CELL_TO_WORLD_XL,X
    STA camera_world_pos_XL
-   LDA CELL_LOW_TO_WORLD_XH,X 
-   ADC CELL_TO_WORLD_XH,Y 
+   LDA CELL_LOW_TO_WORLD_XH,Y
+   ADC CELL_TO_WORLD_XH,X
    STA camera_world_pos_XH
-   jmp @do_update
+   ;  jmp @do_update ; superfluous currently. redundant even.. 
 
 
 @do_update:
@@ -557,7 +527,7 @@ start:
    ; clear the object list ... 
     STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
     LDX #0
-    LDA #$0C ; is basis for all the z_flips
+    LDA #$0C ; is basis for all the z_flips <- this may change depending on orientation.. 
     : STZ OBJECT_LIST_Z_START_POINTERS,X
       STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
       STZ OBJECT_LIST_BYTE2_X
@@ -658,17 +628,18 @@ start:
    STA camera_world_pos_YH
    jmp @camera_world_changed
 
- : cmp #W_CHAR ; cell up left 
+ : cmp  #E_CHAR ; cell up right
    BNE :+++
    LDA camera_cell_y
    BEQ :+
    DEC camera_cell_y
  : LDA camera_cell_x
-   BEQ :+
-   DEC camera_cell_x
+   CMP #63
+   BCS :+
+   INC camera_cell_x
  : JMP @camera_cell_changed
 
- : cmp #E_CHAR ; cell up right 
+ : cmp #W_CHAR ; cell up left 
    BNE :++
    LDA camera_cell_y
    BEQ :+
@@ -690,7 +661,7 @@ start:
    INC camera_cell_x
  : JMP @camera_cell_changed
 
- : cmp #Z_CHAR ; cell down left 
+ : cmp #X_CHAR ; cell down right  
    BNE :++
    LDA camera_cell_y
    CMP #30
@@ -698,16 +669,15 @@ start:
    INC camera_cell_y
  : JMP @camera_cell_changed
 
- : cmp #X_CHAR ; cell down right 
+ : cmp  #Z_CHAR ; cell down left
    BNE :+++
    LDA camera_cell_y
    CMP #30
    BCS :+
    INC camera_cell_y
  : LDA camera_cell_x
-   CMP #63
-   BCS :+
-   INC camera_cell_x
+   BEQ :+
+   DEC camera_cell_x
  : JMP @camera_cell_changed
 
  : cmp #SPACE; 
@@ -1000,10 +970,10 @@ SCREEN_OUT_BOTTOM  = 136
       LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
     @zigzag_A_right:
         CPY #64  ;  make sure we don't go outside level.. 
-        BCS @ZAR_NEXT ; if we're outside we'll just skip is OK 
+        BCS @ZAR_NEXT ; if we're outside we'll just skip is OK here
         LDA (PWOL_TUB_PTR_AL),y
         CMP #129
-        BCS @ZAR_NEXT ; we're outside level. 
+        BCS @ZAR_NEXT ; this isn't a valid spot in the level map.. 
 
         ; bytes 1 and 4 were updated when we cleared the object list
         INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
@@ -1075,14 +1045,17 @@ SCREEN_OUT_BOTTOM  = 136
      @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
-         DEY ; have to go this to match where the thing is going .. 0,0
+         INY
          SEC 
          LDA PWOL_TUB_PTR_AL
          SBC #64 ;   0,-1
          STA PWOL_TUB_PTR_AL
          LDA PWOL_TUB_PTR_AH
          SBC #0
-         STA PWOL_TUB_PTR_AH
+         CMP #>TUB_WORLD ; are we inside the world still? 
+         BCS :+
+         JMP @zigzag_B
+       : STA PWOL_TUB_PTR_AH
 
          CLC 
          LDA PWOL_CURRENT_XL
@@ -1212,17 +1185,20 @@ SCREEN_OUT_BOTTOM  = 136
          BCC @ZAL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
          BCC @zigzag_A_left
-     @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +0,+1  from where we is right now .. 
+     @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +1,+1  from where we is right now .. 
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
-
+         INY
          SEC 
          LDA PWOL_TUB_PTR_AL
          SBC #64
          STA PWOL_TUB_PTR_AL
          LDA PWOL_TUB_PTR_AH
          SBC #0
-         STA PWOL_TUB_PTR_AH
+         CMP #>TUB_WORLD ; are we inside the world still? 
+         BCS :+
+         JMP @zigzag_B
+       : STA PWOL_TUB_PTR_AH
 
 
          CLC 
@@ -1288,7 +1264,7 @@ SCREEN_OUT_BOTTOM  = 136
 
 
   @zigzag_B: ; going to left and down the screen, including where we are currently.. 
-
+      RTS
       SEC 
       LDA PWOL_START_XL
       SBC PWOL_ACROSS_ROW_XL

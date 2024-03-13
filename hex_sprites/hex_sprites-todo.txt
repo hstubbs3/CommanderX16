@@ -226,8 +226,19 @@ TODO 	ZigZag terrain renderer to object list
 1330
 1900 	OK just call it alrady
 	commit
-	
-TODO 	sub-cell rending for start ... 
+
+2024/03/13
+0755 	getting subcell stuff worked out better ... 
+		first off - worldX to CellX - should be scaled(WorldX) - floor(Y)/2 .. not scaled(WorldX) - Y/2
+		flipping the map representation so that its + floor(Y)/2 not minus.. this will affect zig zags !
+0900 	need to get out of here.. fixed up move by cell.. move arbitrary is borked though.. 
+	committing
+TODO 	implement changing sprite to account for heading
+TODO 	fix up sub-cell alignment
+TODO 	fix up zig zagB since switched map/memory alignment
+TODO 	fix up arbitrary movement / worldpos 
+
+
 
 TODO 	make moving around by X/Y/Z work 
 
