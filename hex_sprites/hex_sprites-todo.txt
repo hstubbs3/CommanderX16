@@ -233,12 +233,20 @@ TODO 	ZigZag terrain renderer to object list
 		flipping the map representation so that its + floor(Y)/2 not minus.. this will affect zig zags !
 0900 	need to get out of here.. fixed up move by cell.. move arbitrary is borked though.. 
 	committing
-TODO 	implement changing sprite to account for heading
-TODO 	fix up sub-cell alignment
-TODO 	fix up zig zagB since switched map/memory alignment
+2120 	OK try to get moving working..
 TODO 	fix up arbitrary movement / worldpos 
+TODO 	fix up zig zagB since switched map/memory alignment
+	DONE! 
+2340 	Woot! moving is smooth now .. rotating and subcell is weird though
 
+2024/03/14
+0010 	OK stopping here.. 
+	commit
 
+TODO 	fix up sub-cell alignment
+TODO 	implement changing sprite to account for heading, setting h-flip
+TODO 	perhaps alter view to be 160x120 ? 
+TODO 	blitting extra objects to buffer
 
 TODO 	make moving around by X/Y/Z work 
 

@@ -62,10 +62,13 @@ OBJECT_LIST_BYTE6_NEXT: ; 2000 NEXT
 
 
 WORLD_TO_CELL_XH: ; 2100
-.byte 0,0,1,2,3,4,5,6,6,7,8,9,10,11,12,12,13,14,15,16,17,18,19,19,20,21,22,23,24,25,25,26,27,28,29,30,31,32,32,33,34,35,36,37,38,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,51,52,53,54,55,56,57,58,58,59,60,61,62,63,64,64,65,66,67,68,69,70,71,71,72,73,74,75,76,77,77,78,79,80,81,82,83,84,84,85,86,87,88,89,90,90,91,92,93,94,95,96,96,97,98,99,100,101,102,103,103,104,105,106,107,108,109,109
+.byte 0,0,1,2,3,4,5,6,6,7,8,9,10,11,12,12,13,14,15,16,17,18,19,19,20,21,22,23,24,25,25,26,27,28,29,30,31,32,32,33,34,35,36,37,38,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,51,52,53,54,55,56,57,58,58,59,60,61,62,63,64,64,65,66,67,68,69,70,71,71,72,73,74,75,76,77,77,78,79,80,81,82,83,84,84,85,86,87,88,89,90,90,91,92,93,94,95,96,96,97,98,99,100,101,102,103,103,104,105,106,107,108,109,109,110,111,112,113,114,115,116,116,117,118,119,120,121,122,122,123,124,125,126,127,128,129,129,130,131,132,133,134,135,135,136,137,138,139,140,141,142,142,143,144,145,146,147,148,148,149,150,151,152,153,154,155,155,156,157,158,159,160,161,161,162,163,164,165,166,167,168,168,169,170,171,172,173,174,174,175,176,177,178,179,180,180,181,182,183,184,185,186,187,187,188,189,190,191,192,193,193,194,195,196,197,198,199,200,200,201,202,203,204,205,206,206,207,208,209,210,211,212,213,213,214,215,216,217,218,219,219,220
+;.byte 0,0,1,2,3,4,5,6,6,7,8,9,10,11,12,12,13,14,15,16,17,18,19,19,20,21,22,23,24,25,25,26,27,28,29,30,31,32,32,33,34,35,36,37,38,38,39,40,41,42,43,44,45,45,46,47,48,49,50,51,51,52,53,54,55,56,57,58,58,59,60,61,62,63,64,64,65,66,67,68,69,70,71,71,72,73,74,75,76,77,77,78,79,80,81,82,83,84,84,85,86,87,88,89,90,90,91,92,93,94,95,96,96,97,98,99,100,101,102,103,103,104,105,106,107,108,109,109
+;.res 128,128
 WORLD_TO_CELL_XL:
-.byte 0,221,187,153,118,84,50,15,237,203,169,134,100,66,31,253,219,184,150,116,82,47,13,235,200,166,132,97,63,29,251,216,182,148,113,79,45,10,232,198,164,129,95,61,26,248,214,180,145,111,77,42,8,230,195,161,127,93,58,24,246,211,177,143,108,74,40,6,227,193,159,124,90,56,21,243,209,175,140,106,72,37,3,225,191,156,122,88,53,19,241,206,172,138,104,69,35,1,222,188,154,119,85,51,17,238,204,170,135,101,67,32,254,220,186,151,117,83,48,14,236,202,167,133,99,64,30,252
-
+.byte 0,221,187,153,118,84,50,15,237,203,169,134,100,66,31,253,219,184,150,116,82,47,13,235,200,166,132,97,63,29,251,216,182,148,113,79,45,10,232,198,164,129,95,61,26,248,214,180,145,111,77,42,8,230,195,161,127,93,58,24,246,211,177,143,108,74,40,6,227,193,159,124,90,56,21,243,209,175,140,106,72,37,3,225,191,156,122,88,53,19,241,206,172,138,104,69,35,1,222,188,154,119,85,51,17,238,204,170,135,101,67,32,254,220,186,151,117,83,48,14,236,202,167,133,99,64,30,252,217,183,149,115,80,46,12,233,199,165,130,96,62,28,249,215,181,146,112,78,43,9,231,197,162,128,94,59,25,247,212,178,144,110,75,41,7,228,194,160,126,91,57,23,244,210,176,141,107,73,39,4,226,192,157,123,89,54,20,242,208,173,139,105,70,36,2,223,189,155,121,86,52,18,239,205,171,137,102,68,34,255,221,187,152,118,84,50,15,237,203,168,134,100,65,31,253,219,184,150,116,81,47,13,234,200,166,132,97,63,29,250,216,182,148,113,79,45,10,232,198,163,129,95,61,26,248,214
+;.byte 0,221,187,153,118,84,50,15,237,203,169,134,100,66,31,253,219,184,150,116,82,47,13,235,200,166,132,97,63,29,251,216,182,148,113,79,45,10,232,198,164,129,95,61,26,248,214,180,145,111,77,42,8,230,195,161,127,93,58,24,246,211,177,143,108,74,40,6,227,193,159,124,90,56,21,243,209,175,140,106,72,37,3,225,191,156,122,88,53,19,241,206,172,138,104,69,35,1,222,188,154,119,85,51,17,238,204,170,135,101,67,32,254,220,186,151,117,83,48,14,236,202,167,133,99,64,30,252
+;.res 128,0
 CELL_TO_WORLD_XH: ; 2200
 .byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146
 CELL_TO_WORLD_XL: ; 2280
@@ -75,15 +78,6 @@ CELL_LOW_TO_WORLD_XH: ; 2300
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 CELL_LOW_TO_WORLD_XL: ; 2400
 .byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146,147,148,150,151,152,153,154,155,157,158,159,160,161,162,163,165,166,167,168,169,170,172,173,174,175,176,177,178,180,181,182,183,184,185,187,188,189,190,191,192,193,195,196,197,198,199,200,202,203,204,205,206,207,209,210,211,212,213,214,215,217,218,219,220,221,222,224,225,226,227,228,229,230,232,233,234,235,236,237,239,240,241,242,243,244,245,247,248,249,250,251,252,254,255,0,1,2,3,4,6,7,8,9,10,11,13,14,15,16,17,18,19,21,22,23,24,25,26,28,29,30,31,32,33,34,36,37,38
-
-MOVE_XH: ; 2500
-.res 256,0
-MOVE_XL: ; 2600
-.res 256,0
-MOVE_YH: ; 2700
-.res 256,0
-MOVE_YL: ; 2800
-.res 256,0
 
 SPRITE_NUM_HIGH_NIBBLE: ; 2900
 .res 16, 33
@@ -133,29 +127,30 @@ CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 
 
 SUBCELL_X_COS_L:
-.byte $FF,$FC,$F8,$F4,$F1,$ED,$E9,$E5,$E1,$DD,$D9,$D5,$CF,$C9,$C3,$BD,$B8,$B2,$AD,$A7,$A2,$9D,$9D,$9E,$9E,$9E,$9E,$9E,$9E,$9E,$9D,$9D,$9C,$9A,$98,$96,$93,$91,$8E,$8B,$88,$85,$81,$7E,$76,$6F,$68,$61,$5A,$54,$4D,$47,$41,$3B,$34,$2E,$28,$23,$1D,$18,$13,$E,$9,$4,$0,$FB,$F6,$F1,$EC,$E7,$E2,$DC,$D7,$D1,$CB,$C4,$BE,$B8,$B2,$AB,$A5,$9E,$97,$90,$89,$81,$7E,$7A,$77,$74,$71,$6E,$6C,$69,$67,$65,$63,$62,$62,$61,$61,$61,$61,$61,$61,$61,$62,$62,$5D,$58,$52,$4D,$47,$42,$3C,$36,$30,$2A,$26,$22,$1E,$1A,$16,$12,$E,$B,$7,$3,$0,$3,$7,$B,$E,$12,$16,$1A,$1E,$22,$26,$2A,$30,$36,$3C,$42,$47,$4D,$52,$58,$5D,$62,$62,$61,$61,$61,$61,$61,$61,$61,$62,$62,$63,$65,$67,$69,$6C,$6E,$71,$74,$77,$7A,$7E,$81,$89,$90,$97,$9E,$A5,$AB,$B2,$B8,$BE,$C4,$CB,$D1,$D7,$DC,$E2,$E7,$EC,$F1,$F6,$FB,$0,$4,$9,$E,$13,$18,$1D,$23,$28,$2E,$34,$3B,$41,$47,$4D,$54,$5A,$61,$68,$6F,$76,$7E,$81,$85,$88,$8B,$8E,$91,$93,$96,$98,$9A,$9C,$9D,$9D,$9E,$9E,$9E,$9E,$9E,$9E,$9E,$9D,$9D,$A2,$A7,$AD,$B2,$B8,$BD,$C3,$C9,$CF,$D5,$D9,$DD,$E1,$E5,$E9,$ED,$F1,$F4,$F8,$FC
-
+.byte $0,$FF,$FF,$FF,$FE,$FE,$FD,$FC,$FB,$F9,$F8,$F6,$F4,$F3,$F1,$EE,$EC,$EA,$E7,$E4,$E1,$DE,$DB,$D8,$D4,$D1,$CD,$C9,$C5,$C1,$BD,$B9,$B5,$B0,$AB,$A7,$A2,$9D,$98,$93,$8E,$88,$83,$7E,$78,$73,$6D,$67,$61,$5C,$56,$50,$4A,$44,$3E,$38,$31,$2B,$25,$1F,$19,$12,$C,$6,$0,$F9,$F3,$ED,$E6,$E0,$DA,$D4,$CE,$C7,$C1,$BB,$B5,$AF,$A9,$A3,$9E,$98,$92,$8C,$87,$81,$7C,$77,$71,$6C,$67,$62,$5D,$58,$54,$4F,$4A,$46,$42,$3E,$3A,$36,$32,$2E,$2B,$27,$24,$21,$1E,$1B,$18,$15,$13,$11,$E,$C,$B,$9,$7,$6,$4,$3,$2,$1,$1,$0,$0,$0,$0,$0,$0,$0,$1,$1,$2,$3,$4,$6,$7,$9,$B,$C,$E,$11,$13,$15,$18,$1B,$1E,$21,$24,$27,$2B,$2E,$32,$36,$3A,$3E,$42,$46,$4A,$4F,$54,$58,$5D,$62,$67,$6C,$71,$77,$7C,$81,$87,$8C,$92,$98,$9E,$A3,$A9,$AF,$B5,$BB,$C1,$C7,$CE,$D4,$DA,$E0,$E6,$ED,$F3,$F9,$0,$6,$C,$12,$19,$1F,$25,$2B,$31,$38,$3E,$44,$4A,$50,$56,$5C,$61,$67,$6D,$73,$78,$7E,$83,$88,$8E,$93,$98,$9D,$A2,$A7,$AB,$B0,$B5,$B9,$BD,$C1,$C5,$C9,$CD,$D1,$D4,$D8,$DB,$DE,$E1,$E4,$E7,$EA,$EC,$EE,$F1,$F3,$F4,$F6,$F8,$F9,$FB,$FC,$FD,$FE,$FE,$FF,$FF,$FF
 SUBCELL_X_COS_H:
-.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
-
-SUBCELL_X_SIN_L:
-.byte $0,$6,$C,$12,$17,$1D,$22,$27,$2C,$31,$36,$3B,$3E,$42,$45,$49,$4C,$4F,$51,$54,$56,$59,$5E,$64,$69,$6F,$75,$7B,$82,$88,$8F,$95,$9C,$A2,$A8,$AE,$B4,$BA,$C0,$C6,$CC,$D2,$D8,$DE,$DE,$DD,$DD,$DC,$DB,$DA,$D9,$D8,$D7,$D5,$D2,$CF,$CC,$C9,$C6,$C4,$C1,$BE,$BB,$B8,$B5,$B8,$BB,$BE,$C1,$C4,$C6,$C9,$CC,$CF,$D2,$D5,$D7,$D8,$D9,$DA,$DB,$DC,$DD,$DD,$DE,$DE,$D8,$D2,$CC,$C6,$C0,$BA,$B4,$AE,$A8,$A2,$9C,$95,$8F,$88,$82,$7B,$75,$6F,$69,$64,$5E,$59,$56,$54,$51,$4F,$4C,$49,$45,$42,$3E,$3B,$36,$31,$2C,$27,$22,$1D,$17,$12,$C,$6,$0,$F9,$F3,$ED,$E8,$E2,$DD,$D8,$D3,$CE,$C9,$C4,$C1,$BD,$BA,$B6,$B3,$B0,$AE,$AB,$A9,$A6,$A1,$9B,$96,$90,$8A,$84,$7D,$77,$70,$6A,$63,$5D,$57,$51,$4B,$45,$3F,$39,$33,$2D,$27,$21,$21,$22,$22,$23,$24,$25,$26,$27,$28,$2A,$2D,$30,$33,$36,$39,$3B,$3E,$41,$44,$47,$4A,$47,$44,$41,$3E,$3B,$39,$36,$33,$30,$2D,$2A,$28,$27,$26,$25,$24,$23,$22,$22,$21,$21,$27,$2D,$33,$39,$3F,$45,$4B,$51,$57,$5D,$63,$6A,$70,$77,$7D,$84,$8A,$90,$96,$9B,$A1,$A6,$A9,$AB,$AE,$B0,$B3,$B6,$BA,$BD,$C1,$C4,$C9,$CE,$D3,$D8,$DD,$E2,$E8,$ED,$F3,$F9
-
+.byte $1,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 SUBCELL_X_SIN_H:
 .byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
-
-SUBCELL_Y_COS_L:
-.byte $9C,$9E,$A0,$A2,$A4,$A6,$A8,$A9,$AB,$AC,$AD,$AE,$B1,$B3,$B5,$B8,$BA,$BB,$BD,$BE,$BF,$C0,$BA,$B5,$AF,$A9,$A3,$9D,$97,$91,$8B,$85,$7F,$7B,$76,$71,$6D,$68,$63,$5F,$5A,$56,$51,$4D,$4B,$48,$46,$43,$40,$3D,$3A,$37,$33,$30,$2C,$29,$25,$21,$1D,$18,$14,$F,$A,$5,$0,$FA,$F5,$F0,$EB,$E7,$E2,$DE,$DA,$D6,$D3,$CF,$CC,$C8,$C5,$C2,$BF,$BC,$B9,$B7,$B4,$B2,$AE,$A9,$A5,$A0,$9C,$97,$92,$8E,$89,$84,$80,$7A,$74,$6E,$68,$62,$5C,$56,$50,$4A,$45,$3F,$40,$41,$42,$44,$45,$47,$4A,$4C,$4E,$51,$52,$53,$54,$56,$57,$59,$5B,$5D,$5F,$61,$63,$61,$5F,$5D,$5B,$59,$57,$56,$54,$53,$52,$51,$4E,$4C,$4A,$47,$45,$44,$42,$41,$40,$3F,$45,$4A,$50,$56,$5C,$62,$68,$6E,$74,$7A,$80,$84,$89,$8E,$92,$97,$9C,$A0,$A5,$A9,$AE,$B2,$B4,$B7,$B9,$BC,$BF,$C2,$C5,$C8,$CC,$CF,$D3,$D6,$DA,$DE,$E2,$E7,$EB,$F0,$F5,$FA,$0,$5,$A,$F,$14,$18,$1D,$21,$25,$29,$2C,$30,$33,$37,$3A,$3D,$40,$43,$46,$48,$4B,$4D,$51,$56,$5A,$5F,$63,$68,$6D,$71,$76,$7B,$7F,$85,$8B,$91,$97,$9D,$A3,$A9,$AF,$B5,$BA,$C0,$BF,$BE,$BD,$BB,$BA,$B8,$B5,$B3,$B1,$AE,$AD,$AC,$AB,$A9,$A8,$A6,$A4,$A2,$A0,$9E
-
+SUBCELL_X_SIN_L:
+.byte $0,$5,$A,$10,$15,$1B,$20,$25,$2B,$30,$35,$3B,$40,$45,$4A,$4F,$54,$59,$5E,$63,$68,$6D,$71,$76,$7B,$7F,$84,$88,$8C,$90,$94,$98,$9C,$A0,$A4,$A7,$AB,$AE,$B2,$B5,$B8,$BB,$BE,$C0,$C3,$C6,$C8,$CA,$CC,$CE,$D0,$D2,$D4,$D5,$D7,$D8,$D9,$DA,$DB,$DC,$DC,$DD,$DD,$DD,$DD,$DD,$DD,$DD,$DC,$DC,$DB,$DA,$D9,$D8,$D7,$D5,$D4,$D2,$D0,$CE,$CC,$CA,$C8,$C6,$C3,$C0,$BE,$BB,$B8,$B5,$B2,$AE,$AB,$A7,$A4,$A0,$9C,$98,$94,$90,$8C,$88,$84,$7F,$7B,$76,$71,$6D,$68,$63,$5E,$59,$54,$4F,$4A,$45,$40,$3B,$35,$30,$2B,$25,$20,$1B,$15,$10,$A,$5,$0,$FA,$F5,$EF,$EA,$E4,$DF,$DA,$D4,$CF,$CA,$C4,$BF,$BA,$B5,$B0,$AB,$A6,$A1,$9C,$97,$92,$8E,$89,$84,$80,$7B,$77,$73,$6F,$6B,$67,$63,$5F,$5B,$58,$54,$51,$4D,$4A,$47,$44,$41,$3F,$3C,$39,$37,$35,$33,$31,$2F,$2D,$2B,$2A,$28,$27,$26,$25,$24,$23,$23,$22,$22,$22,$22,$22,$22,$22,$23,$23,$24,$25,$26,$27,$28,$2A,$2B,$2D,$2F,$31,$33,$35,$37,$39,$3C,$3F,$41,$44,$47,$4A,$4D,$51,$54,$58,$5B,$5F,$63,$67,$6B,$6F,$73,$77,$7B,$80,$84,$89,$8E,$92,$97,$9C,$A1,$A6,$AB,$B0,$B5,$BA,$BF,$C4,$CA,$CF,$D4,$DA,$DF,$E4,$EA,$EF,$F5,$FA
 SUBCELL_Y_COS_H:
 .byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
-
-SUBCELL_Y_SIN_L:
-.byte $0,$3,$7,$C,$10,$14,$18,$1D,$22,$26,$2B,$30,$35,$3B,$41,$47,$4D,$53,$59,$60,$66,$6D,$70,$72,$75,$77,$79,$7A,$7C,$7D,$7E,$7F,$7F,$81,$82,$84,$85,$86,$86,$87,$87,$88,$88,$88,$8C,$90,$94,$98,$9C,$9F,$A3,$A7,$AA,$AE,$B3,$B7,$BC,$C0,$C5,$C9,$CD,$D2,$D6,$D9,$DD,$D9,$D6,$D2,$CD,$C9,$C5,$C0,$BC,$B7,$B3,$AE,$AA,$A7,$A3,$9F,$9C,$98,$94,$90,$8C,$88,$88,$88,$87,$87,$86,$86,$85,$84,$82,$81,$7F,$7F,$7E,$7D,$7C,$7A,$79,$77,$75,$72,$70,$6D,$66,$60,$59,$53,$4D,$47,$41,$3B,$35,$30,$2B,$26,$22,$1D,$18,$14,$10,$C,$7,$3,$0,$FC,$F8,$F3,$EF,$EB,$E7,$E2,$DD,$D9,$D4,$CF,$CA,$C4,$BE,$B8,$B2,$AC,$A6,$9F,$99,$92,$8F,$8D,$8A,$88,$86,$85,$83,$82,$81,$80,$80,$7E,$7D,$7B,$7A,$79,$79,$78,$78,$77,$77,$77,$73,$6F,$6B,$67,$63,$60,$5C,$58,$55,$51,$4C,$48,$43,$3F,$3A,$36,$32,$2D,$29,$26,$22,$26,$29,$2D,$32,$36,$3A,$3F,$43,$48,$4C,$51,$55,$58,$5C,$60,$63,$67,$6B,$6F,$73,$77,$77,$77,$78,$78,$79,$79,$7A,$7B,$7D,$7E,$80,$80,$81,$82,$83,$85,$86,$88,$8A,$8D,$8F,$92,$99,$9F,$A6,$AC,$B2,$B8,$BE,$C4,$CA,$CF,$D4,$D9,$DD,$E2,$E7,$EB,$EF,$F3,$F8,$FC
-
+SUBCELL_Y_COS_L:
+.byte $9C,$9C,$9C,$9C,$9C,$9B,$9B,$9A,$99,$98,$98,$97,$96,$94,$93,$92,$90,$8F,$8D,$8C,$8A,$88,$86,$84,$82,$80,$7D,$7B,$79,$76,$74,$71,$6E,$6C,$69,$66,$63,$60,$5D,$5A,$57,$53,$50,$4D,$49,$46,$43,$3F,$3B,$38,$34,$31,$2D,$29,$26,$22,$1E,$1A,$17,$13,$F,$B,$7,$3,$0,$FC,$F8,$F4,$F0,$EC,$E8,$E5,$E1,$DD,$D9,$D6,$D2,$CE,$CB,$C7,$C4,$C0,$BC,$B9,$B6,$B2,$AF,$AC,$A8,$A5,$A2,$9F,$9C,$99,$96,$93,$91,$8E,$8B,$89,$86,$84,$82,$7F,$7D,$7B,$79,$77,$75,$73,$72,$70,$6F,$6D,$6C,$6B,$69,$68,$67,$67,$66,$65,$64,$64,$63,$63,$63,$63,$63,$63,$63,$63,$63,$64,$64,$65,$66,$67,$67,$68,$69,$6B,$6C,$6D,$6F,$70,$72,$73,$75,$77,$79,$7B,$7D,$7F,$82,$84,$86,$89,$8B,$8E,$91,$93,$96,$99,$9C,$9F,$A2,$A5,$A8,$AC,$AF,$B2,$B6,$B9,$BC,$C0,$C4,$C7,$CB,$CE,$D2,$D6,$D9,$DD,$E1,$E5,$E8,$EC,$F0,$F4,$F8,$FC,$0,$3,$7,$B,$F,$13,$17,$1A,$1E,$22,$26,$29,$2D,$31,$34,$38,$3B,$3F,$43,$46,$49,$4D,$50,$53,$57,$5A,$5D,$60,$63,$66,$69,$6C,$6E,$71,$74,$76,$79,$7B,$7D,$80,$82,$84,$86,$88,$8A,$8C,$8D,$8F,$90,$92,$93,$94,$96,$97,$98,$98,$99,$9A,$9B,$9B,$9C,$9C,$9C,$9C
 SUBCELL_Y_SIN_H:
 .byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+SUBCELL_Y_SIN_L:
+.byte $0,$4,$8,$D,$11,$16,$1A,$1E,$23,$27,$2B,$30,$34,$38,$3C,$41,$45,$49,$4D,$51,$55,$59,$5D,$60,$64,$68,$6B,$6F,$72,$76,$79,$7C,$7F,$83,$86,$89,$8B,$8E,$91,$93,$96,$98,$9B,$9D,$9F,$A1,$A3,$A5,$A7,$A8,$AA,$AB,$AD,$AE,$AF,$B0,$B1,$B2,$B3,$B3,$B4,$B4,$B4,$B4,$B5,$B4,$B4,$B4,$B4,$B3,$B3,$B2,$B1,$B0,$AF,$AE,$AD,$AB,$AA,$A8,$A7,$A5,$A3,$A1,$9F,$9D,$9B,$98,$96,$93,$91,$8E,$8B,$89,$86,$83,$80,$7C,$79,$76,$72,$6F,$6B,$68,$64,$60,$5D,$59,$55,$51,$4D,$49,$45,$41,$3C,$38,$34,$30,$2B,$27,$23,$1E,$1A,$16,$11,$D,$8,$4,$0,$FB,$F7,$F2,$EE,$E9,$E5,$E1,$DC,$D8,$D4,$CF,$CB,$C7,$C3,$BE,$BA,$B6,$B2,$AE,$AA,$A6,$A2,$9F,$9B,$97,$94,$90,$8D,$89,$86,$83,$80,$7C,$79,$76,$74,$71,$6E,$6C,$69,$67,$64,$62,$60,$5E,$5C,$5A,$58,$57,$55,$54,$52,$51,$50,$4F,$4E,$4D,$4C,$4C,$4B,$4B,$4B,$4B,$4A,$4B,$4B,$4B,$4B,$4C,$4C,$4D,$4E,$4F,$50,$51,$52,$54,$55,$57,$58,$5A,$5C,$5E,$60,$62,$64,$67,$69,$6C,$6E,$71,$74,$76,$79,$7C,$80,$83,$86,$89,$8D,$90,$94,$97,$9B,$9F,$A2,$A6,$AA,$AE,$B2,$B6,$BA,$BE,$C3,$C7,$CB,$CF,$D4,$D8,$DC,$E1,$E5,$E9,$EE,$F2,$F7,$FB
 
+MOVE_Y_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$00,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+MOVE_Y_L:
+.byte $8,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$6,$6,$6,$6,$6,$6,$6,$6,$6,$5,$5,$5,$5,$5,$5,$5,$4,$4,$4,$4,$4,$4,$3,$3,$3,$3,$3,$3,$2,$2,$2,$2,$2,$1,$1,$1,$1,$1,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FE,$FE,$FE,$FE,$FE,$FD,$FD,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F8,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$FF,$FF,$0,$0,$0,$0,$0,$0,$1,$1,$1,$1,$1,$2,$2,$2,$2,$2,$3,$3,$3,$3,$3,$3,$4,$4,$4,$4,$4,$4,$5,$5,$5,$5,$5,$5,$5,$6,$6,$6,$6,$6,$6,$6,$6,$6,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7,$7
+MOVE_X_H:
+.byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
+MOVE_X_L:
+.byte $0,$0,$0,$0,$0,$0,$1,$1,$1,$1,$1,$1,$2,$2,$2,$2,$2,$2,$2,$3,$3,$3,$3,$3,$3,$3,$4,$4,$4,$4,$4,$4,$4,$5,$5,$5,$5,$5,$5,$5,$5,$5,$5,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$5,$5,$5,$5,$5,$5,$5,$5,$5,$5,$4,$4,$4,$4,$4,$4,$4,$3,$3,$3,$3,$3,$3,$3,$2,$2,$2,$2,$2,$2,$2,$1,$1,$1,$1,$1,$1,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FE,$FE,$FE,$FE,$FE,$FE,$FD,$FD,$FD,$FD,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FB,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FD,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$FF,$FF
 
 ;constants
 
@@ -420,66 +415,10 @@ start:
   cli ; enable IRQ now that vector is properly set
 
 
-  ; calc movement table - using ACROSS_ROW_* but move 1/16 unit at a time .. at 30fps = 30/16 = ~2 units / second
-  LDX #0 
-  LDY #64
- : LDA ACROSS_ROW_X_L,X
-   STA $7E
-   LDA ACROSS_ROW_X_H,X
-   LSR
-   ROL $7E  ;  /2
-   LSR
-   ROL $7E  ; /4
-   LSR
-   ROL $7E  ; /8
-   LSR
-   ROL $7E  ; /16
-   LSR 
-   ROL $7E  ; /32   
-   CMP #4   ;  if original value was positive, this is the sign bit... 
-   BCC :+
-   LDA #$FF 
- : STA MOVE_YH,X 
-   LDA $7E
-   STA MOVE_YL,X 
-
-   LDA ACROSS_ROW_X_L,Y
-   STA $7E
-   LDA ACROSS_ROW_X_H,Y
-   LSR
-   ROL $7E  ;  /2
-   LSR
-   ROL $7E  ; /4
-   LSR
-   ROL $7E  ; /8
-   LSR
-   ROL $7E  ; /16
-   LSR 
-   ROL $7E  ; /32   
-   CMP #4   ;  if original value was positive, this is the sign bit... 
-   BCC :+
-   LDA #$FF 
- : STA MOVE_XH,X
-   LDA $7E
-   STA MOVE_XL,X
-   INY
-   INX 
-   BNE :---
-
   ; main loop here... 
    STZ camera_facing
 
 @camera_world_changed:
-   LDX camera_world_pos_XH 
-   LDY camera_world_pos_XL
-   CLC 
-   LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
-   ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH 
-   TAY   ;  cellXL from ratio
-   LDA WORLD_TO_CELL_XH,X 
-   ADC #0 ; gotta do that carry and all .. 
-   TAX   ; cellXH from ratio 
-
    ; copy over cell YL as-is
    LDA camera_world_pos_YL
    STA camera_cell_yl
@@ -490,20 +429,35 @@ start:
    ;  halve floor(cellY)
    LSR 
    STA $7F ; stash it for scratch
-   BCS :+ ; did we have a thing from before? 
-   STY camera_cell_xl
-   SEC ; no half to subtract.. OK 
-   BRA :++
- : TYA   ;  cellXL from ratio
-   SBC #128 ; subtract the half
+   LDA #0
+   ROR
+   STA $7E ; and there's the half.. 
+
+   LDX camera_world_pos_XH 
+   LDY camera_world_pos_XL
+   CLC 
+   LDA WORLD_TO_CELL_XH,Y ; that bit from pos_XL
+   ADC WORLD_TO_CELL_XL,X ; plus the bit from pos_XH 
+   TAY   ;  cellXL from ratio
+   LDA WORLD_TO_CELL_XH,X 
+   ADC #0 ; gotta do that carry and all .. 
+   TAX   ; cellXH from ratio 
+
+   TYA 
+   SEC
+   SBC $7E
    STA camera_cell_xl 
- : TXA
-   SBC $7F ; now either carry is set because cellXL >=128 or was no half to sub.. subtract halfY 
+   TXA
+   SBC $7F  
    STA camera_cell_x
+   jmp @do_update
 
 @camera_cell_changed: ; run through this more as a normalization step for camera..
    ; worldX = scaled(floor(cellY)/2 + cellX )
+   LDA camera_cell_yl
+   STA camera_world_pos_YL
    LDA camera_cell_y
+   STA camera_world_pos_YH
    LSR
    TAX  ; high byte floor(Y)/2
    LDA #0
@@ -575,7 +529,7 @@ start:
    ADC #0
    STA MASTER_CLOCK+1
    TXA
-   AND #3 ; restrict to 20 fps.. don't care missed cycle. 
+   AND #1 ; restrict to 30 fps.. don't care missed cycle. 
    BNE @FRAME_CHECK
    ; poll keyboard for input 
    jsr GETIN
@@ -593,38 +547,38 @@ start:
  : cmp #$11; cursor down
    BNE :+
    LDX camera_facing
-   CLC 
+   SEC 
    LDA camera_world_pos_XL
-   ADC MOVE_XL,X 
+   SBC MOVE_X_L,X 
    STA camera_world_pos_XL
    LDA camera_world_pos_XH
-   ADC MOVE_XH,X 
+   SBC MOVE_X_H,X 
    STA camera_world_pos_XH
    CLC 
-   LDA MOVE_YL,X 
-   ADC camera_world_pos_YL
+   LDA camera_world_pos_YL
+   ADC MOVE_Y_L,X 
    STA camera_world_pos_YL
-   LDA MOVE_YH,X 
-   ADC camera_world_pos_YH
+   LDA camera_world_pos_YH
+   ADC MOVE_Y_H,X 
    STA camera_world_pos_YH
    jmp @camera_world_changed
 
  : cmp #$91 ; cursor up 
    BNE :+
    LDX camera_facing
-   SEC 
+   CLC 
    LDA camera_world_pos_XL
-   SBC MOVE_XL,X 
+   ADC MOVE_X_L,X 
    STA camera_world_pos_XL
    LDa camera_world_pos_XH
-   SBC MOVE_XH,X 
+   ADC MOVE_X_H,X 
    STA camera_world_pos_XH
    SEC 
    LDA camera_world_pos_YL
-   SBC MOVE_YL,X 
+   SBC MOVE_Y_L,X 
    STA camera_world_pos_YL
    LDA camera_world_pos_YH
-   SBC MOVE_YH,X 
+   SBC MOVE_Y_H,X 
    STA camera_world_pos_YH
    jmp @camera_world_changed
 
@@ -815,26 +769,6 @@ SCREEN_OUT_BOTTOM  = 136
    STA PWOL_NEXT_ROW_A_RIGHT_YH
 
 
-   LDA SUBCELL_X_COS_L,X
-   STA PWOL_START_COS_XL
-   LDA SUBCELL_X_COS_H,X
-   STA PWOL_START_COS_XH
-
-   LDA SUBCELL_X_SIN_L,X
-   STA PWOL_START_SIN_XL
-   LDA SUBCELL_X_SIN_H,X
-   STA PWOL_START_SIN_XH
-
-   LDA SUBCELL_Y_COS_L,X
-   STA PWOL_START_COS_YL
-   LDA SUBCELL_Y_COS_H,X
-   STA PWOL_START_COS_YH
-
-   LDA SUBCELL_Y_SIN_L,X
-   STA PWOL_START_SIN_YL
-   LDA SUBCELL_Y_SIN_H,X
-   STA PWOL_START_SIN_YH
-
 ; for zig B , the opposite of left/up is right/down.. so A_LEFT * -1 = B_RIGHT
    SEC ; flip A_LEFT X to B_RIGHT X
    LDA #0
@@ -875,7 +809,7 @@ SCREEN_OUT_BOTTOM  = 136
     ROR PWOL_TUB_PTR_AL
     LSR  ; y pages of 64 ! 
     ROR PWOL_TUB_PTR_AL
-    ORA #>TUB_WORLD
+    ADC #>TUB_WORLD
     STA PWOL_TUB_PTR_AH
     STA PWOL_TUB_PTR_BH
     LDA PWOL_TUB_PTR_AL
@@ -886,75 +820,99 @@ SCREEN_OUT_BOTTOM  = 136
     LDA #SCREEN_MID_X-8
     STA PWOL_CURRENT_XH
 
-
+    LDA camera_cell_x
+    STA PWOL_CONVERT_HEIGHTS
 
     STZ PWOL_CURRENT_YL
     LDA #SCREEN_MID_Y-5
+    CLC
+    ADC (PWOL_CONVERT_HEIGHTS)
     STA PWOL_CURRENT_YH
 
-
     LDA camera_cell_xl
-;    EOR #$FF
-    LSR
-    LSR
-    LSR
     LSR 
-    STA PWOL_camera_cell_xl
-    LDA camera_cell_yl
- ;   EOR #$FF
-    LSR
-    LSR
-    LSR
-    LSR
-    STA PWOL_camera_cell_yl
+    LSR 
+    LSR 
+    LSR 
+    SEC
+    SBC #8
+    BCS :++
+    AND #7
+    TAY
+  : LDA PWOL_CURRENT_XL
+    ADC SUBCELL_X_COS_L,X
+    STA PWOL_CURRENT_XL
+    LDA PWOL_CURRENT_XH
+    ADC SUBCELL_X_COS_H,X
+    STA PWOL_CURRENT_XH
 
-      ; startX - COS * X - SIN Y
-      ; startY- SIN * X + COS Y 
-    LDX #4
-   : LSR PWOL_camera_cell_xl ; StartX - needs cosX*X , startY = SINY*X 
-     BCC :+ ; digit? 
-     LDA PWOL_CURRENT_XL   ;  X = - COS*X
-     ADC PWOL_START_COS_XL
-     STA PWOL_CURRENT_XL
-     LDA PWOL_CURRENT_XH
-     ADC PWOL_START_COS_XH
-     STA PWOL_CURRENT_XH
-     LDA PWOL_CURRENT_YL   ;  Y = - SINY X 
-     SBC PWOL_START_SIN_YL
-     STA PWOL_CURRENT_YL
-     LDA PWOL_CURRENT_YH
-     SBC PWOL_START_SIN_YH
-     STA PWOL_CURRENT_YH
-   : ; skip the X digit..  
-     ASL PWOL_START_COS_XL
-     ROL PWOL_START_COS_XH
-     ASL PWOL_START_SIN_YL
-     ROL PWOL_START_SIN_YH
+    LDA PWOL_CURRENT_YL
+    SBC SUBCELL_Y_SIN_L,X 
+    STA PWOL_CURRENT_YL
+    LDA PWOL_CURRENT_YH
+    SBC SUBCELL_Y_SIN_H,X 
+    STA PWOL_CURRENT_YH
+    DEY 
+    BNE :-   
+  : BEQ :++
+    TAY
+  : LDA PWOL_CURRENT_XL
+    SBC SUBCELL_X_COS_L,X
+    STA PWOL_CURRENT_XL
+    LDA PWOL_CURRENT_XH
+    SBC SUBCELL_X_COS_H,X
+    STA PWOL_CURRENT_XH
 
-     LSR PWOL_camera_cell_yl ; StartX - needs sinX*Y, startY needs COSY*Y
-     BCC :+
-     LDA PWOL_CURRENT_XL 
-     SBC PWOL_START_SIN_XL
-     STA PWOL_CURRENT_XL
-     LDA PWOL_CURRENT_XH
-     SBC PWOL_START_SIN_XH
-     STA PWOL_CURRENT_XH
-     LDA PWOL_CURRENT_YL
-     SBC PWOL_START_COS_YL 
-     STA PWOL_CURRENT_YL
-     LDA PWOL_CURRENT_YH
-     SBC PWOL_START_COS_YH
-     STA PWOL_CURRENT_YH
-   : ; skip y digit.. do shit 
-     ASL PWOL_START_SIN_XL
-     ROL PWOL_START_SIN_XH
-     ASL PWOL_START_COS_YL
-     ROL PWOL_START_COS_YH
+    LDA PWOL_CURRENT_YL
+    ADC SUBCELL_Y_SIN_L,X 
+    STA PWOL_CURRENT_YL
+    LDA PWOL_CURRENT_YH
+    ADC SUBCELL_Y_SIN_H,X 
+    STA PWOL_CURRENT_YH
+    DEY 
+    BNE :-
 
-     DEX 
-     BNE :--- ; back to start of loop .. 
+  : LDA camera_cell_yl
+    LSR 
+    LSR 
+    LSR 
+    LSR 
+    SBC #8
+    BCS :++
+    AND #7
+    TAY
+  : LDA PWOL_CURRENT_YL
+    ADC SUBCELL_Y_COS_L,X
+    STA PWOL_CURRENT_YL
+    LDA PWOL_CURRENT_YH
+    ADC SUBCELL_Y_COS_H,X
+    STA PWOL_CURRENT_YH
 
-
+    LDA PWOL_CURRENT_XL
+    ADC SUBCELL_X_SIN_L,X 
+    STA PWOL_CURRENT_XL
+    LDA PWOL_CURRENT_XH
+    ADC SUBCELL_X_SIN_H,X 
+    STA PWOL_CURRENT_XH
+    DEY 
+    BNE :-
+    BEQ :++
+    TAY
+  : LDA PWOL_CURRENT_YL
+    SBC SUBCELL_Y_COS_L,X
+    STA PWOL_CURRENT_YL
+    LDA PWOL_CURRENT_YH
+    SBC SUBCELL_Y_COS_H,X
+    STA PWOL_CURRENT_YH
+    LDA PWOL_CURRENT_XL
+    SBC SUBCELL_X_SIN_L,X 
+    STA PWOL_CURRENT_XL
+    LDA PWOL_CURRENT_XH
+    SBC SUBCELL_X_SIN_H,X 
+    STA PWOL_CURRENT_XH
+    DEY 
+    BNE :-
+  :
 
     LDA PWOL_CURRENT_XL
     STA PWOL_START_XL
@@ -1045,7 +1003,7 @@ SCREEN_OUT_BOTTOM  = 136
      @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
-         INY
+;         INY
          SEC 
          LDA PWOL_TUB_PTR_AL
          SBC #64 ;   0,-1
@@ -1264,7 +1222,7 @@ SCREEN_OUT_BOTTOM  = 136
 
 
   @zigzag_B: ; going to left and down the screen, including where we are currently.. 
-      RTS
+     ; RTS
       SEC 
       LDA PWOL_START_XL
       SBC PWOL_ACROSS_ROW_XL
@@ -1360,7 +1318,8 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_BOTTOM
          BCC @zigzag_B_left
      @ZBL_ZIG_RIGHT_SWITCH: ; DOWN/LEFT to start right is is 0,+1  from where we is right now .. 
-         INY
+         ;INY
+         ;INY
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
          CLC
@@ -1369,7 +1328,10 @@ SCREEN_OUT_BOTTOM  = 136
          STA PWOL_TUB_PTR_BL
          LDA PWOL_TUB_PTR_BH
          ADC #0
-         STA PWOL_TUB_PTR_BH
+         CMP #>TUB_WORLD+8
+         BCC :+
+         rts
+       : STA PWOL_TUB_PTR_BH
 
 
          CLC 
@@ -1510,14 +1472,17 @@ SCREEN_OUT_BOTTOM  = 136
      @ZBR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going down the screen ..  +1,+1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
-;        INY ; have to go this to match where the thing is going .. 0,0
+        DEY ; have to go this to match where the thing is going .. 0,0
          CLC 
          LDA PWOL_TUB_PTR_BL
          ADC #64 ;   0,-1
          STA PWOL_TUB_PTR_BL
          LDA PWOL_TUB_PTR_BH
          ADC #0
-         STA PWOL_TUB_PTR_BH
+         CMP #>TUB_WORLD+8
+         BCC :+
+         rts
+       : STA PWOL_TUB_PTR_BH
 
          CLC 
          LDA PWOL_CURRENT_XL
