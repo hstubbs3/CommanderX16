@@ -243,7 +243,14 @@ TODO 	fix up zig zagB since switched map/memory alignment
 0010 	OK stopping here.. 
 	commit
 
+2024/03/15
+1930 	back at it.. first, want to add keys so I can +/- cell X/Y directly in ~1/16 increments..
+1945 	OK IJKL working OK .. now fix the subcell calc.. 
 TODO 	fix up sub-cell alignment
+	DONE 	subcell alignment / rotation working
+2020 	re-enable heights... seems to work.. OK 
+	commit
+	
 TODO 	implement changing sprite to account for heading, setting h-flip
 TODO 	perhaps alter view to be 160x120 ? 
 TODO 	blitting extra objects to buffer

@@ -119,9 +119,9 @@ SCREEN_Y_TO_Z: ; 2B00
 .byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
-;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
+.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 .res 128,0
-.res 128,0
+;.res 128,0
 CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
 .byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 
@@ -242,6 +242,9 @@ C_CHAR            = $43
 D_CHAR            = $44
 E_CHAR            = $45
 I_CHAR            = $49
+J_CHAR            = $4A
+K_CHAR            = $4B
+L_CHAR            = $4C
 O_CHAR            = $4F
 T_CHAR            = $54
 W_CHAR            = $57
@@ -640,18 +643,71 @@ start:
    STZ camera_cell_yl
    JMP @camera_cell_changed
 
- : cmp #0 ; 
-   BNE :+
-   JMP @do_update
+ : cmp #I_CHAR ; cell y - 1/16 
+   BNE :++   
+   SEC 
+   LDA camera_cell_yl
+   SBC #16
+   STA camera_cell_yl
+   BCS :+
+   LDA camera_cell_y
+   BEQ :+
+   DEC A
+   STA camera_cell_y
+   CLC 
+   LDA camera_cell_xl
+   ADC #128
+   STA camera_cell_xl
+   BCC :+
+   INC camera_cell_x
+ : JMP @camera_cell_changed
 
- : cmp #0 ; 
-   BNE :+
-   JMP @do_update
+ : cmp #J_CHAR ; cell x - 1/16 
+   BNE :++
+   SEC 
+   LDA camera_cell_xl
+   SBC #16
+   STA camera_cell_xl
+   BCS :+
+   LDA camera_cell_x
+   BEQ :+
+   DEC A 
+   STA camera_cell_x
+ : JMP @camera_cell_changed
 
- : cmp #0 ; 
-   BNE :+
-   JMP @do_update
+ : cmp #K_CHAR ; cell y + 1/16 
+   BNE :++   
+   CLC 
+   LDA camera_cell_yl
+   ADC #16
+   STA camera_cell_yl
+   BCC :+
+   LDA camera_cell_y
+   CMP #31
+   BCS :+
+   INC A
+   STA camera_cell_y
+   SEC 
+   LDA camera_cell_xl
+   SBC #128
+   STA camera_cell_xl
+   BCS :+
+   DEC camera_cell_x
+ : JMP @camera_cell_changed
 
+ : cmp #L_CHAR ; cell x + 1/16 
+   BNE :++
+   CLC 
+   LDA camera_cell_xl
+   ADC #16
+   STA camera_cell_xl
+   BCC :+
+   INC camera_cell_x
+ : JMP @camera_cell_changed
+
+ : cmp #0 ; cell y - 1/16 
+   BNE :+   
+   JMP @do_update
 
  : JMP @FRAME_CHECK
 
@@ -820,7 +876,8 @@ SCREEN_OUT_BOTTOM  = 136
     LDA #SCREEN_MID_X-8
     STA PWOL_CURRENT_XH
 
-    LDA camera_cell_x
+    LDY camera_cell_x
+    LDA (PWOL_TUB_PTR_AL),y
     STA PWOL_CONVERT_HEIGHTS
 
     STZ PWOL_CURRENT_YL
@@ -830,87 +887,93 @@ SCREEN_OUT_BOTTOM  = 136
     STA PWOL_CURRENT_YH
 
     LDA camera_cell_xl
-    LSR 
-    LSR 
-    LSR 
-    LSR 
-    SEC
-    SBC #8
-    BCS :++
-    AND #7
+    LSR ;   /2
+    LSR ;   /4
+    LSR ;   /8
+    LSR ;   /16
+    SEC 
+    SBC #8 ;   subtract le middle.. 
     TAY
-  : LDA PWOL_CURRENT_XL
+    BCS :++    ;  is positive.. 
+  : CLC 
+    LDA PWOL_CURRENT_XL
     ADC SUBCELL_X_COS_L,X
     STA PWOL_CURRENT_XL
     LDA PWOL_CURRENT_XH
     ADC SUBCELL_X_COS_H,X
     STA PWOL_CURRENT_XH
-
+    SEC 
     LDA PWOL_CURRENT_YL
     SBC SUBCELL_Y_SIN_L,X 
     STA PWOL_CURRENT_YL
     LDA PWOL_CURRENT_YH
-    SBC SUBCELL_Y_SIN_H,X 
+    SBC SUBCELL_Y_SIN_H,X
     STA PWOL_CURRENT_YH
-    DEY 
-    BNE :-   
+    INY
+    BNE :-
   : BEQ :++
-    TAY
-  : LDA PWOL_CURRENT_XL
+  : SEC 
+    LDA PWOL_CURRENT_XL
     SBC SUBCELL_X_COS_L,X
     STA PWOL_CURRENT_XL
     LDA PWOL_CURRENT_XH
     SBC SUBCELL_X_COS_H,X
     STA PWOL_CURRENT_XH
-
+    CLC 
     LDA PWOL_CURRENT_YL
     ADC SUBCELL_Y_SIN_L,X 
     STA PWOL_CURRENT_YL
     LDA PWOL_CURRENT_YH
-    ADC SUBCELL_Y_SIN_H,X 
+    ADC SUBCELL_Y_SIN_H,X
     STA PWOL_CURRENT_YH
-    DEY 
+    DEY
     BNE :-
+  :
 
-  : LDA camera_cell_yl
-    LSR 
-    LSR 
-    LSR 
-    LSR 
-    SBC #8
-    BCS :++
-    AND #7
+    LDA camera_cell_yl
+    LSR ;   /2
+    LSR ;   /4
+    LSR ;   /8
+    LSR ;   /16
+    SEC 
+    SBC #8 ;   subtract le middle.. 
     TAY
-  : LDA PWOL_CURRENT_YL
-    ADC SUBCELL_Y_COS_L,X
+    BCS :++    ;  is positive.. 
+  : CLC 
+    LDA PWOL_CURRENT_XL
+    ADC SUBCELL_X_SIN_L,X
+    STA PWOL_CURRENT_XL
+    LDA PWOL_CURRENT_XH
+    ADC SUBCELL_X_SIN_H,X
+    STA PWOL_CURRENT_XH
+    CLC 
+    LDA PWOL_CURRENT_YL
+    ADC SUBCELL_Y_COS_L,X 
     STA PWOL_CURRENT_YL
     LDA PWOL_CURRENT_YH
     ADC SUBCELL_Y_COS_H,X
     STA PWOL_CURRENT_YH
 
+    INY
+    BNE :-
+  : BEQ :++
+  : SEC 
     LDA PWOL_CURRENT_XL
-    ADC SUBCELL_X_SIN_L,X 
+    SBC SUBCELL_X_SIN_L,X
     STA PWOL_CURRENT_XL
     LDA PWOL_CURRENT_XH
-    ADC SUBCELL_X_SIN_H,X 
+    SBC SUBCELL_X_SIN_H,X
     STA PWOL_CURRENT_XH
-    DEY 
-    BNE :-
-    BEQ :++
-    TAY
-  : LDA PWOL_CURRENT_YL
-    SBC SUBCELL_Y_COS_L,X
+
+    SEC 
+    LDA PWOL_CURRENT_YL
+    SBC SUBCELL_Y_COS_L,X 
     STA PWOL_CURRENT_YL
     LDA PWOL_CURRENT_YH
     SBC SUBCELL_Y_COS_H,X
     STA PWOL_CURRENT_YH
-    LDA PWOL_CURRENT_XL
-    SBC SUBCELL_X_SIN_L,X 
-    STA PWOL_CURRENT_XL
-    LDA PWOL_CURRENT_XH
-    SBC SUBCELL_X_SIN_H,X 
-    STA PWOL_CURRENT_XH
-    DEY 
+
+    DEY
     BNE :-
   :
 
@@ -918,14 +981,14 @@ SCREEN_OUT_BOTTOM  = 136
     STA PWOL_START_XL
     LDA PWOL_CURRENT_XH
     STA PWOL_START_XH
-
     LDA PWOL_CURRENT_YL
     STA PWOL_START_YL
     LDA PWOL_CURRENT_YH
     STA PWOL_START_YH
 
+
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
-      LDY camera_cell_x   ;  eh voila! we haz pointer to ze row to start on .. woot!     
+    LDY camera_cell_x
     @zigzag_A_right:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAR_NEXT ; if we're outside we'll just skip is OK here
