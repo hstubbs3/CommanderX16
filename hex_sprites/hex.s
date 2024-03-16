@@ -80,51 +80,52 @@ CELL_LOW_TO_WORLD_XL: ; 2400
 .byte 0,1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,23,24,25,26,27,28,30,31,32,33,34,35,36,38,39,40,41,42,43,45,46,47,48,49,50,51,53,54,55,56,57,58,60,61,62,63,64,65,66,68,69,70,71,72,73,75,76,77,78,79,80,81,83,84,85,86,87,88,90,91,92,93,94,95,96,98,99,100,101,102,103,105,106,107,108,109,110,112,113,114,115,116,117,118,120,121,122,123,124,125,127,128,129,130,131,132,133,135,136,137,138,139,140,142,143,144,145,146,147,148,150,151,152,153,154,155,157,158,159,160,161,162,163,165,166,167,168,169,170,172,173,174,175,176,177,178,180,181,182,183,184,185,187,188,189,190,191,192,193,195,196,197,198,199,200,202,203,204,205,206,207,209,210,211,212,213,214,215,217,218,219,220,221,222,224,225,226,227,228,229,230,232,233,234,235,236,237,239,240,241,242,243,244,245,247,248,249,250,251,252,254,255,0,1,2,3,4,6,7,8,9,10,11,13,14,15,16,17,18,19,21,22,23,24,25,26,28,29,30,31,32,33,34,36,37,38
 
 SPRITE_NUM_HIGH_NIBBLE: ; 2900
-.res 16, 33
-.res 16, 34
-.res 16, 35
-.res 16, 36
-.res 16, 37
-.res 16, 38
-.res 16, 39
-.res 16, 40
-.res 16, 41
-.res 16, 42
-.res 16, 43
-.res 16, 44
-.res 16, 45
-.res 16, 46
-.res 16, 47
-.res 16, 48
+.res 16, 0
+.res 16, 1
+.res 16, 2
+.res 16, 3
+.res 16, 4
+.res 16, 5
+.res 16, 6
+.res 16, 7
+.res 16, 8
+.res 16, 9
+.res 16, 10
+.res 16, 11
+.res 16, 12
+.res 16, 13
+.res 16, 14
+.res 16, 15
 
 SPRITE_NUM_LOW_NIBBLE: ; 2A00
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
-.byte 33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+.byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
 SCREEN_Y_TO_Z: ; 2B00
 .byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
-.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
-.res 128,0
+;.res 256,0
+.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,53,53,54,55,55,56,56,57,58,58,59,60,60,61,61,62,63,63,64,64,65,66,66,67,67,68,69,69,70,71,71,72,72,73,74,74,75,75,76,77,77,78,78,79,80,80,81,82,82,83,83,84,85,85,86,86,87,88,88,89,90,90,91,91,92,93,93,94,94,95,96,96,97,97,98,99,99,100,101,101,102,102,103,104,104,105,105,106,107,107,108,109,109,110,110,111,112,112,113,113,114,115,115,116,116,117,118,118,119,120,120,121,121,122,123,123,124,124,125,126,126,127,127,128,129,129,130,131,131,132,132,133,134,134,135,135,136,137,137,138,139,139,140,140,141,142,142,143,143,144,145,145,146,146,147,148,148,149,150,150,151,151,152,153,153,154,154,155,156
+;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 ;.res 128,0
-CONVERT_HEIGHTS_PIXELS_SECONDARY: ; 2D00
-.byte 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,2,3,3,4,4,5,6,6,7,8,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,19,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,38,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
-
+CONVERT_HEIGHTS_PIXELS_L:
+;.res 256,0
+.byte 0,156,57,214,115,15,172,73,230,130,31,188,89,245,146,47,204,105,5,162,63,220,120,21,178,79,235,136,37,194,95,251,152,53,210,110,11,168,69,225,126,27,184,84,241,142,43,200,100,1,158,59,215,116,17,174,74,231,132,33,190,90,247,148,49,205,106,7,164,64,221,122,23,180,80,237,138,39,195,96,253,154,54,211,112,0,169,70,227,128,29,185,86,243,144,44,201,102,3,159,60,217,118,19,175,76,233,134,34,191,92,249,149,50,207,108,9,165,66,223,124,24,181,82,239,139,40,197,98,254,155,56,213,114,14,171,72,229,129,30,187,88,244,145,46,203,104,4,161,62,219,119,20,177,78,234,135,36,193,94,250,151,52,209,109,10,167,68,224,125,26,183,83,240,141,42,199,99,0,157,58,214,115,16,173,73,230,131,32,189,89,246,147,48,204,105,6,163,63,220,121,22,179,79,236,137,38,194,95,252,153,53,210,111,12,168,69,226,127,28,184,85,242,143,43,200,101,2,158,59,216,117,18,174,75,232,133,33,190,91,248,148,49,206,107,7,164,65,222,123,23,180,81,238,138,39
 
 SUBCELL_X_COS_L:
 .byte $0,$FF,$FF,$FF,$FE,$FE,$FD,$FC,$FB,$F9,$F8,$F6,$F4,$F3,$F1,$EE,$EC,$EA,$E7,$E4,$E1,$DE,$DB,$D8,$D4,$D1,$CD,$C9,$C5,$C1,$BD,$B9,$B5,$B0,$AB,$A7,$A2,$9D,$98,$93,$8E,$88,$83,$7E,$78,$73,$6D,$67,$61,$5C,$56,$50,$4A,$44,$3E,$38,$31,$2B,$25,$1F,$19,$12,$C,$6,$0,$F9,$F3,$ED,$E6,$E0,$DA,$D4,$CE,$C7,$C1,$BB,$B5,$AF,$A9,$A3,$9E,$98,$92,$8C,$87,$81,$7C,$77,$71,$6C,$67,$62,$5D,$58,$54,$4F,$4A,$46,$42,$3E,$3A,$36,$32,$2E,$2B,$27,$24,$21,$1E,$1B,$18,$15,$13,$11,$E,$C,$B,$9,$7,$6,$4,$3,$2,$1,$1,$0,$0,$0,$0,$0,$0,$0,$1,$1,$2,$3,$4,$6,$7,$9,$B,$C,$E,$11,$13,$15,$18,$1B,$1E,$21,$24,$27,$2B,$2E,$32,$36,$3A,$3E,$42,$46,$4A,$4F,$54,$58,$5D,$62,$67,$6C,$71,$77,$7C,$81,$87,$8C,$92,$98,$9E,$A3,$A9,$AF,$B5,$BB,$C1,$C7,$CE,$D4,$DA,$E0,$E6,$ED,$F3,$F9,$0,$6,$C,$12,$19,$1F,$25,$2B,$31,$38,$3E,$44,$4A,$50,$56,$5C,$61,$67,$6D,$73,$78,$7E,$83,$88,$8E,$93,$98,$9D,$A2,$A7,$AB,$B0,$B5,$B9,$BD,$C1,$C5,$C9,$CD,$D1,$D4,$D8,$DB,$DE,$E1,$E4,$E7,$EA,$EC,$EE,$F1,$F3,$F4,$F6,$F8,$F9,$FB,$FC,$FD,$FE,$FE,$FF,$FF,$FF
@@ -151,6 +152,27 @@ MOVE_X_H:
 .byte $0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF
 MOVE_X_L:
 .byte $0,$0,$0,$0,$0,$0,$1,$1,$1,$1,$1,$1,$2,$2,$2,$2,$2,$2,$2,$3,$3,$3,$3,$3,$3,$3,$4,$4,$4,$4,$4,$4,$4,$5,$5,$5,$5,$5,$5,$5,$5,$5,$5,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$5,$5,$5,$5,$5,$5,$5,$5,$5,$5,$4,$4,$4,$4,$4,$4,$4,$3,$3,$3,$3,$3,$3,$3,$2,$2,$2,$2,$2,$2,$2,$1,$1,$1,$1,$1,$1,$0,$0,$0,$0,$0,$0,$FF,$FF,$FF,$FF,$FF,$FE,$FE,$FE,$FE,$FE,$FE,$FD,$FD,$FD,$FD,$FD,$FD,$FD,$FC,$FC,$FC,$FC,$FC,$FC,$FC,$FB,$FB,$FB,$FB,$FB,$FB,$FB,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$F9,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FA,$FB,$FB,$FB,$FB,$FB,$FB,$FB,$FC,$FC,$FC,$FC,$FC,$FC,$FC,$FD,$FD,$FD,$FD,$FD,$FD,$FD,$FE,$FE,$FE,$FE,$FE,$FE,$FF,$FF,$FF,$FF,$FF
+
+
+WORLD_SPRITE_CENTER_XH: ; 128 bytes
+.byte $64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$65,$65,$65,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$65,$65,$65,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$65,$65,$65,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64,$64
+WORLD_SPRITE_CENTER_XL: ; 128 bytes
+.byte $0,$D,$1B,$29,$36,$43,$51,$5E,$6B,$78,$85,$92,$9F,$AB,$B8,$C4,$D1,$DD,$E9,$F6,$2,$E,$A,$FE,$F2,$E5,$D9,$CD,$C0,$B4,$A7,$9A,$8E,$81,$74,$67,$5A,$4C,$3F,$32,$24,$16,$9,$4,$12,$20,$2D,$3B,$48,$55,$62,$6F,$7C,$89,$96,$A3,$B0,$BC,$C9,$D5,$E1,$EE,$FA,$6,$12,$13,$FA,$EE,$E1,$D5,$C9,$BC,$B0,$A3,$96,$89,$7C,$6F,$62,$55,$48,$3B,$2D,$20,$12,$4,$9,$16,$24,$32,$3F,$4C,$5A,$67,$74,$81,$8E,$9A,$A7,$B4,$C0,$CD,$D9,$E5,$F2,$FE,$A,$E,$2,$F6,$E9,$DD,$D1,$C4,$B8,$AB,$9F,$92,$85,$78,$6B,$5E,$51,$43,$36,$29,$1B,$D
+WORLD_SPRITE_CENTER_YH: ; 128 bytes
+.byte $4C,$4C,$4C,$4C,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4C,$4C,$4C,$4C,$4C,$4C,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4C,$4C,$4C,$4C,$4C,$4C,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4B,$4C,$4C,$4C
+WORLD_SPRITE_CENTER_YL: ; 128 bytes
+.byte $19,$11,$8,$0,$F7,$EE,$E6,$DD,$D4,$CB,$C2,$B9,$B0,$A7,$9D,$94,$8B,$81,$78,$6E,$64,$5B,$5E,$68,$71,$7B,$84,$8E,$97,$A0,$AA,$B3,$BC,$C5,$CE,$D7,$E0,$E8,$F1,$FA,$3,$B,$14,$17,$E,$5,$FD,$F4,$EB,$E3,$DA,$D1,$C8,$BF,$B6,$AD,$A3,$9A,$91,$87,$7E,$74,$6B,$61,$57,$57,$6B,$74,$7E,$87,$91,$9A,$A3,$AD,$B6,$BF,$C8,$D1,$DA,$E3,$EB,$F4,$FD,$5,$E,$17,$14,$B,$3,$FA,$F1,$E8,$E0,$D7,$CE,$C5,$BC,$B3,$AA,$A0,$97,$8E,$84,$7B,$71,$68,$5E,$5B,$64,$6E,$78,$81,$8B,$94,$9D,$A7,$B0,$B9,$C2,$CB,$D4,$DD,$E6,$EE,$F7,$0,$8,$11
+
+WORLD_SPRITE_NUM_lookies: ; 128 bytes
+;      0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+.byte   0,  0,  0,  0, 32, 32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64
+.byte  64, 64, 96, 96,160,160,160, 96, 96, 96, 64, 64, 64, 64, 64, 64
+.byte  64, 64, 32, 32, 32, 32, 32, 32,  0,  0,  0,  0,  0,  0, 32, 32
+.byte  32, 32, 32, 32, 32, 64, 64, 64, 64, 64, 64, 64, 96, 96, 96,160
+.byte 160,160, 96, 96, 96, 64, 64, 64, 64, 64, 64, 64, 32, 32, 32, 32
+.byte  32, 32, 32,  0,  0,  0,  0,  0,  0, 32, 32, 32, 32, 32, 32, 64
+.byte  64, 64, 64, 64, 64, 64, 64, 96, 96, 96,160,160,160, 96, 96, 64
+.byte  64, 64, 64, 64, 64, 64, 64, 32, 32, 32, 32, 32, 32,  0,  0,  0
 
 ;constants
 
@@ -262,6 +284,10 @@ SCREEN_buffer = $8000
 ZP_PTR = $22 
 SCRATCH_PTR = $7E
 
+SPRITE_SIZE_ORA = $D0 ; $D0 for 16x64, $50 for 16x16
+
+diff_sprite_to_transparent = 15
+
 ; global data ; 2E00
 .byte $DE,$AD,$BE,$EF ; 0-3
 default_irq_vector:  .addr 0 ; 4-5 
@@ -280,6 +306,13 @@ DEBUG_D: .byte 0
 camera_cell_y: 		 .byte 0 ; e
 camera_cell_yl:       .byte 0 ; f
 MASTER_CLOCK:        .addr 0 ; 10-11
+CAMERA_CENTER_XL:    .byte 0 ; 13
+CAMERA_CENTER_XH:    .byte 0 ; 14
+CAMERA_CENTER_YL:    .byte 0 ; 15
+CAMERA_CENTER_YH:    .byte 0 ; 16
+WORLD_SPRITE_NUM:    .byte 0 ; 12
+CAMERA_CENTER_TOP_PX: .byte 0 ; 13
+CAMERA_CELL_LINE_PTR: .addr 0 ; 14-15
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
@@ -324,7 +357,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #32   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
+  LDX #64   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
   BRA :++
   : 
      INC ZP_PTR+1
@@ -349,7 +382,10 @@ start:
     TXA 
     STA (ZP_PTR),y 
     INX
-    CPX #15       
+    INX
+    INX
+    INX
+    CPX #52       
     BCS :++
   : INY
     BNE :--
@@ -362,6 +398,9 @@ start:
     BCS :+         ; skip this one 
     TXA 
     STA (ZP_PTR),y 
+    DEX
+    DEX
+    DEX
     DEX
     BEQ :--
   : INY
@@ -480,17 +519,163 @@ start:
 
 
 @do_update:
+   ;  set up screen center stuff
+
+
+   LDA camera_facing
+   AND #127
+   TAX
+   LDA WORLD_SPRITE_NUM_lookies,X
+   STA WORLD_SPRITE_NUM
+   LDA WORLD_SPRITE_CENTER_XL,X
+   STA CAMERA_CENTER_XL
+   LDA WORLD_SPRITE_CENTER_XH,X
+   STA CAMERA_CENTER_XH
+
+   LDA WORLD_SPRITE_CENTER_YL,X
+   STA CAMERA_CENTER_YL
+   LDA WORLD_SPRITE_CENTER_YH,X
+   STA CAMERA_CENTER_TOP_PX
+
+    LDX camera_facing
+
+    LDA camera_cell_xl
+    LSR ;   /2
+    LSR ;   /4
+    LSR ;   /8
+    LSR ;   /16
+    SEC 
+    SBC #8 ;   subtract le middle.. 
+    TAY
+    BCS :++    ;  is positive.. 
+  : CLC 
+    LDA CAMERA_CENTER_XL
+    ADC SUBCELL_X_COS_L,X
+    STA CAMERA_CENTER_XL
+    LDA CAMERA_CENTER_XH
+    ADC SUBCELL_X_COS_H,X
+    STA CAMERA_CENTER_XH
+    SEC 
+    LDA CAMERA_CENTER_YL
+    SBC SUBCELL_Y_SIN_L,X 
+    STA CAMERA_CENTER_YL
+    LDA CAMERA_CENTER_TOP_PX
+    SBC SUBCELL_Y_SIN_H,X
+    STA CAMERA_CENTER_TOP_PX
+    INY
+    BNE :-
+  : BEQ :++
+  : SEC 
+    LDA CAMERA_CENTER_XL
+    SBC SUBCELL_X_COS_L,X
+    STA CAMERA_CENTER_XL
+    LDA CAMERA_CENTER_XH
+    SBC SUBCELL_X_COS_H,X
+    STA CAMERA_CENTER_XH
+    CLC 
+    LDA CAMERA_CENTER_YL
+    ADC SUBCELL_Y_SIN_L,X 
+    STA CAMERA_CENTER_YL
+    LDA CAMERA_CENTER_TOP_PX
+    ADC SUBCELL_Y_SIN_H,X
+    STA CAMERA_CENTER_TOP_PX
+    DEY
+    BNE :-
+  :
+
+    LDA camera_cell_yl
+    LSR ;   /2
+    LSR ;   /4
+    LSR ;   /8
+    LSR ;   /16
+    SEC 
+    SBC #8 ;   subtract le middle.. 
+    TAY
+    BCS :++    ;  is positive.. 
+  : CLC 
+    LDA CAMERA_CENTER_XL
+    ADC SUBCELL_X_SIN_L,X
+    STA CAMERA_CENTER_XL
+    LDA CAMERA_CENTER_XH
+    ADC SUBCELL_X_SIN_H,X
+    STA CAMERA_CENTER_XH
+    CLC 
+    LDA CAMERA_CENTER_YL
+    ADC SUBCELL_Y_COS_L,X 
+    STA CAMERA_CENTER_YL
+    LDA CAMERA_CENTER_TOP_PX
+    ADC SUBCELL_Y_COS_H,X
+    STA CAMERA_CENTER_TOP_PX
+    INY
+    BNE :-
+  : BEQ :++
+  : SEC 
+    LDA CAMERA_CENTER_XL
+    SBC SUBCELL_X_SIN_L,X
+    STA CAMERA_CENTER_XL
+    LDA CAMERA_CENTER_XH
+    SBC SUBCELL_X_SIN_H,X
+    STA CAMERA_CENTER_XH
+
+    SEC 
+    LDA CAMERA_CENTER_YL
+    SBC SUBCELL_Y_COS_L,X 
+    STA CAMERA_CENTER_YL
+    LDA CAMERA_CENTER_TOP_PX
+    SBC SUBCELL_Y_COS_H,X
+    STA CAMERA_CENTER_TOP_PX
+    DEY
+    BNE :-
+  :
+   ;  set up tub pointer .. this will let us grab the height value for current location.. 
+    STZ $7E
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR $7E
+    LSR  ; y pages of 64 ! 
+    ROR $7E
+    ADC #>TUB_WORLD
+    STA $7F
+    STA CAMERA_CELL_LINE_PTR+1
+    LDA $7E
+    STA CAMERA_CELL_LINE_PTR    
+
+    LDY camera_cell_x
+    LDA ($7E),y
+    CMP #86 ; is largest value we will allow .. accounts for tub heights.. 
+    BCC :+
+    LDA #86    ;
+   : TAY 
+
+   CLC
+   LDA CAMERA_CENTER_YL
+   ADC CONVERT_HEIGHTS_PIXELS_L,Y
+   STA CAMERA_CENTER_YL
+   LDA CAMERA_CENTER_TOP_PX
+   ADC CONVERT_HEIGHTS_PIXELS,Y
+   STA CAMERA_CENTER_YH
 
    ; clear the object list ... 
     STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
-    LDX #0
     LDA #$0C ; is basis for all the z_flips <- this may change depending on orientation.. 
+    LDX #0
     : STZ OBJECT_LIST_Z_START_POINTERS,X
       STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
       STZ OBJECT_LIST_BYTE2_X
       STA OBJECT_LIST_BYTE4_ZFLIPS,X
+      STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
       INX 
       BNE :-
+
+    LDA #SPRITE_SIZE_ORA
+    : STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+      INX 
+      BNE :-
+    LDA WORLD_SPRITE_NUM
+    : STA OBJECT_LIST_BYTE0_ADDRLOW,X ; 01.3456 done . 
+      INX 
+      BNE :-
+
 
    jsr push_world_to_object_list
 
@@ -757,8 +942,8 @@ PWOL_Z_STARTS_PTR = ZP_PTR+28
 PWOL_Z_STARTS_PTRH = ZP_PTR+29
 PWOL_CONVERT_HEIGHTS = ZP_PTR+30
 PWOL_CONVERT_HEIGHTSH= ZP_PTR+31
-PWOL_CONVERT_HEIGHTS_SECONDARY = ZP_PTR+32
-PWOL_CONVERT_HEIGHTS_SECONDARYH = ZP_PTR+33
+PWOL_CONVERT_HEIGHTS_L = ZP_PTR+32
+PWOL_CONVERT_HEIGHTS_LH = ZP_PTR+33
 PWOL_TRIES_COUNTER = ZP_PTR+34
 PWOL_START_XL = ZP_PTR+35
 PWOL_START_YL = ZP_PTR+36
@@ -776,6 +961,8 @@ PWOL_START_SIN_YH = ZP_PTR+46
 
 PWOL_camera_cell_xl = ZP_PTR+47
 PWOL_camera_cell_yl = ZP_PTR+48
+PWOL_CENTER_Y  =  ZP_PTR+49
+PWOL_CENTER_Y_TOP     =  ZP_PTR+50
 
 TRY_AGAIN = 6
 SCREEN_MID_X = 108
@@ -785,20 +972,29 @@ SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36
 SCREEN_OUT_TOP     = 24
 SCREEN_OUT_BOTTOM  = 136
 
-   LDA #>CONVERT_HEIGHTS_PIXELS_SECONDARY
-   STA PWOL_CONVERT_HEIGHTS_SECONDARYH
+   LDA CAMERA_CENTER_YH
+   INC A
+   STA PWOL_CENTER_Y
+   LDA CAMERA_CENTER_TOP_PX
+   CLC 
+   ADC #10
+   STA PWOL_CENTER_Y_TOP
+
+
    LDA #>CONVERT_HEIGHTS_PIXELS
    STA PWOL_CONVERT_HEIGHTSH
+   LDA #>CONVERT_HEIGHTS_PIXELS_L
+   STA PWOL_CONVERT_HEIGHTS_LH
+
    LDA #>OBJECT_LIST_Z_START_POINTERS
    STA PWOL_Z_STARTS_PTRH
 
    LDX camera_facing
-
-
    LDA ACROSS_ROW_X_L,x    ; 0900  16 wide , 45* tilt ... this is added to go up row, sub for down row
    STA PWOL_ACROSS_ROW_XL  
    LDA ACROSS_ROW_X_H,x
    STA PWOL_ACROSS_ROW_XH
+
    LDA ACROSS_ROW_Y_L,x
    STA PWOL_ACROSS_ROW_YL
    LDA ACROSS_ROW_Y_H,x
@@ -858,144 +1054,41 @@ SCREEN_OUT_BOTTOM  = 136
    SBC PWOL_NEXT_ROW_A_RIGHT_YH
    STA PWOL_NEXT_ROW_B_LEFT_YH
 
-   ;  set up tub pointer 
-    STZ PWOL_TUB_PTR_AL
-    LDA camera_cell_y
-    LSR  ;  y pages of 128
-    ROR PWOL_TUB_PTR_AL
-    LSR  ; y pages of 64 ! 
-    ROR PWOL_TUB_PTR_AL
-    ADC #>TUB_WORLD
-    STA PWOL_TUB_PTR_AH
-    STA PWOL_TUB_PTR_BH
-    LDA PWOL_TUB_PTR_AL
-    STA PWOL_TUB_PTR_BL    
-
-
-    STZ PWOL_CURRENT_XL
-    LDA #SCREEN_MID_X-8
-    STA PWOL_CURRENT_XH
-
-    LDY camera_cell_x
-    LDA (PWOL_TUB_PTR_AL),y
-    STA PWOL_CONVERT_HEIGHTS
-
-    STZ PWOL_CURRENT_YL
-    LDA #SCREEN_MID_Y-5
-    CLC
-    ADC (PWOL_CONVERT_HEIGHTS)
-    STA PWOL_CURRENT_YH
-
-    LDA camera_cell_xl
-    LSR ;   /2
-    LSR ;   /4
-    LSR ;   /8
-    LSR ;   /16
-    SEC 
-    SBC #8 ;   subtract le middle.. 
-    TAY
-    BCS :++    ;  is positive.. 
-  : CLC 
-    LDA PWOL_CURRENT_XL
-    ADC SUBCELL_X_COS_L,X
+   LDA CAMERA_CENTER_XL
     STA PWOL_CURRENT_XL
-    LDA PWOL_CURRENT_XH
-    ADC SUBCELL_X_COS_H,X
-    STA PWOL_CURRENT_XH
-    SEC 
-    LDA PWOL_CURRENT_YL
-    SBC SUBCELL_Y_SIN_L,X 
-    STA PWOL_CURRENT_YL
-    LDA PWOL_CURRENT_YH
-    SBC SUBCELL_Y_SIN_H,X
-    STA PWOL_CURRENT_YH
-    INY
-    BNE :-
-  : BEQ :++
-  : SEC 
-    LDA PWOL_CURRENT_XL
-    SBC SUBCELL_X_COS_L,X
-    STA PWOL_CURRENT_XL
-    LDA PWOL_CURRENT_XH
-    SBC SUBCELL_X_COS_H,X
-    STA PWOL_CURRENT_XH
-    CLC 
-    LDA PWOL_CURRENT_YL
-    ADC SUBCELL_Y_SIN_L,X 
-    STA PWOL_CURRENT_YL
-    LDA PWOL_CURRENT_YH
-    ADC SUBCELL_Y_SIN_H,X
-    STA PWOL_CURRENT_YH
-    DEY
-    BNE :-
-  :
-
-    LDA camera_cell_yl
-    LSR ;   /2
-    LSR ;   /4
-    LSR ;   /8
-    LSR ;   /16
-    SEC 
-    SBC #8 ;   subtract le middle.. 
-    TAY
-    BCS :++    ;  is positive.. 
-  : CLC 
-    LDA PWOL_CURRENT_XL
-    ADC SUBCELL_X_SIN_L,X
-    STA PWOL_CURRENT_XL
-    LDA PWOL_CURRENT_XH
-    ADC SUBCELL_X_SIN_H,X
-    STA PWOL_CURRENT_XH
-    CLC 
-    LDA PWOL_CURRENT_YL
-    ADC SUBCELL_Y_COS_L,X 
-    STA PWOL_CURRENT_YL
-    LDA PWOL_CURRENT_YH
-    ADC SUBCELL_Y_COS_H,X
-    STA PWOL_CURRENT_YH
-
-    INY
-    BNE :-
-  : BEQ :++
-  : SEC 
-    LDA PWOL_CURRENT_XL
-    SBC SUBCELL_X_SIN_L,X
-    STA PWOL_CURRENT_XL
-    LDA PWOL_CURRENT_XH
-    SBC SUBCELL_X_SIN_H,X
-    STA PWOL_CURRENT_XH
-
-    SEC 
-    LDA PWOL_CURRENT_YL
-    SBC SUBCELL_Y_COS_L,X 
-    STA PWOL_CURRENT_YL
-    LDA PWOL_CURRENT_YH
-    SBC SUBCELL_Y_COS_H,X
-    STA PWOL_CURRENT_YH
-
-    DEY
-    BNE :-
-  :
-
-    LDA PWOL_CURRENT_XL
     STA PWOL_START_XL
-    LDA PWOL_CURRENT_XH
-    STA PWOL_START_XH
-    LDA PWOL_CURRENT_YL
+
+   LDA CAMERA_CENTER_YL
+    STA PWOL_CURRENT_YL
     STA PWOL_START_YL
-    LDA PWOL_CURRENT_YH
+
+   LDA CAMERA_CENTER_XH
+    STA PWOL_CURRENT_XH
+    STA PWOL_START_XH
+
+
+   LDA CAMERA_CENTER_YH
+    STA PWOL_CURRENT_YH
     STA PWOL_START_YH
 
+    LDA CAMERA_CELL_LINE_PTR
+    STA PWOL_TUB_PTR_AL
+    STA PWOL_TUB_PTR_BL
+    LDA CAMERA_CELL_LINE_PTR+1
+    STA PWOL_TUB_PTR_AH
+    STA PWOL_TUB_PTR_BH
 
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
     LDY camera_cell_x
+    BRA @zigzag_A_right
+   @ZAR_OUT: 
+
     @zigzag_A_right:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAR_NEXT ; if we're outside we'll just skip is OK here
         LDA (PWOL_TUB_PTR_AL),y
         CMP #129
         BCS @ZAR_NEXT ; this isn't a valid spot in the level map.. 
-
         ; bytes 1 and 4 were updated when we cleared the object list
         INC OBJECT_LIST_BYTE6_NEXT ; is there objects left to use as next? 
         BNE :++
@@ -1003,7 +1096,7 @@ SCREEN_OUT_BOTTOM  = 136
         rts ; @WHAT_THE_WHAT ; we shouldn't be outside the screen... 
       : LDX PWOL_CURRENT_YH ;  current screenY .. to calculate effective Z for the buffer 
         LDA SCREEN_Y_TO_Z,x 
-        BEQ :-- ; we shouldn't be outside the screen... 
+        BEQ :-- ; we shouldn't be outside the screen... (could cause issues if we're high up? can't see behind?)
         STA PWOL_Z_STARTS_PTR  ; ok now that's primed to be at the start .. we want to grab whatever is at this buffer and save it to our new next..
         LDA (PWOL_Z_STARTS_PTR) ; get the current value here for the next ..
         LDX OBJECT_LIST_BYTE6_NEXT ; get index for this object
@@ -1011,27 +1104,32 @@ SCREEN_OUT_BOTTOM  = 136
         TXA ; push new next to the Z buffer spot
         STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
         ; bytes .1..4.6 filled in already.. 
-
-        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
         LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZAR_INSIDE_TUB 
       @ZAR_HIT_WALL_OUCH:
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+          LDA #86 ; max height.. 
       @ZAR_INSIDE_TUB:
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          TYA
-          AND #$0F
-          ORA #$D0 ; #$D0
-          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-
+          STA PWOL_CONVERT_HEIGHTS ;  
+          STA PWOL_CONVERT_HEIGHTS_L; 
           SEC        
+          LDA PWOL_CURRENT_YL
+          SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
+          BCS :+ ; is not covering us 
+          LDA PWOL_CURRENT_YH
+          CMP PWOL_CENTER_Y
+          BCC :+ ; its from ahead of us, OK            
+          ; it was from below and covers us .. 
+          LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ADC #diff_sprite_to_transparent ; constant should be 1 less because carry is set
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X
           ;LDA #$D0
           ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-          LDA PWOL_CURRENT_XH
+        : LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZAR_NEXT:
          ; calc next to the right.. 
@@ -1062,7 +1160,8 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_TOP
          BCC @ZAR_ZIG_LEFT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
-         BCC @zigzag_A_right
+         BCS @ZAR_ZIG_LEFT_SWITCH
+         JMP @zigzag_A_right
      @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -1154,27 +1253,34 @@ SCREEN_OUT_BOTTOM  = 136
         TXA ; push new next to the Z buffer spot
         STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
         ; bytes .1..4.6 filled in already.. 
-
-        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA WORLD_SPRITE_NUM
+        STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
         LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZAL_INSIDE_TUB 
       @ZAL_HIT_WALL_OUCH:
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+          LDA #86 ; max height.. 
       @ZAL_INSIDE_TUB:
-          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          TYA
-          AND #$0F
-          ORA #$D0 ; #$D0
-          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-
+          STA PWOL_CONVERT_HEIGHTS ;  
+          STA PWOL_CONVERT_HEIGHTS_L; 
           SEC        
+          LDA PWOL_CURRENT_YL
+          SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
-        ;  LDA #$D0
-        ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-          LDA PWOL_CURRENT_XH
+          CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
+          BCS :+ ; is not covering us 
+          LDA PWOL_CURRENT_YH
+          CMP PWOL_CENTER_Y
+          BCC :+ ; its from ahead of us, OK            
+          ; it was from below and covers us .. 
+          LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ADC #diff_sprite_to_transparent ; constant should be 1 less because carry is set
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ;LDA #$D0
+          ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+        : LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZAL_NEXT:
          ; calc next to the LEFT 
@@ -1205,7 +1311,8 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_TOP
          BCC @ZAL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
-         BCC @zigzag_A_left
+         BCS @ZAL_ZIG_RIGHT_SWITCH
+         JMP @zigzag_A_left
      @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +1,+1  from where we is right now .. 
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -1328,27 +1435,34 @@ SCREEN_OUT_BOTTOM  = 136
         TXA ; push new next to the Z buffer spot
         STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
         ; bytes .1..4.6 filled in already.. 
-
-        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA WORLD_SPRITE_NUM
+        STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
         LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZBL_INSIDE_TUB 
       @ZBL_HIT_WALL_OUCH:
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+          LDA #86 ; max height.. 
       @ZBL_INSIDE_TUB:
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          TYA
-          AND #$0F
-          ORA #$D0 ; #$D0
-          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-
+          STA PWOL_CONVERT_HEIGHTS ;  
+          STA PWOL_CONVERT_HEIGHTS_L; 
           SEC        
+          LDA PWOL_CURRENT_YL
+          SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
-        ;  LDA #$D0
-        ;  STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-          LDA PWOL_CURRENT_XH
+          CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
+          BCS :+ ; is not covering us 
+          LDA PWOL_CURRENT_YH
+          CMP PWOL_CENTER_Y
+          BCC :+ ; its from ahead of us, OK            
+          ; it was from below and covers us .. 
+          LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ADC #diff_sprite_to_transparent ; constant should be 1 less because carry is set
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ;LDA #$D0
+          ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+        : LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZBL_NEXT:
          ; calc next to the LEFT 
@@ -1379,7 +1493,8 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_TOP
          BCC @ZBL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
-         BCC @zigzag_B_left
+         BCS @ZBL_ZIG_RIGHT_SWITCH
+         JMP @zigzag_B_left
      @ZBL_ZIG_RIGHT_SWITCH: ; DOWN/LEFT to start right is is 0,+1  from where we is right now .. 
          ;INY
          ;INY
@@ -1480,27 +1595,34 @@ SCREEN_OUT_BOTTOM  = 136
         TXA ; push new next to the Z buffer spot
         STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
         ; bytes .1..4.6 filled in already.. 
-
-        STZ OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
+        LDA WORLD_SPRITE_NUM
+        STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
         LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZBR_INSIDE_TUB 
       @ZBR_HIT_WALL_OUCH:
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
+          LDA #86 ; max height.. 
       @ZBR_INSIDE_TUB:
-          STA PWOL_CONVERT_HEIGHTS; 0-128 valid as heights need convert to do sub though? 
-          ;STA PWOL_CONVERT_HEIGHTS_SECONDARY ; this would be check to see if we're "extra tall" - wall is set to 128, 26 pixels smaller than would be.. 
-          TYA
-          AND #$0F
-          ORA #$D0 ; #$D0
-          STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-
+          STA PWOL_CONVERT_HEIGHTS ;  
+          STA PWOL_CONVERT_HEIGHTS_L; 
           SEC        
+          LDA PWOL_CURRENT_YL
+          SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
+          BCS :+ ; is not covering us 
+          LDA PWOL_CURRENT_YH
+          CMP PWOL_CENTER_Y
+          BCC :+ ; its from ahead of us, OK            
+          ; it was from below and covers us .. 
+          LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+          ADC #diff_sprite_to_transparent ; constant should be 1 less because carry is set
+          STA OBJECT_LIST_BYTE0_ADDRLOW,X
           ;LDA #$D0
           ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
-          LDA PWOL_CURRENT_XH
+        : LDA PWOL_CURRENT_XH
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
      @ZBR_NEXT:
          ; calc next to the right.. 
@@ -1531,7 +1653,8 @@ SCREEN_OUT_BOTTOM  = 136
          CMP #SCREEN_OUT_TOP
          BCC @ZBR_ZIG_LEFT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
-         BCC @zigzag_B_right
+         BCS @ZBR_ZIG_LEFT_SWITCH
+         jmp @zigzag_B_right
      @ZBR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going down the screen ..  +1,+1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -1676,42 +1799,42 @@ test_sprite_data:
 ; first 16 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  66,$00,100,  0,72,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
-.byte  16,$00, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
-.byte  16,$00, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
-.byte  16,$00,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
+.byte  66,$01,100,  0,72,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
+.byte  16,$01, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
+.byte  16,$01, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
+.byte  16,$01,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
 
-.byte  16,$00, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
-.byte  16,$00, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
-.byte  16,$00,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
+.byte  16,$01, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
+.byte  16,$01, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
+.byte  16,$01,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
 
-.byte  16,$00,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
-.byte  16,$00,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
-.byte  16,$00,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
-.byte  16,$00,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-.byte  49,$00,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
+.byte  16,$01,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
+.byte  16,$01,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
+.byte  16,$01,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
+.byte  16,$01,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
+.byte  49,$01,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
 ;.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
 ;.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
-.byte  33,$00,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
-.byte  34,$00,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
-.byte  39,$00,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
-.byte  40,$00,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11   
-.byte  41,$00,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
-.byte  42,$00,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
-.byte  43,$00,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
-.byte  44,$00,184,  0,127,  0,$0C,$00  ; B test    sprite 15
-.byte  45,$00,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
-.byte  46,$00,200,  0,127,  0,$0C,$00  ; D test    sprite 17
-.byte  35,$00,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X 
-.byte  36,$00,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19   
-.byte  47,$00,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
-.byte  47,$00,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
-.byte  37,$00,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
-.byte  38,$00,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D   
-.byte  48,$00,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
-.byte  48,$00,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
-.byte  33,$00,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
-.byte  33,$00,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   
+.byte  0,$01,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
+.byte  1,$01,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
+.byte  2,$01,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
+.byte  3,$01,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11   
+.byte  4,$01,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
+.byte  5,$01,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
+.byte  6,$01,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
+.byte  6,$01,184,  0,127,  0,$0C,$00  ; B test    sprite 15
+.byte  6,$01,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
+.byte  6,$01,200,  0,127,  0,$0C,$00  ; D test    sprite 17
+.byte  6,$01,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X 
+.byte  6,$01,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19   
+.byte  6,$01,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
+.byte  6,$01,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
+.byte  6,$01,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
+.byte  6,$01,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D   
+.byte  6,$01,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
+.byte  6,$01,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
+.byte  6,$01,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
+.byte  6,$01,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
@@ -1734,46 +1857,197 @@ test_optimal_pal_data:
 .byte $22,$02   ; F #222222
 
 test_vram_data:
-test_cell_sprite: 	;	is 16x64x16 bit = 512 bytes   sprite addr = 0 
-; 	   01   23   45   67   89   AB   CD   EF
-.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
-.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
-.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
-.byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
-.byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
-.byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
-.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
-.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
-.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 .. 
-.byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
-.byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-.byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
-
-.repeat 13
-    .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
-    .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;     
-    .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;  
-    .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;  
+; 70 to 127 - start of 16x16 (each 128 byte) for testing directions / sizing.. 
+.byte $11,$11,$11,$11,$11,$11,$11,$11  ;  0-15 16x10 -  0 
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+.byte $11,$11,$11,$11,$11,$11,$11,$11  
+.repeat 54
+.res 8,$55
 .endrepeat
 
-test_border:
+.byte $11,$11,$11,$11,$11,$11,$11,$11  ;  16-31    16x10 -  0 trans
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $11,$11,$11,$11,$11,$11,$11,$11  
+.repeat 27
+.res 8,$50
+.res 8,$05
+.endrepeat
+
+
+.byte $11,$11,$11,$11,$11,$11,$11,$11  ;  32-47    16x11 -  4 
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+.byte $11,$11,$11,$11,$11,$11,$11,$11  
+.repeat 53
+.res 8,$55
+.endrepeat
+
+.byte $11,$11,$11,$11,$11,$11,$11,$11  ;  48-63    16x11 -  4 trans
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+.byte $11,$11,$11,$11,$11,$11,$11,$11  
+.res 7,$05
+.byte 0
+.repeat 26
+.res 8,$50
+.res 7,$05
+.byte 0
+.endrepeat
+
+
+.byte $11,$11,$11,$11,$11,$11,$11,$10  ;  64-79    15x11 - 10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $11,$11,$11,$11,$11,$11,$11,$10  
+.repeat 53
+.res 7,$55
+.byte $50
+.endrepeat
+
+
+.byte $11,$11,$11,$11,$11,$11,$11,$10  ;  80-95    15x11 - 10 trans
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $11,$11,$11,$11,$11,$11,$11,$10  
+.res 7,$05
+.byte 0
+.repeat 26
+.res 8,$50
+.res 7,$05
+.byte 0
+.endrepeat
+
+.byte $11,$11,$11,$11,$11,$11,$11,$10  ;  96-111    15x12 - 18
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+.byte $11,$11,$11,$11,$11,$11,$11,$10  
+.repeat 52
+.res 7,$55
+.byte $50
+.endrepeat
+
+
+.byte $11,$11,$11,$11,$11,$11,$11,$10  ;  112-127    15x12 - 18 trans
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $11,$11,$11,$11,$11,$11,$11,$10  
+.repeat 26
+.res 8,$50
+.res 7,$05
+.byte 0
+.endrepeat
+
+; alernate tile graphic to use for tub wall .. 128-143
+.repeat 32
+    .byte $16, $16, $16, $16, $16, $16, $16, $16
+    .byte $61, $61, $61, $61, $61, $61, $61, $61
+.endrepeat
+
+.repeat 32  ;  144-159
+    .byte $10, $10, $10, $10, $10, $10, $10, $10
+    .byte $06, $06, $06, $06, $06, $06, $06, $06
+.endrepeat
+
+
+.byte $11,$11,$11,$11,$11,$11,$11,$00  ;  160-175    14x12
+.byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+.byte $1f,$FF,$ff,$Ff,$Ff,$fF,$F1,$00
+.byte $1f,$FF,$FF,$f1,$fF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$Ff,$Ff,$fF,$F1,$00
+.byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+.byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+.byte $11,$11,$11,$11,$11,$11,$11,$00  
+.repeat 52
+.res 7,$55
+.byte 0
+.endrepeat
+
+.byte $11,$11,$11,$11,$11,$11,$11,$00  ;  176-191
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+.byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+.byte $11,$11,$11,$11,$11,$11,$11,$10  
+.repeat 26
+.res 8,$50
+.res 7,$05
+.byte 0
+.endrepeat
+
 .repeat 64
-   .res 4, $0B
-   .res 4, $B0
+  .res 32,$10
 .endrepeat
 
-test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 32
-;     01   23   45   67
-.byte $11, $00, $00, $11
-.byte $10, $00, $00, $01
-.byte $00, $00, $00, $00
-.byte $00, $01, $10, $00
-.byte $00, $01, $10, $00
-.byte $00, $00, $00, $00
-.byte $10, $00, $00, $01
-.byte $11, $00, $00, $11
 
-HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
+HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
 ;     01   23   45   67
 .byte $00, $11, $11, $00   ; 0
 .byte $01, $00, $00, $10
@@ -1920,7 +2194,46 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $01, $00, $00, $00
 .byte $00, $00, $00, $00   
 
-.byte $00, $00, $00, $00  ;  bearing label   sprite addr 49
+test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10 
+;     01   23   45   67   89   AB   CD   EF
+.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
+.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
+.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
+.byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
+.byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
+.byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
+.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
+.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
+.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 .. 
+.byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
+.byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
+.byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
+
+.repeat 13
+    .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
+    .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;     
+    .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;  
+    .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;  
+.endrepeat
+
+test_border: ; 32 
+.repeat 64
+   .res 4, $0B
+   .res 4, $B0
+.endrepeat
+
+test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
+;     01   23   45   67
+.byte $11, $00, $00, $11
+.byte $10, $00, $00, $01
+.byte $00, $00, $00, $00
+.byte $00, $01, $10, $00
+.byte $00, $01, $10, $00
+.byte $00, $00, $00, $00
+.byte $10, $00, $00, $01
+.byte $11, $00, $00, $11
+
+.byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
 .byte $00, $00, $01, $00
 .byte $00, $00, $10, $00
 .byte $00, $01, $00, $00
@@ -1955,7 +2268,6 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00  
 
 ; directional cursor reminder... 16x16 - 66-69
-
 .byte $00, $10, $00, $10, $01, $11, $11, $00
 .byte $00, $10, $00, $10, $01, $00, $00, $00
 .byte $00, $10, $10, $10, $01, $11, $00, $00
@@ -1972,13 +2284,3 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 33+ ($0440)
 .byte $00, $00, $10, $00, $00, $01, $00, $00
 .byte $00, $01, $00, $00, $00, $10, $10, $00
 .byte $00, $11, $11, $10, $01, $00, $01, $00
-
-.repeat 58 ; 128-70
-    .res 32,$80
-.endrepeat
-
-; alernate tile graphic to use for tub wall .. 128 to 159 16x64
-.repeat 32
-    .byte $16, $16, $16, $16, $16, $16, $16, $16
-    .byte $61, $61, $61, $61, $61, $61, $61, $61
-.endrepeat

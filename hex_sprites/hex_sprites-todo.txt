@@ -250,10 +250,22 @@ TODO 	fix up sub-cell alignment
 	DONE 	subcell alignment / rotation working
 2020 	re-enable heights... seems to work.. OK 
 	commit
-	
-TODO 	implement changing sprite to account for heading, setting h-flip
-TODO 	perhaps alter view to be 160x120 ? 
+
+2230 	changing sprite for heading... 
+		first.. disable heights .. 
+		next.. need sprites.. treat sprites as having center at 8,5.. 
+		also, only using 16x16 sprites for now.. 
+
+2024/03/16
+0700 	further sprite stuffs
+TODO 	implement changing sprite to account for heading, setting h-flip?
+	DONE
+1245 	OK ... initial version of the engine all set... next will get to blitting the other objects.
+		debug sprites got corrupted but such is life?
+	Commit
+
 TODO 	blitting extra objects to buffer
+TODO 	perhaps alter view to be 160x120 ? 
 
 TODO 	make moving around by X/Y/Z work 
 
