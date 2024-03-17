@@ -264,6 +264,25 @@ TODO 	implement changing sprite to account for heading, setting h-flip?
 		debug sprites got corrupted but such is life?
 	Commit
 
+2024/03/17
+1105 	OK getting back into it today.. want to get input system sorted out better before moving on, as well as getting
+		some sort of tick counters to know CPU usage each frame.. 
+1115	switching the test sprite off, will enable layer1 as a 1bpp tile mode.. 
+		KERNAL charset loads into $1:F000-$1:F7FF	Charset
+TODO 	frame ticker
+TODO 	sprite attribute buffer
+1800 	OK ... got the sprite attribute buffer working OK .. sweetness.. will have to work on the blitting later
+		got a tick counter going on, seems typically at least ~55K cycles or so left in the frame? 30 fps on 160x120 shouldn't
+		be issue.. will have to see what the water sim takes up as well as the blitter.
+
+		identified bug with either the emulator or the vera will need to test more ... left some code in the interrupt handler .. 
+
+	commit
+
+	
+BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 
+
+TODO 	fixing keyboard controls 
 TODO 	blitting extra objects to buffer
 TODO 	perhaps alter view to be 160x120 ? 
 

@@ -173,6 +173,15 @@ WORLD_SPRITE_NUM_lookies: ; 128 bytes
 .byte  32, 32, 32,  0,  0,  0,  0,  0,  0, 32, 32, 32, 32, 32, 32, 64
 .byte  64, 64, 64, 64, 64, 64, 64, 96, 96, 96,160,160,160, 96, 96, 64
 .byte  64, 64, 64, 64, 64, 64, 64, 32, 32, 32, 32, 32, 32,  0,  0,  0
+WORLD_WALL_SPRITE_NUM_lookies:
+.byte 128,128,128,128,128,128,128,128,128,128,192,192,192,192,192,192
+.byte 192,192,192,192,224,224,224,192,192,192,192,192,192,192,192,192
+.byte 192,192,128,128,128,128,128,128,128,128,128,128,128,128,128,128
+.byte 128,128,128,128,128,192,192,192,192,192,192,192,192,192,192,224
+.byte 224,224,192,192,192,192,192,192,192,192,192,192,128,128,128,128
+.byte 128,128,128,128,128,128,128,128,128,128,128,128,128,128,128,192
+.byte 192,192,192,192,192,192,192,192,192,192,224,224,224,192,192,192
+.byte 192,192,192,192,192,192,192,128,128,128,128,128,128,128,128,128
 
 ;constants
 
@@ -190,6 +199,7 @@ VERA_ien          = $9F26
 VERA_isr          = $9F27
 VERA_dc_video     = $9F29 ; DCSEL = 0
 FX_CTRL           = $9F29 ; DCSEL = 2
+FX_MULT           = $9F2C ; DCSEL = 2
 FX_CACHE_L        = $9F29 ; DCSEL = 6 
 FX_CACHE_M        = $9F2A 
 FX_CACHE_H        = $9F2B
@@ -234,9 +244,9 @@ VSYNC_BIT         = $01
 ;   $1F9C0 - $1F9FF PSG registers
 ;   $1FA00 - $1FBFF Palette
 ;   $1FC00 - $1FFFF Sprite attributes
-
-VRAM_UNRESERVED   = $1A000      ; 
-; sprite starts must be 32byte aligned...
+VRAM_SPRITES =      $00000  ; putting sprite data at start of VRAM for now.. may move later? 
+VRAM_SPRITE_BUF =   $1EC00  ; 123K - sprite attribute buffer for swapping data in ..  
+VRAM_CHARSET =      $1F000  ;  $1:F000-$1:F7FF Charset loaded by kernal here .. is at 124K .. 
 ; only can go to 126K ... 
 VRAM_palette      = $1FA00      ;  
 VRAM_sprite_attributes = $1FC00
@@ -289,30 +299,44 @@ SPRITE_SIZE_ORA = $D0 ; $D0 for 16x64, $50 for 16x16
 diff_sprite_to_transparent = 15
 
 ; global data ; 2E00
-.byte $DE,$AD,$BE,$EF ; 0-3
+GLOBAL_DATA:         .byte $DE,$AD,$BE,$EF ; 0-3
 default_irq_vector:  .addr 0 ; 4-5 
-VSYNC_counter:       .byte 1 ; 6
+
+MASTER_CLOCK:        .addr 0 ; 6-7
+VERA_LOCK:           .byte 0 ; 9 255 is unlocked
+NUM_AVAIL_SPRITES:   .byte 0 ; A
+
+DEBUG_A: .byte 0  ; B
+DEBUG_B: .byte 0  ; C
+DEBUG_C: .byte 0  ; D
+DEBUG_D: .byte 0  ; E
 camera_facing: 		 .byte 1 ; 7
+VSYNC_counter:       .byte 1 ; 8
+camera_cell_x: 		 .byte 0 ; c
+camera_cell_y: 		 .byte 0 ; e
+
+
+STALL_COUNTER:       .byte 0
+STALL_COUNTERH:      .byte 0
+LAST_VSYNC_COUNTER:  .byte 0 
+NUM_RESERVED_SPRITES:    .byte  (1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
+
+
 camera_world_pos_XH:    .byte 44 ; 8
 camera_world_pos_XL:       .byte 48 ; 9
 camera_world_pos_YH:        .byte 15 ; A
 camera_world_pos_YL:       .byte 128  ; B
-camera_cell_x: 		 .byte 0 ; c
 camera_cell_xl:       .byte 0 ; d
-DEBUG_A: .byte 0  ; 12
-DEBUG_B: .byte 0  ; 13
-DEBUG_C: .byte 0
-DEBUG_D: .byte 0
-camera_cell_y: 		 .byte 0 ; e
 camera_cell_yl:       .byte 0 ; f
-MASTER_CLOCK:        .addr 0 ; 10-11
-CAMERA_CENTER_XL:    .byte 0 ; 13
-CAMERA_CENTER_XH:    .byte 0 ; 14
-CAMERA_CENTER_YL:    .byte 0 ; 15
-CAMERA_CENTER_YH:    .byte 0 ; 16
-WORLD_SPRITE_NUM:    .byte 0 ; 12
-CAMERA_CENTER_TOP_PX: .byte 0 ; 13
-CAMERA_CELL_LINE_PTR: .addr 0 ; 14-15
+CAMERA_CENTER_XL:    .byte 0 ; 12
+CAMERA_CENTER_XH:    .byte 0 ; 13
+CAMERA_CENTER_YL:    .byte 0 ; 14
+CAMERA_CENTER_YH:    .byte 0 ; 15
+CAMERA_CENTER_TOP_PX: .byte 0 ; 16
+CAMERA_CELL_LINE_PTR: .addr 0 ; 17-18
+WORLD_SPRITE_NUM:    .byte 0 ; 1B
+WORLD_WALL_SPRITE_NUM: .byte 0; 1C
+
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
@@ -320,11 +344,127 @@ CAMERA_CELL_LINE_PTR: .addr 0 ; 14-15
 .endmacro
 
 custom_irq_handler: ; 2E12
+   PHA 
    lda VERA_isr
    and #VSYNC_BIT
-   beq @continue ; non-VSYNC IRQ, no tick update
-   inc VSYNC_counter
+   BNE :+
+   PLA 
+   ; continue to default IRQ handler
+   jmp (default_irq_vector)
+   ; RTI will happen after jump
+ : inc VSYNC_counter
+
+   INC VERA_LOCK
+   BEQ :+  ; @unlock_vera ; if we don't have lock we'll just fail this frame.. 
+   DEC VERA_LOCK
+   PLA 
+   jmp (default_irq_vector)
+
+ : INC DEBUG_C
+   PHX
+
+;   JMP @patched
+
+;   JMP @USE_CACHE
+   LDA #$01
+   STA VERA_ctrl
+
+   LDX #$FF
+   STX VERA_addr_low
+   STX VERA_addr_high
+   LDA #$19
+   STA VERA_addr_bank
+
+   STZ VERA_ctrl  ;  reset to address 0
+   STA VERA_addr_bank
+
+   LDA #$EF 
+   STA VERA_addr_high
+   STX VERA_addr_low
+
+   ;SEC 
+  ; LDA #128
+ ;  SBC NUM_RESERVED_SPRITES
+;   TAX 
+   LDX NUM_AVAIL_SPRITES
+ : LDA VERA_data0   ;  4
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  8
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  12
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  16
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  8
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  12
+   STA VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4  16
+   STA VERA_data1   ;  4  20
+   DEX         ;  2  22
+   BNE :-      ;  3  25       8per byte = 64 per sprite + 5 = 69 per * 128 = 8,832 cycles 
+
+   JMP @patched
+ @USE_CACHE:
+   STZ VERA_addr_low
+   LDA #>VRAM_SPRITE_BUF+1
+   STA VERA_addr_high
+   LDA #$11
+   STA VERA_addr_bank
+   LDA #$05 ; DCSEL 2, addrsel1 , main FX config.. 
+   STA VERA_ctrl
+   STZ VERA_addr_low
+   LDA #>VRAM_sprite_attributes+1
+   STA VERA_addr_high
+   LDA #$31 ; increment 4 at a time
+   STA VERA_addr_bank
+
+   LDA #%01100000 ; no trans, cache write, cache fill,not one byte cycle | no hop, no 4bit, addr1 mode=0
+   STA FX_CTRL   
+   STZ FX_MULT ; zero out the cache thingy
+   LDX #96
+ : LDA VERA_data0   ;  4
+   LDA VERA_data0   ;  4  8
+   LDA VERA_data0   ;  4  12
+   LDA VERA_data0   ;  4  16
+   STZ VERA_data1   ;  4  20
+   LDA VERA_data0   ;  4
+   LDA VERA_data0   ;  4  8
+   LDA VERA_data0   ;  4  12
+   LDA VERA_data0   ;  4  16
+   STZ VERA_data1   ;  4  20
+   DEX         ;  2  22
+   BNE :-      ;  3  25       25 per 4 bytes = 6,400 cycles
+   STZ FX_CTRL
+
+   STZ VERA_ctrl
+  stz VERA_dc_video
+  lda #SPRITES_ONLY_VGA
+  sta VERA_dc_video
+  jmp @patched
+   LDA #6
+   STA VERA_addr_low
+   LDA #>VRAM_sprite_attributes+1
+   STA VERA_addr_high
+   LDA #$41 ; increment 8 at a time
+   STA VERA_addr_bank
+
+   LDA #$0C
+   LDX #96 
+ : STA VERA_data0
+   DEX 
+   BNE :-
+
+   STZ VERA_ctrl
+
+@patched:
+   PLX
+@unlock_vera:
+   DEC VERA_LOCK
 @continue:
+   PLA 
    ; continue to default IRQ handler
    jmp (default_irq_vector)
    ; RTI will happen after jump
@@ -441,10 +581,14 @@ start:
   LDA test_optimal_pal_data,X 
   STA VERA_data0
 
+
   ; enable display 
   stz VERA_ctrl
   lda #SPRITES_ONLY_VGA
   sta VERA_dc_video
+
+   DEC VERA_LOCK ; unlock the VERA
+
 
   ; overwrite RAM IRQ vector with custom handler address
   sei ; disable IRQ while vector is changing
@@ -527,6 +671,8 @@ start:
    TAX
    LDA WORLD_SPRITE_NUM_lookies,X
    STA WORLD_SPRITE_NUM
+   LDA WORLD_WALL_SPRITE_NUM_lookies,X
+   STA WORLD_WALL_SPRITE_NUM
    LDA WORLD_SPRITE_CENTER_XL,X
    STA CAMERA_CENTER_XL
    LDA WORLD_SPRITE_CENTER_XH,X
@@ -534,7 +680,9 @@ start:
 
    LDA WORLD_SPRITE_CENTER_YL,X
    STA CAMERA_CENTER_YL
+   CLC
    LDA WORLD_SPRITE_CENTER_YH,X
+   ADC #40
    STA CAMERA_CENTER_TOP_PX
 
     LDX camera_facing
@@ -656,6 +804,11 @@ start:
    STA CAMERA_CENTER_YH
 
    ; clear the object list ... 
+    SEC
+    LDA #128
+    SBC NUM_RESERVED_SPRITES
+    STA NUM_AVAIL_SPRITES
+
     STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
     LDA #$0C ; is basis for all the z_flips <- this may change depending on orientation.. 
     LDX #0
@@ -677,53 +830,75 @@ start:
       BNE :-
 
 
-   jsr push_world_to_object_list
+  jsr push_world_to_object_list
 
-   LDX OBJECT_LIST_BYTE6_NEXT
-   STX DEBUG_C   
+   LDA #$D1
+   STA OBJECT_LIST_BYTE5_SIZE+1
+   jsr draw_object_list
 
-   ;  write location datas.. 
-   lda #248
-   STA VERA_addr_low
-   LDA #$FC
+   inc VERA_LOCK
+   BEQ :++
+:  DEC VERA_LOCK
+@WRITE_DEBUG:
+   inc VERA_LOCK
+   BNE :-
+ :
+   STZ VERA_ctrl
+   STZ VERA_addr_low
+   LDA #>VRAM_sprite_attributes
    STA VERA_addr_high
-   LDA #$49
+   LDA #$41
    STA VERA_addr_bank
-
- 
-   ldy #10
- : LDX camera_facing-1,y
-   LDA SPRITE_NUM_LOW_NIBBLE,X 
-   STA VERA_data0
+   LDY #0
+ : LDX MASTER_CLOCK,Y 
    LDA SPRITE_NUM_HIGH_NIBBLE,X 
    STA VERA_data0
-   dey
-   BNE :-
-
-
-   jsr draw_object_list
+   LDA SPRITE_NUM_LOW_NIBBLE,X 
+   STA VERA_data0
+   INY
+   TYA
+   ASL 
+   CMP NUM_RESERVED_SPRITES
+   BCC :-
+   DEC VERA_LOCK
 
 
 @FRAME_CHECK:
-   wai
+;   STZ STALL_COUNTER
+ ;  STZ STALL_COUNTERH
+   LDX #0
+   LDY #0
    lda VSYNC_counter
-   beq @FRAME_CHECK
-   stz VSYNC_counter
+   bne :+++
+ : ; INC STALL_COUNTER
+   INX                     ;  2 cycles
+   BNE :+                  ;  ~3 cycles   5
+    ;INC STALL_COUNTERH
+   INY 
+ 
+ :   
+  ;wai
+   lda VSYNC_counter       ;  4  cyles    9
+   beq :--                 ;  3  cycles   ~12 cycles per count
+ : stz VSYNC_counter
+   STA LAST_VSYNC_COUNTER
+   STX STALL_COUNTER
+   STY STALL_COUNTERH
    CLC
    ADC MASTER_CLOCK
-   TAX
    STA MASTER_CLOCK
    LDA MASTER_CLOCK+1
    ADC #0
    STA MASTER_CLOCK+1
-   TXA
+   LDA MASTER_CLOCK
    AND #1 ; restrict to 30 fps.. don't care missed cycle. 
-   BNE @FRAME_CHECK
+   BEQ @WRITE_DEBUG
    ; poll keyboard for input 
    jsr GETIN
    cmp #0
-   beq @FRAME_CHECK
-   cmp #$1D 	;	cursor right
+   BNE :+
+   JMP @do_update
+ : cmp #$1D 	;	cursor right
    BNE :+
    INC camera_facing
    JMP @do_update
@@ -890,11 +1065,7 @@ start:
    INC camera_cell_x
  : JMP @camera_cell_changed
 
- : cmp #0 ; cell y - 1/16 
-   BNE :+   
-   JMP @do_update
-
- : JMP @FRAME_CHECK
+ : JMP @WRITE_DEBUG
 
 @cleanup_and_exit:
    ; restore default IRQ vector
@@ -966,11 +1137,11 @@ PWOL_CENTER_Y_TOP     =  ZP_PTR+50
 
 TRY_AGAIN = 6
 SCREEN_MID_X = 108
-SCREEN_MID_Y =  80
-SCREEN_OUT_RIGHT  = 164 ; right of middle is 116, +48 = 164
-SCREEN_OUT_LEFT   =  36 ; left of middle is 100, -48=52-16=36 
-SCREEN_OUT_TOP     = 24
-SCREEN_OUT_BOTTOM  = 136
+SCREEN_MID_Y =  161-6-52
+SCREEN_OUT_RIGHT  = 108+80-15 ; right of middle is 116, +48 = 164
+SCREEN_OUT_LEFT   = 108-80  ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_TOP     = 16
+SCREEN_OUT_BOTTOM  = 160
 
    LDA CAMERA_CENTER_YH
    INC A
@@ -1107,6 +1278,7 @@ SCREEN_OUT_BOTTOM  = 136
         LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZAR_INSIDE_TUB 
       @ZAR_HIT_WALL_OUCH:
+          LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
           LDA #86 ; max height.. 
       @ZAR_INSIDE_TUB:
@@ -1258,6 +1430,7 @@ SCREEN_OUT_BOTTOM  = 136
         LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZAL_INSIDE_TUB 
       @ZAL_HIT_WALL_OUCH:
+          LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
           LDA #86 ; max height.. 
       @ZAL_INSIDE_TUB:
@@ -1440,6 +1613,7 @@ SCREEN_OUT_BOTTOM  = 136
         LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZBL_INSIDE_TUB 
       @ZBL_HIT_WALL_OUCH:
+          LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
           LDA #86 ; max height.. 
       @ZBL_INSIDE_TUB:
@@ -1600,6 +1774,7 @@ SCREEN_OUT_BOTTOM  = 136
         LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
         BPL @ZBR_INSIDE_TUB 
       @ZBR_HIT_WALL_OUCH:
+          LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
           LDA #86 ; max height.. 
       @ZBR_INSIDE_TUB:
@@ -1729,16 +1904,33 @@ SCREEN_OUT_BOTTOM  = 136
          JMP @zigzag_B_left
 
 draw_object_list:
+    LDY NUM_AVAIL_SPRITES ; num sprites can write
+    BEQ @rts
+    LDA NUM_RESERVED_SPRITES
+    INC VERA_LOCK
+;    BNE @unlock_vera   there's no actual way to get here and not have vera unlock.. 
+
+
+    INC DEBUG_D
+
     STZ VERA_ctrl
-    STZ VERA_addr_low
-    lda #(>VRAM_sprite_attributes)+1
+    STZ ZP_PTR
+    ASL 
+    ROL ZP_PTR
+    ASL 
+    ROL ZP_PTR
+    ASL 
+    ROL ZP_PTR
+    STA VERA_addr_low
+    CLC
+    LDA ZP_PTR
+    ADC #>VRAM_SPRITE_BUF;  #>VRAM_SPRITE_BUF ; #>VRAM_sprite_attributes;
     sta VERA_addr_high
     lda #$11
     sta VERA_addr_bank
     STZ ZP_PTR
     LDA #>OBJECT_LIST_Z_START_POINTERS
     STA ZP_PTR+1
-    LDY #96 ; num sprites can write
   @NEXT_Z: ; Z=0 is invalid...
       INC ZP_PTR
       BNE @Z_LOOP
@@ -1752,7 +1944,9 @@ draw_object_list:
         LDA VERA_data0
         DEY
         BNE :-
-
+   @unlock_vera:
+      DEC VERA_LOCK
+   @rts:
       rts
   @Z_LOOP:
       LDA (ZP_PTR) ; get our first victim
@@ -1791,50 +1985,47 @@ draw_object_list:
          DEY ; decrement that Y 
          BNE @OBJ_LOOP ; still sprite slots left.. woot!
          STA (ZP_PTR) ; oops.. save that last thing and exit..
+         DEC VERA_LOCK
          RTS
      
 
 
 test_sprite_data:
-; first 16 sprites reserved ... 
+; first 32 sprites reserved ... 
 ;      0   1   2   3   4   5   6  7
 ;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte  66,$01,100,  0,72,  0,$0C,$50  ;  cursor middle - 8x8  sprite 0
-.byte  16,$01, 12,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 1
-.byte  16,$01, 76,  0,SCREEN_OUT_TOP,  0,$0C,$30  ;  border top - 64x8    sprite 2
-.byte  16,$01,140,  0,  0,  0,$0C,$30  ;  border top - 64x8    sprite 3
-
-.byte  16,$01, 12,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 4
-.byte  16,$01, 76,  0,SCREEN_OUT_BOTTOM,  0,$0F,$30  ;  border bottom - 64x8  sprite 5
-.byte  16,$01,140,  0,153,  0,$0F,$30  ;  border bottom - 64x8  sprite 6
-
-.byte  16,$01,  0,  0, 16,  0,$0C,$C0  ;  border left    8x64   sprite 7
-.byte  16,$01,SCREEN_OUT_LEFT+8,  0, 80,  0,$0C,$C0  ;  border left    8x64   sprite 8
-.byte  16,$01,208,  0, 16,  0,$0F,$C0  ;  border left    8x64   sprite 9
-.byte  16,$01,SCREEN_OUT_RIGHT,  0, 80,  0,$0F,$C0  ;  border left    8x64   sprite A
-.byte  49,$01,140,  0,109,  0,$0C,$00  ; sprite B   bearing  Label
-;.byte  58,$00,140,  0,118,  0,$0c,$30  ; sprite C   WORLD
-;.byte  50,$00,140,  0,136,  0,$0c,$30  ; sprite D   Cell
-.byte  0,$01,148,  0,109,  0,$0C,$00  ; 0 test    sprite 0E   bearing
-.byte  1,$01,156,  0,109,  0,$0C,$00  ; 1 test    sprite 0F
-.byte  2,$01,140,  0,127,  0,$0C,$00  ; 6 test    sprite 10   world XH
-.byte  3,$01,148,  0,127,  0,$0C,$00  ; 7 test    sprite 11   
-.byte  4,$01,156,  0,127,  0,$0C,$00  ; 8 test    sprite 12   world Xl
-.byte  5,$01,164,  0,127,  0,$0C,$00  ; 9 test    sprite 13
-.byte  6,$01,176,  0,127,  0,$0C,$00  ; A test    sprite 14   world YH
-.byte  6,$01,184,  0,127,  0,$0C,$00  ; B test    sprite 15
-.byte  6,$01,192,  0,127,  0,$0C,$00  ; C test    sprite 16   world Yl
-.byte  6,$01,200,  0,127,  0,$0C,$00  ; D test    sprite 17
-.byte  6,$01,140,  0,145,  0,$0C,$00  ; 2 test    sprite 18   Cell X 
-.byte  6,$01,148,  0,145,  0,$0C,$00  ; 3 test    sprite 19   
-.byte  6,$01,156,  0,145,  0,$0C,$00  ; E test    sprite 1A   X Subcell
-.byte  6,$01,164,  0,145,  0,$0C,$00  ; E test    sprite 1A   
-.byte  6,$01,176,  0,100,  0,$0C,$00  ; 4 test    sprite 1C   DEBUG_A
-.byte  6,$01,184,  0,100,  0,$0C,$00  ; 5 test    sprite 1D   
-.byte  6,$01,192,  0,100,  0,$0C,$00  ; F test    sprite 1E   DEBUG_B
-.byte  6,$01,200,  0,100,  0,$0C,$00  ; F test    sprite 1F
-.byte  6,$01,192,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   DEBUG_C
-.byte  6,$01,200,  0, 91,  0,$0C,$00  ; 0 test    sprite 0E   
+.byte   0,$01,  0,  0,  0,  0,$0C,$00  ; 6 test    sprite 00   
+.byte   0,$01,  8,  0,  0,  0,$0C,$00  ; 7 test    sprite 01   
+.byte   0,$01, 16,  0,  0,  0,$0C,$00  ; 8 test    sprite 02   
+.byte   0,$01, 24,  0,  0,  0,$0C,$00  ; 9 test    sprite 03
+.byte   0,$01, 32,  0,  0,  0,$0C,$00  ; A test    sprite 04   
+.byte   0,$01, 40,  0,  0,  0,$0C,$00  ; B test    sprite 05
+.byte   0,$01, 48,  0,  0,  0,$0C,$00  ; C test    sprite 06   
+.byte   0,$01, 56,  0,  0,  0,$0C,$00  ; D test    sprite 07
+.byte   0,$01,  0,  0,  9,  0,$0C,$00  ; 2 test    sprite 08    
+.byte   0,$01,  8,  0,  9,  0,$0C,$00  ; 3 test    sprite 09   
+.byte   0,$01, 16,  0,  9,  0,$0C,$00  ; E test    sprite 0A   
+.byte   0,$01, 24,  0,  9,  0,$0C,$00  ; E test    sprite 0B   
+.byte   0,$01, 32,  0,  9,  0,$0C,$00  ; 4 test    sprite 0C   
+.byte   0,$01, 40,  0,  9,  0,$0C,$00  ; 5 test    sprite 0D   
+.byte   0,$01, 48,  0,  9,  0,$0C,$00  ; F test    sprite 0E   
+.byte   0,$01, 56,  0,  9,  0,$0C,$00  ; F test    sprite 0F
+.byte   0,$01,  0,  0, 18,  0,$0C,$00  ; 6 test    sprite 10   
+.byte   0,$01,  8,  0, 18,  0,$0C,$00  ; 7 test    sprite 11   
+.byte   0,$01, 16,  0, 18,  0,$0C,$00  ; 8 test    sprite 12   
+.byte   0,$01, 24,  0, 18,  0,$0C,$00  ; 9 test    sprite 13
+.byte   0,$01, 32,  0, 18,  0,$0C,$00  ; A test    sprite 14   
+.byte   0,$01, 40,  0, 18,  0,$0C,$00  ; B test    sprite 15
+.byte   0,$01, 48,  0, 18,  0,$0C,$00  ; C test    sprite 16   
+.byte   0,$01, 56,  0, 18,  0,$0C,$00  ; D test    sprite 17
+.byte   0,$01,  0,  0, 27,  0,$0C,$00  ; 2 test    sprite 18    
+.byte   0,$01,  8,  0, 27,  0,$0C,$00  ; 3 test    sprite 19   
+.byte   0,$01, 16,  0, 27,  0,$0C,$00  ; E test    sprite 1A   
+.byte   0,$01, 24,  0, 27,  0,$0C,$00  ; E test    sprite 1B   
+.byte   0,$01, 32,  0, 27,  0,$0C,$00  ; 4 test    sprite 1C   
+.byte   0,$01, 40,  0, 27,  0,$0C,$00  ; 5 test    sprite 1D   
+.byte   0,$01, 48,  0, 27,  0,$0C,$00  ; F test    sprite 1E   
+.byte   0,$01, 56,  0, 27,  0,$0C,$00  ; F test    sprite 1F
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
@@ -1995,7 +2186,7 @@ test_vram_data:
 .byte 0
 .endrepeat
 
-; alernate tile graphic to use for tub wall .. 128-143
+; alernate tile graphic to use for tub wall .. 128-143 ; 16x tile
 .repeat 32
     .byte $16, $16, $16, $16, $16, $16, $16, $16
     .byte $61, $61, $61, $61, $61, $61, $61, $61
@@ -2042,9 +2233,29 @@ test_vram_data:
 .byte 0
 .endrepeat
 
-.repeat 64
-  .res 32,$10
+; alernate tile graphic to use for tub wall .. 192-223 ; 15x tile
+.repeat 32
+    .byte $16, $16, $16, $16, $16, $16, $16, $10
+    .byte $61, $61, $61, $61, $61, $61, $61, $60
 .endrepeat
+
+.repeat 32  ;  144-159
+    .byte $10, $10, $10, $10, $10, $10, $10, $10
+    .byte $06, $06, $06, $06, $06, $06, $06, $00
+.endrepeat
+
+
+; alernate tile graphic to use for tub wall .. 224 ; 14x tile
+.repeat 32
+    .byte $16, $16, $16, $16, $16, $16, $16, $00
+    .byte $61, $61, $61, $61, $61, $61, $61, $00
+.endrepeat
+
+.repeat 32  ;  144-159
+    .byte $10, $10, $10, $10, $10, $10, $10, $00
+    .byte $06, $06, $06, $06, $06, $06, $06, $00
+.endrepeat
+
 
 
 HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
