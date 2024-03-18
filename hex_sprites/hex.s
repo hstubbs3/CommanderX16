@@ -115,8 +115,33 @@ SPRITE_NUM_LOW_NIBBLE: ; 2A00
 .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 .byte 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 
+LOW_NIBBLE_TO_HEX: ; 
+.repeat 16
+;      0   1   2   3   4   5   6   7   8   9   A   B   C   D   E   F
+.byte  48, 49, 50, 51, 52, 53, 54, 55, 56, 57,  1,  2,  3,  4,  5,  6
+.endrepeat
+
+HIGH_NIBBLE_TO_HEX: ;
+.res 16,48
+.res 16,49
+.res 16,50
+.res 16,51
+.res 16,52
+.res 16,53
+.res 16,54
+.res 16,55
+.res 16,56
+.res 16,57
+.res 16,1
+.res 16,2
+.res 16,3
+.res 16,4
+.res 16,5
+.res 16,6
+
 SCREEN_Y_TO_Z: ; 2B00
-.byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+.byte 255,253,252,250,249,247,246,244,243,241,240,238,237,235,234,232,231,229,228,227,225,224,222,221,219,218,216,215,213,212,210,209,207,206,204,203,202,200,199,197,196,194,193,191,190,188,187,185,184,182,181,179,178,177,175,174,172,171,169,168,166,165,163,162,160,159,157,156,154,153,152,150,149,147,146,144,143,141,140,138,137,135,134,132,131,129,128,127,125,124,122,121,119,118,116,115,113,112,110,109,107,106,104,103,101,100,99,97,96,94,93,91,90,88,87,85,84,82,81,79,78,76,75,74,72,71,69,68,66,65,63,62,60,59,57,56,54,53,51,50,49,47,46,44,43,41,40,38,37,35,34,32,31,29,28,26,25,24,22,21,19,18,16,15,13,12,10,9,7,6,4,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+;.byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
 ;.res 256,0
@@ -183,6 +208,10 @@ WORLD_WALL_SPRITE_NUM_lookies:
 .byte 192,192,192,192,192,192,192,192,192,192,224,224,224,192,192,192
 .byte 192,192,192,192,192,192,192,128,128,128,128,128,128,128,128,128
 
+BITMAP_OFFSETS_HIGH:
+.byte 0,0,1,1,2,3,3,4,5,5,6,6,7,8,8,9,10,10,11,11,12,13,13,14,15,15,16,16,17,18,18,19,20,20,21,21,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,35,35,36,36,37,38,38,39,40,40,41,41,42,43,43,44,45,45,46,46,47,48,48,49,50,50,51,51,52,53,53,54,55,55,56,56,57,58,58,59,60,60,61,61,62,63,63,64,65,65,66,66,67,68,68,69,70,70,71,71,72,73,73,74,75,75,76,76,77,78,78,79,80,80,81,81,82,83,83,84,85,85,86,86,87,88,88,89,90,90,91,91,92,93,93,94,95,95,96,96,97,98,98,99,100,100,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
+BITMAP_OFFSETS_LOW:
+.byte 0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96,0,160,64,224,128,32,192,96
 ;constants
 
 ; RAM Interrupt Vectors
@@ -245,14 +274,17 @@ VSYNC_BIT         = $01
 ;   $1FA00 - $1FBFF Palette
 ;   $1FC00 - $1FFFF Sprite attributes
 VRAM_SPRITES =      $00000  ; putting sprite data at start of VRAM for now.. may move later? 
+VRAM_BITMAP_LAYERA =$11800  ; starts at 70K ... so up to ~70K for sprites.. not too shabby.. 
+VRAM_BITMAP_LAYERB =$18000  ; ~25K needs to start at 2K boundary... 121.5-25= 96k 
+VRAM_TEXT_SCREEN =  $1E400  ; 121.5K    256 x 21 => 32 x 24 would take 1.5K tiles is min.. 64*32 = 2K 8 config.. 
 VRAM_SPRITE_BUF =   $1EC00  ; 123K - sprite attribute buffer for swapping data in ..  
 VRAM_CHARSET =      $1F000  ;  $1:F000-$1:F7FF Charset loaded by kernal here .. is at 124K .. 
-; only can go to 126K ... 
+; only can go to 126K ...  
 VRAM_palette      = $1FA00      ;  
 VRAM_sprite_attributes = $1FC00
 
 SPRITES_ONLY_VGA = $41
-
+SPRITES_LAYER1_LAYER0_VGA = $71
 
 
 ; Kernal
@@ -266,7 +298,14 @@ WHITE             = $05
 RETURN            = $0D
 SPACE             = $20
 ZERO_CHAR         = $30
+ONE_CHAR          = $31
+TWO_CHAR          = $32
+THREE_CHAR        = $33
+FOUR_CHAR         = $34
+FIVE_CHAR         = $35
 SIX_CHAR          = $36
+SEVEN_CHAR        = $37
+EIGHT_CHAR        = $38
 NINE_CHAR         = $39
 
 A_CHAR            = $41
@@ -298,6 +337,11 @@ SPRITE_SIZE_ORA = $D0 ; $D0 for 16x64, $50 for 16x16
 
 diff_sprite_to_transparent = 15
 
+SCREEN_OUT_RIGHT  = 156 ; right of middle is 116, +48 = 164
+SCREEN_OUT_LEFT   = 255+4-8  ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_TOP     = 255+4-12
+SCREEN_OUT_BOTTOM  = 120
+
 ; global data ; 2E00
 GLOBAL_DATA:         .byte $DE,$AD,$BE,$EF ; 0-3
 default_irq_vector:  .addr 0 ; 4-5 
@@ -319,7 +363,7 @@ camera_cell_y: 		 .byte 0 ; e
 STALL_COUNTER:       .byte 0
 STALL_COUNTERH:      .byte 0
 LAST_VSYNC_COUNTER:  .byte 0 
-NUM_RESERVED_SPRITES:    .byte  (1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
+NUM_RESERVED_SPRITES:    .byte  0;(1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
 
 
 camera_world_pos_XH:    .byte 44 ; 8
@@ -336,7 +380,10 @@ CAMERA_CENTER_TOP_PX: .byte 0 ; 16
 CAMERA_CELL_LINE_PTR: .addr 0 ; 17-18
 WORLD_SPRITE_NUM:    .byte 0 ; 1B
 WORLD_WALL_SPRITE_NUM: .byte 0; 1C
+CURRENT_BITMAP_BUFFER: .byte 0 ; "A"
 
+camera_screen_out_top: .byte SCREEN_OUT_TOP       ; for determining visibility / stop conditions for checking if within range to view.. 
+camera_screen_out_bottom: .byte SCREEN_OUT_BOTTOM 
 
 .macro stash_scratch
 	STA (SCRATCH_PTR)
@@ -362,6 +409,15 @@ custom_irq_handler: ; 2E12
 
  : INC DEBUG_C
    PHX
+   LDA CURRENT_BITMAP_BUFFER
+   BEQ :+
+   STZ CURRENT_BITMAP_BUFFER
+   LDA #VRAM_BITMAP_LAYERA>>9   
+   BRA :++
+ : DEC A 
+   STA CURRENT_BITMAP_BUFFER
+   LDA #VRAM_BITMAP_LAYERB>>9
+ : STA VERA_L0_tilebase
 
 ;   JMP @patched
 
@@ -477,7 +533,7 @@ start:
   sta default_irq_vector+1
 
   stz VERA_dc_video   ; disable display
-  lda #43 ; set scale for bitmap mode - going for 215x161 mode
+  lda #51 ; #43 ; set scale for bitmap mode - going for 215x161 mode
   sta VERA_dc_hscale
   sta VERA_dc_vscale
   ; for now no L0 or L1 
@@ -549,21 +605,6 @@ start:
     DEC ZP_PTR+2
     BNE :--
   :
-  ; write sprite test data 
-  LDA #255
-  STA VERA_addr_low
-  lda #>VRAM_sprite_attributes
-  sta VERA_addr_high
-  lda #$19   ;  decrement 1 bank 1
-  sta VERA_addr_bank
-  LDX #255
-  :
-    LDA test_sprite_data,X 
-    STA VERA_data0 
-    DEX 
-    BNE :- 
-   LDA test_sprite_data,X 
-   STA VERA_data0 
 
 
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
@@ -581,12 +622,94 @@ start:
   LDA test_optimal_pal_data,X 
   STA VERA_data0
 
+  LDA #8
+  STz VERA_L1_config
+  LDA #VRAM_CHARSET >> 9
+  STA VERA_L1_tilebase
+  LDA #VRAM_TEXT_SCREEN >> 9
+  STA VERA_L1_mapbase
+
+  STZ VERA_addr_low
+  LDA #>VRAM_BITMAP_LAYERA
+  STA VERA_addr_high
+  LDA #$11
+  STA VERA_addr_bank
+  LDX #103  ;  need to zero out from 70K to 121.5K where that sprite buffer is.. 206 pages, 53K ; well.. zero out 70 to 96.. 
+  LDY #0
+: STZ VERA_data0
+  INY 
+  BNE :-
+  DEX 
+  BNE :-
+  LDX #101  ;  need to zero out from 70K to 121.5K where that sprite buffer is.. 206 pages, 53K ; well.. zero out 70 to 96.. 
+  ;LDA #255
+: STA VERA_data0
+  INY 
+  BNE :-
+  DEX 
+  BNE :-
+
+  STZ VERA_data0
+  LDA #$21
+  STA VERA_addr_bank
+  LDA #$F1
+  LDX #33
+: STA VERA_data0
+  DEX 
+  BNE :-
+  LDX #14
+: LDY #19
+  LDA #$01
+  : STA VERA_data0
+    DEY
+    BNE :-
+    LDY #$F1
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+   DEX 
+   BNE :--    
+  LDX #160
+  : STY VERA_data0
+    STY VERA_data0
+    DEX 
+    BNE :- 
+  LDA #4
+  STA VERA_L1_HSCROLL_L
+  STA VERA_L1_VSCROLL_L
+
+  STZ VERA_addr_low
+  LDA #>VRAM_TEXT_SCREEN
+  STA VERA_addr_high
+  LDX #4
+  LDA #32
+: STA VERA_data0
+  INY 
+  BNE :-
+  DEX 
+  BNE :-
+
+  LDA #$06
+  STA VERA_L0_config
+  LDA #VRAM_BITMAP_LAYERA >>9
+  STA VERA_L0_tilebase
 
   ; enable display 
   stz VERA_ctrl
-  lda #SPRITES_ONLY_VGA
+  lda #SPRITES_LAYER1_LAYER0_VGA ; #SPRITES_ONLY_VGA
   sta VERA_dc_video
-
    DEC VERA_LOCK ; unlock the VERA
 
 
@@ -673,16 +796,19 @@ start:
    STA WORLD_SPRITE_NUM
    LDA WORLD_WALL_SPRITE_NUM_lookies,X
    STA WORLD_WALL_SPRITE_NUM
+
+   SEC
    LDA WORLD_SPRITE_CENTER_XL,X
    STA CAMERA_CENTER_XL
    LDA WORLD_SPRITE_CENTER_XH,X
+   SBC #28
    STA CAMERA_CENTER_XH
 
    LDA WORLD_SPRITE_CENTER_YL,X
    STA CAMERA_CENTER_YL
-   CLC
+   SEC
    LDA WORLD_SPRITE_CENTER_YH,X
-   ADC #40
+   SBC #20
    STA CAMERA_CENTER_TOP_PX
 
     LDX camera_facing
@@ -803,6 +929,15 @@ start:
    ADC CONVERT_HEIGHTS_PIXELS,Y
    STA CAMERA_CENTER_YH
 
+   CLC 
+   LDA #SCREEN_OUT_BOTTOM
+   ADC CONVERT_HEIGHTS_PIXELS,Y 
+   STA camera_screen_out_bottom
+   CLC 
+   LDA #SCREEN_OUT_TOP
+   ADC CONVERT_HEIGHTS_PIXELS,Y
+   STA camera_screen_out_top
+
    ; clear the object list ... 
     SEC
     LDA #128
@@ -810,7 +945,7 @@ start:
     STA NUM_AVAIL_SPRITES
 
     STZ OBJECT_LIST_BYTE6_NEXT ; because we can't use zero anyway..
-    LDA #$0C ; is basis for all the z_flips <- this may change depending on orientation.. 
+    LDA #$08 ; is basis for all the z_flips <- this may change depending on orientation.. 
     LDX #0
     : STZ OBJECT_LIST_Z_START_POINTERS,X
       STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
@@ -844,22 +979,47 @@ start:
    BNE :-
  :
    STZ VERA_ctrl
-   STZ VERA_addr_low
-   LDA #>VRAM_sprite_attributes
+   LDA #42;+64
+   STA VERA_addr_low
+   LDA #>VRAM_TEXT_SCREEN
    STA VERA_addr_high
-   LDA #$41
+   LDA #$21
    STA VERA_addr_bank
    LDY #0
- : LDX MASTER_CLOCK,Y 
-   LDA SPRITE_NUM_HIGH_NIBBLE,X 
+ : LDX GLOBAL_DATA,Y 
+   LDA HIGH_NIBBLE_TO_HEX,X ; 1
    STA VERA_data0
-   LDA SPRITE_NUM_LOW_NIBBLE,X 
+   LDA LOW_NIBBLE_TO_HEX,X  ; 2
    STA VERA_data0
    INY
-   TYA
-   ASL 
-   CMP NUM_RESERVED_SPRITES
-   BCC :-
+   LDX GLOBAL_DATA,Y 
+   LDA HIGH_NIBBLE_TO_HEX,X   ;  3
+   STA VERA_data0
+   LDA LOW_NIBBLE_TO_HEX,X    ;  4
+   STA VERA_data0
+   INY
+   LDA VERA_data0             ;  5
+   LDA VERA_addr_low
+   LDX GLOBAL_DATA,Y 
+   LDA HIGH_NIBBLE_TO_HEX,X   ;  6
+   STA VERA_data0
+   LDA LOW_NIBBLE_TO_HEX,X    ;  7
+   STA VERA_data0
+   INY
+   LDX GLOBAL_DATA,Y 
+   LDA HIGH_NIBBLE_TO_HEX,X   ;  8
+   STA VERA_data0
+   LDA LOW_NIBBLE_TO_HEX,X    ;  9
+   STA VERA_data0
+   INY
+   CLC 
+   LDA VERA_addr_low          ;  moved 18 out of 64 bytes...
+   ADC #64-18
+   STA VERA_addr_low
+   BCC :+
+   INC VERA_addr_high
+ : CPY #68  ;  show first 64 bytes of global data 
+   BCC :--
    DEC VERA_LOCK
 
 
@@ -892,9 +1052,10 @@ start:
    STA MASTER_CLOCK+1
    LDA MASTER_CLOCK
    AND #1 ; restrict to 30 fps.. don't care missed cycle. 
-   BEQ @WRITE_DEBUG
+   BEQ :+
+   JMP @WRITE_DEBUG
    ; poll keyboard for input 
-   jsr GETIN
+ : jsr GETIN
    cmp #0
    BNE :+
    JMP @do_update
@@ -1065,6 +1226,34 @@ start:
    INC camera_cell_x
  : JMP @camera_cell_changed
 
+ : CMP #ONE_CHAR
+   BNE :+
+   LDA VERA_dc_video
+   EOR #%00100000
+   STA VERA_dc_video
+
+ : CMP #TWO_CHAR
+   BNE :+
+   LDA VERA_dc_video
+   EOR #%01000000
+   STA VERA_dc_video
+
+ : CMP #THREE_CHAR
+   BNE :+
+   LDA VERA_dc_video
+   EOR #%00010000
+   STA VERA_dc_video
+ : CMP #ZERO_CHAR
+   BNE :+++
+   LDA VERA_dc_hscale
+   CMP #43
+   BCS :+
+   LDA #51
+   BRA :++
+ : LDA #32
+ : STA VERA_dc_hscale
+   STA VERA_dc_vscale
+
  : JMP @WRITE_DEBUG
 
 @cleanup_and_exit:
@@ -1135,13 +1324,14 @@ PWOL_camera_cell_yl = ZP_PTR+48
 PWOL_CENTER_Y  =  ZP_PTR+49
 PWOL_CENTER_Y_TOP     =  ZP_PTR+50
 
+PWOL_TOP_CHECK = ZP_PTR+51
+PWOL_BOT_CHECK = ZP_PTR+52
+
 TRY_AGAIN = 6
-SCREEN_MID_X = 108
-SCREEN_MID_Y =  161-6-52
-SCREEN_OUT_RIGHT  = 108+80-15 ; right of middle is 116, +48 = 164
-SCREEN_OUT_LEFT   = 108-80  ; left of middle is 100, -48=52-16=36 
-SCREEN_OUT_TOP     = 16
-SCREEN_OUT_BOTTOM  = 160
+   LDA camera_screen_out_top
+   STA PWOL_TOP_CHECK
+   LDA camera_screen_out_bottom
+   STA PWOL_BOT_CHECK
 
    LDA CAMERA_CENTER_YH
    INC A
@@ -1289,7 +1479,13 @@ SCREEN_OUT_BOTTOM  = 160
           SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
-          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+          CMP #SCREEN_OUT_BOTTOM    ;  are we even visible? 
+          BCC :+
+          DEC OBJECT_LIST_BYTE6_NEXT
+          LDA OBJECT_LIST_BYTE6_NEXT,X ; grab the old next value 
+          STA (PWOL_Z_STARTS_PTR) ; patch the old one back in.. 
+          BRA @ZAR_NEXT ; and skip THIS
+        : STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
           BCS :+ ; is not covering us 
           LDA PWOL_CURRENT_YH
@@ -1328,10 +1524,10 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAR_ZIG_LEFT_SWITCH
          CPX #SCREEN_OUT_LEFT
+         BCS @ZAR_ZIG_LEFT_SWITCH
+         CMP PWOL_TOP_CHECK
          BCC @ZAR_ZIG_LEFT_SWITCH
-         CMP #SCREEN_OUT_TOP
-         BCC @ZAR_ZIG_LEFT_SWITCH
-         CMP #SCREEN_OUT_BOTTOM
+         CMP PWOL_BOT_CHECK
          BCS @ZAR_ZIG_LEFT_SWITCH
          JMP @zigzag_A_right
      @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
@@ -1369,7 +1565,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
-         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_TOP
          BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_BOTTOM
@@ -1398,7 +1594,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
-         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_TOP
          BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_BOTTOM
@@ -1480,7 +1676,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAL_ZIG_RIGHT_SWITCH
          CPX #SCREEN_OUT_LEFT
-         BCC @ZAL_ZIG_RIGHT_SWITCH
+         BCS @ZAL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_TOP
          BCC @ZAL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
@@ -1525,7 +1721,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
-         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_TOP
          BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_BOTTOM
@@ -1555,7 +1751,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
-         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_TOP
          BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_BOTTOM
@@ -1663,7 +1859,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZBL_ZIG_RIGHT_SWITCH
          CPX #SCREEN_OUT_LEFT
-         BCC @ZBL_ZIG_RIGHT_SWITCH
+         BCS @ZBL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_TOP
          BCC @ZBL_ZIG_RIGHT_SWITCH
          CMP #SCREEN_OUT_BOTTOM
@@ -1741,7 +1937,7 @@ SCREEN_OUT_BOTTOM  = 160
          CPX #SCREEN_OUT_RIGHT
          BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
-         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_TOP
          BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
          CMP #SCREEN_OUT_BOTTOM
@@ -1905,7 +2101,9 @@ SCREEN_OUT_BOTTOM  = 160
 
 draw_object_list:
     LDY NUM_AVAIL_SPRITES ; num sprites can write
-    BEQ @rts
+    BNE :+ 
+    JMP draw_object_list_to_BUFFER
+   :
     LDA NUM_RESERVED_SPRITES
     INC VERA_LOCK
 ;    BNE @unlock_vera   there's no actual way to get here and not have vera unlock.. 
@@ -1985,10 +2183,95 @@ draw_object_list:
          DEY ; decrement that Y 
          BNE @OBJ_LOOP ; still sprite slots left.. woot!
          STA (ZP_PTR) ; oops.. save that last thing and exit..
-         DEC VERA_LOCK
-         RTS
-     
+draw_object_list_to_BUFFER:
+      DEC VERA_LOCK
+      RTS
 
+   LDA CURRENT_BITMAP_BUFFER
+   BEQ :+
+   LDA #>VRAM_BITMAP_LAYERA
+   BRA :++
+ : LDA #>VRAM_BITMAP_LAYERB
+ : STA $7F
+   STZ ZP_PTR
+  @NEXT_Z: ; Z=0 is invalid...
+      DEC ZP_PTR
+      BNE @Z_LOOP
+      DEC VERA_LOCK
+      RTS
+  @Z_LOOP:
+      LDA (ZP_PTR) ; get our first victim
+      BEQ @NEXT_Z
+      TAX
+      LDA #0
+      STA (ZP_PTR) ; zero this Z_next for now 
+      TXA
+     @OBJ_LOOP:
+         TAX
+         BEQ @NEXT_Z ; got a bum next pointer there ... 
+         LDA #8
+         STA ZP_PTR+3 ; BANK bit for source
+         LDA OBJECT_LIST_BYTE1_MODE
+         STA ZP_PTR+2 ; high mem for source
+         LDA OBJECT_LIST_BYTE0_ADDRLOW,X ; 12:5
+         ASL ; 11:4
+         ROL ZP_PTR+2
+         ASL ; 10:3
+         ROL ZP_PTR+2
+         ASL ; 9:2
+         ROL ZP_PTR+2
+         ASL ; 8:1
+         ROL ZP_PTR+2
+         ASL ; 7:0 -> low 
+         ROL ZP_PTR+2 ; high
+         ROL ZP_PTR+3 ; bank 
+         STA VERA_addr_low
+         LDA ZP_PTR+2
+         STA VERA_addr_high
+         LDA ZP_PTR+3
+         STA VERA_addr_bank
+         LDA #1
+         STA VERA_ctrl         
+         LDY OBJECT_LIST_BYTE3_Y,X
+         CPY #160
+         BCS @NEXT_Z
+         CLC 
+         LDA BITMAP_OFFSETS_LOW,Y 
+         ADC OBJECT_LIST_BYTE2_X,X 
+         STA VERA_addr_low
+         LDA BITMAP_OFFSETS_HIGH,X
+         ADC $7F 
+         STA VERA_addr_high 
+         LDA #$11
+         STA VERA_addr_bank
+         LDY #1
+       : LDA VERA_data0 ; 1 
+         STA VERA_data1
+         LDA VERA_data0 ; 2 
+         STA VERA_data1
+         LDA VERA_data0 ; 3 
+         STA VERA_data1
+         LDA VERA_data0 ; 4 
+         STA VERA_data1
+         LDA VERA_data0 ; 5 
+         STA VERA_data1
+         LDA VERA_data0 ; 6 
+         STA VERA_data1
+         LDA VERA_data0 ; 7 
+         STA VERA_data1
+         LDA VERA_data0 ; 8 
+         STA VERA_data1
+         LDA VERA_addr_low
+         CLC 
+         ADC #152
+         STA VERA_addr_low
+         BCC :+
+         INC VERA_addr_high
+       : DEY 
+         BNE :--
+         STZ VERA_ctrl
+         LDA OBJECT_LIST_BYTE6_NEXT,x
+         JMP @OBJ_LOOP
 
 test_sprite_data:
 ; first 32 sprites reserved ... 

@@ -278,13 +278,29 @@ TODO 	sprite attribute buffer
 		identified bug with either the emulator or the vera will need to test more ... left some code in the interrupt handler .. 
 
 	commit
+2000 	where to put layer0 buffers?? layer1 stuff? 
+2240 	stuck is being weird.. head hurts.. prob not going to next object in list correctly.
 
+2024/03/18
+0725 	OK getting back on this.. first let's make some controls to enable/disable each layer.. 
+		1,2,3 toggle layer1, sprite, layer0
+TODO 	add controls to toggle layers
+	DONE
+0730 	sort out a toggle-able debug view, main view should be only 160x120.. 
+TODO	setup a 'debug mode' - make the screen 256x192 with the upper left 160x120 representing the actual intended display.. will have a toggle
+	DONE
+0845 	was working on switching view to 160x120 but now zig-zag isn't working ... needs fixed.. 
+	COMMIT
 	
-BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 
-
-TODO 	fixing keyboard controls 
-TODO 	blitting extra objects to buffer
+BUG 	fix ziggy zaggy
 TODO 	perhaps alter view to be 160x120 ? 
+
+
+
+TODO 	blitting extra objects to buffer
+
+BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 
+TODO 	fixing keyboard controls 
 
 TODO 	make moving around by X/Y/Z work 
 
