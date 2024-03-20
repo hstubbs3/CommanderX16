@@ -291,8 +291,14 @@ TODO	setup a 'debug mode' - make the screen 256x192 with the upper left 160x120 
 	DONE
 0845 	was working on switching view to 160x120 but now zig-zag isn't working ... needs fixed.. 
 	COMMIT
-	
-BUG 	fix ziggy zaggy
+
+2024/03/20
+0730	OK back at it ... need to fix the zig zagging before can proceed .. 
+0930 	ziggy zaggy error is due to check against screen out top.. 
+	eek.. gotta go..
+	COMMIT 
+
+BUG 	fix ziggy zaggy - appears error is due to check against screen out top.. 
 TODO 	perhaps alter view to be 160x120 ? 
 
 

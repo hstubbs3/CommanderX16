@@ -343,39 +343,49 @@ SCREEN_OUT_TOP     = 255+4-12
 SCREEN_OUT_BOTTOM  = 120
 
 ; global data ; 2E00
+;line 0
 GLOBAL_DATA:         .byte $DE,$AD,$BE,$EF ; 0-3
+;line 1
 default_irq_vector:  .addr 0 ; 4-5 
-
 MASTER_CLOCK:        .addr 0 ; 6-7
-VERA_LOCK:           .byte 0 ; 9 255 is unlocked
-NUM_AVAIL_SPRITES:   .byte 0 ; A
+; line 2
+VERA_LOCK:           .byte 0 ; 9 value written to screen is value at time DEBUG_WRITE
+IRQ_VERA_LOCK:       .byte 80 ; value of VERA_LOCK when reached the Interrupt
+.byte 0,0
+; line 3
+STALL_COUNTER:       .byte 0
+STALL_COUNTERH:      .byte 0
+LAST_VSYNC_COUNTER:  .byte 0 
+VSYNC_counter:       .byte 1 ; 8
+; line 4
+camera_facing: 		 .byte 1 ; 7
+.byte 0
+CAMERA_CENTER_XH:    .byte 0 ; 13
+CAMERA_CENTER_YH:    .byte 0 ; 15
+; line 5
+
+camera_cell_x: 		 .byte 0 ; c
+camera_cell_xl:       .byte 0 ; d
+camera_cell_y: 		 .byte 0 ; e
+camera_cell_yl:       .byte 0 ; f
+; line 6
+camera_world_pos_XH:    .byte 44 ; 8
+camera_world_pos_XL:       .byte 48 ; 9
+camera_world_pos_YH:        .byte 15 ; A
+camera_world_pos_YL:       .byte 128  ; B
 
 DEBUG_A: .byte 0  ; B
 DEBUG_B: .byte 0  ; C
 DEBUG_C: .byte 0  ; D
 DEBUG_D: .byte 0  ; E
-camera_facing: 		 .byte 1 ; 7
-VSYNC_counter:       .byte 1 ; 8
-camera_cell_x: 		 .byte 0 ; c
-camera_cell_y: 		 .byte 0 ; e
 
 
-STALL_COUNTER:       .byte 0
-STALL_COUNTERH:      .byte 0
-LAST_VSYNC_COUNTER:  .byte 0 
+NUM_AVAIL_SPRITES:   .byte 0 ; A
 NUM_RESERVED_SPRITES:    .byte  0;(1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
 
 
-camera_world_pos_XH:    .byte 44 ; 8
-camera_world_pos_XL:       .byte 48 ; 9
-camera_world_pos_YH:        .byte 15 ; A
-camera_world_pos_YL:       .byte 128  ; B
-camera_cell_xl:       .byte 0 ; d
-camera_cell_yl:       .byte 0 ; f
 CAMERA_CENTER_XL:    .byte 0 ; 12
-CAMERA_CENTER_XH:    .byte 0 ; 13
 CAMERA_CENTER_YL:    .byte 0 ; 14
-CAMERA_CENTER_YH:    .byte 0 ; 15
 CAMERA_CENTER_TOP_PX: .byte 0 ; 16
 CAMERA_CELL_LINE_PTR: .addr 0 ; 17-18
 WORLD_SPRITE_NUM:    .byte 0 ; 1B
@@ -391,24 +401,21 @@ camera_screen_out_bottom: .byte SCREEN_OUT_BOTTOM
 .endmacro
 
 custom_irq_handler: ; 2E12
-   PHA 
    lda VERA_isr
    and #VSYNC_BIT
-   BNE :+
-   PLA 
-   ; continue to default IRQ handler
-   jmp (default_irq_vector)
-   ; RTI will happen after jump
- : inc VSYNC_counter
+   BEQ :+
+   ;  for debug .. 
+   LDA VERA_LOCK 
+   STA IRQ_VERA_LOCK
+
+   INC VSYNC_counter
 
    INC VERA_LOCK
-   BEQ :+  ; @unlock_vera ; if we don't have lock we'll just fail this frame.. 
+   BEQ :++  ; @unlock_vera ; if we don't have lock we'll just fail this frame.. 
    DEC VERA_LOCK
-   PLA 
-   jmp (default_irq_vector)
+ : jmp (default_irq_vector)
 
  : INC DEBUG_C
-   PHX
    LDA CURRENT_BITMAP_BUFFER
    BEQ :+
    STZ CURRENT_BITMAP_BUFFER
@@ -516,11 +523,9 @@ custom_irq_handler: ; 2E12
    STZ VERA_ctrl
 
 @patched:
-   PLX
 @unlock_vera:
-   DEC VERA_LOCK
+;   INC VERA_LOCK ; push VERA_LOCK to 1 from zero.. indicating we've done the swap needed
 @continue:
-   PLA 
    ; continue to default IRQ handler
    jmp (default_irq_vector)
    ; RTI will happen after jump
@@ -686,9 +691,9 @@ start:
     STY VERA_data0
     DEX 
     BNE :- 
-  LDA #4
-  STA VERA_L1_HSCROLL_L
-  STA VERA_L1_VSCROLL_L
+;  LDA #4
+;  STA VERA_L1_HSCROLL_L
+;  STA VERA_L1_VSCROLL_L
 
   STZ VERA_addr_low
   LDA #>VRAM_TEXT_SCREEN
@@ -706,13 +711,22 @@ start:
   LDA #VRAM_BITMAP_LAYERA >>9
   STA VERA_L0_tilebase
 
+  LDA #6
+  STA VERA_addr_low
+  LDA #>VRAM_SPRITE_BUF
+  STA VERA_addr_high
+  LDA #$41
+  STA VERA_addr_bank
+  : STZ VERA_data0
+    INX 
+    BNE :-
   ; enable display 
   stz VERA_ctrl
   lda #SPRITES_LAYER1_LAYER0_VGA ; #SPRITES_ONLY_VGA
   sta VERA_dc_video
-   DEC VERA_LOCK ; unlock the VERA
 
-
+;  DEC VERA_LOCK ; unlock the vera for first go... 
+;   BRA @camera_world_changed
   ; overwrite RAM IRQ vector with custom handler address
   sei ; disable IRQ while vector is changing
   lda #<custom_irq_handler
@@ -969,15 +983,11 @@ start:
 
    LDA #$D1
    STA OBJECT_LIST_BYTE5_SIZE+1
+
+   STZ VERA_LOCK
    jsr draw_object_list
 
-   inc VERA_LOCK
-   BEQ :++
-:  DEC VERA_LOCK
 @WRITE_DEBUG:
-   inc VERA_LOCK
-   BNE :-
- :
    STZ VERA_ctrl
    LDA #42;+64
    STA VERA_addr_low
@@ -1020,42 +1030,41 @@ start:
    INC VERA_addr_high
  : CPY #68  ;  show first 64 bytes of global data 
    BCC :--
-   DEC VERA_LOCK
 
+   LDA #$FF
+   STA VERA_LOCK 
+
+;   rts
 
 @FRAME_CHECK:
-;   STZ STALL_COUNTER
- ;  STZ STALL_COUNTERH
-   LDX #0
-   LDY #0
-   lda VSYNC_counter
-   bne :+++
- : ; INC STALL_COUNTER
-   INX                     ;  2 cycles
-   BNE :+                  ;  ~3 cycles   5
-    ;INC STALL_COUNTERH
-   INY 
- 
- :   
-  ;wai
-   lda VSYNC_counter       ;  4  cyles    9
-   beq :--                 ;  3  cycles   ~12 cycles per count
- : stz VSYNC_counter
+   LDX #255
+   LDY #255
+   LDA VSYNC_counter
    STA LAST_VSYNC_COUNTER
+   STZ VSYNC_counter
+:  INX                     ;  2 cycles
+   BNE :+                  ;  ~3 cycles   5
+   INY 
+  ;wai   disables the busy wait.. 
+:  lda VSYNC_counter       ;  4  cyles    9
+   beq :--                ;  3  cycles   ~12 cycles per count
+   STZ VSYNC_counter
    STX STALL_COUNTER
    STY STALL_COUNTERH
-   CLC
-   ADC MASTER_CLOCK
-   STA MASTER_CLOCK
-   LDA MASTER_CLOCK+1
-   ADC #0
-   STA MASTER_CLOCK+1
    LDA MASTER_CLOCK
-   AND #1 ; restrict to 30 fps.. don't care missed cycle. 
-   BEQ :+
-   JMP @WRITE_DEBUG
+   INC A
+   CLC
+   ADC LAST_VSYNC_COUNTER
+   STA MASTER_CLOCK
+   BNE :+
+   INC MASTER_CLOCK+1
+:
+;   AND #1 ; restrict to 30 fps.. don't care missed cycle. 
+;   BEQ :+
+;   JMP @WRITE_DEBUG
    ; poll keyboard for input 
- : jsr GETIN
+; : 
+   jsr GETIN
    cmp #0
    BNE :+
    JMP @do_update
@@ -1243,6 +1252,7 @@ start:
    LDA VERA_dc_video
    EOR #%00010000
    STA VERA_dc_video
+
  : CMP #ZERO_CHAR
    BNE :+++
    LDA VERA_dc_hscale
@@ -1253,8 +1263,12 @@ start:
  : LDA #32
  : STA VERA_dc_hscale
    STA VERA_dc_vscale
+   LDA VERA_L1_HSCROLL_L
+   EOR #4
+   STA VERA_L1_HSCROLL_L
+   STA VERA_L1_VSCROLL_L
 
- : JMP @WRITE_DEBUG
+ : JMP @do_update
 
 @cleanup_and_exit:
    ; restore default IRQ vector
@@ -1439,6 +1453,16 @@ TRY_AGAIN = 6
     STA PWOL_TUB_PTR_AH
     STA PWOL_TUB_PTR_BH
 
+    STZ VERA_ctrl
+    LDA #<(VRAM_TEXT_SCREEN+17*64)
+    STA VERA_addr_low
+    LDA #>(VRAM_TEXT_SCREEN+17*64)
+    STA VERA_addr_high
+    LDA #$21
+    STA VERA_addr_bank
+    LDA #26
+    STA VERA_data0
+
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
     LDY camera_cell_x
     BRA @zigzag_A_right
@@ -1498,7 +1522,14 @@ TRY_AGAIN = 6
           ;LDA #$D0
           ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
         : LDA PWOL_CURRENT_XH
+          ; for debugging ... 
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
+          STZ VERA_data0
+          STA VERA_data0
+          LDA PWOL_CURRENT_YH
+          STA VERA_data0
+          STZ VERA_data0
+          
      @ZAR_NEXT:
          ; calc next to the right.. 
          INY
@@ -1560,16 +1591,16 @@ TRY_AGAIN = 6
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_LEFT_YH
          STA PWOL_CURRENT_YH
-         ; check if we're outside ..  
-
-         CPX #SCREEN_OUT_RIGHT
+         ; check if we're outside screen area.. 
+         BPL :+
+         CMP #SCREEN_OUT_TOP
+         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+         CMP #SCREEN_OUT_BOTTOM
+       : CPX #SCREEN_OUT_RIGHT
          BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
          CPX #SCREEN_OUT_LEFT
          BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCC @zigzag_A_left
+         BCC @zigzag_A_left         
    @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
@@ -1915,6 +1946,10 @@ TRY_AGAIN = 6
          DEC PWOL_TRIES_COUNTER 
          BNE @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
    @ZBL_RTS:
+          STZ VERA_data0
+          STZ VERA_data0
+          STZ VERA_data0
+          STZ VERA_data0
       rts
    @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
          INY
@@ -2071,6 +2106,10 @@ TRY_AGAIN = 6
          DEC PWOL_TRIES_COUNTER 
          BNE @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
    @ZBR_RTS:
+          STZ VERA_data0
+          STZ VERA_data0
+          STZ VERA_data0
+          STZ VERA_data0
          rts
    @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
          DEY
@@ -2105,8 +2144,9 @@ draw_object_list:
     JMP draw_object_list_to_BUFFER
    :
     LDA NUM_RESERVED_SPRITES
-    INC VERA_LOCK
-;    BNE @unlock_vera   there's no actual way to get here and not have vera unlock.. 
+;    INC VERA_LOCK
+;    BNE @unlock_vera   there's no actual way to get here and not have vera unlock.. s
+;  so instead, we're going to DEC the VERA_LOCK after the new frame is ready, which is after this function..
 
 
     INC DEBUG_D
@@ -2142,8 +2182,6 @@ draw_object_list:
         LDA VERA_data0
         DEY
         BNE :-
-   @unlock_vera:
-      DEC VERA_LOCK
    @rts:
       rts
   @Z_LOOP:
@@ -2184,7 +2222,6 @@ draw_object_list:
          BNE @OBJ_LOOP ; still sprite slots left.. woot!
          STA (ZP_PTR) ; oops.. save that last thing and exit..
 draw_object_list_to_BUFFER:
-      DEC VERA_LOCK
       RTS
 
    LDA CURRENT_BITMAP_BUFFER
@@ -2197,7 +2234,6 @@ draw_object_list_to_BUFFER:
   @NEXT_Z: ; Z=0 is invalid...
       DEC ZP_PTR
       BNE @Z_LOOP
-      DEC VERA_LOCK
       RTS
   @Z_LOOP:
       LDA (ZP_PTR) ; get our first victim
@@ -2272,43 +2308,6 @@ draw_object_list_to_BUFFER:
          STZ VERA_ctrl
          LDA OBJECT_LIST_BYTE6_NEXT,x
          JMP @OBJ_LOOP
-
-test_sprite_data:
-; first 32 sprites reserved ... 
-;      0   1   2   3   4   5   6  7
-;     add,mod, XL, XH, YL, YH,msk,hwp
-.byte   0,$01,  0,  0,  0,  0,$0C,$00  ; 6 test    sprite 00   
-.byte   0,$01,  8,  0,  0,  0,$0C,$00  ; 7 test    sprite 01   
-.byte   0,$01, 16,  0,  0,  0,$0C,$00  ; 8 test    sprite 02   
-.byte   0,$01, 24,  0,  0,  0,$0C,$00  ; 9 test    sprite 03
-.byte   0,$01, 32,  0,  0,  0,$0C,$00  ; A test    sprite 04   
-.byte   0,$01, 40,  0,  0,  0,$0C,$00  ; B test    sprite 05
-.byte   0,$01, 48,  0,  0,  0,$0C,$00  ; C test    sprite 06   
-.byte   0,$01, 56,  0,  0,  0,$0C,$00  ; D test    sprite 07
-.byte   0,$01,  0,  0,  9,  0,$0C,$00  ; 2 test    sprite 08    
-.byte   0,$01,  8,  0,  9,  0,$0C,$00  ; 3 test    sprite 09   
-.byte   0,$01, 16,  0,  9,  0,$0C,$00  ; E test    sprite 0A   
-.byte   0,$01, 24,  0,  9,  0,$0C,$00  ; E test    sprite 0B   
-.byte   0,$01, 32,  0,  9,  0,$0C,$00  ; 4 test    sprite 0C   
-.byte   0,$01, 40,  0,  9,  0,$0C,$00  ; 5 test    sprite 0D   
-.byte   0,$01, 48,  0,  9,  0,$0C,$00  ; F test    sprite 0E   
-.byte   0,$01, 56,  0,  9,  0,$0C,$00  ; F test    sprite 0F
-.byte   0,$01,  0,  0, 18,  0,$0C,$00  ; 6 test    sprite 10   
-.byte   0,$01,  8,  0, 18,  0,$0C,$00  ; 7 test    sprite 11   
-.byte   0,$01, 16,  0, 18,  0,$0C,$00  ; 8 test    sprite 12   
-.byte   0,$01, 24,  0, 18,  0,$0C,$00  ; 9 test    sprite 13
-.byte   0,$01, 32,  0, 18,  0,$0C,$00  ; A test    sprite 14   
-.byte   0,$01, 40,  0, 18,  0,$0C,$00  ; B test    sprite 15
-.byte   0,$01, 48,  0, 18,  0,$0C,$00  ; C test    sprite 16   
-.byte   0,$01, 56,  0, 18,  0,$0C,$00  ; D test    sprite 17
-.byte   0,$01,  0,  0, 27,  0,$0C,$00  ; 2 test    sprite 18    
-.byte   0,$01,  8,  0, 27,  0,$0C,$00  ; 3 test    sprite 19   
-.byte   0,$01, 16,  0, 27,  0,$0C,$00  ; E test    sprite 1A   
-.byte   0,$01, 24,  0, 27,  0,$0C,$00  ; E test    sprite 1B   
-.byte   0,$01, 32,  0, 27,  0,$0C,$00  ; 4 test    sprite 1C   
-.byte   0,$01, 40,  0, 27,  0,$0C,$00  ; 5 test    sprite 1D   
-.byte   0,$01, 48,  0, 27,  0,$0C,$00  ; F test    sprite 1E   
-.byte   0,$01, 56,  0, 27,  0,$0C,$00  ; F test    sprite 1F
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
