@@ -236,4 +236,14 @@ if config['pal_mode'] == 256 :
 						OUT.write(bytes([pc]))
 						if i % width == 0 : print('.',end="")
 				print('\n\n')
-
+elif config['pal_mode'] == 16 :
+		print(f"converting image to 4bit palette and writing to {sys.argv[2]}")
+		with open(sys.argv[2],'wb+') as OUT:
+				out_array = [c for r in image_rows for c in r if c]
+				for i,(c1,c2) in enumerate(zip(out_array[::2],out_array[1::2]),1) :
+						if not c : continue
+						pc = true_colors[c1]*16 +true_colors[c2]
+						#print(f"{i}:{c}:{pc}  ",end="")
+						OUT.write(bytes([pc]))
+						if i % width == 0 : print('.',end="")
+				print('\n\n')
