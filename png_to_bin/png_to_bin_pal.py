@@ -133,23 +133,24 @@ if config['do_pal']:
 						distance = int(sqrt((dh)*(dh) + (c_s-s)*(c_s-s) + (c_p-p)*(c_p-p)))
 						radius = max(radius,distance)
 			print(f"{times_round} : {i} : palette color : {c} : has centroid at {centroid} and radius : {radius} covering {len(pt)}")
-			palette_colors_sort.append((radius,c_p,c_h,c_s,c,False))
+			palette_colors_sort.append((c_p,c_h,c_s,c,radius,False))
 		palette_colors_sort.sort()
-		max_radius = times_round + palette_colors_sort[int(len(palette_colors_sort)/2)][0]
+		max_radius = times_round
 		print(f"max radius set to {max_radius}")
 		old_palette = palette_colors
 		palette_colors = {}
-		for i,(radius,p,h,s,c,fit) in enumerate(palette_colors_sort):
+		for i,(p,h,s,c,radius,fit) in enumerate(palette_colors_sort):
 			if fit :
 					print(f"{times_round} : {i} : already combined...")
 					continue
 			combine_with = False
 			best_distance = 500000
-			for j,(radius2,p2,h2,s2,c2,f2) in enumerate(palette_colors_sort[i+1:],i+1):
+			if radius < max_radius	: 
+				for j,(p2,h2,s2,c2,radius2,f2) in enumerate(palette_colors_sort[i+1:],i+1):
 						if f2 : continue
 						dh = min(h-h2,256-h2-h) if h >= h2 else min(h2-h,256-h-h2)
 						distance = radius+radius2+int(sqrt((dh)*(dh) + (s2-s)*(s2-s) + (p2-p)*(p2-p)))
-						if distance > max_radius : break 
+						#if distance > max_radius : break 
 						if distance > best_distance : continue
 						combine_with = j
 						best_distance = distance
@@ -157,8 +158,8 @@ if config['do_pal']:
 
 			if combine_with:
 						print(f"{times_round} : {i} got combine_with = {combine_with}")
-						(radius2,p2,h2,s2,c2,f2) = palette_colors_sort[combine_with]
-						palette_colors_sort[combine_with]=(radius2,p2,h2,s2,c2,True) 
+						(p2,h2,s2,c2,radius2,f2) = palette_colors_sort[combine_with]
+						palette_colors_sort[combine_with]=(p2,h2,s2,c2,radius2,True) 
 						print(radius2,p2,h2,s2,c2,f2)
 						print(f"lengths of PT : {len(old_palette[c])} + {len(old_palette[c2])}")
 						pt = old_palette[c] + old_palette[c2]

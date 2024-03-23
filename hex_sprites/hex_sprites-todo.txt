@@ -298,6 +298,15 @@ TODO	setup a 'debug mode' - make the screen 256x192 with the upper left 160x120 
 	eek.. gotta go..
 	COMMIT 
 
+2024/03/23
+0900? 	
+1325 	last couple days had been chatting on the forum about color quantization and setting video modes. 
+
+
+
+TOOD 	add dithering to the color quantization stuff
+TODO 	add 1 and 2 bit color mode outputs
+
 BUG 	fix ziggy zaggy - appears error is due to check against screen out top.. 
 TODO 	perhaps alter view to be 160x120 ? 
 
