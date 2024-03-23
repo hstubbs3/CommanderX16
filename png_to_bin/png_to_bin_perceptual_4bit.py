@@ -57,22 +57,23 @@ palette_offsets = [0 for _ in range(16)]
 if True: #with open(sys.argv[2],'wt',encoding="Latin-1") as OUT:
 	for row in img_data:
 		for (r,g,b,a) in zip(row[::4],row[1::4],row[2::4],row[3::4]):
-			#print(r,g,b,a)
 			if a > 127:
 				best_distance=5000
 				best_palette_offset = 0
 				h,s,p = calc_hsp(r,g,b)
+				print(r,g,b,h,s,p)
 				for i,(p_r,p_g,p_b,p_h,p_s,p_p) in enumerate(palette):
 					#https://alienryderflex.com/hsp.html using the brightness modeling to account for hue here
-					distance = (p_h-h)*(p_h-h) + (p_s-s)*(p_s-s) + (p_p-p)*(p_p-p)
+
+					dh = min(p_h-h,256-p_h-h) if ph_h >= h else min(h-p_h,256-p_h-h)
+					distance = (dh)*(dh) + (p_s-s)*(p_s-s) + (p_p-p)*(p_p-p)
 
 					if distance < best_distance:
 						best_palette_offset = int(i/16)
 						best_distance=distance 
-						#print(f'        d={distance} : {p_r} {p_g} {p_b} : {best_palette_offset}')
+						print(f'        dh={dh} d={distance} : {p_r} {p_g} {p_b} {p_h} {p_s} {p_p: {best_palette_offset}')
 				palette_offsets[best_palette_offset]+=1 
 				print(best_palette_offset,end=' ')
-		print()
 
 best_offset = -1
 best_offset_score = -1 
@@ -100,7 +101,8 @@ with open(sys.argv[2],'wt',encoding="Latin-1") as OUT:
 				if a > 127:
 					h,s,p = calc_hsp(r,g,b)
 					for i,(p_r,p_g,p_b,p_h,p_s,p_p) in enumerate(final_palette):
-						distance = (p_h-h)*(p_h-h) + (p_s-s)*(p_s-s) + (p_p-p)*(p_p-p)
+						dh = min(p_h-h,256-p_h-h) if ph_h >= h else min(h-p_h,256-p_h-h)
+						distance = (dh)*(dh) + (p_s-s)*(p_s-s) + (p_p-p)*(p_p-p)
 						if distance < best_distance:
 							best_palette_color = i
 							best_distance=distance 
