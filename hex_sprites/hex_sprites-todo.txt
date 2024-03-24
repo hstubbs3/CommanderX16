@@ -306,13 +306,30 @@ TODO	setup a 'debug mode' - make the screen 256x192 with the upper left 160x120 
 
 2010 	OMG I got dithering working, BW working, and 2/4 color sorta... lol 
 	COMMIT 
+
+2024/03/24
+0800 	getting back at it.. let's GO!!! 
+TODO 	perhaps alter view to be 160x120 ? 
+	DONE 		was already switched over but ziggy zaggy broke somewhere.. 
+0800 	getting back to fixing the ziggy zaggy ..
+		because how things are compared, bottom of screen is really bottom + pixel height we're at.. 
+		top of screen is just top of screen, allows looking further if higher.. ok 
+		if full screen, top is just "don't be so negative.."
+
+		oh yeah.. full screen 160x120... 
+TODO 	undo border tiles to make full screen 160x120
+	DONE
+0825 	ok back to the ziggy zaggy.. 
+BUG 	fix ziggy zaggy - appears error is due to check against screen out top.. 
+	DONE
+1035 	fixed zig complete
+	COMMIT
+
 	
 
-TOOD 	add dithering to the color quantization stuff
-TODO 	add 1 and 2 bit color mode outputs
 
-BUG 	fix ziggy zaggy - appears error is due to check against screen out top.. 
-TODO 	perhaps alter view to be 160x120 ? 
+
+
 
 
 
@@ -323,3 +340,6 @@ TODO 	fixing keyboard controls
 
 TODO 	make moving around by X/Y/Z work 
 
+
+TOOD 	add dithering to the color quantization stuff for 1-bit and 2-bit especially
+TODO 	proper 1 and 2 bit color mode outputs

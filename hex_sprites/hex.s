@@ -139,18 +139,19 @@ HIGH_NIBBLE_TO_HEX: ;
 .res 16,5
 .res 16,6
 
-SCREEN_Y_TO_Z: ; 2B00
-.byte 255,253,252,250,249,247,246,244,243,241,240,238,237,235,234,232,231,229,228,227,225,224,222,221,219,218,216,215,213,212,210,209,207,206,204,203,202,200,199,197,196,194,193,191,190,188,187,185,184,182,181,179,178,177,175,174,172,171,169,168,166,165,163,162,160,159,157,156,154,153,152,150,149,147,146,144,143,141,140,138,137,135,134,132,131,129,128,127,125,124,122,121,119,118,116,115,113,112,110,109,107,106,104,103,101,100,99,97,96,94,93,91,90,88,87,85,84,82,81,79,78,76,75,74,72,71,69,68,66,65,63,62,60,59,57,56,54,53,51,50,49,47,46,44,43,41,40,38,37,35,34,32,31,29,28,26,25,24,22,21,19,18,16,15,13,12,10,9,7,6,4,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+SCREEN_Y_TO_Z: ; 2B00 this is shifted to be within range so that 192 =0 and -16 is 255
+.byte 235,234,232,231,230,229,227,226,225,224,223,221,220,219,218,216,215,214,213,211,210,209,208,207,205,204,203,202,200,199,198,197,195,194,193,192,191,189,188,187,186,184,183,182,181,179,178,177,176,175,173,172,171,170,168,167,166,165,163,162,161,160,159,157,156,155,154,152,151,150,149,147,146,145,144,143,141,140,139,138,136,135,134,133,131,130,129,128,127,125,124,123,122,120,119,118,117,115,114,113,112,111,109,108,107,106,104,103,102,101,99,98,97,96,95,93,92,91,90,88,87,86,85,83,82,81,80,79,77,76,75,74,72,71,70,69,67,66,65,64,63,61,60,59,58,56,55,54,53,51,50,49,48,47,45,44,43,42,40,39,38,37,35,34,33,32,31,29,28,27,26,24,23,22,21,19,18,17,16,15,13,12,11,10,8,7,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,253,252,251,250,248,247,246,245,243,242,241,240,239,237,236
+;.byte 255,253,252,250,249,247,246,244,243,241,240,238,237,235,234,232,231,229,228,227,225,224,222,221,219,218,216,215,213,212,210,209,207,206,204,203,202,200,199,197,196,194,193,191,190,188,187,185,184,182,181,179,178,177,175,174,172,171,169,168,166,165,163,162,160,159,157,156,154,153,152,150,149,147,146,144,143,141,140,138,137,135,134,132,131,129,128,127,125,124,122,121,119,118,116,115,113,112,110,109,107,106,104,103,101,100,99,97,96,94,93,91,90,88,87,85,84,82,81,79,78,76,75,74,72,71,69,68,66,65,63,62,60,59,57,56,54,53,51,50,49,47,46,44,43,41,40,38,37,35,34,32,31,29,28,26,25,24,22,21,19,18,16,15,13,12,10,9,7,6,4,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,255,255,255,255,255,255,255,255,255,255,255,255,255
 ;.byte 255,253,251,250,248,247,245,243,242,240,239,237,235,234,232,231,229,227,226,224,223,221,220,218,216,215,213,212,210,208,207,205,204,202,200,199,197,196,194,192,191,189,188,186,185,183,181,180,178,177,175,173,172,170,169,167,165,164,162,161,159,158,156,154,153,151,150,148,146,145,143,142,140,138,137,135,134,132,130,129,127,126,124,123,121,119,118,116,115,113,111,110,108,107,105,103,102,100,99,97,95,94,92,91,89,88,86,84,83,81,80,78,76,75,73,72,70,68,67,65,64,62,61,59,57,56,54,53,51,49,48,46,45,43,41,40,38,37,35,33,32,30,29,27,26,24,22,21,19,18,16,14,13,11,10,8,6,5,3,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 CONVERT_HEIGHTS_PIXELS: ; 2C00
-;.res 256,0
-.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,53,53,54,55,55,56,56,57,58,58,59,60,60,61,61,62,63,63,64,64,65,66,66,67,67,68,69,69,70,71,71,72,72,73,74,74,75,75,76,77,77,78,78,79,80,80,81,82,82,83,83,84,85,85,86,86,87,88,88,89,90,90,91,91,92,93,93,94,94,95,96,96,97,97,98,99,99,100,101,101,102,102,103,104,104,105,105,106,107,107,108,109,109,110,110,111,112,112,113,113,114,115,115,116,116,117,118,118,119,120,120,121,121,122,123,123,124,124,125,126,126,127,127,128,129,129,130,131,131,132,132,133,134,134,135,135,136,137,137,138,139,139,140,140,141,142,142,143,143,144,145,145,146,146,147,148,148,149,150,150,151,151,152,153,153,154,154,155,156
+.res 256,0
+;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,53,53,54,55,55,56,56,57,58,58,59,60,60,61,61,62,63,63,64,64,65,66,66,67,67,68,69,69,70,71,71,72,72,73,74,74,75,75,76,77,77,78,78,79,80,80,81,82,82,83,83,84,85,85,86,86,87,88,88,89,90,90,91,91,92,93,93,94,94,95,96,96,97,97,98,99,99,100,101,101,102,102,103,104,104,105,105,106,107,107,108,109,109,110,110,111,112,112,113,113,114,115,115,116,116,117,118,118,119,120,120,121,121,122,123,123,124,124,125,126,126,127,127,128,129,129,130,131,131,132,132,133,134,134,135,135,136,137,137,138,139,139,140,140,141,142,142,143,143,144,145,145,146,146,147,148,148,149,150,150,151,151,152,153,153,154,154,155,156
 ;.byte 0,0,1,1,2,3,3,4,4,5,6,6,7,7,8,9,9,10,11,11,12,12,13,14,14,15,15,16,17,17,18,18,19,20,20,21,22,22,23,23,24,25,25,26,26,27,28,28,29,30,30,31,31,32,33,33,34,34,35,36,36,37,37,38,39,39,40,41,41,42,42,43,44,44,45,45,46,47,47,48,48,49,50,50,51,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,0,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52;,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52,52
 ;.res 128,0
 CONVERT_HEIGHTS_PIXELS_L:
-;.res 256,0
-.byte 0,156,57,214,115,15,172,73,230,130,31,188,89,245,146,47,204,105,5,162,63,220,120,21,178,79,235,136,37,194,95,251,152,53,210,110,11,168,69,225,126,27,184,84,241,142,43,200,100,1,158,59,215,116,17,174,74,231,132,33,190,90,247,148,49,205,106,7,164,64,221,122,23,180,80,237,138,39,195,96,253,154,54,211,112,0,169,70,227,128,29,185,86,243,144,44,201,102,3,159,60,217,118,19,175,76,233,134,34,191,92,249,149,50,207,108,9,165,66,223,124,24,181,82,239,139,40,197,98,254,155,56,213,114,14,171,72,229,129,30,187,88,244,145,46,203,104,4,161,62,219,119,20,177,78,234,135,36,193,94,250,151,52,209,109,10,167,68,224,125,26,183,83,240,141,42,199,99,0,157,58,214,115,16,173,73,230,131,32,189,89,246,147,48,204,105,6,163,63,220,121,22,179,79,236,137,38,194,95,252,153,53,210,111,12,168,69,226,127,28,184,85,242,143,43,200,101,2,158,59,216,117,18,174,75,232,133,33,190,91,248,148,49,206,107,7,164,65,222,123,23,180,81,238,138,39
+.res 256,0
+;.byte 0,156,57,214,115,15,172,73,230,130,31,188,89,245,146,47,204,105,5,162,63,220,120,21,178,79,235,136,37,194,95,251,152,53,210,110,11,168,69,225,126,27,184,84,241,142,43,200,100,1,158,59,215,116,17,174,74,231,132,33,190,90,247,148,49,205,106,7,164,64,221,122,23,180,80,237,138,39,195,96,253,154,54,211,112,0,169,70,227,128,29,185,86,243,144,44,201,102,3,159,60,217,118,19,175,76,233,134,34,191,92,249,149,50,207,108,9,165,66,223,124,24,181,82,239,139,40,197,98,254,155,56,213,114,14,171,72,229,129,30,187,88,244,145,46,203,104,4,161,62,219,119,20,177,78,234,135,36,193,94,250,151,52,209,109,10,167,68,224,125,26,183,83,240,141,42,199,99,0,157,58,214,115,16,173,73,230,131,32,189,89,246,147,48,204,105,6,163,63,220,121,22,179,79,236,137,38,194,95,252,153,53,210,111,12,168,69,226,127,28,184,85,242,143,43,200,101,2,158,59,216,117,18,174,75,232,133,33,190,91,248,148,49,206,107,7,164,65,222,123,23,180,81,238,138,39
 
 SUBCELL_X_COS_L:
 .byte $0,$FF,$FF,$FF,$FE,$FE,$FD,$FC,$FB,$F9,$F8,$F6,$F4,$F3,$F1,$EE,$EC,$EA,$E7,$E4,$E1,$DE,$DB,$D8,$D4,$D1,$CD,$C9,$C5,$C1,$BD,$B9,$B5,$B0,$AB,$A7,$A2,$9D,$98,$93,$8E,$88,$83,$7E,$78,$73,$6D,$67,$61,$5C,$56,$50,$4A,$44,$3E,$38,$31,$2B,$25,$1F,$19,$12,$C,$6,$0,$F9,$F3,$ED,$E6,$E0,$DA,$D4,$CE,$C7,$C1,$BB,$B5,$AF,$A9,$A3,$9E,$98,$92,$8C,$87,$81,$7C,$77,$71,$6C,$67,$62,$5D,$58,$54,$4F,$4A,$46,$42,$3E,$3A,$36,$32,$2E,$2B,$27,$24,$21,$1E,$1B,$18,$15,$13,$11,$E,$C,$B,$9,$7,$6,$4,$3,$2,$1,$1,$0,$0,$0,$0,$0,$0,$0,$1,$1,$2,$3,$4,$6,$7,$9,$B,$C,$E,$11,$13,$15,$18,$1B,$1E,$21,$24,$27,$2B,$2E,$32,$36,$3A,$3E,$42,$46,$4A,$4F,$54,$58,$5D,$62,$67,$6C,$71,$77,$7C,$81,$87,$8C,$92,$98,$9E,$A3,$A9,$AF,$B5,$BB,$C1,$C7,$CE,$D4,$DA,$E0,$E6,$ED,$F3,$F9,$0,$6,$C,$12,$19,$1F,$25,$2B,$31,$38,$3E,$44,$4A,$50,$56,$5C,$61,$67,$6D,$73,$78,$7E,$83,$88,$8E,$93,$98,$9D,$A2,$A7,$AB,$B0,$B5,$B9,$BD,$C1,$C5,$C9,$CD,$D1,$D4,$D8,$DB,$DE,$E1,$E4,$E7,$EA,$EC,$EE,$F1,$F3,$F4,$F6,$F8,$F9,$FB,$FC,$FD,$FE,$FE,$FF,$FF,$FF
@@ -337,9 +338,12 @@ SPRITE_SIZE_ORA = $D0 ; $D0 for 16x64, $50 for 16x16
 
 diff_sprite_to_transparent = 15
 
-SCREEN_OUT_RIGHT  = 156 ; right of middle is 116, +48 = 164
-SCREEN_OUT_LEFT   = 255+4-8  ; left of middle is 100, -48=52-16=36 
-SCREEN_OUT_TOP     = 255+4-12
+SCREEN_OUT_RIGHT  = 160 ; right of middle is 116, +48 = 164
+SCREEN_OUT_LEFT8    = 256-8
+SCREEN_OUT_LEFT16   = 256-16  ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_LEFT32   = 256-32  ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_LEFT64   = 256-64  ; left of middle is 100, -48=52-16=36 
+SCREEN_OUT_TOP     = 240
 SCREEN_OUT_BOTTOM  = 120
 
 ; global data ; 2E00
@@ -639,14 +643,14 @@ start:
   STA VERA_addr_high
   LDA #$11
   STA VERA_addr_bank
-  LDX #103  ;  need to zero out from 70K to 121.5K where that sprite buffer is.. 206 pages, 53K ; well.. zero out 70 to 96.. 
+  LDX #103  ;  zero bufferA
   LDY #0
 : STZ VERA_data0
   INY 
   BNE :-
   DEX 
   BNE :-
-  LDX #101  ;  need to zero out from 70K to 121.5K where that sprite buffer is.. 206 pages, 53K ; well.. zero out 70 to 96.. 
+  LDX #101  ;  write A to bufferB initially as debug / flashing display when swapped.. 
   ;LDA #255
 : STA VERA_data0
   INY 
@@ -657,30 +661,26 @@ start:
   STZ VERA_data0
   LDA #$21
   STA VERA_addr_bank
-  LDA #$F1
-  LDX #33
-: STA VERA_data0
-  DEX 
-  BNE :-
-  LDX #14
-: LDY #19
+
+  LDX #15
+: LDY #20
   LDA #$01
+
   : STA VERA_data0
     DEY
     BNE :-
     LDY #$F1
-    STY VERA_data0
-    STY VERA_data0
-    STY VERA_data0
-    STY VERA_data0
-
-    STY VERA_data0
-    STY VERA_data0
-    STY VERA_data0
+    STY VERA_data0 ; cols 20-23
     STY VERA_data0
     STY VERA_data0
     STY VERA_data0
 
+    STY VERA_data0 ; cols 24-27
+    STY VERA_data0
+    STY VERA_data0
+    STY VERA_data0
+
+    STY VERA_data0 ; cols 28-31
     STY VERA_data0
     STY VERA_data0
     STY VERA_data0
@@ -949,7 +949,7 @@ start:
    STA camera_screen_out_bottom
    CLC 
    LDA #SCREEN_OUT_TOP
-   ADC CONVERT_HEIGHTS_PIXELS,Y
+;   ADC CONVERT_HEIGHTS_PIXELS,Y
    STA camera_screen_out_top
 
    ; clear the object list ... 
@@ -1263,11 +1263,7 @@ start:
  : LDA #32
  : STA VERA_dc_hscale
    STA VERA_dc_vscale
-   LDA VERA_L1_HSCROLL_L
-   EOR #4
-   STA VERA_L1_HSCROLL_L
-   STA VERA_L1_VSCROLL_L
-
+   
  : JMP @do_update
 
 @cleanup_and_exit:
@@ -1453,15 +1449,15 @@ TRY_AGAIN = 6
     STA PWOL_TUB_PTR_AH
     STA PWOL_TUB_PTR_BH
 
-    STZ VERA_ctrl
-    LDA #<(VRAM_TEXT_SCREEN+17*64)
-    STA VERA_addr_low
-    LDA #>(VRAM_TEXT_SCREEN+17*64)
-    STA VERA_addr_high
-    LDA #$21
-    STA VERA_addr_bank
-    LDA #26
-    STA VERA_data0
+   ; STZ VERA_ctrl
+   ; LDA #<(VRAM_TEXT_SCREEN+17*64)
+   ; STA VERA_addr_low
+   ; LDA #>(VRAM_TEXT_SCREEN+17*64)
+   ; STA VERA_addr_high
+   ; LDA #$21
+   ; STA VERA_addr_bank
+   ; LDA #26
+   ; STA VERA_data0
 
   @zigzag_A: ; going to right and up the screen, including where we are currently.. 
     LDY camera_cell_x
@@ -1505,11 +1501,14 @@ TRY_AGAIN = 6
           SBC (PWOL_CONVERT_HEIGHTS)
           CMP #SCREEN_OUT_BOTTOM    ;  are we even visible? 
           BCC :+
+          CMP #SCREEN_OUT_TOP 
+          BCS :+
           DEC OBJECT_LIST_BYTE6_NEXT
           LDA OBJECT_LIST_BYTE6_NEXT,X ; grab the old next value 
           STA (PWOL_Z_STARTS_PTR) ; patch the old one back in.. 
           BRA @ZAR_NEXT ; and skip THIS
-        : STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
+        : 
+          STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
           BCS :+ ; is not covering us 
           LDA PWOL_CURRENT_YH
@@ -1522,13 +1521,13 @@ TRY_AGAIN = 6
           ;LDA #$D0
           ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
         : LDA PWOL_CURRENT_XH
-          ; for debugging ... 
           STA OBJECT_LIST_BYTE2_X,X    ; 0123456 OK - object is complete. 
-          STZ VERA_data0
-          STA VERA_data0
-          LDA PWOL_CURRENT_YH
-          STA VERA_data0
-          STZ VERA_data0
+          ; for debugging ... 
+      ;    STZ VERA_data0
+      ;    STA VERA_data0
+      ;    LDA PWOL_CURRENT_YH
+      ;    STA VERA_data0
+      ;    STZ VERA_data0
           
      @ZAR_NEXT:
          ; calc next to the right.. 
@@ -1552,15 +1551,16 @@ TRY_AGAIN = 6
          STX DEBUG_A
          STA DEBUG_B
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZAR_ZIG_LEFT_SWITCH
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAR_ZIG_LEFT_SWITCH
-         CMP PWOL_TOP_CHECK
-         BCC @ZAR_ZIG_LEFT_SWITCH
          CMP PWOL_BOT_CHECK
-         BCS @ZAR_ZIG_LEFT_SWITCH
-         JMP @zigzag_A_right
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZAR_ZIG_LEFT_SWITCH ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : 
+         CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+                ; if its within right side then go do next thing.. 
+         CPX #SCREEN_OUT_LEFT16
+         BCC @ZAR_ZIG_LEFT_SWITCH ; we're to the right of the screen but not far enough to wrap around.. 
+       : JMP @zigzag_A_right
      @ZAR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going up the screen ..  +0,-1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -1590,17 +1590,8 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_LEFT_YH
-         STA PWOL_CURRENT_YH
-         ; check if we're outside screen area.. 
-         BPL :+
-         CMP #SCREEN_OUT_TOP
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-       : CPX #SCREEN_OUT_RIGHT
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         BCC @zigzag_A_left         
+         BRA @ZAR_ZIG_LEFT_SWITCH_CHECK
+
    @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BNE @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
@@ -1621,15 +1612,20 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          SBC PWOL_ACROSS_ROW_YH
+
+   @ZAR_ZIG_LEFT_SWITCH_CHECK:
          STA PWOL_CURRENT_YH
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN   ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC @zigzag_A_left         
+         CPX #SCREEN_OUT_LEFT16
          BCC @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZAR_ZIG_LEFT_SWITCH_TRY_AGAIN
+
+
+
    @zigzag_A_left:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAL_NEXT ; if we're outside we'll just skip is OK 
@@ -1668,6 +1664,17 @@ TRY_AGAIN = 6
           SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
+          CMP #SCREEN_OUT_BOTTOM    ;  are we even visible? 
+          BCC :+
+          CMP #SCREEN_OUT_TOP 
+          BCS :+
+          DEC OBJECT_LIST_BYTE6_NEXT
+          LDA OBJECT_LIST_BYTE6_NEXT,X ; grab the old next value 
+          STA (PWOL_Z_STARTS_PTR) ; patch the old one back in.. 
+          BRA @ZAL_NEXT ; and skip THIS
+        : 
+
+
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
           BCS :+ ; is not covering us 
@@ -1704,15 +1711,16 @@ TRY_AGAIN = 6
          STX DEBUG_A
          STA DEBUG_B
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZAL_ZIG_RIGHT_SWITCH
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAL_ZIG_RIGHT_SWITCH
-         CMP #SCREEN_OUT_TOP
-         BCC @ZAL_ZIG_RIGHT_SWITCH
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZAL_ZIG_RIGHT_SWITCH
-         JMP @zigzag_A_left
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZAL_ZIG_RIGHT_SWITCH   ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+                ; if its within right side then go do next thing.. 
+         CPX #SCREEN_OUT_LEFT16
+         BCC @ZAL_ZIG_RIGHT_SWITCH     ; we're to the right of the screen but not far enough to wrap around.. 
+       : JMP @zigzag_A_left   
+
      @ZAL_ZIG_RIGHT_SWITCH: ; up/right is +1,+1  from where we is right now .. 
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -1747,17 +1755,10 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_A_RIGHT_YH
-         STA PWOL_CURRENT_YH
+         BRA @ZAL_ZIG_RIGHT_SWITCH_CHECK
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         JMP @zigzag_A_right
+
+
    @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BEQ @zigzag_B
@@ -1777,22 +1778,20 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_ACROSS_ROW_YH
+   @ZAL_ZIG_RIGHT_SWITCH_CHECK:
          STA PWOL_CURRENT_YH
-
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         JMP @zigzag_A_right
-
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN    ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+         
+         CPX #SCREEN_OUT_LEFT16
+         BCC @ZAL_ZIG_RIGHT_SWITCH_TRY_AGAIN 
+       : JMP @zigzag_A_right         
 
 
   @zigzag_B: ; going to left and down the screen, including where we are currently.. 
-     ; RTS
       SEC 
       LDA PWOL_START_XL
       SBC PWOL_ACROSS_ROW_XL
@@ -1851,6 +1850,16 @@ TRY_AGAIN = 6
           SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
+          CMP #SCREEN_OUT_BOTTOM    ;  are we even visible? 
+          BCC :+
+          CMP #SCREEN_OUT_TOP 
+          BCS :+
+          DEC OBJECT_LIST_BYTE6_NEXT
+          LDA OBJECT_LIST_BYTE6_NEXT,X ; grab the old next value 
+          STA (PWOL_Z_STARTS_PTR) ; patch the old one back in.. 
+          BRA @ZBL_NEXT ; and skip THIS
+        : 
+
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
           BCS :+ ; is not covering us 
@@ -1887,15 +1896,18 @@ TRY_AGAIN = 6
          STX DEBUG_A
          STA DEBUG_B
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBL_ZIG_RIGHT_SWITCH
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZBL_ZIG_RIGHT_SWITCH
-         CMP #SCREEN_OUT_TOP
-         BCC @ZBL_ZIG_RIGHT_SWITCH
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBL_ZIG_RIGHT_SWITCH
-         JMP @zigzag_B_left
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZBL_ZIG_RIGHT_SWITCH     ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+                ; if its within right side then go do next thing.. 
+         CPX #SCREEN_OUT_LEFT16
+         BCC @ZBL_ZIG_RIGHT_SWITCH     ; we're to the right of the screen but not far enough to wrap around.. 
+       : JMP @zigzag_B_left
+
+
+
      @ZBL_ZIG_RIGHT_SWITCH: ; DOWN/LEFT to start right is is 0,+1  from where we is right now .. 
          ;INY
          ;INY
@@ -1931,25 +1943,16 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_B_RIGHT_YH
-         STA PWOL_CURRENT_YH
+         BRA @ZBL_ZIG_RIGHT_SWITCH_CHECK
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         JMP @zigzag_B_right
    @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BNE @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT
    @ZBL_RTS:
-          STZ VERA_data0
-          STZ VERA_data0
-          STZ VERA_data0
-          STZ VERA_data0
+;          STZ VERA_data0
+ ;         STZ VERA_data0
+  ;        STZ VERA_data0
+   ;       STZ VERA_data0
       rts
    @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN_GO_RIGHT:
          INY
@@ -1967,16 +1970,18 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_ACROSS_ROW_YH
+   @ZBL_ZIG_RIGHT_SWITCH_CHECK:
          STA PWOL_CURRENT_YH
-
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN    ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC @zigzag_B_right  
+         CPX #SCREEN_OUT_LEFT16
          BCC @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBL_ZIG_RIGHT_SWITCH_TRY_AGAIN
+
+
 
     @zigzag_B_right:
         CPY #64  ;  make sure we don't go outside level.. 
@@ -2016,6 +2021,17 @@ TRY_AGAIN = 6
           SBC (PWOL_CONVERT_HEIGHTS_L)
           LDA PWOL_CURRENT_YH ; set er up
           SBC (PWOL_CONVERT_HEIGHTS)
+          CMP #SCREEN_OUT_BOTTOM    ;  are we even visible? 
+          BCC :+
+          CMP #SCREEN_OUT_TOP 
+          BCS :+
+          DEC OBJECT_LIST_BYTE6_NEXT
+          LDA OBJECT_LIST_BYTE6_NEXT,X ; grab the old next value 
+          STA (PWOL_Z_STARTS_PTR) ; patch the old one back in.. 
+          BRA @ZBR_NEXT ; and skip THIS
+        : 
+
+
           STA OBJECT_LIST_BYTE3_Y,X ; 01.34.6 filled in now 
           CMP PWOL_CENTER_Y_TOP ; is this above center on screen?? 
           BCS :+ ; is not covering us 
@@ -2052,15 +2068,18 @@ TRY_AGAIN = 6
          STX DEBUG_A
          STA DEBUG_B
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBR_ZIG_LEFT_SWITCH
-         CPX #SCREEN_OUT_LEFT
-         BCC @ZBR_ZIG_LEFT_SWITCH
-         CMP #SCREEN_OUT_TOP
-         BCC @ZBR_ZIG_LEFT_SWITCH
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBR_ZIG_LEFT_SWITCH
-         jmp @zigzag_B_right
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZBR_ZIG_LEFT_SWITCH     ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+                ; if its within right side then go do next thing.. 
+         CPX #SCREEN_OUT_LEFT16
+         BCC @ZBR_ZIG_LEFT_SWITCH        ; we're to the right of the screen but not far enough to wrap around.. 
+       : JMP @zigzag_B_right
+
+
+
      @ZBR_ZIG_LEFT_SWITCH: ;PWOL_NEXT_ROW_A_LEFT_XL   ; -> next row is left, going down the screen ..  +1,+1
          LDA #TRY_AGAIN
          STA PWOL_TRIES_COUNTER
@@ -2090,26 +2109,18 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          ADC PWOL_NEXT_ROW_B_LEFT_YH
-         STA PWOL_CURRENT_YH
-         ; check if we're outside ..  
+         BRA @ZBR_ZIG_LEFT_SWITCH_CHECK
 
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
-         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         jmp @zigzag_B_left
+
+
    @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN:
          DEC PWOL_TRIES_COUNTER 
          BNE @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT
    @ZBR_RTS:
-          STZ VERA_data0
-          STZ VERA_data0
-          STZ VERA_data0
-          STZ VERA_data0
+;          STZ VERA_data0
+;          STZ VERA_data0
+;          STZ VERA_data0
+;          STZ VERA_data0
          rts
    @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN_GO_LEFT:
          DEY
@@ -2127,16 +2138,19 @@ TRY_AGAIN = 6
          STA PWOL_CURRENT_YL
          LDA PWOL_CURRENT_YH
          SBC PWOL_ACROSS_ROW_YH
+
+@ZBR_ZIG_LEFT_SWITCH_CHECK:
          STA PWOL_CURRENT_YH
-         CPX #SCREEN_OUT_RIGHT
-         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CPX #SCREEN_OUT_LEFT
+         CMP PWOL_BOT_CHECK
+         BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
+         CMP #SCREEN_OUT_TOP  
+         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN   ; its bottom_out <= Y < top out .. because negatives are bigger 
+       : CPX #SCREEN_OUT_RIGHT ; check against right side
+         BCC :+
+         CPX #SCREEN_OUT_LEFT16
          BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_TOP
-         BCC @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         CMP #SCREEN_OUT_BOTTOM
-         BCS @ZBR_ZIG_LEFT_SWITCH_TRY_AGAIN
-         JMP @zigzag_B_left
+       : JMP @zigzag_B_left
+
 
 draw_object_list:
     LDY NUM_AVAIL_SPRITES ; num sprites can write
@@ -2199,20 +2213,19 @@ draw_object_list:
          STA VERA_data0
          LDA OBJECT_LIST_BYTE2_X,x
          STA VERA_data0
-;         CMP #216
-  ;       LDA #0
- ;        BCC :+
- ;        LDA #$FF
-  ;     : STA VERA_data0
-         STZ VERA_data0
+         CMP #SCREEN_OUT_RIGHT   
+         LDA #0
+         BCC :+
+         LDA #$FF
+       : STA VERA_data0
+
          LDA OBJECT_LIST_BYTE3_Y,x
          STA VERA_data0
-;         CMP #161
- ;        LDA #0
-  ;       BCC :+
-   ;      LDA #$FF
-    ;   : STA VERA_data0
-         STZ VERA_data0
+         CMP #SCREEN_OUT_BOTTOM  
+         LDA #0
+         BCC :+
+         LDA #$FF
+       : STA VERA_data0
          LDA OBJECT_LIST_BYTE4_ZFLIPS,x
          STA VERA_data0
          LDA OBJECT_LIST_BYTE5_SIZE,x
