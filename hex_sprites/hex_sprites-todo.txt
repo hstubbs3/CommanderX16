@@ -326,6 +326,13 @@ BUG 	fix ziggy zaggy - appears error is due to check against screen out top..
 	COMMIT
 1115 	fixed small issue with screen top out.. 
 	COMMIT 
+1120 	for the next trick... sprite blitter.. 
+		want to be able to enable/disable sprite blitter.. 
+		if objects to sprites is disabled, want to set a sprite to indicate state..
+1130 	OK.. 9 enables/disables the sprite objects.. now for the blitter.. 
+1330 	instrumented so it keeps bufferB to sort it out. .
+1415 	OK.. so far .. so good.. now to commit this bit 
+	COMMIT
 
 
 

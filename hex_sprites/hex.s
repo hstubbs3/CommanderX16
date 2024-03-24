@@ -275,7 +275,7 @@ VSYNC_BIT         = $01
 ;   $1FA00 - $1FBFF Palette
 ;   $1FC00 - $1FFFF Sprite attributes
 VRAM_SPRITES =      $00000  ; putting sprite data at start of VRAM for now.. may move later? 
-VRAM_BITMAP_LAYERA =$11800  ; starts at 70K ... so up to ~70K for sprites.. not too shabby.. 
+VRAM_BITMAP_LAYERA =$11800  ; setting this to 68K ; was starts at 70K ... so up to ~70K for sprites.. not too shabby.. 
 VRAM_BITMAP_LAYERB =$18000  ; ~25K needs to start at 2K boundary... 121.5-25= 96k 
 VRAM_TEXT_SCREEN =  $1E400  ; 121.5K    256 x 21 => 32 x 24 would take 1.5K tiles is min.. 64*32 = 2K 8 config.. 
 VRAM_SPRITE_BUF =   $1EC00  ; 123K - sprite attribute buffer for swapping data in ..  
@@ -387,6 +387,7 @@ DEBUG_D: .byte 0  ; E
 NUM_AVAIL_SPRITES:   .byte 0 ; A
 NUM_RESERVED_SPRITES:    .byte  0;(1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
 
+SPRITE_OBJECT_ENABLE: .byte 0 ;255 ;
 
 CAMERA_CENTER_XL:    .byte 0 ; 12
 CAMERA_CENTER_YL:    .byte 0 ; 14
@@ -395,6 +396,7 @@ CAMERA_CELL_LINE_PTR: .addr 0 ; 17-18
 WORLD_SPRITE_NUM:    .byte 0 ; 1B
 WORLD_WALL_SPRITE_NUM: .byte 0; 1C
 CURRENT_BITMAP_BUFFER: .byte 0 ; "A"
+LAST_BITMAP_BUFFER:    .byte 0 ; 
 
 camera_screen_out_top: .byte SCREEN_OUT_TOP       ; for determining visibility / stop conditions for checking if within range to view.. 
 camera_screen_out_bottom: .byte SCREEN_OUT_BOTTOM 
@@ -407,7 +409,7 @@ camera_screen_out_bottom: .byte SCREEN_OUT_BOTTOM
 custom_irq_handler: ; 2E12
    lda VERA_isr
    and #VSYNC_BIT
-   BEQ :+
+   BEQ :++
    ;  for debug .. 
    LDA VERA_LOCK 
    STA IRQ_VERA_LOCK
@@ -415,20 +417,23 @@ custom_irq_handler: ; 2E12
    INC VSYNC_counter
 
    INC VERA_LOCK
-   BEQ :++  ; @unlock_vera ; if we don't have lock we'll just fail this frame.. 
-   DEC VERA_LOCK
+   BEQ :+++  ; @unlock_vera ; if we don't have lock we'll just fail this frame.. 
+ : DEC VERA_LOCK
  : jmp (default_irq_vector)
 
  : INC DEBUG_C
    LDA CURRENT_BITMAP_BUFFER
-   BEQ :+
-   STZ CURRENT_BITMAP_BUFFER
+   EOR LAST_BITMAP_BUFFER  
+   BEQ :--- ; if these match then there's nothing to change
+   LDA CURRENT_BITMAP_BUFFER  
+   STA LAST_BITMAP_BUFFER  
+   EOR #$FF
+   STA CURRENT_BITMAP_BUFFER  
+   BNE :+
    LDA #VRAM_BITMAP_LAYERA>>9   
    BRA :++
- : DEC A 
-   STA CURRENT_BITMAP_BUFFER
-   LDA #VRAM_BITMAP_LAYERB>>9
- : STA VERA_L0_tilebase
+ : LDA #VRAM_BITMAP_LAYERB>>9
+ : STA VERA_L0_tilebase ; don't switch for now
 
 ;   JMP @patched
 
@@ -708,7 +713,9 @@ start:
 
   LDA #$06
   STA VERA_L0_config
-  LDA #VRAM_BITMAP_LAYERA >>9
+  LDA #(VRAM_BITMAP_LAYERA>>9)
+
+;  LDA #VRAM_BITMAP_LAYERB>>9
   STA VERA_L0_tilebase
 
   LDA #6
@@ -991,7 +998,7 @@ start:
    LDA #$D1
    STA OBJECT_LIST_BYTE5_SIZE+1
 
-   STZ VERA_LOCK
+   STZ VERA_LOCK ; ok gotta lock the VERA... 
    jsr draw_object_list
 
 @WRITE_DEBUG:
@@ -1038,8 +1045,10 @@ start:
  : CPY #68  ;  show first 64 bytes of global data 
    BCC :--
 
-   LDA #$FF
+   LDA #$FF ; time to unlock the VERA .. 
    STA VERA_LOCK 
+   EOR CURRENT_BITMAP_BUFFER  ; switch the buffers round... 
+   STA CURRENT_BITMAP_BUFFER  
 
 ;   rts
 
@@ -1265,11 +1274,17 @@ start:
    LDA VERA_dc_hscale
    CMP #43
    BCS :+
-   LDA #51
+   LDA #51 ; #51 ; 51 is 255
    BRA :++
  : LDA #32
  : STA VERA_dc_hscale
    STA VERA_dc_vscale
+
+ : CMP #NINE_CHAR 
+   BNE :+
+   LDA SPRITE_OBJECT_ENABLE   
+   EOR #$FF
+   STA SPRITE_OBJECT_ENABLE
    
  : JMP @do_update
 
@@ -2160,9 +2175,9 @@ TRY_AGAIN = 6
 
 
 draw_object_list:
-    LDY NUM_AVAIL_SPRITES ; num sprites can write
-    BNE :+ 
-    JMP draw_object_list_to_BUFFER
+     LDY NUM_AVAIL_SPRITES ; num sprites can write
+     BNE :+
+     JMP draw_object_list_to_BUFFER
    :
     LDA NUM_RESERVED_SPRITES
 ;    INC VERA_LOCK
@@ -2187,9 +2202,29 @@ draw_object_list:
     sta VERA_addr_high
     lda #$11
     sta VERA_addr_bank
+    LDA SPRITE_OBJECT_ENABLE
+    BNE @SET_Z_PTR 
+    LDA #1
+    LDX #$0C
+   : STZ VERA_data0  ; addr low
+     STA VERA_data0  ; mod/addr_hi
+     STZ VERA_data0  ; xl
+     STZ VERA_data0  ; Xh
+     STZ VERA_data0  ; yl
+     STZ VERA_data0  ; yh
+     STX VERA_data0  
+     STZ VERA_data0  
+     DEY 
+     BNE :-
+    JMP draw_object_list_to_BUFFER
+
+
+@SET_Z_PTR:
     STZ ZP_PTR
     LDA #>OBJECT_LIST_Z_START_POINTERS
     STA ZP_PTR+1
+
+
   @NEXT_Z: ; Z=0 is invalid...
       INC ZP_PTR
       BNE @Z_LOOP
@@ -2242,91 +2277,149 @@ draw_object_list:
          BNE @OBJ_LOOP ; still sprite slots left.. woot!
          STA (ZP_PTR) ; oops.. save that last thing and exit..
 draw_object_list_to_BUFFER:
-      RTS
+DOLB_ZTRACKER = ZP_PTR
+DOLB_ZTRACKERH = ZP_PTR+1
+DOLB_BUFFER_HIGH_BYTE = ZP_PTR+2
+DOLB_CALC_DEST_LOW = ZP_PTR+3
+DOLB_CALC_DEST_HIGH = ZP_PTR+4
+DOLB_CALC_SCRATCH = ZP_PTR+5
+   LDA #4  ;    DCSEL 2 with address select 0.. to be used as destination.. 
+   STA VERA_ctrl 
+   LDA #64 
+   STA FX_CTRL ;     cache write enable, cache fill and other stuff disabled
+   STZ FX_MULT 
+   STA FX_CACHE_L ; zero out the cache bytes.. 
+   STZ FX_CACHE_M
+   STZ FX_CACHE_H 
+   STA FX_CACHE_U 
 
+   STZ VERA_addr_low 
    LDA CURRENT_BITMAP_BUFFER
    BEQ :+
    LDA #>VRAM_BITMAP_LAYERA
    BRA :++
  : LDA #>VRAM_BITMAP_LAYERB
- : STA $7F
-   STZ ZP_PTR
+ : STA DOLB_BUFFER_HIGH_BYTE
+   STA VERA_addr_high
+   LDA #$31 ; 4 at a time 
+   STA VERA_addr_bank   
+   ; clear the buffer ...
+   CLC 
+   LDA #0
+   LDX #120;120 ; do 160*120 = 19,200/4 = 4,800 iterations.. if we do 20 iterations a pop.. 240 x iterations 
+
+
+ : STZ VERA_data0 ;     trigger cache write - 4 bytes / 8px
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0 ; 32 px cleared
+
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0 ; 64 px cleared
+
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0 ; 96
+
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0 ; 128
+
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0
+   STZ VERA_data0 ; 160 px cleared
+
+   CLC
+   LDA VERA_addr_low
+   ADC #80     ;     increment A for the low part the address 
+   STA VERA_addr_low    
+   LDA VERA_addr_high
+   ADC #0
+   STA VERA_addr_high   
+
+   DEX 
+   BNE :- ; 85 * 120 = 10,200 .. + 119 * 14 =1,666 .. 11,866 cycles to clear entire screen.. ok
+
+   STZ FX_CTRL ;     clear the cache writing for now 
+   STZ VERA_ctrl  ;     switch back to regular mode for now..
+
+
+   STZ DOLB_ZTRACKER 
+   LDA #>OBJECT_LIST_Z_START_POINTERS  
+   STA DOLB_ZTRACKERH   
   @NEXT_Z: ; Z=0 is invalid...
-      DEC ZP_PTR
+      DEC DOLB_ZTRACKER
       BNE @Z_LOOP
+      STZ VERA_ctrl ; reset VERA_CTRl ..
       RTS
   @Z_LOOP:
-      LDA (ZP_PTR) ; get our first victim
-      BEQ @NEXT_Z
-      TAX
-      LDA #0
-      STA (ZP_PTR) ; zero this Z_next for now 
-      TXA
+      LDA (DOLB_ZTRACKER) ; get our first victim
      @OBJ_LOOP:
-         TAX
-         BEQ @NEXT_Z ; got a bum next pointer there ... 
-         LDA #8
-         STA ZP_PTR+3 ; BANK bit for source
-         LDA OBJECT_LIST_BYTE1_MODE
-         STA ZP_PTR+2 ; high mem for source
-         LDA OBJECT_LIST_BYTE0_ADDRLOW,X ; 12:5
-         ASL ; 11:4
-         ROL ZP_PTR+2
-         ASL ; 10:3
-         ROL ZP_PTR+2
-         ASL ; 9:2
-         ROL ZP_PTR+2
-         ASL ; 8:1
-         ROL ZP_PTR+2
-         ASL ; 7:0 -> low 
-         ROL ZP_PTR+2 ; high
-         ROL ZP_PTR+3 ; bank 
-         STA VERA_addr_low
-         LDA ZP_PTR+2
+         BEQ @NEXT_Z
+         TAX      ;     get that pointer into X so we can do stuffs...
+         ; OK so now reference OBJECT_LIST_BYTE*,X for whatever we're drawing.. and Y is free for whatever..
+         LDA OBJECT_LIST_BYTE2_X,x ;      4     4     grab X 
+         CMP #160 ;     2     6
+         BCC :++     ;     we're off screen left/right somewhere if BCS
+       : LDA OBJECT_LIST_BYTE6_NEXT,x
+         BNE @OBJ_LOOP  
+         BRA @NEXT_Z 
+       : LDY OBJECT_LIST_BYTE3_Y,x ; I think that works.. 
+         CPY #120 
+         BCS :-- ; checking if inside screen.. for now we'll bug out if BCS set here..
+         ; we're inside screen.. later will need to check if above top rather than below bottom..
+
+        ; X in a, Y in Y 
+         STZ VERA_ctrl  
+         LSR ; 16 colors, so cut in half to get byte reference ; 
+         STA DOLB_CALC_SCRATCH  
+  ;       STZ DOLB_CALC_DEST_LOW
+         TYA 
+        ; OK we have dealt with being in the screen and have a valid Y .. need to multiply by 160 bytes to get start of line..
+        ; or use lookie table? for now will do the multiply .. 
+         STZ DOLB_CALC_DEST_HIGH ;           3
+         ASL ; x2                            2  5
+         ROL DOLB_CALC_DEST_HIGH ;     x2    5 10
+         ASL ; x4                            2 12
+         ROL DOLB_CALC_DEST_HIGH ;     x4    5 17
+         CLC 
+         ADC OBJECT_LIST_BYTE3_Y,X ;   x5    4 21     
+         STA DOLB_CALC_DEST_LOW   
+         LDA DOLB_CALC_DEST_HIGH 
+         ADC #0
+         STA DOLB_CALC_DEST_HIGH
+
+         LDA DOLB_CALC_DEST_LOW
+         asl ;                                        2     30
+         ROL DOLB_CALC_DEST_HIGH ;     X10            5     35
+         asl ;                                        2     37
+         ROL DOLB_CALC_DEST_HIGH ;     X20            5     42
+         asl ;                                        2     47
+         ROL DOLB_CALC_DEST_HIGH ;     X40            5     52
+         asl ;                                        2     54
+         ROL DOLB_CALC_DEST_HIGH ;     X80            5     59
+         asl ;                                        2     61
+         ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 ! 
+;         asl ;                                        2     61
+;         ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 ! 
+
+         ADC DOLB_CALC_SCRATCH  ;     add the X part 
+         STA VERA_addr_low   ;     need to stash for next thing.. 3       69
+         LDA DOLB_CALC_DEST_HIGH 
+         ADC DOLB_BUFFER_HIGH_BYTE  
          STA VERA_addr_high
-         LDA ZP_PTR+3
-         STA VERA_addr_bank
-         LDA #1
-         STA VERA_ctrl         
-         LDY OBJECT_LIST_BYTE3_Y,X
-         CPY #160
-         BCS @NEXT_Z
-         CLC 
-         LDA BITMAP_OFFSETS_LOW,Y 
-         ADC OBJECT_LIST_BYTE2_X,X 
-         STA VERA_addr_low
-         LDA BITMAP_OFFSETS_HIGH,X
-         ADC $7F 
-         STA VERA_addr_high 
          LDA #$11
-         STA VERA_addr_bank
-         LDY #1
-       : LDA VERA_data0 ; 1 
-         STA VERA_data1
-         LDA VERA_data0 ; 2 
-         STA VERA_data1
-         LDA VERA_data0 ; 3 
-         STA VERA_data1
-         LDA VERA_data0 ; 4 
-         STA VERA_data1
-         LDA VERA_data0 ; 5 
-         STA VERA_data1
-         LDA VERA_data0 ; 6 
-         STA VERA_data1
-         LDA VERA_data0 ; 7 
-         STA VERA_data1
-         LDA VERA_data0 ; 8 
-         STA VERA_data1
-         LDA VERA_addr_low
-         CLC 
-         ADC #152
-         STA VERA_addr_low
-         BCC :+
-         INC VERA_addr_high
-       : DEY 
-         BNE :--
-         STZ VERA_ctrl
-         LDA OBJECT_LIST_BYTE6_NEXT,x
+         STA VERA_addr_bank   
+         STA VERA_data0             ;     we're just gonna stick some pixels here.. 
+
+
+
+         LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next 
          JMP @OBJ_LOOP
 
 test_optimal_pal_data:
