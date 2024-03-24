@@ -324,8 +324,9 @@ BUG 	fix ziggy zaggy - appears error is due to check against screen out top..
 	DONE
 1035 	fixed zig complete
 	COMMIT
+1115 	fixed small issue with screen top out.. 
+	COMMIT 
 
-	
 
 
 
