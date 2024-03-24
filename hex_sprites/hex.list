@@ -983,7 +983,7 @@ Current file: hex.s
 0037F5r 1  D0 F7          BNE :-
 0037F7r 1  A2 65          LDX #101  ;  write A to bufferB initially as debug / flashing display when swapped..
 0037F9r 1                 ;LDA #255
-0037F9r 1  8D 23 9F     : STA VERA_data0
+0037F9r 1  9C 23 9F     : STZ VERA_data0
 0037FCr 1  C8             INY
 0037FDr 1  D0 FA          BNE :-
 0037FFr 1  CA             DEX
@@ -2609,821 +2609,869 @@ Current file: hex.s
 0042D2r 1               DOLB_CALC_DEST_LOW = ZP_PTR+3
 0042D2r 1               DOLB_CALC_DEST_HIGH = ZP_PTR+4
 0042D2r 1               DOLB_CALC_SCRATCH = ZP_PTR+5
+0042D2r 1               DOLB_STOP_BOTTOM = ZP_PTR+6
+0042D2r 1               
 0042D2r 1  A9 04           LDA #4  ;    DCSEL 2 with address select 0.. to be used as destination..
 0042D4r 1  8D 25 9F        STA VERA_ctrl
-0042D7r 1  A9 40           LDA #64
+0042D7r 1  A9 60           LDA #96
 0042D9r 1  8D 29 9F        STA FX_CTRL ;     cache write enable, cache fill and other stuff disabled
 0042DCr 1  9C 2C 9F        STZ FX_MULT
-0042DFr 1  8D 29 9F        STA FX_CACHE_L ; zero out the cache bytes..
+0042DFr 1  9C 29 9F        STZ FX_CACHE_L ; zero out the cache bytes..
 0042E2r 1  9C 2A 9F        STZ FX_CACHE_M
 0042E5r 1  9C 2B 9F        STZ FX_CACHE_H
-0042E8r 1  8D 2C 9F        STA FX_CACHE_U
+0042E8r 1  9C 2C 9F        STZ FX_CACHE_U
 0042EBr 1               
 0042EBr 1  9C 20 9F        STZ VERA_addr_low
 0042EEr 1  AD rr rr        LDA CURRENT_BITMAP_BUFFER
-0042F1r 1  F0 04           BEQ :+
+0042F1r 1  F0 06           BEQ :+
 0042F3r 1  A9 18           LDA #>VRAM_BITMAP_LAYERA
-0042F5r 1  80 02           BRA :++
-0042F7r 1  A9 80         : LDA #>VRAM_BITMAP_LAYERB
-0042F9r 1  85 24         : STA DOLB_BUFFER_HIGH_BYTE
-0042FBr 1  8D 21 9F        STA VERA_addr_high
-0042FEr 1  A9 31           LDA #$31 ; 4 at a time
-004300r 1  8D 22 9F        STA VERA_addr_bank
-004303r 1                  ; clear the buffer ...
-004303r 1  18              CLC
-004304r 1  A9 00           LDA #0
-004306r 1  A2 78           LDX #120;120 ; do 160*120 = 19,200/4 = 4,800 iterations.. if we do 20 iterations a pop.. 240 x iterations
-004308r 1               
-004308r 1               
-004308r 1  9C 23 9F      : STZ VERA_data0 ;     trigger cache write - 4 bytes / 8px
-00430Br 1  9C 23 9F        STZ VERA_data0
-00430Er 1  9C 23 9F        STZ VERA_data0
-004311r 1  9C 23 9F        STZ VERA_data0 ; 32 px cleared
-004314r 1               
+0042F5r 1  A2 80           LDX #>VRAM_BITMAP_LAYERB
+0042F7r 1  80 04           BRA :++
+0042F9r 1  A9 80         : LDA #>VRAM_BITMAP_LAYERB
+0042FBr 1  A2 E4           LDX #>VRAM_TEXT_SCREEN
+0042FDr 1  85 24         : STA DOLB_BUFFER_HIGH_BYTE
+0042FFr 1  86 28           STX DOLB_STOP_BOTTOM
+004301r 1  8D 21 9F        STA VERA_addr_high
+004304r 1  A9 31           LDA #$31 ; 4 at a time
+004306r 1  8D 22 9F        STA VERA_addr_bank
+004309r 1                  ; clear the buffer ...
+004309r 1  18              CLC
+00430Ar 1  A9 00           LDA #0
+00430Cr 1  A2 78           LDX #120;120 ; do 160*120 = 19,200/4 = 4,800 iterations.. if we do 20 iterations a pop.. 240 x iterations
+00430Er 1               
+00430Er 1               
+00430Er 1  9C 23 9F      : STZ VERA_data0 ;     trigger cache write - 4 bytes / 8px
+004311r 1  9C 23 9F        STZ VERA_data0
 004314r 1  9C 23 9F        STZ VERA_data0
-004317r 1  9C 23 9F        STZ VERA_data0
+004317r 1  9C 23 9F        STZ VERA_data0 ; 32 px cleared
+00431Ar 1               
 00431Ar 1  9C 23 9F        STZ VERA_data0
-00431Dr 1  9C 23 9F        STZ VERA_data0 ; 64 px cleared
-004320r 1               
+00431Dr 1  9C 23 9F        STZ VERA_data0
 004320r 1  9C 23 9F        STZ VERA_data0
-004323r 1  9C 23 9F        STZ VERA_data0
+004323r 1  9C 23 9F        STZ VERA_data0 ; 64 px cleared
+004326r 1               
 004326r 1  9C 23 9F        STZ VERA_data0
-004329r 1  9C 23 9F        STZ VERA_data0 ; 96
-00432Cr 1               
+004329r 1  9C 23 9F        STZ VERA_data0
 00432Cr 1  9C 23 9F        STZ VERA_data0
-00432Fr 1  9C 23 9F        STZ VERA_data0
+00432Fr 1  9C 23 9F        STZ VERA_data0 ; 96
+004332r 1               
 004332r 1  9C 23 9F        STZ VERA_data0
-004335r 1  9C 23 9F        STZ VERA_data0 ; 128
-004338r 1               
+004335r 1  9C 23 9F        STZ VERA_data0
 004338r 1  9C 23 9F        STZ VERA_data0
-00433Br 1  9C 23 9F        STZ VERA_data0
+00433Br 1  9C 23 9F        STZ VERA_data0 ; 128
+00433Er 1               
 00433Er 1  9C 23 9F        STZ VERA_data0
-004341r 1  9C 23 9F        STZ VERA_data0 ; 160 px cleared
-004344r 1               
-004344r 1  18              CLC
-004345r 1  AD 20 9F        LDA VERA_addr_low
-004348r 1  69 50           ADC #80     ;     increment A for the low part the address
-00434Ar 1  8D 20 9F        STA VERA_addr_low
-00434Dr 1  AD 21 9F        LDA VERA_addr_high
-004350r 1  69 00           ADC #0
-004352r 1  8D 21 9F        STA VERA_addr_high
-004355r 1               
-004355r 1  CA              DEX
-004356r 1  D0 B0           BNE :- ; 85 * 120 = 10,200 .. + 119 * 14 =1,666 .. 11,866 cycles to clear entire screen.. ok
-004358r 1               
-004358r 1  9C 29 9F        STZ FX_CTRL ;     clear the cache writing for now
-00435Br 1  9C 25 9F        STZ VERA_ctrl  ;     switch back to regular mode for now..
+004341r 1  9C 23 9F        STZ VERA_data0
+004344r 1  9C 23 9F        STZ VERA_data0
+004347r 1  9C 23 9F        STZ VERA_data0 ; 160 px cleared
+00434Ar 1               
+00434Ar 1  18              CLC
+00434Br 1  AD 20 9F        LDA VERA_addr_low
+00434Er 1  69 50           ADC #80     ;     increment A for the low part the address
+004350r 1  8D 20 9F        STA VERA_addr_low
+004353r 1  AD 21 9F        LDA VERA_addr_high
+004356r 1  69 00           ADC #0
+004358r 1  8D 21 9F        STA VERA_addr_high
+00435Br 1               
+00435Br 1  CA              DEX
+00435Cr 1  D0 B0           BNE :- ; 85 * 120 = 10,200 .. + 119 * 14 =1,666 .. 11,866 cycles to clear entire screen.. ok
 00435Er 1               
-00435Er 1               
-00435Er 1  64 22           STZ DOLB_ZTRACKER
-004360r 1  A9 rr           LDA #>OBJECT_LIST_Z_START_POINTERS
-004362r 1  85 23           STA DOLB_ZTRACKERH
-004364r 1                 @NEXT_Z: ; Z=0 is invalid...
-004364r 1  C6 22              DEC DOLB_ZTRACKER
-004366r 1  D0 04              BNE @Z_LOOP
-004368r 1  9C 25 9F           STZ VERA_ctrl ; reset VERA_CTRl ..
-00436Br 1  60                 RTS
-00436Cr 1                 @Z_LOOP:
-00436Cr 1  B2 22              LDA (DOLB_ZTRACKER) ; get our first victim
-00436Er 1                    @OBJ_LOOP:
-00436Er 1  F0 F4                 BEQ @NEXT_Z
-004370r 1  AA                    TAX      ;     get that pointer into X so we can do stuffs...
-004371r 1                        ; OK so now reference OBJECT_LIST_BYTE*,X for whatever we're drawing.. and Y is free for whatever..
-004371r 1  BD rr rr              LDA OBJECT_LIST_BYTE2_X,x ;      4     4     grab X
-004374r 1  C9 A0                 CMP #160 ;     2     6
-004376r 1  90 07                 BCC :++     ;     we're off screen left/right somewhere if BCS
-004378r 1  BD rr rr            : LDA OBJECT_LIST_BYTE6_NEXT,x
-00437Br 1  D0 F1                 BNE @OBJ_LOOP
-00437Dr 1  80 E5                 BRA @NEXT_Z
-00437Fr 1  BC rr rr            : LDY OBJECT_LIST_BYTE3_Y,x ; I think that works..
-004382r 1  C0 78                 CPY #120
-004384r 1  B0 F2                 BCS :-- ; checking if inside screen.. for now we'll bug out if BCS set here..
-004386r 1                        ; we're inside screen.. later will need to check if above top rather than below bottom..
-004386r 1               
-004386r 1                       ; X in a, Y in Y
-004386r 1  9C 25 9F              STZ VERA_ctrl
-004389r 1  4A                    LSR ; 16 colors, so cut in half to get byte reference ;
-00438Ar 1  85 27                 STA DOLB_CALC_SCRATCH
-00438Cr 1                 ;       STZ DOLB_CALC_DEST_LOW
-00438Cr 1  98                    TYA
-00438Dr 1                       ; OK we have dealt with being in the screen and have a valid Y .. need to multiply by 160 bytes to get start of line..
-00438Dr 1                       ; or use lookie table? for now will do the multiply ..
-00438Dr 1  64 26                 STZ DOLB_CALC_DEST_HIGH ;           3
-00438Fr 1  0A                    ASL ; x2                            2  5
-004390r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     x2    5 10
-004392r 1  0A                    ASL ; x4                            2 12
-004393r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     x4    5 17
-004395r 1  18                    CLC
-004396r 1  7D rr rr              ADC OBJECT_LIST_BYTE3_Y,X ;   x5    4 21
-004399r 1  85 25                 STA DOLB_CALC_DEST_LOW
-00439Br 1  A5 26                 LDA DOLB_CALC_DEST_HIGH
-00439Dr 1  69 00                 ADC #0
-00439Fr 1  85 26                 STA DOLB_CALC_DEST_HIGH
-0043A1r 1               
-0043A1r 1  A5 25                 LDA DOLB_CALC_DEST_LOW
-0043A3r 1  0A                    asl ;                                        2     30
-0043A4r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X10            5     35
-0043A6r 1  0A                    asl ;                                        2     37
-0043A7r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X20            5     42
-0043A9r 1  0A                    asl ;                                        2     47
-0043AAr 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X40            5     52
-0043ACr 1  0A                    asl ;                                        2     54
-0043ADr 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X80            5     59
-0043AFr 1  0A                    asl ;                                        2     61
-0043B0r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 !
-0043B2r 1               ;         asl ;                                        2     61
-0043B2r 1               ;         ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 !
-0043B2r 1               
-0043B2r 1  65 27                 ADC DOLB_CALC_SCRATCH  ;     add the X part
-0043B4r 1  8D 20 9F              STA VERA_addr_low   ;     need to stash for next thing.. 3       69
-0043B7r 1  A5 26                 LDA DOLB_CALC_DEST_HIGH
-0043B9r 1  65 24                 ADC DOLB_BUFFER_HIGH_BYTE
-0043BBr 1  8D 21 9F              STA VERA_addr_high
-0043BEr 1  A9 11                 LDA #$11
-0043C0r 1  8D 22 9F              STA VERA_addr_bank
-0043C3r 1  8D 23 9F              STA VERA_data0             ;     we're just gonna stick some pixels here..
-0043C6r 1               
-0043C6r 1               
-0043C6r 1               
-0043C6r 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next
-0043C9r 1  4C rr rr              JMP @OBJ_LOOP
-0043CCr 1               
-0043CCr 1               test_optimal_pal_data:
-0043CCr 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
-0043CCr 1  00 00        .byte $00,$00  ; 0 - black/transparent
-0043CEr 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
-0043D0r 1               
-0043D0r 1  04 06        .byte $04,$06  ; 2 #660044
-0043D2r 1  00 0C        .byte $00,$0C  ; 3  #cc0000
-0043D4r 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
-0043D6r 1  42 03        .byte $42,$03
-0043D8r 1  60 0C        .byte $60,$0c   ; 6  #cc6600
-0043DAr 1  40 08        .byte $40,$08   ; 7 #884400
-0043DCr 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
-0043DEr 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
-0043E0r 1  C0 00        .byte $c0,$00   ; A #00cc00
-0043E2r 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
-0043E4r 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
-0043E6r 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
-0043E8r 1  88 08        .byte $88,$08   ; E #888888
-0043EAr 1  22 02        .byte $22,$02   ; F #222222
-0043ECr 1               
-0043ECr 1               test_vram_data:
-0043ECr 1               ; 70 to 127 - start of 16x16 (each 128 byte) for testing directions / sizing..
-0043ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  0-15 16x10 -  0
-0043F0r 1  11 11 11 11  
-0043F4r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-0043F8r 1  FF FF FF F1  
-0043FCr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004400r 1  FF FF FF F1  
-004404r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004408r 1  FF FF FF F1  
-00440Cr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
-004410r 1  FF FF FF F1  
-004414r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004418r 1  FF FF FF F1  
-00441Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004420r 1  FF FF FF F1  
-004424r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004428r 1  FF FF FF F1  
-00442Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004430r 1  FF FF FF F1  
-004434r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004438r 1  11 11 11 11  
-00443Cr 1  55 55 55 55  .repeat 54
-004440r 1  55 55 55 55  
-004444r 1  55 55 55 55  
-0045ECr 1               .res 8,$55
-0045ECr 1               .endrepeat
-0045ECr 1               
-0045ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  16-31    16x10 -  0 trans
-0045F0r 1  11 11 11 11  
-0045F4r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-0045F8r 1  F0 F0 F0 F1  
-0045FCr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004600r 1  0F 0F 0F 01  
-004604r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004608r 1  F0 F0 F0 F1  
-00460Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004610r 1  0F 0F 0F 01  
-004614r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004618r 1  F0 F0 F0 F1  
-00461Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004620r 1  0F 0F 0F 01  
-004624r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004628r 1  F0 F0 F0 F1  
-00462Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004630r 1  0F 0F 0F 01  
-004634r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004638r 1  11 11 11 11  
-00463Cr 1  50 50 50 50  .repeat 27
-004640r 1  50 50 50 50  
-004644r 1  05 05 05 05  
-0047ECr 1               .res 8,$50
-0047ECr 1               .res 8,$05
-0047ECr 1               .endrepeat
-0047ECr 1               
-0047ECr 1               
-0047ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  32-47    16x11 -  4
-0047F0r 1  11 11 11 11  
-0047F4r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-0047F8r 1  FF FF FF F1  
-0047FCr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004800r 1  FF FF FF F1  
-004804r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004808r 1  FF FF FF F1  
-00480Cr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
-004810r 1  FF FF FF F1  
-004814r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004818r 1  FF FF FF F1  
-00481Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004820r 1  FF FF FF F1  
-004824r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004828r 1  FF FF FF F1  
-00482Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004830r 1  FF FF FF F1  
-004834r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004838r 1  FF FF FF F1  
-00483Cr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004840r 1  11 11 11 11  
-004844r 1  55 55 55 55  .repeat 53
-004848r 1  55 55 55 55  
-00484Cr 1  55 55 55 55  
-0049ECr 1               .res 8,$55
-0049ECr 1               .endrepeat
-0049ECr 1               
-0049ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  48-63    16x11 -  4 trans
-0049F0r 1  11 11 11 11  
-0049F4r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-0049F8r 1  F0 F0 F0 F1  
-0049FCr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004A00r 1  0F 0F 0F 01  
-004A04r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004A08r 1  F0 F0 F0 F1  
-004A0Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004A10r 1  0F 0F 0F 01  
-004A14r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004A18r 1  F0 F0 F0 F1  
-004A1Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004A20r 1  0F 0F 0F 01  
-004A24r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004A28r 1  F0 F0 F0 F1  
-004A2Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004A30r 1  0F 0F 0F 01  
-004A34r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004A38r 1  F0 F0 F0 F1  
-004A3Cr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004A40r 1  11 11 11 11  
-004A44r 1  05 05 05 05  .res 7,$05
-004A48r 1  05 05 05     
-004A4Br 1  00           .byte 0
-004A4Cr 1  50 50 50 50  .repeat 26
-004A50r 1  50 50 50 50  
-004A54r 1  05 05 05 05  
-004BECr 1               .res 8,$50
-004BECr 1               .res 7,$05
-004BECr 1               .byte 0
-004BECr 1               .endrepeat
-004BECr 1               
-004BECr 1               
-004BECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  64-79    15x11 - 10
-004BF0r 1  11 11 11 10  
-004BF4r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-004BF8r 1  FF FF FF 10  
-004BFCr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-004C00r 1  FF FF FF 10  
-004C04r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-004C08r 1  FF FF FF 10  
-004C0Cr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
-004C10r 1  FF FF FF 10  
-004C14r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-004C18r 1  FF FF FF 10  
-004C1Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-004C20r 1  FF FF FF 10  
-004C24r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-004C28r 1  FF FF FF 10  
-004C2Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-004C30r 1  FF FF FF 10  
-004C34r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-004C38r 1  FF FF FF 10  
-004C3Cr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-004C40r 1  11 11 11 10  
-004C44r 1  55 55 55 55  .repeat 53
-004C48r 1  55 55 55 50  
-004C4Cr 1  55 55 55 55  
-004DECr 1               .res 7,$55
-004DECr 1               .byte $50
-004DECr 1               .endrepeat
-004DECr 1               
-004DECr 1               
-004DECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  80-95    15x11 - 10 trans
-004DF0r 1  11 11 11 10  
-004DF4r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-004DF8r 1  F0 F0 F0 10  
-004DFCr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-004E00r 1  0F 0F 0F 10  
-004E04r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-004E08r 1  F0 F0 F0 10  
-004E0Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-004E10r 1  0F 0F 0F 10  
-004E14r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-004E18r 1  F0 F0 F0 10  
-004E1Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-004E20r 1  0F 0F 0F 10  
-004E24r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-004E28r 1  F0 F0 F0 10  
-004E2Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-004E30r 1  0F 0F 0F 10  
-004E34r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-004E38r 1  F0 F0 F0 10  
-004E3Cr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-004E40r 1  11 11 11 10  
-004E44r 1  05 05 05 05  .res 7,$05
-004E48r 1  05 05 05     
-004E4Br 1  00           .byte 0
-004E4Cr 1  50 50 50 50  .repeat 26
-004E50r 1  50 50 50 50  
-004E54r 1  05 05 05 05  
-004FECr 1               .res 8,$50
-004FECr 1               .res 7,$05
-004FECr 1               .byte 0
-004FECr 1               .endrepeat
-004FECr 1               
-004FECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  96-111    15x12 - 18
-004FF0r 1  11 11 11 10  
-004FF4r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-004FF8r 1  FF FF FF 10  
-004FFCr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005000r 1  FF FF FF 10  
-005004r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005008r 1  FF FF FF 10  
-00500Cr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
-005010r 1  FF FF FF 10  
-005014r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005018r 1  FF FF FF 10  
-00501Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005020r 1  FF FF FF 10  
-005024r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005028r 1  FF FF FF 10  
-00502Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005030r 1  FF FF FF 10  
-005034r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005038r 1  FF FF FF 10  
-00503Cr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005040r 1  FF FF FF 10  
-005044r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-005048r 1  11 11 11 10  
-00504Cr 1  55 55 55 55  .repeat 52
-005050r 1  55 55 55 50  
-005054r 1  55 55 55 55  
-0051ECr 1               .res 7,$55
-0051ECr 1               .byte $50
-0051ECr 1               .endrepeat
-0051ECr 1               
-0051ECr 1               
-0051ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  112-127    15x12 - 18 trans
-0051F0r 1  11 11 11 10  
-0051F4r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-0051F8r 1  F0 F0 F0 10  
-0051FCr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005200r 1  0F 0F 0F 10  
-005204r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005208r 1  F0 F0 F0 10  
-00520Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005210r 1  0F 0F 0F 10  
-005214r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005218r 1  F0 F0 F0 10  
-00521Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005220r 1  0F 0F 0F 10  
-005224r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005228r 1  F0 F0 F0 10  
-00522Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005230r 1  0F 0F 0F 10  
-005234r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005238r 1  F0 F0 F0 10  
-00523Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005240r 1  0F 0F 0F 10  
-005244r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-005248r 1  11 11 11 10  
-00524Cr 1  50 50 50 50  .repeat 26
-005250r 1  50 50 50 50  
-005254r 1  05 05 05 05  
-0053ECr 1               .res 8,$50
-0053ECr 1               .res 7,$05
-0053ECr 1               .byte 0
-0053ECr 1               .endrepeat
-0053ECr 1               
-0053ECr 1               ; alernate tile graphic to use for tub wall .. 128-143 ; 16x tile
-0053ECr 1  16 16 16 16  .repeat 32
-0053F0r 1  16 16 16 16  
-0053F4r 1  61 61 61 61  
-0055ECr 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
-0055ECr 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
-0055ECr 1               .endrepeat
-0055ECr 1               
-0055ECr 1  10 10 10 10  .repeat 32  ;  144-159
-0055F0r 1  10 10 10 10  
-0055F4r 1  06 06 06 06  
-0057ECr 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
-0057ECr 1                   .byte $06, $06, $06, $06, $06, $06, $06, $06
-0057ECr 1               .endrepeat
-0057ECr 1               
-0057ECr 1               
-0057ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  160-175    14x12
-0057F0r 1  11 11 11 00  
-0057F4r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
-0057F8r 1  FF FF F1 00  
-0057FCr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
-005800r 1  FF FF F1 00  
-005804r 1  1F FF FF FF  .byte $1f,$FF,$ff,$Ff,$Ff,$fF,$F1,$00
-005808r 1  FF FF F1 00  
-00580Cr 1  1F FF FF F1  .byte $1f,$FF,$FF,$f1,$fF,$FF,$F1,$00
-005810r 1  FF FF F1 00  
-005814r 1  1F FF FF FF  .byte $1f,$FF,$FF,$Ff,$Ff,$fF,$F1,$00
-005818r 1  FF FF F1 00  
-00581Cr 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
-005820r 1  FF FF F1 00  
-005824r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
-005828r 1  FF FF F1 00  
-00582Cr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005830r 1  FF FF F1 00  
-005834r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005838r 1  FF FF F1 00  
-00583Cr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005840r 1  FF FF F1 00  
-005844r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00
-005848r 1  11 11 11 00  
-00584Cr 1  55 55 55 55  .repeat 52
-005850r 1  55 55 55 00  
-005854r 1  55 55 55 55  
-0059ECr 1               .res 7,$55
-0059ECr 1               .byte 0
-0059ECr 1               .endrepeat
-0059ECr 1               
-0059ECr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  176-191
-0059F0r 1  11 11 11 00  
-0059F4r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-0059F8r 1  F0 F0 F0 10  
-0059FCr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005A00r 1  0F 0F 0F 10  
-005A04r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005A08r 1  F0 F0 F0 10  
-005A0Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005A10r 1  0F 0F 0F 10  
-005A14r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005A18r 1  F0 F0 F0 10  
-005A1Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005A20r 1  0F 0F 0F 10  
-005A24r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005A28r 1  F0 F0 F0 10  
-005A2Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005A30r 1  0F 0F 0F 10  
-005A34r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-005A38r 1  F0 F0 F0 10  
-005A3Cr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005A40r 1  0F 0F 0F 10  
-005A44r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-005A48r 1  11 11 11 10  
-005A4Cr 1  50 50 50 50  .repeat 26
-005A50r 1  50 50 50 50  
-005A54r 1  05 05 05 05  
-005BECr 1               .res 8,$50
-005BECr 1               .res 7,$05
-005BECr 1               .byte 0
-005BECr 1               .endrepeat
-005BECr 1               
-005BECr 1               ; alernate tile graphic to use for tub wall .. 192-223 ; 15x tile
-005BECr 1  16 16 16 16  .repeat 32
-005BF0r 1  16 16 16 10  
-005BF4r 1  61 61 61 61  
-005DECr 1                   .byte $16, $16, $16, $16, $16, $16, $16, $10
-005DECr 1                   .byte $61, $61, $61, $61, $61, $61, $61, $60
-005DECr 1               .endrepeat
-005DECr 1               
-005DECr 1  10 10 10 10  .repeat 32  ;  144-159
-005DF0r 1  10 10 10 10  
-005DF4r 1  06 06 06 06  
-005FECr 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
-005FECr 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
-005FECr 1               .endrepeat
-005FECr 1               
-005FECr 1               
-005FECr 1               ; alernate tile graphic to use for tub wall .. 224 ; 14x tile
-005FECr 1  16 16 16 16  .repeat 32
-005FF0r 1  16 16 16 00  
-005FF4r 1  61 61 61 61  
-0061ECr 1                   .byte $16, $16, $16, $16, $16, $16, $16, $00
-0061ECr 1                   .byte $61, $61, $61, $61, $61, $61, $61, $00
-0061ECr 1               .endrepeat
-0061ECr 1               
-0061ECr 1  10 10 10 10  .repeat 32  ;  144-159
-0061F0r 1  10 10 10 00  
-0061F4r 1  06 06 06 06  
-0063ECr 1                   .byte $10, $10, $10, $10, $10, $10, $10, $00
-0063ECr 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
-0063ECr 1               .endrepeat
-0063ECr 1               
-0063ECr 1               
-0063ECr 1               
-0063ECr 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
-0063ECr 1               ;     01   23   45   67
-0063ECr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
-0063F0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0063F4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0063F8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0063FCr 1  01 00 00 10  .byte $01, $00, $00, $10
-006400r 1  01 00 00 10  .byte $01, $00, $00, $10
-006404r 1  01 00 00 10  .byte $01, $00, $00, $10
-006408r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
-00640Cr 1               
-00640Cr 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
-006410r 1  00 00 00 10  .byte $00, $00, $00, $10
-006414r 1  00 00 00 10  .byte $00, $00, $00, $10
-006418r 1  00 00 00 00  .byte $00, $00, $00, $00
-00641Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-006420r 1  00 00 00 10  .byte $00, $00, $00, $10
-006424r 1  00 00 00 10  .byte $00, $00, $00, $10
-006428r 1  00 00 00 00  .byte $00, $00, $00, $00
-00642Cr 1               
-00642Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
-006430r 1  00 00 00 10  .byte $00, $00, $00, $10
-006434r 1  00 00 00 10  .byte $00, $00, $00, $10
-006438r 1  00 11 11 00  .byte $00, $11, $11, $00
-00643Cr 1  01 00 00 00  .byte $01, $00, $00, $00
-006440r 1  01 00 00 00  .byte $01, $00, $00, $00
-006444r 1  01 00 00 00  .byte $01, $00, $00, $00
-006448r 1  00 11 11 00  .byte $00, $11, $11, $00
-00644Cr 1               
-00644Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
-006450r 1  00 00 00 10  .byte $00, $00, $00, $10
-006454r 1  00 00 00 10  .byte $00, $00, $00, $10
-006458r 1  00 11 11 00  .byte $00, $11, $11, $00
-00645Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-006460r 1  00 00 00 10  .byte $00, $00, $00, $10
-006464r 1  00 00 00 10  .byte $00, $00, $00, $10
-006468r 1  00 11 11 00  .byte $00, $11, $11, $00
-00646Cr 1               
-00646Cr 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
-006470r 1  01 00 00 10  .byte $01, $00, $00, $10
-006474r 1  01 00 00 10  .byte $01, $00, $00, $10
-006478r 1  00 11 11 00  .byte $00, $11, $11, $00
-00647Cr 1  00 00 00 10  .byte $00, $00, $00, $10
+00435Er 1  A9 E0            LDA #$E0
+004360r 1  8D 29 9F        STA FX_CTRL
+004363r 1               
+004363r 1  64 22           STZ DOLB_ZTRACKER
+004365r 1  A9 rr           LDA #>OBJECT_LIST_Z_START_POINTERS
+004367r 1  85 23           STA DOLB_ZTRACKERH
+004369r 1                 @NEXT_Z: ; Z=0 is invalid...
+004369r 1  C6 22              DEC DOLB_ZTRACKER
+00436Br 1  D0 07              BNE @Z_LOOP
+00436Dr 1  9C 29 9F        STZ FX_CTRL ;     clear the cache writing for now
+004370r 1  9C 25 9F        STZ VERA_ctrl  ;     switch back to regular mode for now..
+004373r 1  60                 RTS
+004374r 1                 @Z_LOOP:
+004374r 1  B2 22              LDA (DOLB_ZTRACKER) ; get our first victim
+004376r 1                    @OBJ_LOOP:
+004376r 1  F0 F1                 BEQ @NEXT_Z
+004378r 1  AA                    TAX      ;     get that pointer into X so we can do stuffs...
+004379r 1                        ; OK so now reference OBJECT_LIST_BYTE*,X for whatever we're drawing.. and Y is free for whatever..
+004379r 1  BD rr rr              LDA OBJECT_LIST_BYTE2_X,x ;      4     4     grab X
+00437Cr 1  C9 A0                 CMP #160 ;     2     6
+00437Er 1  90 07                 BCC :++     ;     we're off screen left/right somewhere if BCS
+004380r 1  BD rr rr            : LDA OBJECT_LIST_BYTE6_NEXT,x
+004383r 1  D0 F1                 BNE @OBJ_LOOP
+004385r 1  80 E2                 BRA @NEXT_Z
+004387r 1  BC rr rr            : LDY OBJECT_LIST_BYTE3_Y,x ; I think that works..
+00438Ar 1  C0 78                 CPY #120
+00438Cr 1  B0 F2                 BCS :-- ; checking if inside screen.. for now we'll bug out if BCS set here..
+00438Er 1                        ; we're inside screen.. later will need to check if above top rather than below bottom..
+00438Er 1               
+00438Er 1                       ; X in a, Y in Y
+00438Er 1               
+00438Er 1  4A                    LSR ; 16 colors, so cut in half to get byte reference ;
+00438Fr 1               ;         AND #$FC ; round down by 4
+00438Fr 1  85 27                 STA DOLB_CALC_SCRATCH
+004391r 1                 ;       STZ DOLB_CALC_DEST_LOW
+004391r 1  98                    TYA
+004392r 1                       ; OK we have dealt with being in the screen and have a valid Y .. need to multiply by 160 bytes to get start of line..
+004392r 1                       ; or use lookie table? for now will do the multiply ..
+004392r 1  64 26                 STZ DOLB_CALC_DEST_HIGH ;           3
+004394r 1  0A                    ASL ; x2                            2  5
+004395r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     x2    5 10
+004397r 1  0A                    ASL ; x4                            2 12
+004398r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     x4    5 17
+00439Ar 1  18                    CLC
+00439Br 1  7D rr rr              ADC OBJECT_LIST_BYTE3_Y,X ;   x5    4 21
+00439Er 1  85 25                 STA DOLB_CALC_DEST_LOW
+0043A0r 1  A5 26                 LDA DOLB_CALC_DEST_HIGH
+0043A2r 1  69 00                 ADC #0
+0043A4r 1  85 26                 STA DOLB_CALC_DEST_HIGH
+0043A6r 1               
+0043A6r 1  A5 25                 LDA DOLB_CALC_DEST_LOW
+0043A8r 1  0A                    asl ;                                        2     30
+0043A9r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X10            5     35
+0043ABr 1  0A                    asl ;                                        2     37
+0043ACr 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X20            5     42
+0043AEr 1  0A                    asl ;                                        2     47
+0043AFr 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X40            5     52
+0043B1r 1  0A                    asl ;                                        2     54
+0043B2r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X80            5     59
+0043B4r 1  0A                    asl ;                                        2     61
+0043B5r 1  26 26                 ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 !
+0043B7r 1               ;         asl ;                                        2     61
+0043B7r 1               ;         ROL DOLB_CALC_DEST_HIGH ;     X160 ... woot! 5     66 !
+0043B7r 1               
+0043B7r 1  65 27                 ADC DOLB_CALC_SCRATCH  ;     add the X part
+0043B9r 1  8D 20 9F              STA VERA_addr_low   ;     need to stash for next thing.. 3       69
+0043BCr 1  A5 26                 LDA DOLB_CALC_DEST_HIGH
+0043BEr 1  65 24                 ADC DOLB_BUFFER_HIGH_BYTE
+0043C0r 1  8D 21 9F              STA VERA_addr_high
+0043C3r 1  A9 31                 LDA #$31
+0043C5r 1  8D 22 9F              STA VERA_addr_bank
+0043C8r 1                        ; destination set. . now for the source..
+0043C8r 1  EE 25 9F              INC VERA_ctrl  ;     set to 5 to select the thing..
+0043CBr 1  BD rr rr              LDA OBJECT_LIST_BYTE1_MODE,X
+0043CEr 1  85 27                 STA DOLB_CALC_SCRATCH            ;      MMMMSSSS
+0043D0r 1  BD rr rr              LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+0043D3r 1  0A                    ASL
+0043D4r 1  26 27                 ROL DOLB_CALC_SCRATCH            ;      MMMSSSS.
+0043D6r 1  0A                    ASL
+0043D7r 1  26 27                 ROL DOLB_CALC_SCRATCH            ;      MMSSSS..
+0043D9r 1  0A                    ASL
+0043DAr 1  26 27                 ROL DOLB_CALC_SCRATCH            ;      MSSSS...
+0043DCr 1  0A                    ASL
+0043DDr 1  26 27                 ROL DOLB_CALC_SCRATCH            ;      SSSS....
+0043DFr 1  0A                    ASL
+0043E0r 1  26 27                 ROL DOLB_CALC_SCRATCH            ;    S SSS.....
+0043E2r 1  8D 20 9F              STA VERA_addr_low  ;    low address
+0043E5r 1  A9 08                 LDA #$08
+0043E7r 1  2A                    ROL ; #$1+bank
+0043E8r 1  8D 22 9F              STA VERA_addr_bank
+0043EBr 1  A5 27                 LDA DOLB_CALC_SCRATCH
+0043EDr 1  8D 21 9F              STA VERA_addr_high   ;     source set?
+0043F0r 1  CE 25 9F              DEC VERA_ctrl
+0043F3r 1  A0 0C                 LDY #12              ;     copy 16 lines for now..
+0043F5r 1  AD 24 9F            : LDA VERA_data1       ;     read 4 bytes / 8 px
+0043F8r 1  AD 24 9F              LDA VERA_data1
+0043FBr 1  AD 24 9F              LDA VERA_data1
+0043FEr 1  AD 24 9F              LDA VERA_data1
+004401r 1  9C 23 9F              STZ VERA_data0       ;     trigger cache write
+004404r 1               
+004404r 1  AD 24 9F              LDA VERA_data1       ;     read 4 bytes / 8 px
+004407r 1  AD 24 9F              LDA VERA_data1
+00440Ar 1  AD 24 9F              LDA VERA_data1
+00440Dr 1  AD 24 9F              LDA VERA_data1
+004410r 1  9C 23 9F              STZ VERA_data0       ;     trigger cache write
+004413r 1               
+004413r 1  AD 20 9F              LDA VERA_addr_low
+004416r 1  69 98                 ADC #160-8
+004418r 1  8D 20 9F              STA VERA_addr_low
+00441Br 1  AD 21 9F              LDA VERA_addr_high
+00441Er 1  69 00                 ADC #0
+004420r 1  C5 28                 CMP DOLB_STOP_BOTTOM
+004422r 1  B0 06                 BCS :+
+004424r 1  8D 21 9F              STA VERA_addr_high
+004427r 1  88                    DEY
+004428r 1  D0 CB                 BNE :-
+00442Ar 1                     :
+00442Ar 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next
+00442Dr 1  4C rr rr              JMP @OBJ_LOOP
+004430r 1               
+004430r 1               test_optimal_pal_data:
+004430r 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
+004430r 1  00 00        .byte $00,$00  ; 0 - black/transparent
+004432r 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
+004434r 1               
+004434r 1  04 06        .byte $04,$06  ; 2 #660044
+004436r 1  00 0C        .byte $00,$0C  ; 3  #cc0000
+004438r 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
+00443Ar 1  42 03        .byte $42,$03
+00443Cr 1  60 0C        .byte $60,$0c   ; 6  #cc6600
+00443Er 1  40 08        .byte $40,$08   ; 7 #884400
+004440r 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
+004442r 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
+004444r 1  C0 00        .byte $c0,$00   ; A #00cc00
+004446r 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
+004448r 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
+00444Ar 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
+00444Cr 1  88 08        .byte $88,$08   ; E #888888
+00444Er 1  22 02        .byte $22,$02   ; F #222222
+004450r 1               
+004450r 1               test_vram_data:
+004450r 1               ; 70 to 127 - start of 16x16 (each 128 byte) for testing directions / sizing..
+004450r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  0-15 16x10 -  0
+004454r 1  11 11 11 11  
+004458r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+00445Cr 1  FF FF FF F1  
+004460r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004464r 1  FF FF FF F1  
+004468r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00446Cr 1  FF FF FF F1  
+004470r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+004474r 1  FF FF FF F1  
+004478r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00447Cr 1  FF FF FF F1  
+004480r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004484r 1  FF FF FF F1  
+004488r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00448Cr 1  FF FF FF F1  
+004490r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+004494r 1  FF FF FF F1  
+004498r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+00449Cr 1  11 11 11 11  
+0044A0r 1  55 55 55 55  .repeat 54
+0044A4r 1  55 55 55 55  
+0044A8r 1  55 55 55 55  
+004650r 1               .res 8,$55
+004650r 1               .endrepeat
+004650r 1               
+004650r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  16-31    16x10 -  0 trans
+004654r 1  11 11 11 11  
+004658r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+00465Cr 1  F0 F0 F0 F1  
+004660r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004664r 1  0F 0F 0F 01  
+004668r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+00466Cr 1  F0 F0 F0 F1  
+004670r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004674r 1  0F 0F 0F 01  
+004678r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+00467Cr 1  F0 F0 F0 F1  
+004680r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004684r 1  0F 0F 0F 01  
+004688r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+00468Cr 1  F0 F0 F0 F1  
+004690r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004694r 1  0F 0F 0F 01  
+004698r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+00469Cr 1  11 11 11 11  
+0046A0r 1  50 50 50 50  .repeat 27
+0046A4r 1  50 50 50 50  
+0046A8r 1  05 05 05 05  
+004850r 1               .res 8,$50
+004850r 1               .res 8,$05
+004850r 1               .endrepeat
+004850r 1               
+004850r 1               
+004850r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  32-47    16x11 -  4
+004854r 1  11 11 11 11  
+004858r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+00485Cr 1  FF FF FF F1  
+004860r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004864r 1  FF FF FF F1  
+004868r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00486Cr 1  FF FF FF F1  
+004870r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+004874r 1  FF FF FF F1  
+004878r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00487Cr 1  FF FF FF F1  
+004880r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004884r 1  FF FF FF F1  
+004888r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+00488Cr 1  FF FF FF F1  
+004890r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+004894r 1  FF FF FF F1  
+004898r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+00489Cr 1  FF FF FF F1  
+0048A0r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+0048A4r 1  11 11 11 11  
+0048A8r 1  55 55 55 55  .repeat 53
+0048ACr 1  55 55 55 55  
+0048B0r 1  55 55 55 55  
+004A50r 1               .res 8,$55
+004A50r 1               .endrepeat
+004A50r 1               
+004A50r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  48-63    16x11 -  4 trans
+004A54r 1  11 11 11 11  
+004A58r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004A5Cr 1  F0 F0 F0 F1  
+004A60r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004A64r 1  0F 0F 0F 01  
+004A68r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004A6Cr 1  F0 F0 F0 F1  
+004A70r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004A74r 1  0F 0F 0F 01  
+004A78r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004A7Cr 1  F0 F0 F0 F1  
+004A80r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004A84r 1  0F 0F 0F 01  
+004A88r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004A8Cr 1  F0 F0 F0 F1  
+004A90r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004A94r 1  0F 0F 0F 01  
+004A98r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004A9Cr 1  F0 F0 F0 F1  
+004AA0r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+004AA4r 1  11 11 11 11  
+004AA8r 1  05 05 05 05  .res 7,$05
+004AACr 1  05 05 05     
+004AAFr 1  00           .byte 0
+004AB0r 1  50 50 50 50  .repeat 26
+004AB4r 1  50 50 50 50  
+004AB8r 1  05 05 05 05  
+004C50r 1               .res 8,$50
+004C50r 1               .res 7,$05
+004C50r 1               .byte 0
+004C50r 1               .endrepeat
+004C50r 1               
+004C50r 1               
+004C50r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  64-79    15x11 - 10
+004C54r 1  11 11 11 10  
+004C58r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+004C5Cr 1  FF FF FF 10  
+004C60r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+004C64r 1  FF FF FF 10  
+004C68r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+004C6Cr 1  FF FF FF 10  
+004C70r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+004C74r 1  FF FF FF 10  
+004C78r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+004C7Cr 1  FF FF FF 10  
+004C80r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+004C84r 1  FF FF FF 10  
+004C88r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+004C8Cr 1  FF FF FF 10  
+004C90r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+004C94r 1  FF FF FF 10  
+004C98r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+004C9Cr 1  FF FF FF 10  
+004CA0r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+004CA4r 1  11 11 11 10  
+004CA8r 1  55 55 55 55  .repeat 53
+004CACr 1  55 55 55 50  
+004CB0r 1  55 55 55 55  
+004E50r 1               .res 7,$55
+004E50r 1               .byte $50
+004E50r 1               .endrepeat
+004E50r 1               
+004E50r 1               
+004E50r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  80-95    15x11 - 10 trans
+004E54r 1  11 11 11 10  
+004E58r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+004E5Cr 1  F0 F0 F0 10  
+004E60r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+004E64r 1  0F 0F 0F 10  
+004E68r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+004E6Cr 1  F0 F0 F0 10  
+004E70r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+004E74r 1  0F 0F 0F 10  
+004E78r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+004E7Cr 1  F0 F0 F0 10  
+004E80r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+004E84r 1  0F 0F 0F 10  
+004E88r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+004E8Cr 1  F0 F0 F0 10  
+004E90r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+004E94r 1  0F 0F 0F 10  
+004E98r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+004E9Cr 1  F0 F0 F0 10  
+004EA0r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+004EA4r 1  11 11 11 10  
+004EA8r 1  05 05 05 05  .res 7,$05
+004EACr 1  05 05 05     
+004EAFr 1  00           .byte 0
+004EB0r 1  50 50 50 50  .repeat 26
+004EB4r 1  50 50 50 50  
+004EB8r 1  05 05 05 05  
+005050r 1               .res 8,$50
+005050r 1               .res 7,$05
+005050r 1               .byte 0
+005050r 1               .endrepeat
+005050r 1               
+005050r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  96-111    15x12 - 18
+005054r 1  11 11 11 10  
+005058r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+00505Cr 1  FF FF FF 10  
+005060r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+005064r 1  FF FF FF 10  
+005068r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+00506Cr 1  FF FF FF 10  
+005070r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+005074r 1  FF FF FF 10  
+005078r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+00507Cr 1  FF FF FF 10  
+005080r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+005084r 1  FF FF FF 10  
+005088r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+00508Cr 1  FF FF FF 10  
+005090r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+005094r 1  FF FF FF 10  
+005098r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+00509Cr 1  FF FF FF 10  
+0050A0r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0050A4r 1  FF FF FF 10  
+0050A8r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0050ACr 1  11 11 11 10  
+0050B0r 1  55 55 55 55  .repeat 52
+0050B4r 1  55 55 55 50  
+0050B8r 1  55 55 55 55  
+005250r 1               .res 7,$55
+005250r 1               .byte $50
+005250r 1               .endrepeat
+005250r 1               
+005250r 1               
+005250r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  112-127    15x12 - 18 trans
+005254r 1  11 11 11 10  
+005258r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+00525Cr 1  F0 F0 F0 10  
+005260r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005264r 1  0F 0F 0F 10  
+005268r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+00526Cr 1  F0 F0 F0 10  
+005270r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005274r 1  0F 0F 0F 10  
+005278r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+00527Cr 1  F0 F0 F0 10  
+005280r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005284r 1  0F 0F 0F 10  
+005288r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+00528Cr 1  F0 F0 F0 10  
+005290r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005294r 1  0F 0F 0F 10  
+005298r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+00529Cr 1  F0 F0 F0 10  
+0052A0r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0052A4r 1  0F 0F 0F 10  
+0052A8r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0052ACr 1  11 11 11 10  
+0052B0r 1  50 50 50 50  .repeat 26
+0052B4r 1  50 50 50 50  
+0052B8r 1  05 05 05 05  
+005450r 1               .res 8,$50
+005450r 1               .res 7,$05
+005450r 1               .byte 0
+005450r 1               .endrepeat
+005450r 1               
+005450r 1               ; alernate tile graphic to use for tub wall .. 128-143 ; 16x tile
+005450r 1  16 16 16 16  .repeat 32
+005454r 1  16 16 16 16  
+005458r 1  61 61 61 61  
+005650r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
+005650r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
+005650r 1               .endrepeat
+005650r 1               
+005650r 1  10 10 10 10  .repeat 32  ;  144-159
+005654r 1  10 10 10 10  
+005658r 1  06 06 06 06  
+005850r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
+005850r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $06
+005850r 1               .endrepeat
+005850r 1               
+005850r 1               
+005850r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  160-175    14x12
+005854r 1  11 11 11 00  
+005858r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+00585Cr 1  FF FF F1 00  
+005860r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+005864r 1  FF FF F1 00  
+005868r 1  1F FF FF FF  .byte $1f,$FF,$ff,$Ff,$Ff,$fF,$F1,$00
+00586Cr 1  FF FF F1 00  
+005870r 1  1F FF FF F1  .byte $1f,$FF,$FF,$f1,$fF,$FF,$F1,$00
+005874r 1  FF FF F1 00  
+005878r 1  1F FF FF FF  .byte $1f,$FF,$FF,$Ff,$Ff,$fF,$F1,$00
+00587Cr 1  FF FF F1 00  
+005880r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+005884r 1  FF FF F1 00  
+005888r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+00588Cr 1  FF FF F1 00  
+005890r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+005894r 1  FF FF F1 00  
+005898r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+00589Cr 1  FF FF F1 00  
+0058A0r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+0058A4r 1  FF FF F1 00  
+0058A8r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00
+0058ACr 1  11 11 11 00  
+0058B0r 1  55 55 55 55  .repeat 52
+0058B4r 1  55 55 55 00  
+0058B8r 1  55 55 55 55  
+005A50r 1               .res 7,$55
+005A50r 1               .byte 0
+005A50r 1               .endrepeat
+005A50r 1               
+005A50r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  176-191
+005A54r 1  11 11 11 00  
+005A58r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005A5Cr 1  F0 F0 F0 10  
+005A60r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005A64r 1  0F 0F 0F 10  
+005A68r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005A6Cr 1  F0 F0 F0 10  
+005A70r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005A74r 1  0F 0F 0F 10  
+005A78r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005A7Cr 1  F0 F0 F0 10  
+005A80r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005A84r 1  0F 0F 0F 10  
+005A88r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005A8Cr 1  F0 F0 F0 10  
+005A90r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005A94r 1  0F 0F 0F 10  
+005A98r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005A9Cr 1  F0 F0 F0 10  
+005AA0r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005AA4r 1  0F 0F 0F 10  
+005AA8r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+005AACr 1  11 11 11 10  
+005AB0r 1  50 50 50 50  .repeat 26
+005AB4r 1  50 50 50 50  
+005AB8r 1  05 05 05 05  
+005C50r 1               .res 8,$50
+005C50r 1               .res 7,$05
+005C50r 1               .byte 0
+005C50r 1               .endrepeat
+005C50r 1               
+005C50r 1               ; alernate tile graphic to use for tub wall .. 192-223 ; 15x tile
+005C50r 1  16 16 16 16  .repeat 32
+005C54r 1  16 16 16 10  
+005C58r 1  61 61 61 61  
+005E50r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $10
+005E50r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $60
+005E50r 1               .endrepeat
+005E50r 1               
+005E50r 1  10 10 10 10  .repeat 32  ;  144-159
+005E54r 1  10 10 10 10  
+005E58r 1  06 06 06 06  
+006050r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
+006050r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
+006050r 1               .endrepeat
+006050r 1               
+006050r 1               
+006050r 1               ; alernate tile graphic to use for tub wall .. 224 ; 14x tile
+006050r 1  16 16 16 16  .repeat 32
+006054r 1  16 16 16 00  
+006058r 1  61 61 61 61  
+006250r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $00
+006250r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $00
+006250r 1               .endrepeat
+006250r 1               
+006250r 1  10 10 10 10  .repeat 32  ;  144-159
+006254r 1  10 10 10 00  
+006258r 1  06 06 06 06  
+006450r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $00
+006450r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
+006450r 1               .endrepeat
+006450r 1               
+006450r 1               
+006450r 1               
+006450r 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
+006450r 1               ;     01   23   45   67
+006450r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
+006454r 1  01 00 00 10  .byte $01, $00, $00, $10
+006458r 1  01 00 00 10  .byte $01, $00, $00, $10
+00645Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006460r 1  01 00 00 10  .byte $01, $00, $00, $10
+006464r 1  01 00 00 10  .byte $01, $00, $00, $10
+006468r 1  01 00 00 10  .byte $01, $00, $00, $10
+00646Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
+006470r 1               
+006470r 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
+006474r 1  00 00 00 10  .byte $00, $00, $00, $10
+006478r 1  00 00 00 10  .byte $00, $00, $00, $10
+00647Cr 1  00 00 00 00  .byte $00, $00, $00, $00
 006480r 1  00 00 00 10  .byte $00, $00, $00, $10
 006484r 1  00 00 00 10  .byte $00, $00, $00, $10
-006488r 1  00 00 00 00  .byte $00, $00, $00, $00
-00648Cr 1               
-00648Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
-006490r 1  01 00 00 00  .byte $01, $00, $00, $00
-006494r 1  01 00 00 00  .byte $01, $00, $00, $00
-006498r 1  00 11 11 00  .byte $00, $11, $11, $00
-00649Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-0064A0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0064A4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0064A8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0064ACr 1               
-0064ACr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
-0064B0r 1  01 00 00 00  .byte $01, $00, $00, $00
-0064B4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0064B8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0064BCr 1  01 00 00 10  .byte $01, $00, $00, $10
-0064C0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0064C4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0064C8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0064CCr 1               
-0064CCr 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
-0064D0r 1  00 00 00 10  .byte $00, $00, $00, $10
-0064D4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0064D8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0064DCr 1  00 00 00 10  .byte $00, $00, $00, $10
+006488r 1  00 00 00 10  .byte $00, $00, $00, $10
+00648Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006490r 1               
+006490r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
+006494r 1  00 00 00 10  .byte $00, $00, $00, $10
+006498r 1  00 00 00 10  .byte $00, $00, $00, $10
+00649Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+0064A0r 1  01 00 00 00  .byte $01, $00, $00, $00
+0064A4r 1  01 00 00 00  .byte $01, $00, $00, $00
+0064A8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0064ACr 1  00 11 11 00  .byte $00, $11, $11, $00
+0064B0r 1               
+0064B0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
+0064B4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064B8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064BCr 1  00 11 11 00  .byte $00, $11, $11, $00
+0064C0r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064C4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064C8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064CCr 1  00 11 11 00  .byte $00, $11, $11, $00
+0064D0r 1               
+0064D0r 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
+0064D4r 1  01 00 00 10  .byte $01, $00, $00, $10
+0064D8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0064DCr 1  00 11 11 00  .byte $00, $11, $11, $00
 0064E0r 1  00 00 00 10  .byte $00, $00, $00, $10
 0064E4r 1  00 00 00 10  .byte $00, $00, $00, $10
-0064E8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0064ECr 1               
-0064ECr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
-0064F0r 1  01 00 00 10  .byte $01, $00, $00, $10
-0064F4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0064F8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0064FCr 1  01 00 00 10  .byte $01, $00, $00, $10
-006500r 1  01 00 00 10  .byte $01, $00, $00, $10
-006504r 1  01 00 00 10  .byte $01, $00, $00, $10
-006508r 1  00 11 11 00  .byte $00, $11, $11, $00
-00650Cr 1               
-00650Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
-006510r 1  01 00 00 10  .byte $01, $00, $00, $10
-006514r 1  01 00 00 10  .byte $01, $00, $00, $10
-006518r 1  00 11 11 00  .byte $00, $11, $11, $00
-00651Cr 1  00 00 00 10  .byte $00, $00, $00, $10
-006520r 1  00 00 00 10  .byte $00, $00, $00, $10
-006524r 1  00 00 00 10  .byte $00, $00, $00, $10
-006528r 1  00 11 11 00  .byte $00, $11, $11, $00
-00652Cr 1               
-00652Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
-006530r 1  01 00 00 10  .byte $01, $00, $00, $10
-006534r 1  01 00 00 10  .byte $01, $00, $00, $10
-006538r 1  00 11 11 00  .byte $00, $11, $11, $00
-00653Cr 1  01 00 00 10  .byte $01, $00, $00, $10
-006540r 1  01 00 00 10  .byte $01, $00, $00, $10
-006544r 1  01 00 00 10  .byte $01, $00, $00, $10
-006548r 1  00 00 00 00  .byte $00, $00, $00, $00
-00654Cr 1               
-00654Cr 1               
-00654Cr 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
-006550r 1  01 00 00 00  .byte $01, $00, $00, $00
-006554r 1  01 00 00 00  .byte $01, $00, $00, $00
-006558r 1  00 11 11 00  .byte $00, $11, $11, $00
-00655Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+0064E8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0064ECr 1  00 00 00 00  .byte $00, $00, $00, $00
+0064F0r 1               
+0064F0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
+0064F4r 1  01 00 00 00  .byte $01, $00, $00, $00
+0064F8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0064FCr 1  00 11 11 00  .byte $00, $11, $11, $00
+006500r 1  00 00 00 10  .byte $00, $00, $00, $10
+006504r 1  00 00 00 10  .byte $00, $00, $00, $10
+006508r 1  00 00 00 10  .byte $00, $00, $00, $10
+00650Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006510r 1               
+006510r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
+006514r 1  01 00 00 00  .byte $01, $00, $00, $00
+006518r 1  01 00 00 00  .byte $01, $00, $00, $00
+00651Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006520r 1  01 00 00 10  .byte $01, $00, $00, $10
+006524r 1  01 00 00 10  .byte $01, $00, $00, $10
+006528r 1  01 00 00 10  .byte $01, $00, $00, $10
+00652Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006530r 1               
+006530r 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
+006534r 1  00 00 00 10  .byte $00, $00, $00, $10
+006538r 1  00 00 00 10  .byte $00, $00, $00, $10
+00653Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006540r 1  00 00 00 10  .byte $00, $00, $00, $10
+006544r 1  00 00 00 10  .byte $00, $00, $00, $10
+006548r 1  00 00 00 10  .byte $00, $00, $00, $10
+00654Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006550r 1               
+006550r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
+006554r 1  01 00 00 10  .byte $01, $00, $00, $10
+006558r 1  01 00 00 10  .byte $01, $00, $00, $10
+00655Cr 1  00 11 11 00  .byte $00, $11, $11, $00
 006560r 1  01 00 00 10  .byte $01, $00, $00, $10
 006564r 1  01 00 00 10  .byte $01, $00, $00, $10
-006568r 1  00 11 11 00  .byte $00, $11, $11, $00
-00656Cr 1               
-00656Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
-006570r 1  01 00 00 00  .byte $01, $00, $00, $00
-006574r 1  01 00 00 00  .byte $01, $00, $00, $00
-006578r 1  00 00 00 00  .byte $00, $00, $00, $00
-00657Cr 1  01 00 00 00  .byte $01, $00, $00, $00
-006580r 1  01 00 00 00  .byte $01, $00, $00, $00
-006584r 1  01 00 00 00  .byte $01, $00, $00, $00
-006588r 1  00 11 11 00  .byte $00, $11, $11, $00
-00658Cr 1               
-00658Cr 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
-006590r 1  00 00 00 10  .byte $00, $00, $00, $10
-006594r 1  00 00 00 10  .byte $00, $00, $00, $10
-006598r 1  00 11 11 00  .byte $00, $11, $11, $00
-00659Cr 1  01 00 00 10  .byte $01, $00, $00, $10
+006568r 1  01 00 00 10  .byte $01, $00, $00, $10
+00656Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006570r 1               
+006570r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
+006574r 1  01 00 00 10  .byte $01, $00, $00, $10
+006578r 1  01 00 00 10  .byte $01, $00, $00, $10
+00657Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006580r 1  00 00 00 10  .byte $00, $00, $00, $10
+006584r 1  00 00 00 10  .byte $00, $00, $00, $10
+006588r 1  00 00 00 10  .byte $00, $00, $00, $10
+00658Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006590r 1               
+006590r 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
+006594r 1  01 00 00 10  .byte $01, $00, $00, $10
+006598r 1  01 00 00 10  .byte $01, $00, $00, $10
+00659Cr 1  00 11 11 00  .byte $00, $11, $11, $00
 0065A0r 1  01 00 00 10  .byte $01, $00, $00, $10
 0065A4r 1  01 00 00 10  .byte $01, $00, $00, $10
-0065A8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0065ACr 1               
-0065ACr 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
-0065B0r 1  01 00 00 00  .byte $01, $00, $00, $00
+0065A8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0065ACr 1  00 00 00 00  .byte $00, $00, $00, $00
+0065B0r 1               
+0065B0r 1               
+0065B0r 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
 0065B4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0065B8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0065BCr 1  01 00 00 00  .byte $01, $00, $00, $00
-0065C0r 1  01 00 00 00  .byte $01, $00, $00, $00
-0065C4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0065C8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0065CCr 1               
-0065CCr 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
-0065D0r 1  01 00 00 00  .byte $01, $00, $00, $00
+0065B8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0065BCr 1  00 11 11 00  .byte $00, $11, $11, $00
+0065C0r 1  01 00 00 10  .byte $01, $00, $00, $10
+0065C4r 1  01 00 00 10  .byte $01, $00, $00, $10
+0065C8r 1  01 00 00 10  .byte $01, $00, $00, $10
+0065CCr 1  00 11 11 00  .byte $00, $11, $11, $00
+0065D0r 1               
+0065D0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
 0065D4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0065D8r 1  00 11 11 00  .byte $00, $11, $11, $00
-0065DCr 1  01 00 00 00  .byte $01, $00, $00, $00
+0065D8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0065DCr 1  00 00 00 00  .byte $00, $00, $00, $00
 0065E0r 1  01 00 00 00  .byte $01, $00, $00, $00
 0065E4r 1  01 00 00 00  .byte $01, $00, $00, $00
-0065E8r 1  00 00 00 00  .byte $00, $00, $00, $00
-0065ECr 1               
-0065ECr 1               test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10
-0065ECr 1               ;     01   23   45   67   89   AB   CD   EF
-0065ECr 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
-0065F0r 1  CC C9 CC C0  
-0065F4r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
-0065F8r 1  99 9B 99 9C  
-0065FCr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
-006600r 1  BB BC BB B0  
-006604r 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
-006608r 1  CC C9 CC CC  
-00660Cr 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
-006610r 1  99 9B 99 90  
-006614r 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
-006618r 1  BB BC BB BC  
-00661Cr 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
-006620r 1  CC C9 CC C0  
-006624r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
-006628r 1  99 9B 99 9C  
-00662Cr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
-006630r 1  BB BC BB B0  
-006634r 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
-006638r 1  0C 09 0C 0C  
-00663Cr 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-006640r 1  09 90 09 90  
-006644r 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
-006648r 1  E9 9E E9 9E  
-00664Cr 1               
-00664Cr 1  EE EE EE EE  .repeat 13
-006650r 1  EE EE EE E0  
-006654r 1  0E EE 66 EE  
-0067ECr 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
-0067ECr 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
-0067ECr 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
-0067ECr 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
-0067ECr 1               .endrepeat
-0067ECr 1               
-0067ECr 1               test_border: ; 32
-0067ECr 1  0B 0B 0B 0B  .repeat 64
-0067F0r 1  B0 B0 B0 B0  
-0067F4r 1  0B 0B 0B 0B  
-0069ECr 1                  .res 4, $0B
-0069ECr 1                  .res 4, $B0
-0069ECr 1               .endrepeat
-0069ECr 1               
-0069ECr 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
-0069ECr 1               ;     01   23   45   67
-0069ECr 1  11 00 00 11  .byte $11, $00, $00, $11
-0069F0r 1  10 00 00 01  .byte $10, $00, $00, $01
-0069F4r 1  00 00 00 00  .byte $00, $00, $00, $00
-0069F8r 1  00 01 10 00  .byte $00, $01, $10, $00
-0069FCr 1  00 01 10 00  .byte $00, $01, $10, $00
-006A00r 1  00 00 00 00  .byte $00, $00, $00, $00
-006A04r 1  10 00 00 01  .byte $10, $00, $00, $01
-006A08r 1  11 00 00 11  .byte $11, $00, $00, $11
-006A0Cr 1               
-006A0Cr 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
-006A10r 1  00 00 01 00  .byte $00, $00, $01, $00
-006A14r 1  00 00 10 00  .byte $00, $00, $10, $00
-006A18r 1  00 01 00 00  .byte $00, $01, $00, $00
-006A1Cr 1  00 10 00 00  .byte $00, $10, $00, $00
-006A20r 1  01 00 00 00  .byte $01, $00, $00, $00
-006A24r 1  11 11 11 00  .byte $11, $11, $11, $00
-006A28r 1  00 00 00 00  .byte $00, $00, $00, $00
-006A2Cr 1               
-006A2Cr 1               ; cell position label sprite addr 50-57
-006A2Cr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006A30r 1  FF 00 FF 00  
-006A34r 1  00 FF 00 00  
-006A4Cr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006A50r 1  00 00 FF 00  
-006A54r 1  00 FF 00 00  
-006A6Cr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006A70r 1  FF 00 FF 00  
-006A74r 1  00 FF 00 00  
-006A8Cr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006A90r 1  00 00 FF 00  
-006A94r 1  00 FF 00 00  
-006AACr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006AB0r 1  FF 00 FF FF  
-006AB4r 1  00 FF FF 00  
-006ACCr 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-006ACCr 1               ;     XH                               $XL                            ___  __  YH                              YL
-006ACCr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-006AD0r 1  00 00 00 00  
-006AD4r 1  10 10 10 00  
-006AECr 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-006AF0r 1  00 00 00 00  
-006AF4r 1  01 00 10 00  
-006B0Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-006B10r 1  00 00 00 00  
-006B14r 1  10 10 11 10  
-006B2Cr 1               
-006B2Cr 1               ; world position label 58-65
-006B2Cr 1               ;     XH                 $XL                  ___  ___  YH                  YL
-006B2Cr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006B30r 1  FF 00 00 FF  
-006B34r 1  00 00 FF FF  
-006B4Cr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006B50r 1  FF 00 FF 00  
-006B54r 1  FF 00 FF 00  
-006B6Cr 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006B70r 1  FF 00 FF 00  
-006B74r 1  FF 00 FF FF  
-006B8Cr 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006B90r 1  FF 00 FF 00  
-006B94r 1  FF 00 FF 00  
-006BACr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-006BB0r 1  00 00 00 FF  
-006BB4r 1  00 00 FF 00  
-006BCCr 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-006BCCr 1               ;     XH                               $XL                            ___  __  YH                              YL
-006BCCr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-006BD0r 1  00 00 00 00  
-006BD4r 1  10 10 10 00  
-006BECr 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-006BF0r 1  00 00 00 00  
-006BF4r 1  01 00 10 00  
-006C0Cr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-006C10r 1  00 00 00 00  
-006C14r 1  10 10 11 10  
-006C2Cr 1               
-006C2Cr 1               ; directional cursor reminder... 16x16 - 66-69
-006C2Cr 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
-006C30r 1  01 11 11 00  
-006C34r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
-006C38r 1  01 00 00 00  
-006C3Cr 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
-006C40r 1  01 11 00 00  
-006C44r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
-006C48r 1  01 00 00 00  
-006C4Cr 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
-006C50r 1  01 11 11 00  
-006C54r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-006C58r 1  00 00 00 00  
-006C5Cr 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
-006C60r 1  00 01 11 00  
-006C64r 1  10 00 10 01  .byte $10, $00, $10, $01, $10, $01, $00, $01
-006C68r 1  10 01 00 01  
-006C6Cr 1  11 11 10 01  .byte $11, $11, $10, $01, $10, $01, $00, $01
-006C70r 1  10 01 00 01  
-006C74r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
-006C78r 1  00 01 11 10  
-006C7Cr 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-006C80r 1  00 00 00 00  
-006C84r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-006C88r 1  01 00 01 00  
-006C8Cr 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
-006C90r 1  00 10 10 00  
-006C94r 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
-006C98r 1  00 01 00 00  
-006C9Cr 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
-006CA0r 1  00 10 10 00  
-006CA4r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-006CA8r 1  01 00 01 00  
-006CABr 1               
+0065E8r 1  01 00 00 00  .byte $01, $00, $00, $00
+0065ECr 1  00 11 11 00  .byte $00, $11, $11, $00
+0065F0r 1               
+0065F0r 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
+0065F4r 1  00 00 00 10  .byte $00, $00, $00, $10
+0065F8r 1  00 00 00 10  .byte $00, $00, $00, $10
+0065FCr 1  00 11 11 00  .byte $00, $11, $11, $00
+006600r 1  01 00 00 10  .byte $01, $00, $00, $10
+006604r 1  01 00 00 10  .byte $01, $00, $00, $10
+006608r 1  01 00 00 10  .byte $01, $00, $00, $10
+00660Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006610r 1               
+006610r 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
+006614r 1  01 00 00 00  .byte $01, $00, $00, $00
+006618r 1  01 00 00 00  .byte $01, $00, $00, $00
+00661Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006620r 1  01 00 00 00  .byte $01, $00, $00, $00
+006624r 1  01 00 00 00  .byte $01, $00, $00, $00
+006628r 1  01 00 00 00  .byte $01, $00, $00, $00
+00662Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006630r 1               
+006630r 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
+006634r 1  01 00 00 00  .byte $01, $00, $00, $00
+006638r 1  01 00 00 00  .byte $01, $00, $00, $00
+00663Cr 1  00 11 11 00  .byte $00, $11, $11, $00
+006640r 1  01 00 00 00  .byte $01, $00, $00, $00
+006644r 1  01 00 00 00  .byte $01, $00, $00, $00
+006648r 1  01 00 00 00  .byte $01, $00, $00, $00
+00664Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006650r 1               
+006650r 1               test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10
+006650r 1               ;     01   23   45   67   89   AB   CD   EF
+006650r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
+006654r 1  CC C9 CC C0  
+006658r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
+00665Cr 1  99 9B 99 9C  
+006660r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
+006664r 1  BB BC BB B0  
+006668r 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
+00666Cr 1  CC C9 CC CC  
+006670r 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
+006674r 1  99 9B 99 90  
+006678r 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
+00667Cr 1  BB BC BB BC  
+006680r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
+006684r 1  CC C9 CC C0  
+006688r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
+00668Cr 1  99 9B 99 9C  
+006690r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
+006694r 1  BB BC BB B0  
+006698r 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
+00669Cr 1  0C 09 0C 0C  
+0066A0r 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
+0066A4r 1  09 90 09 90  
+0066A8r 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
+0066ACr 1  E9 9E E9 9E  
+0066B0r 1               
+0066B0r 1  EE EE EE EE  .repeat 13
+0066B4r 1  EE EE EE E0  
+0066B8r 1  0E EE 66 EE  
+006850r 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
+006850r 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
+006850r 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
+006850r 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
+006850r 1               .endrepeat
+006850r 1               
+006850r 1               test_border: ; 32
+006850r 1  0B 0B 0B 0B  .repeat 64
+006854r 1  B0 B0 B0 B0  
+006858r 1  0B 0B 0B 0B  
+006A50r 1                  .res 4, $0B
+006A50r 1                  .res 4, $B0
+006A50r 1               .endrepeat
+006A50r 1               
+006A50r 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
+006A50r 1               ;     01   23   45   67
+006A50r 1  11 00 00 11  .byte $11, $00, $00, $11
+006A54r 1  10 00 00 01  .byte $10, $00, $00, $01
+006A58r 1  00 00 00 00  .byte $00, $00, $00, $00
+006A5Cr 1  00 01 10 00  .byte $00, $01, $10, $00
+006A60r 1  00 01 10 00  .byte $00, $01, $10, $00
+006A64r 1  00 00 00 00  .byte $00, $00, $00, $00
+006A68r 1  10 00 00 01  .byte $10, $00, $00, $01
+006A6Cr 1  11 00 00 11  .byte $11, $00, $00, $11
+006A70r 1               
+006A70r 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
+006A74r 1  00 00 01 00  .byte $00, $00, $01, $00
+006A78r 1  00 00 10 00  .byte $00, $00, $10, $00
+006A7Cr 1  00 01 00 00  .byte $00, $01, $00, $00
+006A80r 1  00 10 00 00  .byte $00, $10, $00, $00
+006A84r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A88r 1  11 11 11 00  .byte $11, $11, $11, $00
+006A8Cr 1  00 00 00 00  .byte $00, $00, $00, $00
+006A90r 1               
+006A90r 1               ; cell position label sprite addr 50-57
+006A90r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006A94r 1  FF 00 FF 00  
+006A98r 1  00 FF 00 00  
+006AB0r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006AB4r 1  00 00 FF 00  
+006AB8r 1  00 FF 00 00  
+006AD0r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006AD4r 1  FF 00 FF 00  
+006AD8r 1  00 FF 00 00  
+006AF0r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006AF4r 1  00 00 FF 00  
+006AF8r 1  00 FF 00 00  
+006B10r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006B14r 1  FF 00 FF FF  
+006B18r 1  00 FF FF 00  
+006B30r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+006B30r 1               ;     XH                               $XL                            ___  __  YH                              YL
+006B30r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+006B34r 1  00 00 00 00  
+006B38r 1  10 10 10 00  
+006B50r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+006B54r 1  00 00 00 00  
+006B58r 1  01 00 10 00  
+006B70r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+006B74r 1  00 00 00 00  
+006B78r 1  10 10 11 10  
+006B90r 1               
+006B90r 1               ; world position label 58-65
+006B90r 1               ;     XH                 $XL                  ___  ___  YH                  YL
+006B90r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006B94r 1  FF 00 00 FF  
+006B98r 1  00 00 FF FF  
+006BB0r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006BB4r 1  FF 00 FF 00  
+006BB8r 1  FF 00 FF 00  
+006BD0r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006BD4r 1  FF 00 FF 00  
+006BD8r 1  FF 00 FF FF  
+006BF0r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006BF4r 1  FF 00 FF 00  
+006BF8r 1  FF 00 FF 00  
+006C10r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006C14r 1  00 00 00 FF  
+006C18r 1  00 00 FF 00  
+006C30r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+006C30r 1               ;     XH                               $XL                            ___  __  YH                              YL
+006C30r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+006C34r 1  00 00 00 00  
+006C38r 1  10 10 10 00  
+006C50r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+006C54r 1  00 00 00 00  
+006C58r 1  01 00 10 00  
+006C70r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+006C74r 1  00 00 00 00  
+006C78r 1  10 10 11 10  
+006C90r 1               
+006C90r 1               ; directional cursor reminder... 16x16 - 66-69
+006C90r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
+006C94r 1  01 11 11 00  
+006C98r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
+006C9Cr 1  01 00 00 00  
+006CA0r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
+006CA4r 1  01 11 00 00  
+006CA8r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
+006CACr 1  01 00 00 00  
+006CB0r 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
+006CB4r 1  01 11 11 00  
+006CB8r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+006CBCr 1  00 00 00 00  
+006CC0r 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
+006CC4r 1  00 01 11 00  
+006CC8r 1  10 00 10 01  .byte $10, $00, $10, $01, $10, $01, $00, $01
+006CCCr 1  10 01 00 01  
+006CD0r 1  11 11 10 01  .byte $11, $11, $10, $01, $10, $01, $00, $01
+006CD4r 1  10 01 00 01  
+006CD8r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
+006CDCr 1  00 01 11 10  
+006CE0r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+006CE4r 1  00 00 00 00  
+006CE8r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+006CECr 1  01 00 01 00  
+006CF0r 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
+006CF4r 1  00 10 10 00  
+006CF8r 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
+006CFCr 1  00 01 00 00  
+006D00r 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
+006D04r 1  00 10 10 00  
+006D08r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+006D0Cr 1  01 00 01 00  
+006D0Fr 1               

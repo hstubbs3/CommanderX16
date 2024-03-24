@@ -657,7 +657,7 @@ start:
   BNE :-
   LDX #101  ;  write A to bufferB initially as debug / flashing display when swapped.. 
   ;LDA #255
-: STA VERA_data0
+: STZ VERA_data0
   INY 
   BNE :-
   DEX 
@@ -2283,23 +2283,28 @@ DOLB_BUFFER_HIGH_BYTE = ZP_PTR+2
 DOLB_CALC_DEST_LOW = ZP_PTR+3
 DOLB_CALC_DEST_HIGH = ZP_PTR+4
 DOLB_CALC_SCRATCH = ZP_PTR+5
+DOLB_STOP_BOTTOM = ZP_PTR+6
+
    LDA #4  ;    DCSEL 2 with address select 0.. to be used as destination.. 
    STA VERA_ctrl 
-   LDA #64 
+   LDA #96 
    STA FX_CTRL ;     cache write enable, cache fill and other stuff disabled
    STZ FX_MULT 
-   STA FX_CACHE_L ; zero out the cache bytes.. 
+   STZ FX_CACHE_L ; zero out the cache bytes.. 
    STZ FX_CACHE_M
    STZ FX_CACHE_H 
-   STA FX_CACHE_U 
+   STZ FX_CACHE_U 
 
    STZ VERA_addr_low 
    LDA CURRENT_BITMAP_BUFFER
    BEQ :+
    LDA #>VRAM_BITMAP_LAYERA
+   LDX #>VRAM_BITMAP_LAYERB
    BRA :++
  : LDA #>VRAM_BITMAP_LAYERB
+   LDX #>VRAM_TEXT_SCREEN  
  : STA DOLB_BUFFER_HIGH_BYTE
+   STX DOLB_STOP_BOTTOM 
    STA VERA_addr_high
    LDA #$31 ; 4 at a time 
    STA VERA_addr_bank   
@@ -2345,9 +2350,8 @@ DOLB_CALC_SCRATCH = ZP_PTR+5
    DEX 
    BNE :- ; 85 * 120 = 10,200 .. + 119 * 14 =1,666 .. 11,866 cycles to clear entire screen.. ok
 
-   STZ FX_CTRL ;     clear the cache writing for now 
-   STZ VERA_ctrl  ;     switch back to regular mode for now..
-
+    LDA #$E0 
+   STA FX_CTRL 
 
    STZ DOLB_ZTRACKER 
    LDA #>OBJECT_LIST_Z_START_POINTERS  
@@ -2355,7 +2359,8 @@ DOLB_CALC_SCRATCH = ZP_PTR+5
   @NEXT_Z: ; Z=0 is invalid...
       DEC DOLB_ZTRACKER
       BNE @Z_LOOP
-      STZ VERA_ctrl ; reset VERA_CTRl ..
+   STZ FX_CTRL ;     clear the cache writing for now 
+   STZ VERA_ctrl  ;     switch back to regular mode for now..
       RTS
   @Z_LOOP:
       LDA (DOLB_ZTRACKER) ; get our first victim
@@ -2375,8 +2380,9 @@ DOLB_CALC_SCRATCH = ZP_PTR+5
          ; we're inside screen.. later will need to check if above top rather than below bottom..
 
         ; X in a, Y in Y 
-         STZ VERA_ctrl  
+          
          LSR ; 16 colors, so cut in half to get byte reference ; 
+;         AND #$FC ; round down by 4
          STA DOLB_CALC_SCRATCH  
   ;       STZ DOLB_CALC_DEST_LOW
          TYA 
@@ -2413,12 +2419,54 @@ DOLB_CALC_SCRATCH = ZP_PTR+5
          LDA DOLB_CALC_DEST_HIGH 
          ADC DOLB_BUFFER_HIGH_BYTE  
          STA VERA_addr_high
-         LDA #$11
+         LDA #$31
          STA VERA_addr_bank   
-         STA VERA_data0             ;     we're just gonna stick some pixels here.. 
+         ; destination set. . now for the source.. 
+         INC VERA_ctrl  ;     set to 5 to select the thing.. 
+         LDA OBJECT_LIST_BYTE1_MODE,X
+         STA DOLB_CALC_SCRATCH            ;      MMMMSSSS
+         LDA OBJECT_LIST_BYTE0_ADDRLOW,X
+         ASL 
+         ROL DOLB_CALC_SCRATCH            ;      MMMSSSS.
+         ASL 
+         ROL DOLB_CALC_SCRATCH            ;      MMSSSS..
+         ASL 
+         ROL DOLB_CALC_SCRATCH            ;      MSSSS...
+         ASL 
+         ROL DOLB_CALC_SCRATCH            ;      SSSS....
+         ASL 
+         ROL DOLB_CALC_SCRATCH            ;    S SSS.....
+         STA VERA_addr_low  ;    low address
+         LDA #$08 
+         ROL ; #$1+bank
+         STA VERA_addr_bank   
+         LDA DOLB_CALC_SCRATCH   
+         STA VERA_addr_high   ;     source set? 
+         DEC VERA_ctrl   
+         LDY #12              ;     copy 16 lines for now..  
+       : LDA VERA_data1       ;     read 4 bytes / 8 px
+         LDA VERA_data1
+         LDA VERA_data1
+         LDA VERA_data1
+         STZ VERA_data0       ;     trigger cache write
+         
+         LDA VERA_data1       ;     read 4 bytes / 8 px
+         LDA VERA_data1
+         LDA VERA_data1
+         LDA VERA_data1
+         STZ VERA_data0       ;     trigger cache write
 
-
-
+         LDA VERA_addr_low 
+         ADC #160-8
+         STA VERA_addr_low 
+         LDA VERA_addr_high   
+         ADC #0
+         CMP DOLB_STOP_BOTTOM  
+         BCS :+
+         STA VERA_addr_high       
+         DEY 
+         BNE :-
+      :
          LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next 
          JMP @OBJ_LOOP
 

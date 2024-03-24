@@ -333,6 +333,10 @@ BUG 	fix ziggy zaggy - appears error is due to check against screen out top..
 1330 	instrumented so it keeps bufferB to sort it out. .
 1415 	OK.. so far .. so good.. now to commit this bit 
 	COMMIT
+1530 	OK things mostly working for the moment, just need to smooth out details.. 
+		https://youtu.be/dMr8j1CRTt8
+	COMMIT
+	
 
 
 
