@@ -302,7 +302,11 @@ TODO	setup a 'debug mode' - make the screen 256x192 with the upper left 160x120 
 0900? 	
 1325 	last couple days had been chatting on the forum about color quantization and setting video modes. 
 
+1545 	OK giving up on the dithering stuff. will have to revisit this some other time.. 
 
+2010 	OMG I got dithering working, BW working, and 2/4 color sorta... lol 
+	COMMIT 
+	
 
 TOOD 	add dithering to the color quantization stuff
 TODO 	add 1 and 2 bit color mode outputs

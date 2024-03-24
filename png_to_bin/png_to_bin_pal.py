@@ -8,7 +8,9 @@ config = {
 	'pal_mode':256,
 	'pal_offset':0,
 	'do_pal': False,
-	'use_pal_file':'gimp_cx16pal.txt'
+	'use_pal_file':'gimp_cx16pal.txt',
+	'dither': False,
+	'bw': False
 }
 
 hexdigits = {'0':0,'1':2,'2':3,'3':4,'4':5,'5':5,'6':6,'7':7,'8':8,'9':9,'a':10,'b':11,'c':12,'d':13,'e':14,'f':15}
@@ -26,6 +28,10 @@ while x < len(sys.argv):
 	if sys.argv[x] in ('2','4','16','256'):
 		config['pal_mode'] = int(sys.argv[x])
 		print(f"palette mode set to : {config['pal_mode']} bpp")
+	elif sys.argv[x] == '-bw':
+		config['bw'] = True
+	elif sys.argv[x] == '-d':
+		config['dither'] = True
 	elif sys.argv[x] == '-p':
 		x+=1
 		config['use_pal_file']=sys.argv[x]
@@ -54,6 +60,35 @@ else:
 
 print(f"obtained {len(image_rows)} rows of {len(image_rows[0])} cols")
 
+if config['dither']:
+	n=-1
+	m=1
+	for y,row in enumerate(image_rows):
+		noisy = y % 2
+		for x,c in enumerate(row):
+			n+=1
+			m-=1
+			if c:
+				(r,g,b) = c
+				noise = ( noisy + ( x % 2 ) + (n % 3) + (m % 7))  - 5
+				r = max(0,min(255,r+noise))
+				g = max(0,min(255,g+noise))
+				b = max(0,min(255,b+noise))
+				image_rows[y][x] = (r,g,b)
+
+if config['bw']:
+	n=-1
+	for y,row in enumerate(image_rows):
+		noisy = y % 2
+		for x,c in enumerate(row):
+			n+=1
+			if c:
+				red,green,blue=c
+				p = max(0,min(255,int(sqrt( 0.299*(red)*(red) + 0.587*(green)*(green) + 0.114*(blue)*(blue) )) + 16*(noisy+ n % 1) - 16))
+				image_rows[y][x] = (p,p,p)
+
+
+
 def calc_hsp(red,green,blue):
 			p = int(sqrt( 0.299*(red)*(red) + 0.587*(green)*(green) + 0.114*(blue)*(blue) ))
 			maxi = max(red,green,blue)
@@ -76,6 +111,8 @@ palette_colors = {}
 true_colors = {}
 if config['do_pal']:
 	num_pal_colors = config['pal_mode']-1
+	if num_pal_colors == 1 : num_pal_colors	= 2
+	elif num_pal_colors	== 3 : num_pal_colors = 4
 	print(f"generating palette of {num_pal_colors} colors")
 	for i,c in enumerate([c for r in image_rows for c in r if c]) :
 		if not c : continue
@@ -112,6 +149,7 @@ if config['do_pal']:
 		print(f"{i} : {c} : {len(palette_colors[c])}")
 	print(f"starting from {len(palette_colors)} wanted {num_pal_colors} ....")
 	times_round=0
+	max_distro = int(1.5*len(true_colors)/float(max(1,num_pal_colors-1)))	
 	while len(palette_colors) > num_pal_colors:
 		times_round+=1
 		print(f"{times_round} : oops... need to quantize palette.... have {len(palette_colors)} wanted {num_pal_colors}")
@@ -134,7 +172,7 @@ if config['do_pal']:
 						radius = max(radius,distance)
 			print(f"{times_round} : {i} : palette color : {c} : has centroid at {centroid} and radius : {radius} covering {len(pt)}")
 			palette_colors_sort.append((c_p,c_h,c_s,c,radius,False))
-		palette_colors_sort.sort()
+		palette_colors_sort.sort(key=lambda x: [len(palette_colors[x[3]]),x[0],x[1],x[2]][times_round % 4])
 		max_radius = times_round
 		print(f"max radius set to {max_radius}")
 		old_palette = palette_colors
@@ -143,18 +181,20 @@ if config['do_pal']:
 			if fit :
 					print(f"{times_round} : {i} : already combined...")
 					continue
+			num_spots = max_distro	- len(old_palette[c]) 
+			best_distance = max_radius #max(max_radius,radius)
 			combine_with = False
-			best_distance = 500000
-			if radius < max_radius	: 
-				for j,(p2,h2,s2,c2,radius2,f2) in enumerate(palette_colors_sort[i+1:],i+1):
+			
+			for j,(p2,h2,s2,c2,radius2,f2) in enumerate(palette_colors_sort[i+1:],i+1):
 						if f2 : continue
+						if num_spots < len(old_palette[c2]) : continue
 						dh = min(h-h2,256-h2-h) if h >= h2 else min(h2-h,256-h-h2)
-						distance = radius+radius2+int(sqrt((dh)*(dh) + (s2-s)*(s2-s) + (p2-p)*(p2-p)))
-						#if distance > max_radius : break 
-						if distance > best_distance : continue
-						combine_with = j
-						best_distance = distance
-						print(f"{times_round} : {i} {j} : combine for possible radius {best_distance}")
+						distance = int(sqrt((dh)*(dh) + (s2-s)*(s2-s) + (p2-p)*(p2-p)))
+						#if distance > max_radius + min(radius,radius2) : continue
+						if distance < best_distance :
+								combine_with = j
+								best_distance = distance
+								print(f"{times_round} : {i} {j} : combine for possible radius {best_distance}")
 
 			if combine_with:
 						print(f"{times_round} : {i} got combine_with = {combine_with}")
@@ -215,11 +255,13 @@ if config['do_pal']:
 		for i,(c,pt) in enumerate(palette_colors.items(),1):
 				print(f"{i} : {c} : {len(pt)}")
 
-	pal_out = [(0,0,0)]
 	true_colors = {}
+	pal_out = []
 	print(f"saving palette file {config['use_pal_file']}....")
 	with open(config['use_pal_file'],'wb+') as OUT:
-		OUT.write(bytes([0,0]))
+		if config['pal_mode'] >= 16 :	
+				pal_out = [(0,0,0)]
+				OUT.write(bytes([0,0]))
 		for i,(c,pt) in enumerate(palette_colors.items(),1):
 			(r,g,b,h,s,p) = c
 			OUT.write(bytes([(g*16+b),r]))
@@ -248,3 +290,23 @@ elif config['pal_mode'] == 16 :
 						OUT.write(bytes([pc]))
 						if i % width == 0 : print('.',end="")
 				print('\n\n')
+elif config['pal_mode'] == 4 :
+		print(f"converting image to 2bit palette and writing to {sys.argv[2]}")
+		with open(sys.argv[2],'wb+') as OUT:
+				out_array = [c for r in image_rows for c in r if c]
+				for i,(c1,c2,c3,c4) in enumerate(zip(out_array[::4],out_array[1::4],out_array[2::4],out_array[3::4]),1) :
+						if not c : continue
+						pc = true_colors[c1]*64 +true_colors[c2]*16 +true_colors[c3]*4 + true_colors[c4] - 85
+						#print(f"{i}:{c}:{pc}  ",end="")
+						OUT.write(bytes([pc]))
+						if i % width == 0 : print('.',end="")
+elif config['pal_mode'] == 2 :
+		print(f"converting image to 2bit palette and writing to {sys.argv[2]}")
+		with open(sys.argv[2],'wb+') as OUT:
+				out_array = [c for r in image_rows for c in r if c]
+				for i,(c1,c2,c3,c4,c5,c6,c7,c8) in enumerate(zip(out_array[::8],out_array[1::8],out_array[2::8],out_array[3::8],out_array[4::8],out_array[5::8],out_array[6::8],out_array[7::8]),1) :
+						if not c : continue
+						pc = true_colors[c1]*128 +true_colors[c2]*64 +true_colors[c3]*32 + true_colors[c4]*16 + true_colors[c5]*8 + true_colors[c6]*4 + true_colors[c7]*2 + true_colors[c8] -255
+						#print(f"{i}:{c}:{pc}  ",end="")
+						OUT.write(bytes([pc]))
+						if i % width == 0 : print('.',end="")
