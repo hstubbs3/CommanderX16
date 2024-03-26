@@ -355,6 +355,10 @@ TODO 	set go/clear flags for buffer A / buffer B
 		should there be some border? would that help at all?? 
 		maybe just restrict to "has to be within screen limits"- as in 0 <= x <= screen width -16 ... 
 		well, at least world tiles for this.. maybe later.. but definitely is room for some optimizations..
+0820 	And its borked for some reason.. hmmm .. totally thrashed.. eh... it needed rewrite .. 
+1010 	OK cache align working but need to redo to get neg x/y and actually to size of things..
+	COMMIT
+	
 
 TODO 	sprite base address lookup tables ? or is there faster way? 
 
