@@ -336,9 +336,41 @@ BUG 	fix ziggy zaggy - appears error is due to check against screen out top..
 1530 	OK things mostly working for the moment, just need to smooth out details.. 
 		https://youtu.be/dMr8j1CRTt8
 	COMMIT
+
+2024/03/25
+0630 	oops to write cache values need to actually set DCSEL=6 .. clearning screen working
+0800 	making table for doing the line calcs
+0930 	ran to work.. was bugged out having seizures
+1830 	ok.. let's try that again.. 
+TODO 	set go/clear flags for buffer A / buffer B 
+	DONE
+2115 	Also neg X and neg Y working kinda ... seems most things solved for ..
+		software-sprites only / full 64 tall = 60/7 = ~8.57 fps ... 
+		with hardware sprites worse case is 20 fps currently.. 
+		Really should try to get that back to a solid 30 fps before continuing.. 
+	COMMIT
+
+2024/03/26
+0650 	OK.. where to start today? 
+		should there be some border? would that help at all?? 
+		maybe just restrict to "has to be within screen limits"- as in 0 <= x <= screen width -16 ... 
+		well, at least world tiles for this.. maybe later.. but definitely is room for some optimizations..
+
+TODO 	sprite base address lookup tables ? or is there faster way? 
+
+TODO 	non-aligned sprites.. 
+
+
+
+TODO 	SPAN buffer thing / avoid overdraw
+TODO 	implement faster maths for the buffer writing.. 
 	
 
 
+
+
+TODO 	alternate assets for off-by-one pixel cache writing?
+TODO 	optimize object list - use classes, store less data within each object..
 
 
 
