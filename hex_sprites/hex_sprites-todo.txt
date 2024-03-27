@@ -358,29 +358,29 @@ TODO 	set go/clear flags for buffer A / buffer B
 0820 	And its borked for some reason.. hmmm .. totally thrashed.. eh... it needed rewrite .. 
 1010 	OK cache align working but need to redo to get neg x/y and actually to size of things..
 	COMMIT
-	
+1015 	OOPS.. not INC VERA_ADDR_LOW .. need to clear carry .. . hehe
 
+2024/03/27
+0625 	OK need to clean house a little.. these are already done.. 
 TODO 	sprite base address lookup tables ? or is there faster way? 
-
+	DONE
 TODO 	non-aligned sprites.. 
-
-
+	DONE
+0630 	
+TODO 	sprites with X<0
+	DONE
+0640 	
+TODO 	sprites with Y<0
+	DONE
+TODO 	limit sprites to bottom of screen
+	DONE
+0740 	OK, basically working.. woot! 
+	COMMIT
 
 TODO 	SPAN buffer thing / avoid overdraw
 TODO 	implement faster maths for the buffer writing.. 
-	
-
-
-
-
 TODO 	alternate assets for off-by-one pixel cache writing?
 TODO 	optimize object list - use classes, store less data within each object..
-
-
-
-
-
-
 TODO 	blitting extra objects to buffer
 
 BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 

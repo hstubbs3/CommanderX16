@@ -2450,13 +2450,53 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       TAX      ;     get that pointer into X so we can do stuffs...
       ; OK so now reference OBJECT_LIST_BYTE*,X for whatever we're drawing.. and Y is free for whatever..
       ; first things first, let's figure out where in the buffer to draw.. starting with X location.. 
+      LDY OBJECT_LIST_BYTE3_Y,X  
       LDA OBJECT_LIST_BYTE2_X,X  ;  
-      CMP #160
-      BCS @NEXT_OBJECT ; check  outside screen.. left/right...
-      LSR ; because 16 color, byte address is X>>1 
-      LDY OBJECT_LIST_BYTE3_Y,X  ;  ok cool
+      LSR
+      CMP #80
+      BCC @X_POSITIVE ; check  outside screen.. left/right...
+      CLC
+      ADC #32 ; to <128, then to <160 of the previous Y ?
+      DEY
+   @X_POSITIVE:
       CPY #120 ; check inside screen.. 
-      BCS @NEXT_OBJECT ;   for now, just skip if outside.. 
+      BCC @Y_POSITIVE ;   for now, just skip if outside.. 
+      CPY #193
+      BCC @NEXT_OBJECT
+      STA VERA_addr_low
+      LDA (DOLB_Y_CALC_POINTER)
+      STA VERA_addr_high
+      INC VERA_ctrl
+      TYA 
+      EOR #$FF 
+      INC A 
+      ASL ; x2 bytes 
+      ASL ; x4 bytes
+      ASL ; x8 bytes - is offset into sprite address start.. 
+      STA DOLB_CALC_SCRATCH
+      LDY OBJECT_LIST_BYTE1_MODE
+
+      LDA LOW_NIBBLE_HIGH,Y 
+      ASL 
+      TAY 
+      LDA #$08
+      ROL
+      STA VERA_addr_bank
+      TYA 
+      LDY OBJECT_LIST_BYTE0_ADDRLOW,X 
+      ORA SPRITE_ADDRESS_LOW_HIGH,Y
+      STA VERA_addr_high
+      CLC
+      LDA SPRITE_ADDRESS_LOW_LOW,Y 
+      ADC DOLB_CALC_SCRATCH
+      STA VERA_addr_low
+
+      LDA OBJECT_LIST_BYTE3_Y,X
+      ADC #64 ; push positive.. 
+      TAY 
+      BRA @Y_WAS_NEGATIVE
+
+   @Y_POSITIVE:
       ADC BITMAP_OFFSETS_LOW,Y ; note how this works because carry isn't set.. ?
       STA VERA_addr_low
       LDA (DOLB_Y_CALC_POINTER),Y ; now do the high for the dest..
@@ -2476,8 +2516,16 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       STA VERA_addr_high
       LDA SPRITE_ADDRESS_LOW_LOW,Y 
       STA VERA_addr_low
+
+      SEC 
+      LDA #120
+      SBC OBJECT_LIST_BYTE3_Y,X ;   want to check if screenH-Y < 64
+      CMP #65
+      BCC :+
+      LDA #64
+    : TAY
    @CHECK_ALIGN:
-      LDY #8
+   @Y_WAS_NEGATIVE:
       DEC VERA_ctrl  ;  regain dest address
       LDA VERA_addr_low
       AND #$03
@@ -2515,7 +2563,7 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       CMP #8   ;  is either 4,8,12
       BCC @DO_ONE_RIGHT
       BEQ @DO_TWO_RIGHT
-      INC VERA_addr_low
+      CLC
       JMP @DO_THREE_RIGHT
     :
       LDA VERA_addr_low
@@ -2597,240 +2645,6 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       DEY 
       BNE :-
       JMP @NEXT_OBJECT
-
-   @OBJ_LOOP:
-         tax
-         CLC 
-         LDA OBJECT_LIST_BYTE2_X,x ;      4     4     grab X 
-         CMP #160 ;     2     6
-         BCC @X_IS_POS     ;     we're off screen left/right somewhere if BCS
-         ; ok we have a neg number of the form X + 256 .. but its really should be X + 320 as a coordinate..
-         ; except there's only 160 bytes ... so we're at this Y - this many bytes ..
-         ; we could _add_ to go to neg.. but carry is set.. if we subtract low is bad right? 
-         ;DEC OBJECT_LIST_BYTE3_Y,x
-         CMP #192
-         BCC @NEXT
-         LSR  ; > 192 to > 96 ... 
-         CLC
-         ADC #32
-         LDY OBJECT_LIST_BYTE3_Y,x ; I think that works..
-         DEY
-         BRA @X_WAS_NEG
-      @NEXT:
-         BNE @OBJ_LOOP  
-       ;  BRA @NEXT_Z 
-      @X_IS_POS:
-         LSR ; 16 colors, so cut in half to get byte reference ; 
-         LDY OBJECT_LIST_BYTE3_Y,x ; I think that works.. 
-      @X_WAS_NEG:
-         CPY #120 
-         BCC @Y_IS_POS ; checking if inside screen.. for now we'll bug out if BCS set here.. 
-         CPY #192
-         BCC @NEXT
-      ; Y is negative here 
-         STA VERA_addr_low             ;  y negative, we want to draw screen starting at y=0.. need to move down sprite..
-         LDA (DOLB_Y_CALC_POINTER)
-         STA VERA_addr_high
-         INC VERA_ctrl              ;  Y is 256 + our neg amount... we want that neg amount x8 bytes per line..
-         TYA 
-         EOR #$FF
-         ADC #0   ;  negated .. amount of sprite to skip.. up to 63! 
-         ASL ; <127
-         ASL ; <255
-         ASl ; <511 
-         STA DOLB_Y_CALC_POINTER   ;  num bytes from start of sprite.. 
-         LDA #0
-         ROL
-         STA DOLB_Y_CALC_POINTERH
-
-         LDY OBJECT_LIST_BYTE1_MODE,X     ;  4  4
-         LDA LOW_NIBBLE_HIGH,Y            ;  4  8  ; | 4 addr HIGH | ....    
-         ASL                              ;  2  10 ; C AAA .....
-         LDY OBJECT_LIST_BYTE0_ADDRLOW,X  ;  4  14
-         ORA SPRITE_ADDRESS_LOW_HIGH,Y    ;  4  18
-         STA VERA_addr_high               ;  4  22
-         LDA #$08                         ;  2  24
-         ROL                              ;  2  26
-         STA VERA_addr_bank               ;  4  30
-         LDA SPRITE_ADDRESS_LOW_LOW,Y     ;  4  34
-         ADC DOLB_Y_CALC_POINTER
-         STA VERA_addr_low                ;  4  38
-         LDA DOLB_Y_CALC_POINTERH
-         ADC VERA_addr_high
-         STA VERA_addr_high
-         LDA #64
-         ADC OBJECT_LIST_BYTE3_Y,X        ;  is neg so this will pop us correctly positive... 
-         TAY 
-         BRA @DO_SPRITE_LINES   ;  and we jump into the loop there.. 
-      @Y_IS_POS: 
-         CLC
-         ADC BITMAP_OFFSETS_LOW,y  ; low part 
-         STA VERA_addr_low
-         LDA (DOLB_Y_CALC_POINTER),y ; fetch the high byte
-         ADC #0
-         STA VERA_addr_high   ;  yep... that's faster... 
-
-         ; destination set. . now for the source.. 
-         INC VERA_ctrl  ;     set to 5 to select the thing.. 
-         LDY OBJECT_LIST_BYTE1_MODE,X     ;  4  4
-         LDA LOW_NIBBLE_HIGH,Y            ;  4  8  ; | 4 addr HIGH | ....    
-         ASL                              ;  2  10 ; C AAA .....
-         LDY OBJECT_LIST_BYTE0_ADDRLOW,X  ;  4  14
-         ORA SPRITE_ADDRESS_LOW_HIGH,Y    ;  4  18
-         STA VERA_addr_high               ;  4  22
-         LDA #$08                         ;  2  24
-         ROL                              ;  2  26
-         STA VERA_addr_bank               ;  4  30
-         LDA SPRITE_ADDRESS_LOW_LOW,Y     ;  4  34
-         STA VERA_addr_low                ;  4  38
-      ; here's start of loopy stuff.. 
-      ;  how many lines to bottom of screen?
-         LDY #64              ;     copy 16 lines for now..  
-         LDA OBJECT_LIST_BYTE3_Y,X 
-         SBC #55 ;  ADD 64 subtract 120 ... +64 - 120 = -56 .. sbc 55 because we don't have carry set
-         BCC @DO_SPRITE_LINES    ;  if that was Negative  then entire sprite is on screen..
-          ;  so say y was originally like 100... so 20 lines should show.. we did 100-56=44 .. to get 20 lines sub 24..?
-          ; 119 = have 63 want 1 ... hmm.. 44 is $2C %0010 1100 .. we want 20 - %0001 0100 .. .
-         EOR #63  ;  EOR %0011 1111    63 becomes zero, 44 becomes %0001 0011 -> 19 ... 
-         ADC #0   ;  carry set from before
-         TAY ; and that's how many lines to do.. 
-
-      @DO_SPRITE_LINES:
-         DEC VERA_ctrl   
-         LDA #$31      ;   addr0 bank never changes ... its like war .. war never changes..
-;         LDA #$11
-         STA VERA_addr_bank   
-         ;  now for real fun.. getting set on the cache alignment.. 
-         LDA VERA_addr_low    ;  convenience.. ? 
-         AND #%00000011       ; is byte alignment. 
-         BNE @OTHER_ALIGNED   ;  oops .. 
-      @DO_ALIGNED:
-    ;     STZ FX_MULT
-       : LDA VERA_data1       ;     read 4 bytes / 8 px
-   ;      STA VERA_data0       ; 
-         LDA VERA_data1
-  ;       STA VERA_data0       ; 
-         LDA VERA_data1
- ;        STA VERA_data0       ; 
-         LDA VERA_data1
-;         STA VERA_data0       ; 
-         STZ VERA_data0       ;     trigger cache write
-         
-         LDA VERA_data1       ;     read 4 bytes / 8 px
-   ;      STA VERA_data0       ; 
-         LDA VERA_data1
-  ;       STA VERA_data0       ; 
-         LDA VERA_data1
- ;        STA VERA_data0       ; 
-         LDA VERA_data1
-;         STA VERA_data0       ; 
-         STZ VERA_data0       ;     trigger cache write
-
-         LDA VERA_addr_low 
-         ADC #160-8
-         STA VERA_addr_low 
-         LDA VERA_addr_high   
-         ADC #0
-         STA VERA_addr_high       
-         DEY 
-         BNE :-
-
-         LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next 
-         JMP @OBJ_LOOP
-      @OTHER_ALIGNED:
-         ASL ; x align off X2
-         ASL ; x align off X4
-         STA FX_MULT
-         CMP #4    ;  align value is either 2, 4 or 6...
-         BEQ @DO_RIGHT2
-         BCS @DO_RIGHT3
-      @DO_RIGHT1:
-      :
-         LDA VERA_data1    
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA #%11111100    ;  .012
-         STA VERA_data0
-
-         LDA VERA_data1    
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA VERA_data1 
-         STZ VERA_data0    ;  3456
-
-         LDA VERA_data1
-         LDA #%00000011
-         STA VERA_data0    ;  7
-
-         LDA VERA_addr_low 
-         ADC #160-12
-         STA VERA_addr_low 
-         LDA VERA_addr_high   
-         ADC #0
-         STA VERA_addr_high       
-
-         DEY 
-         BNE :-
-         LDA OBJECT_LIST_BYTE6_NEXT,x
-         JMP @OBJ_LOOP
-      @DO_RIGHT2:
-      :
-         LDA VERA_data1    
-         LDA VERA_data1
-         LDA #%11110000    ;  ..01
-         STA VERA_data0
-
-         LDA VERA_data1    
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA VERA_data1 
-         STZ VERA_data0    ;  2345
-
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA #%00001111
-         STA VERA_data0    ;  67..
-
-         LDA VERA_addr_low 
-         ADC #160-12
-         STA VERA_addr_low 
-         LDA VERA_addr_high   
-         ADC #0
-         STA VERA_addr_high       
-
-         DEY 
-         BNE :-
-         LDA OBJECT_LIST_BYTE6_NEXT,x
-         JMP @OBJ_LOOP
-      @DO_RIGHT3:
-      :
-         LDA VERA_data1    
-         LDA #%11000000    ;  ...0
-         STA VERA_data0
-
-         LDA VERA_data1    
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA VERA_data1 
-         STZ VERA_data0    ;  1234
-
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA VERA_data1
-         LDA #%00111111
-         STA VERA_data0    ;  567.
-
-         LDA VERA_addr_low 
-         ADC #160-12
-         STA VERA_addr_low 
-         LDA VERA_addr_high   
-         ADC #0
-         STA VERA_addr_high       
-
-         DEY 
-         BNE :-
-         LDA OBJECT_LIST_BYTE6_NEXT,x
-         JMP @OBJ_LOOP
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)

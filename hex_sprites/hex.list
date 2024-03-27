@@ -2848,1063 +2848,877 @@ Current file: hex.s
 0046E6r 1  AA                 TAX      ;     get that pointer into X so we can do stuffs...
 0046E7r 1                     ; OK so now reference OBJECT_LIST_BYTE*,X for whatever we're drawing.. and Y is free for whatever..
 0046E7r 1                     ; first things first, let's figure out where in the buffer to draw.. starting with X location..
-0046E7r 1  BD rr rr           LDA OBJECT_LIST_BYTE2_X,X  ;
-0046EAr 1  C9 A0              CMP #160
-0046ECr 1  B0 F3              BCS @NEXT_OBJECT ; check  outside screen.. left/right...
-0046EEr 1  4A                 LSR ; because 16 color, byte address is X>>1
-0046EFr 1  BC rr rr           LDY OBJECT_LIST_BYTE3_Y,X  ;  ok cool
-0046F2r 1  C0 78              CPY #120 ; check inside screen..
-0046F4r 1  B0 EB              BCS @NEXT_OBJECT ;   for now, just skip if outside..
-0046F6r 1  79 rr rr           ADC BITMAP_OFFSETS_LOW,Y ; note how this works because carry isn't set.. ?
-0046F9r 1  8D 20 9F           STA VERA_addr_low
-0046FCr 1  B1 29              LDA (DOLB_Y_CALC_POINTER),Y ; now do the high for the dest..
-0046FEr 1  69 00              ADC #0
-004700r 1  8D 21 9F           STA VERA_addr_high
-004703r 1  EE 25 9F           INC VERA_ctrl  ;  now we need to calculate sprite source address..
-004706r 1  BC rr rr           LDY OBJECT_LIST_BYTE1_MODE,X
-004709r 1  B9 rr rr           LDA LOW_NIBBLE_HIGH,Y
-00470Cr 1  0A                 ASL
-00470Dr 1  A8                 TAY
-00470Er 1  A9 08              LDA #$08
-004710r 1  2A                 ROL
-004711r 1  8D 22 9F           STA VERA_addr_bank
-004714r 1  98                 TYA
-004715r 1  BC rr rr           LDY OBJECT_LIST_BYTE0_ADDRLOW,X
-004718r 1  19 rr rr           ORA SPRITE_ADDRESS_LOW_HIGH,Y
-00471Br 1  8D 21 9F           STA VERA_addr_high
-00471Er 1  B9 rr rr           LDA SPRITE_ADDRESS_LOW_LOW,Y
-004721r 1  8D 20 9F           STA VERA_addr_low
-004724r 1                  @CHECK_ALIGN:
-004724r 1  A0 08              LDY #8
-004726r 1  CE 25 9F           DEC VERA_ctrl  ;  regain dest address
-004729r 1  AD 20 9F           LDA VERA_addr_low
-00472Cr 1  29 03              AND #$03
-00472Er 1  F0 07              BEQ @DO_ZERO_RIGHT
-004730r 1  0A                 ASL
-004731r 1  0A                 ASL
-004732r 1  8D 2C 9F           STA FX_MULT
-004735r 1  D0 39              BNE @CHECK_OTHER_ALIGNS
-004737r 1                  @DO_ZERO_RIGHT:
-004737r 1  9C 2C 9F           STZ FX_MULT
-00473Ar 1  80 10              BRA :++
-00473Cr 1                  :
-00473Cr 1  AD 20 9F           LDA VERA_addr_low
-00473Fr 1  69 98              ADC #160-8
-004741r 1  8D 20 9F           STA VERA_addr_low
-004744r 1  AD 21 9F           LDA VERA_addr_high
-004747r 1  69 00              ADC #0
-004749r 1  8D 21 9F           STA VERA_addr_high
-00474Cr 1                  :
-00474Cr 1  AD 24 9F           LDA VERA_data1
-00474Fr 1  AD 24 9F           LDA VERA_data1
-004752r 1  AD 24 9F           LDA VERA_data1
-004755r 1  AD 24 9F           LDA VERA_data1
-004758r 1  9C 23 9F           STZ VERA_data0
-00475Br 1               
-00475Br 1  AD 24 9F           LDA VERA_data1
-00475Er 1  AD 24 9F           LDA VERA_data1
-004761r 1  AD 24 9F           LDA VERA_data1
-004764r 1  AD 24 9F           LDA VERA_data1
-004767r 1  9C 23 9F           STZ VERA_data0
-00476Ar 1  88                 DEY
-00476Br 1  D0 CF              BNE :--
-00476Dr 1  4C rr rr           JMP @NEXT_OBJECT
-004770r 1                  @CHECK_OTHER_ALIGNS:
-004770r 1  C9 08              CMP #8   ;  is either 4,8,12
-004772r 1  90 18              BCC @DO_ONE_RIGHT
-004774r 1  F0 51              BEQ @DO_TWO_RIGHT
-004776r 1  EE 20 9F           INC VERA_addr_low
-004779r 1  4C rr rr           JMP @DO_THREE_RIGHT
-00477Cr 1                   :
-00477Cr 1  AD 20 9F           LDA VERA_addr_low
-00477Fr 1  69 94              ADC #160-12
-004781r 1  8D 20 9F           STA VERA_addr_low
-004784r 1  AD 21 9F           LDA VERA_addr_high
-004787r 1  69 00              ADC #0
-004789r 1  8D 21 9F           STA VERA_addr_high
-00478Cr 1                  @DO_ONE_RIGHT:
-00478Cr 1  AD 24 9F           LDA VERA_data1
-00478Fr 1  AD 24 9F           LDA VERA_data1
-004792r 1  AD 24 9F           LDA VERA_data1
-004795r 1  A9 03              LDA #%00000011
-004797r 1  8D 23 9F           STA VERA_data0
-00479Ar 1               
-00479Ar 1  AD 24 9F           LDA VERA_data1
-00479Dr 1  AD 24 9F           LDA VERA_data1
-0047A0r 1  AD 24 9F           LDA VERA_data1
-0047A3r 1  AD 24 9F           LDA VERA_data1
-0047A6r 1  9C 23 9F           STZ VERA_data0
-0047A9r 1               
-0047A9r 1  AD 24 9F           LDA VERA_data1
-0047ACr 1  A9 FC              LDA #%11111100
-0047AEr 1  8D 23 9F           STA VERA_data0
-0047B1r 1  88                 DEY
-0047B2r 1  D0 C8              BNE :-
-0047B4r 1  4C rr rr           JMP @NEXT_OBJECT
-0047B7r 1               
-0047B7r 1                   :
-0047B7r 1  AD 20 9F           LDA VERA_addr_low
-0047BAr 1  69 94              ADC #160-12
-0047BCr 1  8D 20 9F           STA VERA_addr_low
-0047BFr 1  AD 21 9F           LDA VERA_addr_high
-0047C2r 1  69 00              ADC #0
-0047C4r 1  8D 21 9F           STA VERA_addr_high
-0047C7r 1                  @DO_TWO_RIGHT:
-0047C7r 1  AD 24 9F           LDA VERA_data1
-0047CAr 1  AD 24 9F           LDA VERA_data1
-0047CDr 1  A9 0F              LDA #%00001111
-0047CFr 1  8D 23 9F           STA VERA_data0
-0047D2r 1               
-0047D2r 1  AD 24 9F           LDA VERA_data1
-0047D5r 1  AD 24 9F           LDA VERA_data1
-0047D8r 1  AD 24 9F           LDA VERA_data1
-0047DBr 1  AD 24 9F           LDA VERA_data1
-0047DEr 1  9C 23 9F           STZ VERA_data0
-0047E1r 1               
-0047E1r 1  AD 24 9F           LDA VERA_data1
-0047E4r 1  AD 24 9F           LDA VERA_data1
-0047E7r 1  A9 F0              LDA #%11110000
-0047E9r 1  8D 23 9F           STA VERA_data0
-0047ECr 1  88                 DEY
-0047EDr 1  D0 C8              BNE :-
-0047EFr 1  4C rr rr           JMP @NEXT_OBJECT
-0047F2r 1               
-0047F2r 1                   :
-0047F2r 1  AD 20 9F           LDA VERA_addr_low
-0047F5r 1  69 94              ADC #160-12
-0047F7r 1  8D 20 9F           STA VERA_addr_low
-0047FAr 1  AD 21 9F           LDA VERA_addr_high
-0047FDr 1  69 00              ADC #0
-0047FFr 1  8D 21 9F           STA VERA_addr_high
-004802r 1                  @DO_THREE_RIGHT:
-004802r 1  AD 24 9F           LDA VERA_data1
-004805r 1  A9 3F              LDA #%00111111
-004807r 1  8D 23 9F           STA VERA_data0
-00480Ar 1               
-00480Ar 1  AD 24 9F           LDA VERA_data1
-00480Dr 1  AD 24 9F           LDA VERA_data1
-004810r 1  AD 24 9F           LDA VERA_data1
-004813r 1  AD 24 9F           LDA VERA_data1
-004816r 1  9C 23 9F           STZ VERA_data0
-004819r 1               
-004819r 1  AD 24 9F           LDA VERA_data1
-00481Cr 1  AD 24 9F           LDA VERA_data1
-00481Fr 1  AD 24 9F           LDA VERA_data1
-004822r 1  A9 C0              LDA #%11000000
-004824r 1  8D 23 9F           STA VERA_data0
-004827r 1  88                 DEY
-004828r 1  D0 C8              BNE :-
-00482Ar 1  4C rr rr           JMP @NEXT_OBJECT
-00482Dr 1               
-00482Dr 1                  @OBJ_LOOP:
-00482Dr 1  AA                    tax
-00482Er 1  18                    CLC
-00482Fr 1  BD rr rr              LDA OBJECT_LIST_BYTE2_X,x ;      4     4     grab X
-004832r 1  C9 A0                 CMP #160 ;     2     6
-004834r 1  90 10                 BCC @X_IS_POS     ;     we're off screen left/right somewhere if BCS
-004836r 1                        ; ok we have a neg number of the form X + 256 .. but its really should be X + 320 as a coordinate..
-004836r 1                        ; except there's only 160 bytes ... so we're at this Y - this many bytes ..
-004836r 1                        ; we could _add_ to go to neg.. but carry is set.. if we subtract low is bad right?
-004836r 1                        ;DEC OBJECT_LIST_BYTE3_Y,x
-004836r 1  C9 C0                 CMP #192
-004838r 1  90 0A                 BCC @NEXT
-00483Ar 1  4A                    LSR  ; > 192 to > 96 ...
-00483Br 1  18                    CLC
-00483Cr 1  69 20                 ADC #32
-00483Er 1  BC rr rr              LDY OBJECT_LIST_BYTE3_Y,x ; I think that works..
-004841r 1  88                    DEY
-004842r 1  80 06                 BRA @X_WAS_NEG
-004844r 1                     @NEXT:
-004844r 1  D0 E7                 BNE @OBJ_LOOP
-004846r 1                      ;  BRA @NEXT_Z
-004846r 1                     @X_IS_POS:
-004846r 1  4A                    LSR ; 16 colors, so cut in half to get byte reference ;
-004847r 1  BC rr rr              LDY OBJECT_LIST_BYTE3_Y,x ; I think that works..
-00484Ar 1                     @X_WAS_NEG:
-00484Ar 1  C0 78                 CPY #120
-00484Cr 1  90 4C                 BCC @Y_IS_POS ; checking if inside screen.. for now we'll bug out if BCS set here..
-00484Er 1  C0 C0                 CPY #192
-004850r 1  90 F2                 BCC @NEXT
-004852r 1                     ; Y is negative here
-004852r 1  8D 20 9F              STA VERA_addr_low             ;  y negative, we want to draw screen starting at y=0.. need to move down sprite..
-004855r 1  B2 29                 LDA (DOLB_Y_CALC_POINTER)
-004857r 1  8D 21 9F              STA VERA_addr_high
-00485Ar 1  EE 25 9F              INC VERA_ctrl              ;  Y is 256 + our neg amount... we want that neg amount x8 bytes per line..
-00485Dr 1  98                    TYA
-00485Er 1  49 FF                 EOR #$FF
-004860r 1  69 00                 ADC #0   ;  negated .. amount of sprite to skip.. up to 63!
-004862r 1  0A                    ASL ; <127
-004863r 1  0A                    ASL ; <255
-004864r 1  0A                    ASl ; <511
-004865r 1  85 29                 STA DOLB_Y_CALC_POINTER   ;  num bytes from start of sprite..
-004867r 1  A9 00                 LDA #0
-004869r 1  2A                    ROL
-00486Ar 1  85 2A                 STA DOLB_Y_CALC_POINTERH
-00486Cr 1               
-00486Cr 1  BC rr rr              LDY OBJECT_LIST_BYTE1_MODE,X     ;  4  4
-00486Fr 1  B9 rr rr              LDA LOW_NIBBLE_HIGH,Y            ;  4  8  ; | 4 addr HIGH | ....
-004872r 1  0A                    ASL                              ;  2  10 ; C AAA .....
-004873r 1  BC rr rr              LDY OBJECT_LIST_BYTE0_ADDRLOW,X  ;  4  14
-004876r 1  19 rr rr              ORA SPRITE_ADDRESS_LOW_HIGH,Y    ;  4  18
-004879r 1  8D 21 9F              STA VERA_addr_high               ;  4  22
-00487Cr 1  A9 08                 LDA #$08                         ;  2  24
-00487Er 1  2A                    ROL                              ;  2  26
-00487Fr 1  8D 22 9F              STA VERA_addr_bank               ;  4  30
-004882r 1  B9 rr rr              LDA SPRITE_ADDRESS_LOW_LOW,Y     ;  4  34
-004885r 1  65 29                 ADC DOLB_Y_CALC_POINTER
-004887r 1  8D 20 9F              STA VERA_addr_low                ;  4  38
-00488Ar 1  A5 2A                 LDA DOLB_Y_CALC_POINTERH
-00488Cr 1  6D 21 9F              ADC VERA_addr_high
-00488Fr 1  8D 21 9F              STA VERA_addr_high
-004892r 1  A9 40                 LDA #64
-004894r 1  7D rr rr              ADC OBJECT_LIST_BYTE3_Y,X        ;  is neg so this will pop us correctly positive...
-004897r 1  A8                    TAY
-004898r 1  80 3B                 BRA @DO_SPRITE_LINES   ;  and we jump into the loop there..
-00489Ar 1                     @Y_IS_POS:
-00489Ar 1  18                    CLC
-00489Br 1  79 rr rr              ADC BITMAP_OFFSETS_LOW,y  ; low part
-00489Er 1  8D 20 9F              STA VERA_addr_low
-0048A1r 1  B1 29                 LDA (DOLB_Y_CALC_POINTER),y ; fetch the high byte
-0048A3r 1  69 00                 ADC #0
-0048A5r 1  8D 21 9F              STA VERA_addr_high   ;  yep... that's faster...
-0048A8r 1               
-0048A8r 1                        ; destination set. . now for the source..
-0048A8r 1  EE 25 9F              INC VERA_ctrl  ;     set to 5 to select the thing..
-0048ABr 1  BC rr rr              LDY OBJECT_LIST_BYTE1_MODE,X     ;  4  4
-0048AEr 1  B9 rr rr              LDA LOW_NIBBLE_HIGH,Y            ;  4  8  ; | 4 addr HIGH | ....
-0048B1r 1  0A                    ASL                              ;  2  10 ; C AAA .....
-0048B2r 1  BC rr rr              LDY OBJECT_LIST_BYTE0_ADDRLOW,X  ;  4  14
-0048B5r 1  19 rr rr              ORA SPRITE_ADDRESS_LOW_HIGH,Y    ;  4  18
-0048B8r 1  8D 21 9F              STA VERA_addr_high               ;  4  22
-0048BBr 1  A9 08                 LDA #$08                         ;  2  24
-0048BDr 1  2A                    ROL                              ;  2  26
-0048BEr 1  8D 22 9F              STA VERA_addr_bank               ;  4  30
-0048C1r 1  B9 rr rr              LDA SPRITE_ADDRESS_LOW_LOW,Y     ;  4  34
-0048C4r 1  8D 20 9F              STA VERA_addr_low                ;  4  38
-0048C7r 1                     ; here's start of loopy stuff..
-0048C7r 1                     ;  how many lines to bottom of screen?
-0048C7r 1  A0 40                 LDY #64              ;     copy 16 lines for now..
-0048C9r 1  BD rr rr              LDA OBJECT_LIST_BYTE3_Y,X
-0048CCr 1  E9 37                 SBC #55 ;  ADD 64 subtract 120 ... +64 - 120 = -56 .. sbc 55 because we don't have carry set
-0048CEr 1  90 05                 BCC @DO_SPRITE_LINES    ;  if that was Negative  then entire sprite is on screen..
-0048D0r 1                         ;  so say y was originally like 100... so 20 lines should show.. we did 100-56=44 .. to get 20 lines sub 24..?
-0048D0r 1                         ; 119 = have 63 want 1 ... hmm.. 44 is $2C %0010 1100 .. we want 20 - %0001 0100 .. .
-0048D0r 1  49 3F                 EOR #63  ;  EOR %0011 1111    63 becomes zero, 44 becomes %0001 0011 -> 19 ...
-0048D2r 1  69 00                 ADC #0   ;  carry set from before
-0048D4r 1  A8                    TAY ; and that's how many lines to do..
-0048D5r 1               
-0048D5r 1                     @DO_SPRITE_LINES:
-0048D5r 1  CE 25 9F              DEC VERA_ctrl
-0048D8r 1  A9 31                 LDA #$31      ;   addr0 bank never changes ... its like war .. war never changes..
-0048DAr 1               ;         LDA #$11
-0048DAr 1  8D 22 9F              STA VERA_addr_bank
-0048DDr 1                        ;  now for real fun.. getting set on the cache alignment..
-0048DDr 1  AD 20 9F              LDA VERA_addr_low    ;  convenience.. ?
-0048E0r 1  29 03                 AND #%00000011       ; is byte alignment.
-0048E2r 1  D0 37                 BNE @OTHER_ALIGNED   ;  oops ..
-0048E4r 1                     @DO_ALIGNED:
-0048E4r 1                   ;     STZ FX_MULT
-0048E4r 1  AD 24 9F            : LDA VERA_data1       ;     read 4 bytes / 8 px
-0048E7r 1                  ;      STA VERA_data0       ;
-0048E7r 1  AD 24 9F              LDA VERA_data1
-0048EAr 1                 ;       STA VERA_data0       ;
-0048EAr 1  AD 24 9F              LDA VERA_data1
-0048EDr 1                ;        STA VERA_data0       ;
-0048EDr 1  AD 24 9F              LDA VERA_data1
-0048F0r 1               ;         STA VERA_data0       ;
-0048F0r 1  9C 23 9F              STZ VERA_data0       ;     trigger cache write
-0048F3r 1               
-0048F3r 1  AD 24 9F              LDA VERA_data1       ;     read 4 bytes / 8 px
-0048F6r 1                  ;      STA VERA_data0       ;
-0048F6r 1  AD 24 9F              LDA VERA_data1
-0048F9r 1                 ;       STA VERA_data0       ;
-0048F9r 1  AD 24 9F              LDA VERA_data1
-0048FCr 1                ;        STA VERA_data0       ;
-0048FCr 1  AD 24 9F              LDA VERA_data1
-0048FFr 1               ;         STA VERA_data0       ;
-0048FFr 1  9C 23 9F              STZ VERA_data0       ;     trigger cache write
-004902r 1               
-004902r 1  AD 20 9F              LDA VERA_addr_low
-004905r 1  69 98                 ADC #160-8
-004907r 1  8D 20 9F              STA VERA_addr_low
-00490Ar 1  AD 21 9F              LDA VERA_addr_high
-00490Dr 1  69 00                 ADC #0
-00490Fr 1  8D 21 9F              STA VERA_addr_high
-004912r 1  88                    DEY
-004913r 1  D0 CF                 BNE :-
-004915r 1               
-004915r 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x     ;     time to cycle to next
-004918r 1  4C rr rr              JMP @OBJ_LOOP
-00491Br 1                     @OTHER_ALIGNED:
-00491Br 1  0A                    ASL ; x align off X2
-00491Cr 1  0A                    ASL ; x align off X4
-00491Dr 1  8D 2C 9F              STA FX_MULT
-004920r 1  C9 04                 CMP #4    ;  align value is either 2, 4 or 6...
-004922r 1  F0 40                 BEQ @DO_RIGHT2
-004924r 1  B0 7C                 BCS @DO_RIGHT3
-004926r 1                     @DO_RIGHT1:
-004926r 1                     :
-004926r 1  AD 24 9F              LDA VERA_data1
-004929r 1  AD 24 9F              LDA VERA_data1
-00492Cr 1  AD 24 9F              LDA VERA_data1
-00492Fr 1  A9 FC                 LDA #%11111100    ;  .012
-004931r 1  8D 23 9F              STA VERA_data0
-004934r 1               
-004934r 1  AD 24 9F              LDA VERA_data1
-004937r 1  AD 24 9F              LDA VERA_data1
-00493Ar 1  AD 24 9F              LDA VERA_data1
-00493Dr 1  AD 24 9F              LDA VERA_data1
-004940r 1  9C 23 9F              STZ VERA_data0    ;  3456
-004943r 1               
-004943r 1  AD 24 9F              LDA VERA_data1
-004946r 1  A9 03                 LDA #%00000011
-004948r 1  8D 23 9F              STA VERA_data0    ;  7
-00494Br 1               
-00494Br 1  AD 20 9F              LDA VERA_addr_low
-00494Er 1  69 94                 ADC #160-12
-004950r 1  8D 20 9F              STA VERA_addr_low
-004953r 1  AD 21 9F              LDA VERA_addr_high
-004956r 1  69 00                 ADC #0
-004958r 1  8D 21 9F              STA VERA_addr_high
-00495Br 1               
-00495Br 1  88                    DEY
-00495Cr 1  D0 C8                 BNE :-
-00495Er 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x
-004961r 1  4C rr rr              JMP @OBJ_LOOP
-004964r 1                     @DO_RIGHT2:
-004964r 1                     :
-004964r 1  AD 24 9F              LDA VERA_data1
-004967r 1  AD 24 9F              LDA VERA_data1
-00496Ar 1  A9 F0                 LDA #%11110000    ;  ..01
-00496Cr 1  8D 23 9F              STA VERA_data0
-00496Fr 1               
-00496Fr 1  AD 24 9F              LDA VERA_data1
-004972r 1  AD 24 9F              LDA VERA_data1
-004975r 1  AD 24 9F              LDA VERA_data1
-004978r 1  AD 24 9F              LDA VERA_data1
-00497Br 1  9C 23 9F              STZ VERA_data0    ;  2345
-00497Er 1               
-00497Er 1  AD 24 9F              LDA VERA_data1
-004981r 1  AD 24 9F              LDA VERA_data1
-004984r 1  A9 0F                 LDA #%00001111
-004986r 1  8D 23 9F              STA VERA_data0    ;  67..
-004989r 1               
-004989r 1  AD 20 9F              LDA VERA_addr_low
-00498Cr 1  69 94                 ADC #160-12
-00498Er 1  8D 20 9F              STA VERA_addr_low
-004991r 1  AD 21 9F              LDA VERA_addr_high
-004994r 1  69 00                 ADC #0
-004996r 1  8D 21 9F              STA VERA_addr_high
-004999r 1               
-004999r 1  88                    DEY
-00499Ar 1  D0 C8                 BNE :-
-00499Cr 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x
-00499Fr 1  4C rr rr              JMP @OBJ_LOOP
-0049A2r 1                     @DO_RIGHT3:
-0049A2r 1                     :
-0049A2r 1  AD 24 9F              LDA VERA_data1
-0049A5r 1  A9 C0                 LDA #%11000000    ;  ...0
-0049A7r 1  8D 23 9F              STA VERA_data0
-0049AAr 1               
-0049AAr 1  AD 24 9F              LDA VERA_data1
-0049ADr 1  AD 24 9F              LDA VERA_data1
-0049B0r 1  AD 24 9F              LDA VERA_data1
-0049B3r 1  AD 24 9F              LDA VERA_data1
-0049B6r 1  9C 23 9F              STZ VERA_data0    ;  1234
-0049B9r 1               
-0049B9r 1  AD 24 9F              LDA VERA_data1
-0049BCr 1  AD 24 9F              LDA VERA_data1
-0049BFr 1  AD 24 9F              LDA VERA_data1
-0049C2r 1  A9 3F                 LDA #%00111111
-0049C4r 1  8D 23 9F              STA VERA_data0    ;  567.
-0049C7r 1               
-0049C7r 1  AD 20 9F              LDA VERA_addr_low
-0049CAr 1  69 94                 ADC #160-12
-0049CCr 1  8D 20 9F              STA VERA_addr_low
-0049CFr 1  AD 21 9F              LDA VERA_addr_high
-0049D2r 1  69 00                 ADC #0
-0049D4r 1  8D 21 9F              STA VERA_addr_high
-0049D7r 1               
-0049D7r 1  88                    DEY
-0049D8r 1  D0 C8                 BNE :-
-0049DAr 1  BD rr rr              LDA OBJECT_LIST_BYTE6_NEXT,x
-0049DDr 1  4C rr rr              JMP @OBJ_LOOP
-0049E0r 1               
-0049E0r 1               test_optimal_pal_data:
-0049E0r 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
-0049E0r 1  00 00        .byte $00,$00  ; 0 - black/transparent
-0049E2r 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
-0049E4r 1  04 06        .byte $04,$06  ; 2 #660044
-0049E6r 1  00 0C        .byte $00,$0C  ; 3  #cc0000
-0049E8r 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
-0049EAr 1  42 03        .byte $42,$03
-0049ECr 1  60 0C        .byte $60,$0c   ; 6  #cc6600
-0049EEr 1  40 08        .byte $40,$08   ; 7 #884400
-0049F0r 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
-0049F2r 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
-0049F4r 1  C0 00        .byte $c0,$00   ; A #00cc00
-0049F6r 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
-0049F8r 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
-0049FAr 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
-0049FCr 1  88 08        .byte $88,$08   ; E #888888
-0049FEr 1  22 02        .byte $22,$02   ; F #222222
-004A00r 1               
-004A00r 1               test_vram_data:
-004A00r 1               ; 70 to 127 - start of 16x16 (each 128 byte) for testing directions / sizing..
-004A00r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  0-15 16x10 -  0
-004A04r 1  11 11 11 11  
-004A08r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004A0Cr 1  FF FF FF F1  
-004A10r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004A14r 1  FF FF FF F1  
-004A18r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004A1Cr 1  FF FF FF F1  
-004A20r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
-004A24r 1  FF FF FF F1  
-004A28r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004A2Cr 1  FF FF FF F1  
-004A30r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004A34r 1  FF FF FF F1  
-004A38r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004A3Cr 1  FF FF FF F1  
-004A40r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004A44r 1  FF FF FF F1  
-004A48r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004A4Cr 1  11 11 11 11  
-004A50r 1  55 55 55 55  .repeat 54
-004A54r 1  55 55 55 55  
-004A58r 1  55 55 55 55  
-004C00r 1               .res 8,$55
-004C00r 1               .endrepeat
-004C00r 1               
-004C00r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  16-31    16x10 -  0 trans
-004C04r 1  11 11 11 11  
-004C08r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004C0Cr 1  F0 F0 F0 F1  
-004C10r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004C14r 1  0F 0F 0F 01  
-004C18r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004C1Cr 1  F0 F0 F0 F1  
-004C20r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004C24r 1  0F 0F 0F 01  
-004C28r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004C2Cr 1  F0 F0 F0 F1  
-004C30r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004C34r 1  0F 0F 0F 01  
-004C38r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-004C3Cr 1  F0 F0 F0 F1  
-004C40r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-004C44r 1  0F 0F 0F 01  
-004C48r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004C4Cr 1  11 11 11 11  
-004C50r 1  50 50 50 50  .repeat 27
-004C54r 1  50 50 50 50  
-004C58r 1  05 05 05 05  
-004E00r 1               .res 8,$50
-004E00r 1               .res 8,$05
-004E00r 1               .endrepeat
-004E00r 1               
-004E00r 1               
-004E00r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  32-47    16x11 -  4
-004E04r 1  11 11 11 11  
-004E08r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004E0Cr 1  FF FF FF F1  
-004E10r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004E14r 1  FF FF FF F1  
-004E18r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004E1Cr 1  FF FF FF F1  
-004E20r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
-004E24r 1  FF FF FF F1  
-004E28r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004E2Cr 1  FF FF FF F1  
-004E30r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004E34r 1  FF FF FF F1  
-004E38r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
-004E3Cr 1  FF FF FF F1  
-004E40r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004E44r 1  FF FF FF F1  
-004E48r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
-004E4Cr 1  FF FF FF F1  
-004E50r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-004E54r 1  11 11 11 11  
-004E58r 1  55 55 55 55  .repeat 53
-004E5Cr 1  55 55 55 55  
-004E60r 1  55 55 55 55  
-005000r 1               .res 8,$55
-005000r 1               .endrepeat
-005000r 1               
-005000r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  48-63    16x11 -  4 trans
-005004r 1  11 11 11 11  
-005008r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-00500Cr 1  F0 F0 F0 F1  
-005010r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-005014r 1  0F 0F 0F 01  
-005018r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-00501Cr 1  F0 F0 F0 F1  
-005020r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-005024r 1  0F 0F 0F 01  
-005028r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-00502Cr 1  F0 F0 F0 F1  
-005030r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-005034r 1  0F 0F 0F 01  
-005038r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-00503Cr 1  F0 F0 F0 F1  
-005040r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
-005044r 1  0F 0F 0F 01  
-005048r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
-00504Cr 1  F0 F0 F0 F1  
-005050r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
-005054r 1  11 11 11 11  
-005058r 1  05 05 05 05  .res 7,$05
-00505Cr 1  05 05 05     
-00505Fr 1  00           .byte 0
-005060r 1  50 50 50 50  .repeat 26
-005064r 1  50 50 50 50  
-005068r 1  05 05 05 05  
-005200r 1               .res 8,$50
-005200r 1               .res 7,$05
-005200r 1               .byte 0
-005200r 1               .endrepeat
-005200r 1               
-005200r 1               
-005200r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  64-79    15x11 - 10
-005204r 1  11 11 11 10  
-005208r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-00520Cr 1  FF FF FF 10  
-005210r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005214r 1  FF FF FF 10  
-005218r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00521Cr 1  FF FF FF 10  
-005220r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
-005224r 1  FF FF FF 10  
-005228r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00522Cr 1  FF FF FF 10  
-005230r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005234r 1  FF FF FF 10  
-005238r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00523Cr 1  FF FF FF 10  
-005240r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005244r 1  FF FF FF 10  
-005248r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-00524Cr 1  FF FF FF 10  
-005250r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-005254r 1  11 11 11 10  
-005258r 1  55 55 55 55  .repeat 53
-00525Cr 1  55 55 55 50  
-005260r 1  55 55 55 55  
-005400r 1               .res 7,$55
-005400r 1               .byte $50
-005400r 1               .endrepeat
-005400r 1               
-005400r 1               
-005400r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  80-95    15x11 - 10 trans
-005404r 1  11 11 11 10  
-005408r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00540Cr 1  F0 F0 F0 10  
-005410r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005414r 1  0F 0F 0F 10  
-005418r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00541Cr 1  F0 F0 F0 10  
-005420r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005424r 1  0F 0F 0F 10  
-005428r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00542Cr 1  F0 F0 F0 10  
-005430r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005434r 1  0F 0F 0F 10  
-005438r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00543Cr 1  F0 F0 F0 10  
-005440r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005444r 1  0F 0F 0F 10  
-005448r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00544Cr 1  F0 F0 F0 10  
-005450r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-005454r 1  11 11 11 10  
-005458r 1  05 05 05 05  .res 7,$05
-00545Cr 1  05 05 05     
-00545Fr 1  00           .byte 0
-005460r 1  50 50 50 50  .repeat 26
-005464r 1  50 50 50 50  
-005468r 1  05 05 05 05  
-005600r 1               .res 8,$50
-005600r 1               .res 7,$05
-005600r 1               .byte 0
-005600r 1               .endrepeat
-005600r 1               
-005600r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  96-111    15x12 - 18
-005604r 1  11 11 11 10  
-005608r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-00560Cr 1  FF FF FF 10  
-005610r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005614r 1  FF FF FF 10  
-005618r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00561Cr 1  FF FF FF 10  
-005620r 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
-005624r 1  FF FF FF 10  
-005628r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00562Cr 1  FF FF FF 10  
-005630r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-005634r 1  FF FF FF 10  
-005638r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
-00563Cr 1  FF FF FF 10  
-005640r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005644r 1  FF FF FF 10  
-005648r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-00564Cr 1  FF FF FF 10  
-005650r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
-005654r 1  FF FF FF 10  
-005658r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-00565Cr 1  11 11 11 10  
-005660r 1  55 55 55 55  .repeat 52
-005664r 1  55 55 55 50  
-005668r 1  55 55 55 55  
-005800r 1               .res 7,$55
-005800r 1               .byte $50
-005800r 1               .endrepeat
-005800r 1               
-005800r 1               
-005800r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  112-127    15x12 - 18 trans
-005804r 1  11 11 11 10  
-005808r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00580Cr 1  F0 F0 F0 10  
-005810r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005814r 1  0F 0F 0F 10  
-005818r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00581Cr 1  F0 F0 F0 10  
-005820r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005824r 1  0F 0F 0F 10  
-005828r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00582Cr 1  F0 F0 F0 10  
-005830r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005834r 1  0F 0F 0F 10  
-005838r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00583Cr 1  F0 F0 F0 10  
-005840r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005844r 1  0F 0F 0F 10  
-005848r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00584Cr 1  F0 F0 F0 10  
-005850r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-005854r 1  0F 0F 0F 10  
-005858r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-00585Cr 1  11 11 11 10  
-005860r 1  50 50 50 50  .repeat 26
-005864r 1  50 50 50 50  
-005868r 1  05 05 05 05  
-005A00r 1               .res 8,$50
-005A00r 1               .res 7,$05
-005A00r 1               .byte 0
-005A00r 1               .endrepeat
-005A00r 1               
-005A00r 1               ; alernate tile graphic to use for tub wall .. 128-143 ; 16x tile
-005A00r 1  16 16 16 16  .repeat 32
-005A04r 1  16 16 16 16  
-005A08r 1  61 61 61 61  
-005C00r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
-005C00r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
-005C00r 1               .endrepeat
-005C00r 1               
-005C00r 1  10 10 10 10  .repeat 32  ;  144-159
-005C04r 1  10 10 10 10  
-005C08r 1  06 06 06 06  
-005E00r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
-005E00r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $06
-005E00r 1               .endrepeat
-005E00r 1               
-005E00r 1               
-005E00r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  160-175    14x12
-005E04r 1  11 11 11 00  
-005E08r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
-005E0Cr 1  FF FF F1 00  
-005E10r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
-005E14r 1  FF FF F1 00  
-005E18r 1  1F FF FF FF  .byte $1f,$FF,$ff,$Ff,$Ff,$fF,$F1,$00
-005E1Cr 1  FF FF F1 00  
-005E20r 1  1F FF FF F1  .byte $1f,$FF,$FF,$f1,$fF,$FF,$F1,$00
-005E24r 1  FF FF F1 00  
-005E28r 1  1F FF FF FF  .byte $1f,$FF,$FF,$Ff,$Ff,$fF,$F1,$00
-005E2Cr 1  FF FF F1 00  
-005E30r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
-005E34r 1  FF FF F1 00  
-005E38r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
-005E3Cr 1  FF FF F1 00  
-005E40r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005E44r 1  FF FF F1 00  
-005E48r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005E4Cr 1  FF FF F1 00  
-005E50r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
-005E54r 1  FF FF F1 00  
-005E58r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00
-005E5Cr 1  11 11 11 00  
-005E60r 1  55 55 55 55  .repeat 52
-005E64r 1  55 55 55 00  
-005E68r 1  55 55 55 55  
-006000r 1               .res 7,$55
-006000r 1               .byte 0
-006000r 1               .endrepeat
-006000r 1               
-006000r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  176-191
-006004r 1  11 11 11 00  
-006008r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00600Cr 1  F0 F0 F0 10  
-006010r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-006014r 1  0F 0F 0F 10  
-006018r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00601Cr 1  F0 F0 F0 10  
-006020r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-006024r 1  0F 0F 0F 10  
-006028r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00602Cr 1  F0 F0 F0 10  
-006030r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-006034r 1  0F 0F 0F 10  
-006038r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00603Cr 1  F0 F0 F0 10  
-006040r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-006044r 1  0F 0F 0F 10  
-006048r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
-00604Cr 1  F0 F0 F0 10  
-006050r 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
-006054r 1  0F 0F 0F 10  
-006058r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
-00605Cr 1  11 11 11 10  
-006060r 1  50 50 50 50  .repeat 26
-006064r 1  50 50 50 50  
-006068r 1  05 05 05 05  
-006200r 1               .res 8,$50
-006200r 1               .res 7,$05
-006200r 1               .byte 0
-006200r 1               .endrepeat
-006200r 1               
-006200r 1               ; alernate tile graphic to use for tub wall .. 192-223 ; 15x tile
-006200r 1  16 16 16 16  .repeat 32
-006204r 1  16 16 16 10  
-006208r 1  61 61 61 61  
-006400r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $10
-006400r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $60
-006400r 1               .endrepeat
-006400r 1               
-006400r 1  10 10 10 10  .repeat 32  ;  144-159
-006404r 1  10 10 10 10  
-006408r 1  06 06 06 06  
-006600r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
-006600r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
-006600r 1               .endrepeat
-006600r 1               
-006600r 1               
-006600r 1               ; alernate tile graphic to use for tub wall .. 224 ; 14x tile
-006600r 1  16 16 16 16  .repeat 32
-006604r 1  16 16 16 00  
-006608r 1  61 61 61 61  
-006800r 1                   .byte $16, $16, $16, $16, $16, $16, $16, $00
-006800r 1                   .byte $61, $61, $61, $61, $61, $61, $61, $00
-006800r 1               .endrepeat
-006800r 1               
-006800r 1  10 10 10 10  .repeat 32  ;  144-159
-006804r 1  10 10 10 00  
-006808r 1  06 06 06 06  
-006A00r 1                   .byte $10, $10, $10, $10, $10, $10, $10, $00
-006A00r 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
-006A00r 1               .endrepeat
-006A00r 1               
-006A00r 1               
-006A00r 1               
-006A00r 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
-006A00r 1               ;     01   23   45   67
-006A00r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
-006A04r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A08r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A0Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006A10r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A14r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A18r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A1Cr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
-006A20r 1               
-006A20r 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
-006A24r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A28r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A2Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006A30r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A34r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A38r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A3Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006A40r 1               
-006A40r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
-006A44r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A48r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A4Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006A50r 1  01 00 00 00  .byte $01, $00, $00, $00
-006A54r 1  01 00 00 00  .byte $01, $00, $00, $00
-006A58r 1  01 00 00 00  .byte $01, $00, $00, $00
-006A5Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006A60r 1               
-006A60r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
-006A64r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A68r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A6Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006A70r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A74r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A78r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A7Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006A80r 1               
-006A80r 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
-006A84r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A88r 1  01 00 00 10  .byte $01, $00, $00, $10
-006A8Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006A90r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A94r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A98r 1  00 00 00 10  .byte $00, $00, $00, $10
-006A9Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006AA0r 1               
-006AA0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
-006AA4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006AA8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006AACr 1  00 11 11 00  .byte $00, $11, $11, $00
-006AB0r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AB4r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AB8r 1  00 00 00 10  .byte $00, $00, $00, $10
-006ABCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006AC0r 1               
-006AC0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
-006AC4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006AC8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006ACCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006AD0r 1  01 00 00 10  .byte $01, $00, $00, $10
-006AD4r 1  01 00 00 10  .byte $01, $00, $00, $10
-006AD8r 1  01 00 00 10  .byte $01, $00, $00, $10
-006ADCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006AE0r 1               
-006AE0r 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
-006AE4r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AE8r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AECr 1  00 00 00 00  .byte $00, $00, $00, $00
-006AF0r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AF4r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AF8r 1  00 00 00 10  .byte $00, $00, $00, $10
-006AFCr 1  00 00 00 00  .byte $00, $00, $00, $00
-006B00r 1               
-006B00r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
-006B04r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B08r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B0Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B10r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B14r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B18r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B1Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B20r 1               
-006B20r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
-006B24r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B28r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B2Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B30r 1  00 00 00 10  .byte $00, $00, $00, $10
-006B34r 1  00 00 00 10  .byte $00, $00, $00, $10
-006B38r 1  00 00 00 10  .byte $00, $00, $00, $10
-006B3Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B40r 1               
-006B40r 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
-006B44r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B48r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B4Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B50r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B54r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B58r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B5Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006B60r 1               
-006B60r 1               
-006B60r 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
-006B64r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B68r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B6Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B70r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B74r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B78r 1  01 00 00 10  .byte $01, $00, $00, $10
-006B7Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006B80r 1               
-006B80r 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
-006B84r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B88r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B8Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-006B90r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B94r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B98r 1  01 00 00 00  .byte $01, $00, $00, $00
-006B9Cr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BA0r 1               
-006BA0r 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
-006BA4r 1  00 00 00 10  .byte $00, $00, $00, $10
-006BA8r 1  00 00 00 10  .byte $00, $00, $00, $10
-006BACr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BB0r 1  01 00 00 10  .byte $01, $00, $00, $10
-006BB4r 1  01 00 00 10  .byte $01, $00, $00, $10
-006BB8r 1  01 00 00 10  .byte $01, $00, $00, $10
-006BBCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BC0r 1               
-006BC0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
-006BC4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BC8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BCCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BD0r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BD4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BD8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BDCr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BE0r 1               
-006BE0r 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
-006BE4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BE8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BECr 1  00 11 11 00  .byte $00, $11, $11, $00
-006BF0r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BF4r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BF8r 1  01 00 00 00  .byte $01, $00, $00, $00
-006BFCr 1  00 00 00 00  .byte $00, $00, $00, $00
-006C00r 1               
-006C00r 1               test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10
-006C00r 1               ;     01   23   45   67   89   AB   CD   EF
-006C00r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
-006C04r 1  CC C9 CC C0  
-006C08r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
-006C0Cr 1  99 9B 99 9C  
-006C10r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
-006C14r 1  BB BC BB B0  
-006C18r 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
-006C1Cr 1  CC C9 CC CC  
-006C20r 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
-006C24r 1  99 9B 99 90  
-006C28r 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
-006C2Cr 1  BB BC BB BC  
-006C30r 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
-006C34r 1  CC C9 CC C0  
-006C38r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
-006C3Cr 1  99 9B 99 9C  
-006C40r 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
-006C44r 1  BB BC BB B0  
-006C48r 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
-006C4Cr 1  0C 09 0C 0C  
-006C50r 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-006C54r 1  09 90 09 90  
-006C58r 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
-006C5Cr 1  E9 9E E9 9E  
-006C60r 1               
-006C60r 1  EE EE EE EE  .repeat 13
-006C64r 1  EE EE EE E0  
-006C68r 1  0E EE 66 EE  
-006E00r 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
-006E00r 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
-006E00r 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
-006E00r 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
-006E00r 1               .endrepeat
-006E00r 1               
-006E00r 1               test_border: ; 32
-006E00r 1  0B 0B 0B 0B  .repeat 64
-006E04r 1  B0 B0 B0 B0  
-006E08r 1  0B 0B 0B 0B  
-007000r 1                  .res 4, $0B
-007000r 1                  .res 4, $B0
-007000r 1               .endrepeat
-007000r 1               
-007000r 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
-007000r 1               ;     01   23   45   67
-007000r 1  11 00 00 11  .byte $11, $00, $00, $11
-007004r 1  10 00 00 01  .byte $10, $00, $00, $01
-007008r 1  00 00 00 00  .byte $00, $00, $00, $00
-00700Cr 1  00 01 10 00  .byte $00, $01, $10, $00
-007010r 1  00 01 10 00  .byte $00, $01, $10, $00
-007014r 1  00 00 00 00  .byte $00, $00, $00, $00
-007018r 1  10 00 00 01  .byte $10, $00, $00, $01
-00701Cr 1  11 00 00 11  .byte $11, $00, $00, $11
-007020r 1               
-007020r 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
-007024r 1  00 00 01 00  .byte $00, $00, $01, $00
-007028r 1  00 00 10 00  .byte $00, $00, $10, $00
-00702Cr 1  00 01 00 00  .byte $00, $01, $00, $00
-007030r 1  00 10 00 00  .byte $00, $10, $00, $00
-007034r 1  01 00 00 00  .byte $01, $00, $00, $00
-007038r 1  11 11 11 00  .byte $11, $11, $11, $00
-00703Cr 1  00 00 00 00  .byte $00, $00, $00, $00
-007040r 1               
-007040r 1               ; cell position label sprite addr 50-57
-007040r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007044r 1  FF 00 FF 00  
-007048r 1  00 FF 00 00  
-007060r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007064r 1  00 00 FF 00  
-007068r 1  00 FF 00 00  
-007080r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007084r 1  FF 00 FF 00  
-007088r 1  00 FF 00 00  
-0070A0r 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0070A4r 1  00 00 FF 00  
-0070A8r 1  00 FF 00 00  
-0070C0r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0070C4r 1  FF 00 FF FF  
-0070C8r 1  00 FF FF 00  
-0070E0r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-0070E0r 1               ;     XH                               $XL                            ___  __  YH                              YL
-0070E0r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-0070E4r 1  00 00 00 00  
-0070E8r 1  10 10 10 00  
-007100r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-007104r 1  00 00 00 00  
-007108r 1  01 00 10 00  
-007120r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-007124r 1  00 00 00 00  
-007128r 1  10 10 11 10  
-007140r 1               
-007140r 1               ; world position label 58-65
-007140r 1               ;     XH                 $XL                  ___  ___  YH                  YL
-007140r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007144r 1  FF 00 00 FF  
-007148r 1  00 00 FF FF  
-007160r 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007164r 1  FF 00 FF 00  
-007168r 1  FF 00 FF 00  
-007180r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-007184r 1  FF 00 FF 00  
-007188r 1  FF 00 FF FF  
-0071A0r 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0071A4r 1  FF 00 FF 00  
-0071A8r 1  FF 00 FF 00  
-0071C0r 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
-0071C4r 1  00 00 00 FF  
-0071C8r 1  00 00 FF 00  
-0071E0r 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-0071E0r 1               ;     XH                               $XL                            ___  __  YH                              YL
-0071E0r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
-0071E4r 1  00 00 00 00  
-0071E8r 1  10 10 10 00  
-007200r 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
-007204r 1  00 00 00 00  
-007208r 1  01 00 10 00  
-007220r 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
-007224r 1  00 00 00 00  
-007228r 1  10 10 11 10  
-007240r 1               
-007240r 1               ; directional cursor reminder... 16x16 - 66-69
-007240r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
-007244r 1  01 11 11 00  
-007248r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
-00724Cr 1  01 00 00 00  
-007250r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
-007254r 1  01 11 00 00  
-007258r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
-00725Cr 1  01 00 00 00  
-007260r 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
-007264r 1  01 11 11 00  
-007268r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-00726Cr 1  00 00 00 00  
-007270r 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
-007274r 1  00 01 11 00  
-007278r 1  10 00 10 01  .byte $10, $00, $10, $01, $10, $01, $00, $01
-00727Cr 1  10 01 00 01  
-007280r 1  11 11 10 01  .byte $11, $11, $10, $01, $10, $01, $00, $01
-007284r 1  10 01 00 01  
-007288r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
-00728Cr 1  00 01 11 10  
-007290r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
-007294r 1  00 00 00 00  
-007298r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-00729Cr 1  01 00 01 00  
-0072A0r 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
-0072A4r 1  00 10 10 00  
-0072A8r 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
-0072ACr 1  00 01 00 00  
-0072B0r 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
-0072B4r 1  00 10 10 00  
-0072B8r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
-0072BCr 1  01 00 01 00  
-0072BFr 1               
+0046E7r 1  BC rr rr           LDY OBJECT_LIST_BYTE3_Y,X
+0046EAr 1  BD rr rr           LDA OBJECT_LIST_BYTE2_X,X  ;
+0046EDr 1  4A                 LSR
+0046EEr 1  C9 50              CMP #80
+0046F0r 1  90 04              BCC @X_POSITIVE ; check  outside screen.. left/right...
+0046F2r 1  18                 CLC
+0046F3r 1  69 20              ADC #32 ; to <128, then to <160 of the previous Y ?
+0046F5r 1  88                 DEY
+0046F6r 1                  @X_POSITIVE:
+0046F6r 1  C0 78              CPY #120 ; check inside screen..
+0046F8r 1  90 41              BCC @Y_POSITIVE ;   for now, just skip if outside..
+0046FAr 1  C0 C1              CPY #193
+0046FCr 1  90 E3              BCC @NEXT_OBJECT
+0046FEr 1  8D 20 9F           STA VERA_addr_low
+004701r 1  B2 29              LDA (DOLB_Y_CALC_POINTER)
+004703r 1  8D 21 9F           STA VERA_addr_high
+004706r 1  EE 25 9F           INC VERA_ctrl
+004709r 1  98                 TYA
+00470Ar 1  49 FF              EOR #$FF
+00470Cr 1  1A                 INC A
+00470Dr 1  0A                 ASL ; x2 bytes
+00470Er 1  0A                 ASL ; x4 bytes
+00470Fr 1  0A                 ASL ; x8 bytes - is offset into sprite address start..
+004710r 1  85 27              STA DOLB_CALC_SCRATCH
+004712r 1  AC rr rr           LDY OBJECT_LIST_BYTE1_MODE
+004715r 1               
+004715r 1  B9 rr rr           LDA LOW_NIBBLE_HIGH,Y
+004718r 1  0A                 ASL
+004719r 1  A8                 TAY
+00471Ar 1  A9 08              LDA #$08
+00471Cr 1  2A                 ROL
+00471Dr 1  8D 22 9F           STA VERA_addr_bank
+004720r 1  98                 TYA
+004721r 1  BC rr rr           LDY OBJECT_LIST_BYTE0_ADDRLOW,X
+004724r 1  19 rr rr           ORA SPRITE_ADDRESS_LOW_HIGH,Y
+004727r 1  8D 21 9F           STA VERA_addr_high
+00472Ar 1  18                 CLC
+00472Br 1  B9 rr rr           LDA SPRITE_ADDRESS_LOW_LOW,Y
+00472Er 1  65 27              ADC DOLB_CALC_SCRATCH
+004730r 1  8D 20 9F           STA VERA_addr_low
+004733r 1               
+004733r 1  BD rr rr           LDA OBJECT_LIST_BYTE3_Y,X
+004736r 1  69 40              ADC #64 ; push positive..
+004738r 1  A8                 TAY
+004739r 1  80 3B              BRA @Y_WAS_NEGATIVE
+00473Br 1               
+00473Br 1                  @Y_POSITIVE:
+00473Br 1  79 rr rr           ADC BITMAP_OFFSETS_LOW,Y ; note how this works because carry isn't set.. ?
+00473Er 1  8D 20 9F           STA VERA_addr_low
+004741r 1  B1 29              LDA (DOLB_Y_CALC_POINTER),Y ; now do the high for the dest..
+004743r 1  69 00              ADC #0
+004745r 1  8D 21 9F           STA VERA_addr_high
+004748r 1  EE 25 9F           INC VERA_ctrl  ;  now we need to calculate sprite source address..
+00474Br 1  BC rr rr           LDY OBJECT_LIST_BYTE1_MODE,X
+00474Er 1  B9 rr rr           LDA LOW_NIBBLE_HIGH,Y
+004751r 1  0A                 ASL
+004752r 1  A8                 TAY
+004753r 1  A9 08              LDA #$08
+004755r 1  2A                 ROL
+004756r 1  8D 22 9F           STA VERA_addr_bank
+004759r 1  98                 TYA
+00475Ar 1  BC rr rr           LDY OBJECT_LIST_BYTE0_ADDRLOW,X
+00475Dr 1  19 rr rr           ORA SPRITE_ADDRESS_LOW_HIGH,Y
+004760r 1  8D 21 9F           STA VERA_addr_high
+004763r 1  B9 rr rr           LDA SPRITE_ADDRESS_LOW_LOW,Y
+004766r 1  8D 20 9F           STA VERA_addr_low
+004769r 1               
+004769r 1  38                 SEC
+00476Ar 1  A9 78              LDA #120
+00476Cr 1  FD rr rr           SBC OBJECT_LIST_BYTE3_Y,X ;   want to check if screenH-Y < 64
+00476Fr 1  C9 41              CMP #65
+004771r 1  90 02              BCC :+
+004773r 1  A9 40              LDA #64
+004775r 1  A8               : TAY
+004776r 1                  @CHECK_ALIGN:
+004776r 1                  @Y_WAS_NEGATIVE:
+004776r 1  CE 25 9F           DEC VERA_ctrl  ;  regain dest address
+004779r 1  AD 20 9F           LDA VERA_addr_low
+00477Cr 1  29 03              AND #$03
+00477Er 1  F0 07              BEQ @DO_ZERO_RIGHT
+004780r 1  0A                 ASL
+004781r 1  0A                 ASL
+004782r 1  8D 2C 9F           STA FX_MULT
+004785r 1  D0 39              BNE @CHECK_OTHER_ALIGNS
+004787r 1                  @DO_ZERO_RIGHT:
+004787r 1  9C 2C 9F           STZ FX_MULT
+00478Ar 1  80 10              BRA :++
+00478Cr 1                  :
+00478Cr 1  AD 20 9F           LDA VERA_addr_low
+00478Fr 1  69 98              ADC #160-8
+004791r 1  8D 20 9F           STA VERA_addr_low
+004794r 1  AD 21 9F           LDA VERA_addr_high
+004797r 1  69 00              ADC #0
+004799r 1  8D 21 9F           STA VERA_addr_high
+00479Cr 1                  :
+00479Cr 1  AD 24 9F           LDA VERA_data1
+00479Fr 1  AD 24 9F           LDA VERA_data1
+0047A2r 1  AD 24 9F           LDA VERA_data1
+0047A5r 1  AD 24 9F           LDA VERA_data1
+0047A8r 1  9C 23 9F           STZ VERA_data0
+0047ABr 1               
+0047ABr 1  AD 24 9F           LDA VERA_data1
+0047AEr 1  AD 24 9F           LDA VERA_data1
+0047B1r 1  AD 24 9F           LDA VERA_data1
+0047B4r 1  AD 24 9F           LDA VERA_data1
+0047B7r 1  9C 23 9F           STZ VERA_data0
+0047BAr 1  88                 DEY
+0047BBr 1  D0 CF              BNE :--
+0047BDr 1  4C rr rr           JMP @NEXT_OBJECT
+0047C0r 1                  @CHECK_OTHER_ALIGNS:
+0047C0r 1  C9 08              CMP #8   ;  is either 4,8,12
+0047C2r 1  90 16              BCC @DO_ONE_RIGHT
+0047C4r 1  F0 4F              BEQ @DO_TWO_RIGHT
+0047C6r 1  18                 CLC
+0047C7r 1  4C rr rr           JMP @DO_THREE_RIGHT
+0047CAr 1                   :
+0047CAr 1  AD 20 9F           LDA VERA_addr_low
+0047CDr 1  69 94              ADC #160-12
+0047CFr 1  8D 20 9F           STA VERA_addr_low
+0047D2r 1  AD 21 9F           LDA VERA_addr_high
+0047D5r 1  69 00              ADC #0
+0047D7r 1  8D 21 9F           STA VERA_addr_high
+0047DAr 1                  @DO_ONE_RIGHT:
+0047DAr 1  AD 24 9F           LDA VERA_data1
+0047DDr 1  AD 24 9F           LDA VERA_data1
+0047E0r 1  AD 24 9F           LDA VERA_data1
+0047E3r 1  A9 03              LDA #%00000011
+0047E5r 1  8D 23 9F           STA VERA_data0
+0047E8r 1               
+0047E8r 1  AD 24 9F           LDA VERA_data1
+0047EBr 1  AD 24 9F           LDA VERA_data1
+0047EEr 1  AD 24 9F           LDA VERA_data1
+0047F1r 1  AD 24 9F           LDA VERA_data1
+0047F4r 1  9C 23 9F           STZ VERA_data0
+0047F7r 1               
+0047F7r 1  AD 24 9F           LDA VERA_data1
+0047FAr 1  A9 FC              LDA #%11111100
+0047FCr 1  8D 23 9F           STA VERA_data0
+0047FFr 1  88                 DEY
+004800r 1  D0 C8              BNE :-
+004802r 1  4C rr rr           JMP @NEXT_OBJECT
+004805r 1               
+004805r 1                   :
+004805r 1  AD 20 9F           LDA VERA_addr_low
+004808r 1  69 94              ADC #160-12
+00480Ar 1  8D 20 9F           STA VERA_addr_low
+00480Dr 1  AD 21 9F           LDA VERA_addr_high
+004810r 1  69 00              ADC #0
+004812r 1  8D 21 9F           STA VERA_addr_high
+004815r 1                  @DO_TWO_RIGHT:
+004815r 1  AD 24 9F           LDA VERA_data1
+004818r 1  AD 24 9F           LDA VERA_data1
+00481Br 1  A9 0F              LDA #%00001111
+00481Dr 1  8D 23 9F           STA VERA_data0
+004820r 1               
+004820r 1  AD 24 9F           LDA VERA_data1
+004823r 1  AD 24 9F           LDA VERA_data1
+004826r 1  AD 24 9F           LDA VERA_data1
+004829r 1  AD 24 9F           LDA VERA_data1
+00482Cr 1  9C 23 9F           STZ VERA_data0
+00482Fr 1               
+00482Fr 1  AD 24 9F           LDA VERA_data1
+004832r 1  AD 24 9F           LDA VERA_data1
+004835r 1  A9 F0              LDA #%11110000
+004837r 1  8D 23 9F           STA VERA_data0
+00483Ar 1  88                 DEY
+00483Br 1  D0 C8              BNE :-
+00483Dr 1  4C rr rr           JMP @NEXT_OBJECT
+004840r 1               
+004840r 1                   :
+004840r 1  AD 20 9F           LDA VERA_addr_low
+004843r 1  69 94              ADC #160-12
+004845r 1  8D 20 9F           STA VERA_addr_low
+004848r 1  AD 21 9F           LDA VERA_addr_high
+00484Br 1  69 00              ADC #0
+00484Dr 1  8D 21 9F           STA VERA_addr_high
+004850r 1                  @DO_THREE_RIGHT:
+004850r 1  AD 24 9F           LDA VERA_data1
+004853r 1  A9 3F              LDA #%00111111
+004855r 1  8D 23 9F           STA VERA_data0
+004858r 1               
+004858r 1  AD 24 9F           LDA VERA_data1
+00485Br 1  AD 24 9F           LDA VERA_data1
+00485Er 1  AD 24 9F           LDA VERA_data1
+004861r 1  AD 24 9F           LDA VERA_data1
+004864r 1  9C 23 9F           STZ VERA_data0
+004867r 1               
+004867r 1  AD 24 9F           LDA VERA_data1
+00486Ar 1  AD 24 9F           LDA VERA_data1
+00486Dr 1  AD 24 9F           LDA VERA_data1
+004870r 1  A9 C0              LDA #%11000000
+004872r 1  8D 23 9F           STA VERA_data0
+004875r 1  88                 DEY
+004876r 1  D0 C8              BNE :-
+004878r 1  4C rr rr           JMP @NEXT_OBJECT
+00487Br 1               
+00487Br 1               test_optimal_pal_data:
+00487Br 1               ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
+00487Br 1  00 00        .byte $00,$00  ; 0 - black/transparent
+00487Dr 1  C8 0F        .byte $c8,$0f  ; 1 #ffcc88
+00487Fr 1  04 06        .byte $04,$06  ; 2 #660044
+004881r 1  00 0C        .byte $00,$0C  ; 3  #cc0000
+004883r 1  F0 0C        .byte $F0,$0C  ; 4#ccff00
+004885r 1  42 03        .byte $42,$03
+004887r 1  60 0C        .byte $60,$0c   ; 6  #cc6600
+004889r 1  40 08        .byte $40,$08   ; 7 #884400
+00488Br 1  C0 0C        .byte $c0,$0c   ; 8 #cccc00
+00488Dr 1  6A 02        .byte $6a,$02   ; 9 #2266aa mid blue
+00488Fr 1  C0 00        .byte $c0,$00   ; A #00cc00
+004891r 1  AC 07        .byte $ac,$07   ; B #77aacc light blue
+004893r 1  C0 00        .byte $c0,$00   ; C #0000c0 dark blue
+004895r 1  0C 0C        .byte $0c,$0c   ; D #cc00cc
+004897r 1  88 08        .byte $88,$08   ; E #888888
+004899r 1  22 02        .byte $22,$02   ; F #222222
+00489Br 1               
+00489Br 1               test_vram_data:
+00489Br 1               ; 70 to 127 - start of 16x16 (each 128 byte) for testing directions / sizing..
+00489Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  0-15 16x10 -  0
+00489Fr 1  11 11 11 11  
+0048A3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+0048A7r 1  FF FF FF F1  
+0048ABr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+0048AFr 1  FF FF FF F1  
+0048B3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+0048B7r 1  FF FF FF F1  
+0048BBr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+0048BFr 1  FF FF FF F1  
+0048C3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+0048C7r 1  FF FF FF F1  
+0048CBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+0048CFr 1  FF FF FF F1  
+0048D3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+0048D7r 1  FF FF FF F1  
+0048DBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+0048DFr 1  FF FF FF F1  
+0048E3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+0048E7r 1  11 11 11 11  
+0048EBr 1  55 55 55 55  .repeat 54
+0048EFr 1  55 55 55 55  
+0048F3r 1  55 55 55 55  
+004A9Br 1               .res 8,$55
+004A9Br 1               .endrepeat
+004A9Br 1               
+004A9Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  16-31    16x10 -  0 trans
+004A9Fr 1  11 11 11 11  
+004AA3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004AA7r 1  F0 F0 F0 F1  
+004AABr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004AAFr 1  0F 0F 0F 01  
+004AB3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004AB7r 1  F0 F0 F0 F1  
+004ABBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004ABFr 1  0F 0F 0F 01  
+004AC3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004AC7r 1  F0 F0 F0 F1  
+004ACBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004ACFr 1  0F 0F 0F 01  
+004AD3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004AD7r 1  F0 F0 F0 F1  
+004ADBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004ADFr 1  0F 0F 0F 01  
+004AE3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+004AE7r 1  11 11 11 11  
+004AEBr 1  50 50 50 50  .repeat 27
+004AEFr 1  50 50 50 50  
+004AF3r 1  05 05 05 05  
+004C9Br 1               .res 8,$50
+004C9Br 1               .res 8,$05
+004C9Br 1               .endrepeat
+004C9Br 1               
+004C9Br 1               
+004C9Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  32-47    16x11 -  4
+004C9Fr 1  11 11 11 11  
+004CA3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+004CA7r 1  FF FF FF F1  
+004CABr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004CAFr 1  FF FF FF F1  
+004CB3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004CB7r 1  FF FF FF F1  
+004CBBr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$F1
+004CBFr 1  FF FF FF F1  
+004CC3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004CC7r 1  FF FF FF F1  
+004CCBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004CCFr 1  FF FF FF F1  
+004CD3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$F1
+004CD7r 1  FF FF FF F1  
+004CDBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+004CDFr 1  FF FF FF F1  
+004CE3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$F1
+004CE7r 1  FF FF FF F1  
+004CEBr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+004CEFr 1  11 11 11 11  
+004CF3r 1  55 55 55 55  .repeat 53
+004CF7r 1  55 55 55 55  
+004CFBr 1  55 55 55 55  
+004E9Br 1               .res 8,$55
+004E9Br 1               .endrepeat
+004E9Br 1               
+004E9Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11  ;  48-63    16x11 -  4 trans
+004E9Fr 1  11 11 11 11  
+004EA3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004EA7r 1  F0 F0 F0 F1  
+004EABr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004EAFr 1  0F 0F 0F 01  
+004EB3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004EB7r 1  F0 F0 F0 F1  
+004EBBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004EBFr 1  0F 0F 0F 01  
+004EC3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004EC7r 1  F0 F0 F0 F1  
+004ECBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004ECFr 1  0F 0F 0F 01  
+004ED3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004ED7r 1  F0 F0 F0 F1  
+004EDBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$01
+004EDFr 1  0F 0F 0F 01  
+004EE3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$F1
+004EE7r 1  F0 F0 F0 F1  
+004EEBr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$11
+004EEFr 1  11 11 11 11  
+004EF3r 1  05 05 05 05  .res 7,$05
+004EF7r 1  05 05 05     
+004EFAr 1  00           .byte 0
+004EFBr 1  50 50 50 50  .repeat 26
+004EFFr 1  50 50 50 50  
+004F03r 1  05 05 05 05  
+00509Br 1               .res 8,$50
+00509Br 1               .res 7,$05
+00509Br 1               .byte 0
+00509Br 1               .endrepeat
+00509Br 1               
+00509Br 1               
+00509Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  64-79    15x11 - 10
+00509Fr 1  11 11 11 10  
+0050A3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0050A7r 1  FF FF FF 10  
+0050ABr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0050AFr 1  FF FF FF 10  
+0050B3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0050B7r 1  FF FF FF 10  
+0050BBr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+0050BFr 1  FF FF FF 10  
+0050C3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0050C7r 1  FF FF FF 10  
+0050CBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0050CFr 1  FF FF FF 10  
+0050D3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0050D7r 1  FF FF FF 10  
+0050DBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0050DFr 1  FF FF FF 10  
+0050E3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0050E7r 1  FF FF FF 10  
+0050EBr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0050EFr 1  11 11 11 10  
+0050F3r 1  55 55 55 55  .repeat 53
+0050F7r 1  55 55 55 50  
+0050FBr 1  55 55 55 55  
+00529Br 1               .res 7,$55
+00529Br 1               .byte $50
+00529Br 1               .endrepeat
+00529Br 1               
+00529Br 1               
+00529Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  80-95    15x11 - 10 trans
+00529Fr 1  11 11 11 10  
+0052A3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0052A7r 1  F0 F0 F0 10  
+0052ABr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0052AFr 1  0F 0F 0F 10  
+0052B3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0052B7r 1  F0 F0 F0 10  
+0052BBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0052BFr 1  0F 0F 0F 10  
+0052C3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0052C7r 1  F0 F0 F0 10  
+0052CBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0052CFr 1  0F 0F 0F 10  
+0052D3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0052D7r 1  F0 F0 F0 10  
+0052DBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0052DFr 1  0F 0F 0F 10  
+0052E3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0052E7r 1  F0 F0 F0 10  
+0052EBr 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0052EFr 1  11 11 11 10  
+0052F3r 1  05 05 05 05  .res 7,$05
+0052F7r 1  05 05 05     
+0052FAr 1  00           .byte 0
+0052FBr 1  50 50 50 50  .repeat 26
+0052FFr 1  50 50 50 50  
+005303r 1  05 05 05 05  
+00549Br 1               .res 8,$50
+00549Br 1               .res 7,$05
+00549Br 1               .byte 0
+00549Br 1               .endrepeat
+00549Br 1               
+00549Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  96-111    15x12 - 18
+00549Fr 1  11 11 11 10  
+0054A3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0054A7r 1  FF FF FF 10  
+0054ABr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0054AFr 1  FF FF FF 10  
+0054B3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0054B7r 1  FF FF FF 10  
+0054BBr 1  1F FF FF F1  .byte $1F,$FF,$ff,$f1,$ff,$fF,$FF,$10
+0054BFr 1  FF FF FF 10  
+0054C3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0054C7r 1  FF FF FF 10  
+0054CBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0054CFr 1  FF FF FF 10  
+0054D3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$Ff,$FF,$FF,$FF,$10
+0054D7r 1  FF FF FF 10  
+0054DBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0054DFr 1  FF FF FF 10  
+0054E3r 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0054E7r 1  FF FF FF 10  
+0054EBr 1  1F FF FF FF  .byte $1F,$FF,$FF,$FF,$FF,$FF,$FF,$10
+0054EFr 1  FF FF FF 10  
+0054F3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0054F7r 1  11 11 11 10  
+0054FBr 1  55 55 55 55  .repeat 52
+0054FFr 1  55 55 55 50  
+005503r 1  55 55 55 55  
+00569Br 1               .res 7,$55
+00569Br 1               .byte $50
+00569Br 1               .endrepeat
+00569Br 1               
+00569Br 1               
+00569Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10  ;  112-127    15x12 - 18 trans
+00569Fr 1  11 11 11 10  
+0056A3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0056A7r 1  F0 F0 F0 10  
+0056ABr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0056AFr 1  0F 0F 0F 10  
+0056B3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0056B7r 1  F0 F0 F0 10  
+0056BBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0056BFr 1  0F 0F 0F 10  
+0056C3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0056C7r 1  F0 F0 F0 10  
+0056CBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0056CFr 1  0F 0F 0F 10  
+0056D3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0056D7r 1  F0 F0 F0 10  
+0056DBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0056DFr 1  0F 0F 0F 10  
+0056E3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+0056E7r 1  F0 F0 F0 10  
+0056EBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+0056EFr 1  0F 0F 0F 10  
+0056F3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+0056F7r 1  11 11 11 10  
+0056FBr 1  50 50 50 50  .repeat 26
+0056FFr 1  50 50 50 50  
+005703r 1  05 05 05 05  
+00589Br 1               .res 8,$50
+00589Br 1               .res 7,$05
+00589Br 1               .byte 0
+00589Br 1               .endrepeat
+00589Br 1               
+00589Br 1               ; alernate tile graphic to use for tub wall .. 128-143 ; 16x tile
+00589Br 1  16 16 16 16  .repeat 32
+00589Fr 1  16 16 16 16  
+0058A3r 1  61 61 61 61  
+005A9Br 1                   .byte $16, $16, $16, $16, $16, $16, $16, $16
+005A9Br 1                   .byte $61, $61, $61, $61, $61, $61, $61, $61
+005A9Br 1               .endrepeat
+005A9Br 1               
+005A9Br 1  10 10 10 10  .repeat 32  ;  144-159
+005A9Fr 1  10 10 10 10  
+005AA3r 1  06 06 06 06  
+005C9Br 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
+005C9Br 1                   .byte $06, $06, $06, $06, $06, $06, $06, $06
+005C9Br 1               .endrepeat
+005C9Br 1               
+005C9Br 1               
+005C9Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  160-175    14x12
+005C9Fr 1  11 11 11 00  
+005CA3r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+005CA7r 1  FF FF F1 00  
+005CABr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$fF,$FF,$F1,$00
+005CAFr 1  FF FF F1 00  
+005CB3r 1  1F FF FF FF  .byte $1f,$FF,$ff,$Ff,$Ff,$fF,$F1,$00
+005CB7r 1  FF FF F1 00  
+005CBBr 1  1F FF FF F1  .byte $1f,$FF,$FF,$f1,$fF,$FF,$F1,$00
+005CBFr 1  FF FF F1 00  
+005CC3r 1  1F FF FF FF  .byte $1f,$FF,$FF,$Ff,$Ff,$fF,$F1,$00
+005CC7r 1  FF FF F1 00  
+005CCBr 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+005CCFr 1  FF FF F1 00  
+005CD3r 1  1F FF FF FF  .byte $1f,$FF,$FF,$fF,$FF,$FF,$F1,$00
+005CD7r 1  FF FF F1 00  
+005CDBr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+005CDFr 1  FF FF F1 00  
+005CE3r 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+005CE7r 1  FF FF F1 00  
+005CEBr 1  1F FF FF FF  .byte $1f,$FF,$FF,$FF,$FF,$FF,$F1,$00
+005CEFr 1  FF FF F1 00  
+005CF3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00
+005CF7r 1  11 11 11 00  
+005CFBr 1  55 55 55 55  .repeat 52
+005CFFr 1  55 55 55 00  
+005D03r 1  55 55 55 55  
+005E9Br 1               .res 7,$55
+005E9Br 1               .byte 0
+005E9Br 1               .endrepeat
+005E9Br 1               
+005E9Br 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$00  ;  176-191
+005E9Fr 1  11 11 11 00  
+005EA3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005EA7r 1  F0 F0 F0 10  
+005EABr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005EAFr 1  0F 0F 0F 10  
+005EB3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005EB7r 1  F0 F0 F0 10  
+005EBBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005EBFr 1  0F 0F 0F 10  
+005EC3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005EC7r 1  F0 F0 F0 10  
+005ECBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005ECFr 1  0F 0F 0F 10  
+005ED3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005ED7r 1  F0 F0 F0 10  
+005EDBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005EDFr 1  0F 0F 0F 10  
+005EE3r 1  10 F0 F0 F0  .byte $10,$F0,$F0,$F0,$F0,$F0,$F0,$10
+005EE7r 1  F0 F0 F0 10  
+005EEBr 1  1F 0F 0F 0F  .byte $1F,$0F,$0F,$0f,$0F,$0F,$0F,$10
+005EEFr 1  0F 0F 0F 10  
+005EF3r 1  11 11 11 11  .byte $11,$11,$11,$11,$11,$11,$11,$10
+005EF7r 1  11 11 11 10  
+005EFBr 1  50 50 50 50  .repeat 26
+005EFFr 1  50 50 50 50  
+005F03r 1  05 05 05 05  
+00609Br 1               .res 8,$50
+00609Br 1               .res 7,$05
+00609Br 1               .byte 0
+00609Br 1               .endrepeat
+00609Br 1               
+00609Br 1               ; alernate tile graphic to use for tub wall .. 192-223 ; 15x tile
+00609Br 1  16 16 16 16  .repeat 32
+00609Fr 1  16 16 16 10  
+0060A3r 1  61 61 61 61  
+00629Br 1                   .byte $16, $16, $16, $16, $16, $16, $16, $10
+00629Br 1                   .byte $61, $61, $61, $61, $61, $61, $61, $60
+00629Br 1               .endrepeat
+00629Br 1               
+00629Br 1  10 10 10 10  .repeat 32  ;  144-159
+00629Fr 1  10 10 10 10  
+0062A3r 1  06 06 06 06  
+00649Br 1                   .byte $10, $10, $10, $10, $10, $10, $10, $10
+00649Br 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
+00649Br 1               .endrepeat
+00649Br 1               
+00649Br 1               
+00649Br 1               ; alernate tile graphic to use for tub wall .. 224 ; 14x tile
+00649Br 1  16 16 16 16  .repeat 32
+00649Fr 1  16 16 16 00  
+0064A3r 1  61 61 61 61  
+00669Br 1                   .byte $16, $16, $16, $16, $16, $16, $16, $00
+00669Br 1                   .byte $61, $61, $61, $61, $61, $61, $61, $00
+00669Br 1               .endrepeat
+00669Br 1               
+00669Br 1  10 10 10 10  .repeat 32  ;  144-159
+00669Fr 1  10 10 10 00  
+0066A3r 1  06 06 06 06  
+00689Br 1                   .byte $10, $10, $10, $10, $10, $10, $10, $00
+00689Br 1                   .byte $06, $06, $06, $06, $06, $06, $06, $00
+00689Br 1               .endrepeat
+00689Br 1               
+00689Br 1               
+00689Br 1               
+00689Br 1               HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
+00689Br 1               ;     01   23   45   67
+00689Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0
+00689Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+0068A3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0068A7r 1  00 00 00 00  .byte $00, $00, $00, $00
+0068ABr 1  01 00 00 10  .byte $01, $00, $00, $10
+0068AFr 1  01 00 00 10  .byte $01, $00, $00, $10
+0068B3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0068B7r 1  00 11 11 00  .byte $00, $11, $11, $00   ; 0 /
+0068BBr 1               
+0068BBr 1  00 00 00 00  .byte $00, $00, $00, $00 ; 1
+0068BFr 1  00 00 00 10  .byte $00, $00, $00, $10
+0068C3r 1  00 00 00 10  .byte $00, $00, $00, $10
+0068C7r 1  00 00 00 00  .byte $00, $00, $00, $00
+0068CBr 1  00 00 00 10  .byte $00, $00, $00, $10
+0068CFr 1  00 00 00 10  .byte $00, $00, $00, $10
+0068D3r 1  00 00 00 10  .byte $00, $00, $00, $10
+0068D7r 1  00 00 00 00  .byte $00, $00, $00, $00
+0068DBr 1               
+0068DBr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 2
+0068DFr 1  00 00 00 10  .byte $00, $00, $00, $10
+0068E3r 1  00 00 00 10  .byte $00, $00, $00, $10
+0068E7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0068EBr 1  01 00 00 00  .byte $01, $00, $00, $00
+0068EFr 1  01 00 00 00  .byte $01, $00, $00, $00
+0068F3r 1  01 00 00 00  .byte $01, $00, $00, $00
+0068F7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0068FBr 1               
+0068FBr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 3
+0068FFr 1  00 00 00 10  .byte $00, $00, $00, $10
+006903r 1  00 00 00 10  .byte $00, $00, $00, $10
+006907r 1  00 11 11 00  .byte $00, $11, $11, $00
+00690Br 1  00 00 00 10  .byte $00, $00, $00, $10
+00690Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006913r 1  00 00 00 10  .byte $00, $00, $00, $10
+006917r 1  00 11 11 00  .byte $00, $11, $11, $00
+00691Br 1               
+00691Br 1  00 00 00 00  .byte $00, $00, $00, $00   ; 4
+00691Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+006923r 1  01 00 00 10  .byte $01, $00, $00, $10
+006927r 1  00 11 11 00  .byte $00, $11, $11, $00
+00692Br 1  00 00 00 10  .byte $00, $00, $00, $10
+00692Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006933r 1  00 00 00 10  .byte $00, $00, $00, $10
+006937r 1  00 00 00 00  .byte $00, $00, $00, $00
+00693Br 1               
+00693Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; 5
+00693Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006943r 1  01 00 00 00  .byte $01, $00, $00, $00
+006947r 1  00 11 11 00  .byte $00, $11, $11, $00
+00694Br 1  00 00 00 10  .byte $00, $00, $00, $10
+00694Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006953r 1  00 00 00 10  .byte $00, $00, $00, $10
+006957r 1  00 11 11 00  .byte $00, $11, $11, $00
+00695Br 1               
+00695Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; 6
+00695Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006963r 1  01 00 00 00  .byte $01, $00, $00, $00
+006967r 1  00 11 11 00  .byte $00, $11, $11, $00
+00696Br 1  01 00 00 10  .byte $01, $00, $00, $10
+00696Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+006973r 1  01 00 00 10  .byte $01, $00, $00, $10
+006977r 1  00 11 11 00  .byte $00, $11, $11, $00
+00697Br 1               
+00697Br 1  00 01 01 00  .byte $00, $01, $01, $00 ; 7
+00697Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006983r 1  00 00 00 10  .byte $00, $00, $00, $10
+006987r 1  00 00 00 00  .byte $00, $00, $00, $00
+00698Br 1  00 00 00 10  .byte $00, $00, $00, $10
+00698Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006993r 1  00 00 00 10  .byte $00, $00, $00, $10
+006997r 1  00 00 00 00  .byte $00, $00, $00, $00
+00699Br 1               
+00699Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; 8
+00699Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069A3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0069A7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0069ABr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069AFr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069B3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0069B7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0069BBr 1               
+0069BBr 1  00 11 11 00  .byte $00, $11, $11, $00   ; 9
+0069BFr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069C3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0069C7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0069CBr 1  00 00 00 10  .byte $00, $00, $00, $10
+0069CFr 1  00 00 00 10  .byte $00, $00, $00, $10
+0069D3r 1  00 00 00 10  .byte $00, $00, $00, $10
+0069D7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0069DBr 1               
+0069DBr 1  00 11 11 00  .byte $00, $11, $11, $00   ; A
+0069DFr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069E3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0069E7r 1  00 11 11 00  .byte $00, $11, $11, $00
+0069EBr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069EFr 1  01 00 00 10  .byte $01, $00, $00, $10
+0069F3r 1  01 00 00 10  .byte $01, $00, $00, $10
+0069F7r 1  00 00 00 00  .byte $00, $00, $00, $00
+0069FBr 1               
+0069FBr 1               
+0069FBr 1  00 00 00 00  .byte $00, $00, $00, $00   ; B
+0069FFr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A03r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A07r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A0Br 1  01 00 00 10  .byte $01, $00, $00, $10
+006A0Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+006A13r 1  01 00 00 10  .byte $01, $00, $00, $10
+006A17r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A1Br 1               
+006A1Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; C
+006A1Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A23r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A27r 1  00 00 00 00  .byte $00, $00, $00, $00
+006A2Br 1  01 00 00 00  .byte $01, $00, $00, $00
+006A2Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A33r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A37r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A3Br 1               
+006A3Br 1  00 00 00 00  .byte $00, $00, $00, $00   ; D
+006A3Fr 1  00 00 00 10  .byte $00, $00, $00, $10
+006A43r 1  00 00 00 10  .byte $00, $00, $00, $10
+006A47r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A4Br 1  01 00 00 10  .byte $01, $00, $00, $10
+006A4Fr 1  01 00 00 10  .byte $01, $00, $00, $10
+006A53r 1  01 00 00 10  .byte $01, $00, $00, $10
+006A57r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A5Br 1               
+006A5Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; E
+006A5Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A63r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A67r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A6Br 1  01 00 00 00  .byte $01, $00, $00, $00
+006A6Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A73r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A77r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A7Br 1               
+006A7Br 1  00 11 11 00  .byte $00, $11, $11, $00   ; F   sprite addr 48
+006A7Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A83r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A87r 1  00 11 11 00  .byte $00, $11, $11, $00
+006A8Br 1  01 00 00 00  .byte $01, $00, $00, $00
+006A8Fr 1  01 00 00 00  .byte $01, $00, $00, $00
+006A93r 1  01 00 00 00  .byte $01, $00, $00, $00
+006A97r 1  00 00 00 00  .byte $00, $00, $00, $00
+006A9Br 1               
+006A9Br 1               test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10
+006A9Br 1               ;     01   23   45   67   89   AB   CD   EF
+006A9Br 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
+006A9Fr 1  CC C9 CC C0  
+006AA3r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
+006AA7r 1  99 9B 99 9C  
+006AABr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
+006AAFr 1  BB BC BB B0  
+006AB3r 1  0C C9 CC C9  .byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
+006AB7r 1  CC C9 CC CC  
+006ABBr 1  C9 9B 99 9B  .byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
+006ABFr 1  99 9B 99 90  
+006AC3r 1  0B BC BB BC  .byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
+006AC7r 1  BB BC BB BC  
+006ACBr 1  CC C9 CC C9  .byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
+006ACFr 1  CC C9 CC C0  
+006AD3r 1  09 9B 99 9B  .byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
+006AD7r 1  99 9B 99 9C  
+006ADBr 1  CB BC BB BC  .byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 ..
+006ADFr 1  BB BC BB B0  
+006AE3r 1  0C 09 0C 09  .byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
+006AE7r 1  0C 09 0C 0C  
+006AEBr 1  09 90 09 90  .byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
+006AEFr 1  09 90 09 90  
+006AF3r 1  0E 9E E9 9E  .byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
+006AF7r 1  E9 9E E9 9E  
+006AFBr 1               
+006AFBr 1  EE EE EE EE  .repeat 13
+006AFFr 1  EE EE EE E0  
+006B03r 1  0E EE 66 EE  
+006C9Br 1                   .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
+006C9Br 1                   .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;
+006C9Br 1                   .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;
+006C9Br 1                   .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;
+006C9Br 1               .endrepeat
+006C9Br 1               
+006C9Br 1               test_border: ; 32
+006C9Br 1  0B 0B 0B 0B  .repeat 64
+006C9Fr 1  B0 B0 B0 B0  
+006CA3r 1  0B 0B 0B 0B  
+006E9Br 1                  .res 4, $0B
+006E9Br 1                  .res 4, $B0
+006E9Br 1               .endrepeat
+006E9Br 1               
+006E9Br 1               test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
+006E9Br 1               ;     01   23   45   67
+006E9Br 1  11 00 00 11  .byte $11, $00, $00, $11
+006E9Fr 1  10 00 00 01  .byte $10, $00, $00, $01
+006EA3r 1  00 00 00 00  .byte $00, $00, $00, $00
+006EA7r 1  00 01 10 00  .byte $00, $01, $10, $00
+006EABr 1  00 01 10 00  .byte $00, $01, $10, $00
+006EAFr 1  00 00 00 00  .byte $00, $00, $00, $00
+006EB3r 1  10 00 00 01  .byte $10, $00, $00, $01
+006EB7r 1  11 00 00 11  .byte $11, $00, $00, $11
+006EBBr 1               
+006EBBr 1  00 00 00 00  .byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
+006EBFr 1  00 00 01 00  .byte $00, $00, $01, $00
+006EC3r 1  00 00 10 00  .byte $00, $00, $10, $00
+006EC7r 1  00 01 00 00  .byte $00, $01, $00, $00
+006ECBr 1  00 10 00 00  .byte $00, $10, $00, $00
+006ECFr 1  01 00 00 00  .byte $01, $00, $00, $00
+006ED3r 1  11 11 11 00  .byte $11, $11, $11, $00
+006ED7r 1  00 00 00 00  .byte $00, $00, $00, $00
+006EDBr 1               
+006EDBr 1               ; cell position label sprite addr 50-57
+006EDBr 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006EDFr 1  FF 00 FF 00  
+006EE3r 1  00 FF 00 00  
+006EFBr 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006EFFr 1  00 00 FF 00  
+006F03r 1  00 FF 00 00  
+006F1Br 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006F1Fr 1  FF 00 FF 00  
+006F23r 1  00 FF 00 00  
+006F3Br 1  FF 00 00 FF  .byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006F3Fr 1  00 00 FF 00  
+006F43r 1  00 FF 00 00  
+006F5Br 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006F5Fr 1  FF 00 FF FF  
+006F63r 1  00 FF FF 00  
+006F7Br 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+006F7Br 1               ;     XH                               $XL                            ___  __  YH                              YL
+006F7Br 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+006F7Fr 1  00 00 00 00  
+006F83r 1  10 10 10 00  
+006F9Br 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+006F9Fr 1  00 00 00 00  
+006FA3r 1  01 00 10 00  
+006FBBr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+006FBFr 1  00 00 00 00  
+006FC3r 1  10 10 11 10  
+006FDBr 1               
+006FDBr 1               ; world position label 58-65
+006FDBr 1               ;     XH                 $XL                  ___  ___  YH                  YL
+006FDBr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006FDFr 1  FF 00 00 FF  
+006FE3r 1  00 00 FF FF  
+006FFBr 1  FF 00 00 00  .byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+006FFFr 1  FF 00 FF 00  
+007003r 1  FF 00 FF 00  
+00701Br 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+00701Fr 1  FF 00 FF 00  
+007023r 1  FF 00 FF FF  
+00703Br 1  FF 00 FF 00  .byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+00703Fr 1  FF 00 FF 00  
+007043r 1  FF 00 FF 00  
+00705Br 1  00 FF 00 FF  .byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+00705Fr 1  00 00 00 FF  
+007063r 1  00 00 FF 00  
+00707Br 1               ;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
+00707Br 1               ;     XH                               $XL                            ___  __  YH                              YL
+00707Br 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00
+00707Fr 1  00 00 00 00  
+007083r 1  10 10 10 00  
+00709Br 1  01 00 11 10  .byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00
+00709Fr 1  00 00 00 00  
+0070A3r 1  01 00 10 00  
+0070BBr 1  10 10 10 10  .byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00
+0070BFr 1  00 00 00 00  
+0070C3r 1  10 10 11 10  
+0070DBr 1               
+0070DBr 1               ; directional cursor reminder... 16x16 - 66-69
+0070DBr 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $11, $11, $00
+0070DFr 1  01 11 11 00  
+0070E3r 1  00 10 00 10  .byte $00, $10, $00, $10, $01, $00, $00, $00
+0070E7r 1  01 00 00 00  
+0070EBr 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $11, $00, $00
+0070EFr 1  01 11 00 00  
+0070F3r 1  00 10 10 10  .byte $00, $10, $10, $10, $01, $00, $00, $00
+0070F7r 1  01 00 00 00  
+0070FBr 1  00 01 01 00  .byte $00, $01, $01, $00, $01, $11, $11, $00
+0070FFr 1  01 11 11 00  
+007103r 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+007107r 1  00 00 00 00  
+00710Br 1  01 11 00 00  .byte $01, $11, $00, $00, $00, $01, $11, $00
+00710Fr 1  00 01 11 00  
+007113r 1  10 00 10 01  .byte $10, $00, $10, $01, $10, $01, $00, $01
+007117r 1  10 01 00 01  
+00711Br 1  11 11 10 01  .byte $11, $11, $10, $01, $10, $01, $00, $01
+00711Fr 1  10 01 00 01  
+007123r 1  10 00 10 00  .byte $10, $00, $10, $00, $00, $01, $11, $10
+007127r 1  00 01 11 10  
+00712Br 1  00 00 00 00  .byte $00, $00, $00, $00, $00, $00, $00, $00
+00712Fr 1  00 00 00 00  
+007133r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+007137r 1  01 00 01 00  
+00713Br 1  00 00 01 00  .byte $00, $00, $01, $00, $00, $10, $10, $00
+00713Fr 1  00 10 10 00  
+007143r 1  00 00 10 00  .byte $00, $00, $10, $00, $00, $01, $00, $00
+007147r 1  00 01 00 00  
+00714Br 1  00 01 00 00  .byte $00, $01, $00, $00, $00, $10, $10, $00
+00714Fr 1  00 10 10 00  
+007153r 1  00 11 11 10  .byte $00, $11, $11, $10, $01, $00, $01, $00
+007157r 1  01 00 01 00  
+00715Ar 1               
