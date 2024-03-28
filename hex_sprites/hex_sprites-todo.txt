@@ -374,8 +374,17 @@ TODO 	sprites with Y<0
 	DONE
 TODO 	limit sprites to bottom of screen
 	DONE
-0740 	OK, basically working.. woot! 
+0740 	OK, basically working.. woot! no sprites gets min 10 fps.. 
 	COMMIT
+0815	start putting in water sim.. set a toggle for it ? like 8 key maybe? 
+1000 	started coding water sim calculations.. have half of row1.. lol.. gotta go..
+
+2024/03/28
+0806 	more water sim stuff.. 
+0910 	ewww gotta run.. 
+	COMMIT
+
+TODO 	Water Sim
 
 TODO 	SPAN buffer thing / avoid overdraw
 TODO 	implement faster maths for the buffer writing.. 

@@ -40,6 +40,9 @@ NEXT_ROW_Y_H: ; 1000
 TUB_WORLD: ; 32*64 = 2K ... is 1100 to 1900-1
 .include "tub_world_hieghts_01.inc"
 
+WATER_CALC_SCRATCH:
+.include "tub_world_hieghts_01.inc"
+
 ; 1900
 
 OBJECT_LIST_Z_START_POINTERS: ; 1900
@@ -447,11 +450,12 @@ DEBUG_B: .byte 0  ; C
 DEBUG_C: .byte 0  ; D
 DEBUG_D: .byte 0  ; E
 ; line 8
+DO_WATER:   .byte 0 ;   
 
-NUM_AVAIL_SPRITES:   .byte 0 ; A
+NUM_AVAIL_SPRITES:   .byte 128 ; A
 NUM_RESERVED_SPRITES:    .byte  0;(1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
 
-SPRITE_OBJECT_ENABLE: .byte 0 ;255 ;
+SPRITE_OBJECT_ENABLE: .byte 255 ;255 ;
 
 CAMERA_CENTER_XL:    .byte 0 ; 12
 CAMERA_CENTER_YL:    .byte 0 ; 14
@@ -835,6 +839,11 @@ start:
 
 
 @do_update:
+   LDA DO_WATER
+   BNE :+
+   JSR UPDATE_WATER_SIM
+ :
+
    ;  set up screen center stuff
 
 
@@ -1337,7 +1346,13 @@ start:
    LDA SPRITE_OBJECT_ENABLE   
    EOR #$FF
    STA SPRITE_OBJECT_ENABLE
-   
+
+ : CMP #EIGHT_CHAR
+   BNE :+  
+   LDA #$FF 
+   EOR DO_WATER
+   STA DO_WATER 
+
  : JMP @do_update
 
 @cleanup_and_exit:
@@ -2645,6 +2660,111 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       DEY 
       BNE :-
       JMP @NEXT_OBJECT
+
+.macro calc_downlefts_backwards_for_row row, start, count
+.proc 
+   SELF = TUBWORLD+(64*row)+start-1 ;because 1 is last processed..
+   LEFT = SELF-1
+   DOWNLEFT = LEFT+64
+   DOWNRIGHT = DOWNLEFT+1
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+start-1
+
+.if count & 1 = 1 
+   LDX #count
+   LDA SELF,X 
+   ADC DOWNRIGHT,X
+   BRA ODD_START
+.else 
+   LDX #count
+.endif
+LOOP:
+   LDA LEFT,X           ;  4
+   ADC DOWNLEFT,X       ;  4  8
+   TAY                  ;  2  10
+   ADC SELF,X           ;  4  14
+   ADC DOWNRIGHT,X      ;  4  18
+   STA SCRATCH,X        ;  4  22
+   DEX                  ;  2  24    
+   TYA                  ;  2  26
+ODD_START:
+   ADC LEFT,X           ;  4  30
+   ADC DOWNLEFT,X       ;  4  34
+   STA SCRATCH,X        ;  4  38
+   DEX                  ;  2  40
+   BNE LOOP             ;  ~3   43  /2 =  ~22 per each
+.endproc
+.endmacro
+
+.macro calc_new_values_for_row row, start, count 
+.proc 
+   SCRATCH_DOWNLEFT = WATER_CALC_SCRATCH+(64*row)+start-1
+   SCRATCH_UPRIGHT = SCRATCH_DOWNLEFT-64+1
+   SELF = TUBWORLD+(64*row)+start-1
+   LDX #COUNT
+ :  LDA SCRATCH_DOWNLEFT,X  ;  <256    4
+   ADC SCRATCH_UPRIGHT,X   ;  <512     4  8
+   ROR ; <256                          2  10
+   LSR ; <128                          2  12
+   LSR ; <64 OK                        2  14
+   ADC SELF,X ; <128                   4  18
+   LSR ; <64                           2  20
+   ADC #0   ;                          2  22
+   STA SELF,X  ;                       4  26
+   DEX                  ;              2  28
+   BNE :-               ;             ~3  31    + ~22 per each = ~53 cycles per normie * ~1300 = ~69,000 cycles otay
+.endproc
+.endmacro
+
+
+UPDATE_WATER_SIM:
+   ;  make downlefts shingles to stash for calculation as newSelf = (downleft+upright)/8 + Self )/2
+   ;  row 1 - 21 to 55 = 35 cells , no north.. 21 has no left neighbor, so macro can only do 34 and to 22
+   calc_downlefts_backwards_for_row 1, 22, 34
+   calc_downlefts_backwards_for_row 2, 21, 36 ; row 2 - 20 to 56 = 37 cells, start 21 do 36
+   calc_downlefts_backwards_for_row 3, 19, 39 ; row 3 - 18 to 57 = 40 cells, start 19 do 39 
+   calc_downlefts_backwards_for_row 4, 17, 42 ; row 4 - 16 to 58 = 43 cells, start 17 do 42 
+   calc_downlefts_backwards_for_row 5, 15, 45 ; row 5 - 14 to 59 = 46 cells, start 15 do 45 
+   calc_downlefts_backwards_for_row 6, 14, 46 ; row 6 - 13 to 59 = 47 cells, start 14 do 46 
+   calc_downlefts_backwards_for_row 7, 13, 47 ; row 7 - 12 to 59 = 48 cells, start 13 do 47 
+   calc_downlefts_backwards_for_row 8, 12, 48 ; row 8 - 11 to 59 = 49 cells, start 12 do 48 
+   calc_downlefts_backwards_for_row 9, 11, 49 ; row 9 - 10 to 59 = 50 cells, start 11 do 49 <- last one with end=59 
+
+   calc_new_values_for_row 2, 21, 35 ; because last 1 has no right neighbors...?
+
+   RTS
+   ;  calc down_righs  
+   UWS_ROW1_S = TUB_WORLD+64+21  
+   UWS_ROW1_L = TUB_WORLD+64+20 
+   UWS_ROW1_DL = TUB_WORLD+128+20 
+   UWS_ROW1_DR = TUB_WORLD+128+21 
+   UWS_ROW1_SCRATCH = WATER_CALC_SCRATCH+64+21
+   LDX #34           ;        2     2
+ : LDA UWS_ROW1_L,X           ;  4     4  L  S
+   ADC UWS_ROW1_DL,X          ;  4     8   DL    
+   TAY                        ;  2     10
+   ADC UWS_ROW1_S,X           ;  4     14
+   ADC UWS_ROW1_DR,X          ;  4     18
+   STA UWS_ROW1_SCRATCH,X     ;  4     22
+   DEX                        ;  2     24
+   TYA                        ;  2     26    S+DR !   
+   ADC UWS_ROW1_L,X           ;  4     30
+   ADC UWS_ROW1_DL,X          ;  4     34
+   STA UWS_ROW1_SCRATCH,X     ;  4     38
+   DEX                        ;  2     40
+   BNE :-                     ;  3     43  *17  = 731 cycles..
+   LDA UWS_ROW1_S             ;  4     generate additional 1 for row2 to use as uprights
+   ADC UWS_ROW1_DL            ;  4  8
+   ASL                        ;  2  10
+   STA UWS_ROW1_SCRATCH    ;  4  14    +731 = 745 cycles so far .. OK 
+   ; row 2 - 20 to 55 = 36 cells .. uses row1 as upright values.. need to calc downlefts
+   UWS_ROW2_S = TUB_WORLD+128+19 ; 19 needs to be handled different..
+   UWS_ROW2_L = UWS_ROW2_S-1
+   UWS_ROW2_DL = UWS_ROW2_L+64
+   UWS_ROW2_DR = UWS_ROW2_DL+1 ; feels like maybe this could be rewritten with a little DSL .. at least a macro..
+   LDX #36
+
+
+   RTS
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)
