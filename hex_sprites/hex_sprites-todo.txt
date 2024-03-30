@@ -427,7 +427,9 @@ ODD_START:
 0500 	working on water sim, sorting out algo / bugs.. 
 0815 	committing there in case need to reference? 
 	COMMIT
-
+1145 	water sorta working but waves not really propagating.. 
+1205 	will need to figure out something better with the water sim...
+	COMMIT
 
 TODO 	Water Sim
 

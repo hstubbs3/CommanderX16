@@ -256,6 +256,9 @@ LOW_NIBBLE_HIGH:
 .byte $00,$10,$20,$30,$40,$50,$60,$70,$80,$90,$A0,$B0,$C0,$D0,$E0,$F0
 .byte $00,$10,$20,$30,$40,$50,$60,$70,$80,$90,$A0,$B0,$C0,$D0,$E0,$F0
 
+SPECIAL_SCRATCH: ; 256 bytes
+.res 256,0
+
 MISSING_ONE_NEIGHBOR_MUL:
 .byte 0,1,2,4,5,6,7,8,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,46,47,48,49,50,52,53,54,55,56,58,59,60,61,62,64,65,66,67,68,70,71,72,73,74,76,77,78,79,80,82,83,84,85,86,88,89,90,91,92,94,95,96,97,98,100,101,102,103,104,106,107,108,109,110,112,113,114,115,116,118,119,120,121,122,124,125,126,127,128,130,131,132,133,134,136,137,138,139,140,142,143,144,145,146,148,149,150,151,152,154,155,156,157,158,160,161,162,163,164,166,167,168,169,170,172,173,174,175,176,178,179,180,181,182,184,185,186,187,188,190,191,192,193,194,196,197,198,199,200,202,203,204,205,206,208,209,210,211,212,214,215,216,217,218,220,221,222,223,224,226,227,228,229,230,232,233,234,235,236,238,239,240,241,242,244,245,246,247,248,250,251,252,253,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 
@@ -566,6 +569,28 @@ custom_irq_handler: ; 2E12
    jmp (default_irq_vector)
    ; RTI will happen after jump
 
+DO_WAVES:
+  STZ ZP_PTR
+  LDA #>TUB_WORLD
+  STA ZP_PTR+1
+  LDY #64
+  LDX #8
+  ; try to add 2
+  : LDA (ZP_PTR),y ; grab world data
+    CMP #128 
+    BCS :++         ; need skip this one 
+    CMP #4        ; OK is this low or high to alter? 
+    BCC :+         ; if low increase.. OK 
+    SBC #3 
+  : ADC #1
+    STA (ZP_PTR),y
+  : INY      
+    BNE :---
+    INC ZP_PTR+1
+    DEX 
+    BNE :---
+    rts
+
 start:
   ; start of program - init globals
   lda IRQVec
@@ -594,7 +619,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #32   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
+  LDX #48   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
   BRA :++
   : 
      INC ZP_PTR+1
@@ -606,49 +631,7 @@ start:
      DEX 
      BNE :--
 
-   jmp no_waves
   ; initialize some waves 
-  STZ ZP_PTR
-  LDA #>TUB_WORLD
-  STA ZP_PTR+1
-  LDA #8
-  STA ZP_PTR+2 ; for use as page counter.. 
-  LDX #0
-  : LDA (ZP_PTR),y ; grab world data
-    CMP #128       ; is outside or inside tub? 
-    BCS :+         ; skip this one 
-    TXA 
-    STA (ZP_PTR),y 
-    INX
-    INX
-    INX
-    INX
-    CPX #52       
-    BCS :++
-  : INY
-    BNE :--
-    INC ZP_PTR+1
-    DEC ZP_PTR+2
-    BNE :--
-    BRA :+++
-  : LDA (ZP_PTR),y 
-    CMP #128       ; is outside or inside tub? 
-    BCS :+         ; skip this one 
-    TXA 
-    STA (ZP_PTR),y 
-    DEX
-    DEX
-    DEX
-    DEX
-    BEQ :--
-  : INY
-    BNE :--
-    INC ZP_PTR+1
-    DEC ZP_PTR+2
-    BNE :--
-  :
-
-no_waves:
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
   LDA #1
   STA VERA_ctrl
@@ -1030,7 +1013,7 @@ no_waves:
       STZ OBJECT_LIST_BYTE1_MODE,X          ; 16 color / low address 
       STZ OBJECT_LIST_BYTE2_X
       STA OBJECT_LIST_BYTE4_ZFLIPS,X
-      STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
+      ;STA OBJECT_LIST_BYTE5_SIZE,X ; 01.3456 done . 
       INX 
       BNE :-
 
@@ -1050,23 +1033,51 @@ no_waves:
 
    LDA DO_FAUCET
    BEQ :+
-   LDA #63
+   LDA #85
    ; we're going to pretend the faucet is running...
    STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
    STA TUB_WORLD+(15*64)+8
    STA TUB_WORLD+(14*64)+8
    STA TUB_WORLD+(16*64)+7
- :  JSR UPDATE_WATER_SIM
-   LDA DO_FAUCET
-   BEQ :+
-   LDA #85
-   STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
-   STA TUB_WORLD+(15*64)+8
-   STA TUB_WORLD+(14*64)+8
-   STA TUB_WORLD+(16*64)+7
+ : LDA CAMERA_CELL_LINE_PTR 
+   STA ZP_PTR
+   LDA CAMERA_CELL_LINE_PTR+1
+   STA ZP_PTR+1
+   LDY camera_cell_x
+   LDA (ZP_PTR),y
+   INC A 
+   STA (ZP_PTR),y
+
+   JSR DO_WAVES
+
+   JSR UPDATE_WATER_SIM
+;   LDA DO_FAUCET
+;   BEQ :+
+;   LDA #85
+;   STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
+;   STA TUB_WORLD+(15*64)+8
+;   STA TUB_WORLD+(14*64)+8
+;   STA TUB_WORLD+(16*64)+7
  :
 
   jsr push_world_to_object_list
+  LDY CAMERA_CENTER_YH
+  LDA OBJECT_LIST_Z_START_POINTERS,y ;  get pointer to current next.. 
+  INC OBJECT_LIST_BYTE6_NEXT ; get next available object...
+  LDX OBJECT_LIST_BYTE6_NEXT ; get offset for that 
+  STA OBJECT_LIST_BYTE6_NEXT,X ; set the old value to this next..
+  TXA 
+  STA OBJECT_LIST_Z_START_POINTERS,y ; patch this into Z 
+  LDA #16
+  STA OBJECT_LIST_BYTE0_ADDRLOW,X
+  LDA #1
+  STA OBJECT_LIST_BYTE1_MODE,X
+  LDA #80-8
+  STA OBJECT_LIST_BYTE2_X,X 
+  LDA #60-16
+  STA OBJECT_LIST_BYTE3_Y,X 
+  LDA #$50
+  STA OBJECT_LIST_BYTE5_SIZE,X 
 
 ;        A        B     CURRENT BITMAP BUFFER
 ;   0   display  dirty    A is being displayed, B to be drawn on
@@ -2863,7 +2874,7 @@ LOOP:
    ADC DOWNRIGHT,X      ;  4  18
    ADC SCRATCH,X 
    ROR
-;   ADC #0
+   ADC #1
    STA SCRATCH,X        ;  4  22
    DEX                  ;  2  24    
    TYA                  ;  2  26
@@ -2871,7 +2882,7 @@ LOOP:
    ADC DOWNLEFT,X       ;  4  34
    ADC SCRATCH,X 
    ROR
- ;  ADC #0
+   ADC #1
    STA SCRATCH,X        ;  4  38
    DEX                  ;  2  40
    BNE LOOP             ;  ~3   43  /2 =  ~22 per each
@@ -2890,11 +2901,13 @@ LOOP:
  : LDA SCRATCH_DOWNLEFT,X  ;  <256    4
    ADC SCRATCH_UPRIGHT,X   ;  <512     4  8
    ROR ; <256                          2  10
+;   adc #0
    LSR ; <128                          2  12
+;   adc #0
    LSR ; <64 OK                        2  14
-   ADC SELF,X ; <128                   4  18
-   LSR ; <64                           2  20
-   ADC #0   ;                          2  22
+;   ADC SELF,X ; <128                   4  18
+ ;  LSR ; <64                           2  20
+ ;  ADC #0   ;                          2  22
    STA SELF,X  ;                       4  26
    DEX                  ;              2  28
    BNE :-               ;             ~3  31    + ~22 per each = ~53 cycles per normie * ~1300 = ~69,000 cycles otay
@@ -2918,9 +2931,9 @@ LOOP:
    ROR 
    LSR 
    LSR 
-   ADC SELF
-   LSR 
-   ADC #0
+;   ADC SELF
+;   LSR 
+ ;  ADC #0
    STA SCRATCH
 .endmacro
 
@@ -2928,17 +2941,17 @@ LOOP:
 .local SELF 
 .local SCRATCH 
    SELF = TUB_WORLD+(64*row)+column
-   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
    LDA SELF
    ADC SELF+neighborA
    ADC SELF+neighborB
    ADC SELF+neighborC
    LSR 
    LSR 
-   ADC SELF
-   LSR 
-   ADC #0
-   STA SCRATCH
+;   ADC SELF
+ ;  LSR 
+ ;  ADC #0
+   STA SPECIAL_SCRATCH,X
+   INX 
 
 .endmacro
 
@@ -2946,21 +2959,21 @@ LOOP:
 .local SELF 
 .local SCRATCH 
    SELF = TUB_WORLD+(64*row)+column
-   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
    LDA SELF+neighborA
    ADC SELF+neighborB
    ADC SELF+neighborC
    ADC SELF+neighborD   ;  4x
    LSR ; 2x..
-   TAX 
-   LDA MISSING_TWO_NEIGHBOR_MUL,X ; 3X ! 
+   TAY 
+   LDA MISSING_TWO_NEIGHBOR_MUL,Y ; 3X ! 
    ADC SELF ;  4x 
    LSR 
    LSR 
-   ADC SELF
-   LSR 
-   ADC #0
-   STA SCRATCH
+ ;  ADC SELF
+ ;  LSR 
+ ;  ADC #0
+   STA SPECIAL_SCRATCH,X
+   INX
 .endmacro
 
 .macro calc_missing_one_neighbors row, column, neighborA, neighborB, neighborC, neighborD, neighborE
@@ -2974,20 +2987,22 @@ LOOP:
    ADC SELF+neighborD   ;  4x <252
    ADC SELF+neighborE   ;  5x <315
    ROR ; 2.5X 
-   TAX 
-   LDA MISSING_ONE_NEIGHBOR_MUL,X ; 2.5*6/5 = 6/2 = 3x 
+   TAY 
+   LDA MISSING_ONE_NEIGHBOR_MUL,Y ; 2.5*6/5 = 6/2 = 3x 
    ADC SELF ; 4X 
    LSR 
    LSR 
-   ADC SELF
-   LSR 
-   ADC #0
-   STA SCRATCH
+;   ADC SELF
+ ;  LSR 
+ ;  ADC #0
+   STA SPECIAL_SCRATCH,X
+   INX
 .endmacro
 
 .macro copy_scratch_to_self row,column
-   LDA WATER_CALC_SCRATCH+(64*row)+column
+   LDA SPECIAL_SCRATCH,X
    STA TUB_WORLD+(64*row)+column
+   INX
 .endmacro
 
 UPDATE_WATER_SIM:
@@ -3039,52 +3054,95 @@ UPDATE_WATER_SIM:
    STA WATER_CALC_SCRATCH+(29*64)+7,X 
    DEX 
    BNE :-
+   ; X is zero.. good .. will increment through these..
+   ;     type                  row,col,   A,   B,   C,   D,   E
+   calc_missing_three_neighbors  1, 21,   1,  63,  64
+   calc_missing_two_neighbors    2, 20, -63,   1,  63,  64
+   calc_missing_one_neighbors    3, 19, -63,  -1,   1,  63,  64
+   calc_missing_three_neighbors  3, 18,   1,  63,  64
+   calc_missing_one_neighbors    4, 17, -63,  -1,   1,  63,  64
+   calc_missing_three_neighbors  4, 16,   1,  63,  64
+   calc_missing_one_neighbors    5, 15, -63,  -1,   1,  63,  64
+   calc_missing_three_neighbors  5, 14,   1,  63,  64
+   calc_missing_two_neighbors    6, 13, -63,   1,  63,  64
+   calc_missing_two_neighbors    7, 12, -63,   1,  63,  64
+   calc_missing_two_neighbors    8, 11, -63,   1,  63,  64
+   calc_missing_three_neighbors  9, 10, -63,   1,  64
+   calc_missing_one_neighbors   10, 10, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 11,  9, -63,   1,  64
+   calc_missing_one_neighbors   12,  9, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 13,  8, -63,   1,  64
+   calc_missing_one_neighbors   14,  8, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 15,  7, -63,   1,  64
+   calc_missing_one_neighbors   16,  7, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 17,  6, -63,   1,  64
+   calc_missing_one_neighbors   18,  6, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 19,  5, -63,   1,  64
+   calc_missing_one_neighbors   20,  5, -64, -63,   1,  63,  64
+   calc_missing_three_neighbors 21,  4, -63,   1,  64
+   calc_missing_two_neighbors   22,  4, -64, -63,   1,  64
+   calc_missing_two_neighbors   23,  4, -64, -63,   1,  64
+   calc_missing_two_neighbors   24,  4, -64, -63,   1,  64
+   calc_missing_two_neighbors   25,  4, -64, -63,   1,  64
+   calc_missing_three_neighbors 26,  4, -64, -63,   1
+   calc_missing_three_neighbors 27,  5, -64, -63,   1
+   calc_missing_three_neighbors 28,  6, -64, -63,   1
+   calc_missing_three_neighbors 29,  7, -64, -63,   1
+   ;     type                  row,col,   A,   B,   C,   D,   E
+   calc_missing_three_neighbors  1, 55,  -1,  63,  64
+   calc_missing_three_neighbors  2, 56,  -1,  63,  64
+   calc_missing_three_neighbors  3, 57,  -1,  63,  64
+   calc_missing_three_neighbors  4, 58,  -1,  63,  64
+   calc_missing_three_neighbors  5, 59,  -1,  63,  64
+   calc_missing_two_neighbors    6, 59, -64,  -1,  63,  64
+   calc_missing_two_neighbors    7, 59, -64,  -1,  63,  64
+   calc_missing_two_neighbors    8, 59, -64,  -1,  63,  64
+   calc_missing_three_neighbors  9, 59, -64,  -1,  63
+   calc_missing_one_neighbors   10, 58, -64, -63,  -1,  63,  64
+   calc_missing_three_neighbors 11, 58, -64,  -1,  63
+   calc_missing_two_neighbors   12, 57, -64,  -1,  63,  64
+   calc_missing_two_neighbors   13, 57, -64,  -1,  63,  64
+   calc_missing_two_neighbors   14, 57, -64,  -1,  63,  64
+   calc_missing_three_neighbors 15, 57, -64,  -1,  63
+   calc_missing_two_neighbors   16, 56, -64, -63,  -1,  63
+   calc_missing_two_neighbors   17, 55, -64, -63,  -1,  63
+   calc_missing_one_neighbors   18, 54, -64, -63,  -1,  63,  64
+   calc_missing_three_neighbors 19, 54, -64,  -1,  63
+   calc_missing_one_neighbors   20, 53, -64, -63,  -1,  63,  64
+   calc_missing_three_neighbors 21, 53, -64,  -1,  63
+   calc_missing_two_neighbors   22, 52, -64, -63,  -1,  63
+   calc_missing_two_neighbors   23, 51, -64, -63,  -1,  63
+   calc_missing_two_neighbors   24, 50, -64, -63,  -1,  63
+   calc_missing_two_neighbors   25, 49, -64, -63,  -1,  63
+   calc_missing_three_neighbors 26, 48, -64, -63,  -1
+   calc_missing_one_neighbors   26, 47, -64, -63,  -1,   1,  63
+   calc_missing_three_neighbors 27, 46, -64, -63,  -1
+   calc_missing_one_neighbors   27, 45, -64, -63,  -1,   1,  63
+   calc_missing_three_neighbors 28, 44, -64, -63,  -1
+   calc_missing_one_neighbors   28, 43, -64, -63,  -1,   1,  63
+   calc_missing_three_neighbors 29, 42, -64, -63,  -1
 
-   calc_new_value_especial 1, 21, 64, 63, 1, 1, 63, 64
-   calc_new_value_especial 2, 20, 64, -63, 1, 1, 63, 64
-   calc_new_value_especial 3, 19, 64, -63, 1, -1, 63, 64
-   calc_new_value_especial 3, 18, 64, 63, 1, 1, 63, 64
-   calc_new_value_especial 4, 17, 64, -63, 1, -1, 63, 64
-   calc_new_value_especial 4, 16, 64, 63, 1, 1, 63, 64
-   calc_new_value_especial 5, 15, 64, -63, 1, -1, 63, 64
-   calc_new_value_especial 5, 14, 64, 63, 1, 1, 63, 64
-   calc_new_value_especial 6, 13, 64, -63, 1, 1, 63, 64
-   calc_new_value_especial 7, 12, 64, -63, 1, 1, 63, 64
-   calc_new_value_especial 8, 11, 64, -63, 1, 1, 63, 64
-   calc_new_value_especial 9, 10, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 10, 10, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 11, 9, 64, -63, 1, 1, -63, 64   
-   calc_new_value_especial 12, 9, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 13, 8, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 14, 8, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 15, 7, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 16, 7, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 17, 6, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 18, 6, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 19, 5, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 20, 5, -64, -63, 1, 1, 63, 64
-   calc_new_value_especial 21, 4, 64, -63, 1, 1, -63, 64
-   calc_new_value_especial 22, 4, -64, -63, 1, 1, -63, 64
-   calc_new_value_especial 23, 4, -64, -63, 1, 1, -63, 64
-   calc_new_value_especial 24, 4, -64, -63, 1, 1, -63, 64
-   calc_new_value_especial 25, 4, -64, -63, 1, 1, -63, 64
-   calc_new_value_especial 26, 4, -64, -63, 1, 1, -63, -64
-   calc_new_value_especial 27, 5, -64, -63, 1, 1, -63, -64
-   calc_new_value_especial 28, 6, -64, -63, 1, 1, -63, -64
-   calc_new_value_especial 29, 7, -64, -63, 1, 1, -63, -64
-
-   calc_new_value_especial  1, 55, 64, 63, -1, -1, 63, 64
-   calc_new_value_especial  2, 56, 64, 63, -1, -1, 63, 64
-   calc_new_value_especial  3, 57, 64, 63, -1, -1, 63, 64
-   calc_new_value_especial  4, 58, 64, 63, -1, -1, 63, 64
-   calc_new_value_especial  4, 57, -64, 63, 1, -1, 63, 64
-   calc_new_value_especial  5, 59, 64, 63, -1, -1, 63, 64
-   calc_new_value_especial  5, 58, -64, 63, 1, -1, 63, 64
-
-
-
-;.macro calc_new_value_especial row, column, upleft, upright, right, left, downleft, downright
-;   calc_new_value_especial , , -64, -63, 1, -1, 63, 64
+   STZ ZP_PTR
+   LDA #>MISSING_TWO_NEIGHBOR_MUL
+   STA ZP_PTR+1
+   LDY #41-7
+ : LDA TUB_WORLD+(64*29)+7-64,y ; upleft
+   ADC TUB_WORLD+(64*29)+7-63,y ; up right
+   ADC TUB_WORLD+(64*29)+7-1,y ; left
+   ADC TUB_WORLD+(64*29)+7+1,y ; right
+   LSR ; 2x..
+   STA ZP_PTR
+   LDA (ZP_PTR) ; 3X ! 
+   ADC TUB_WORLD+(64*29)+7,y
+   LSR 
+   LSR 
+   ADC TUB_WORLD+(64*29)+7,y
+   LSR 
+   ADC #0
+   STA SPECIAL_SCRATCH,X
+   INX
+   DEY 
+   BNE :-
 
 
 
@@ -3117,8 +3175,8 @@ UPDATE_WATER_SIM:
    calc_new_values_for_row 26, $06, $2E
    calc_new_values_for_row 27, $07, $2C
    calc_new_values_for_row 28, $08, $2A
-   calc_new_values_for_row 29, $08, $29
 
+   ; X should be zeroed here .. 
 ;  the ones we had to do especiale need copied now... 
    copy_scratch_to_self  1, 21
    copy_scratch_to_self  2, 20
@@ -3154,7 +3212,44 @@ UPDATE_WATER_SIM:
    copy_scratch_to_self 29,  7
 
 
+   copy_scratch_to_self  1, 55
+   copy_scratch_to_self  2, 56
+   copy_scratch_to_self  3, 57
+   copy_scratch_to_self  4, 58
+   copy_scratch_to_self  5, 59
+   copy_scratch_to_self    6, 59
+   copy_scratch_to_self    7, 59
+   copy_scratch_to_self    8, 59
+   copy_scratch_to_self  9, 59
+   copy_scratch_to_self   10, 58
+   copy_scratch_to_self 11, 58
+   copy_scratch_to_self   12, 57
+   copy_scratch_to_self   13, 57
+   copy_scratch_to_self   14, 57
+   copy_scratch_to_self 15, 57
+   copy_scratch_to_self   16, 56
+   copy_scratch_to_self   17, 55
+   copy_scratch_to_self   18, 54
+   copy_scratch_to_self 19, 54
+   copy_scratch_to_self   20, 53
+   copy_scratch_to_self 21, 53
+   copy_scratch_to_self   22, 52
+   copy_scratch_to_self   23, 51
+   copy_scratch_to_self   24, 50
+   copy_scratch_to_self   25, 49
+   copy_scratch_to_self 26, 48
+   copy_scratch_to_self   26, 47
+   copy_scratch_to_self 27, 46
+   copy_scratch_to_self   27, 45
+   copy_scratch_to_self 28, 44
+   copy_scratch_to_self   28, 43
 
+   LDY #42-7
+ : LDA SPECIAL_SCRATCH,X 
+   STA TUB_WORLD+(64*29)+7,Y
+   INX 
+   DEY 
+   BNE :-
 
 
    RTS ; fin
@@ -3536,93 +3631,22 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
 .byte $01, $00, $00, $00
 .byte $00, $00, $00, $00   
 
-test_cell_sprite:    ;  is 16x64x16 bit = 512 bytes   sprite addr = 10 
-;     01   23   45   67   89   AB   CD   EF
-.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  0
-.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  1
-.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  2
-.byte $0C, $C9, $CC, $C9, $CC, $C9, $CC, $CC    ;  3
-.byte $C9, $9B, $99, $9B, $99, $9B, $99, $90    ;  4
-.byte $0B, $BC, $BB, $BC, $BB, $BC, $BB, $BC    ;  5
-.byte $CC, $C9, $CC, $C9, $CC, $C9, $CC, $C0    ;  6
-.byte $09, $9B, $99, $9B, $99, $9B, $99, $9C    ;  7
-.byte $CB, $BC, $BB, $BC, $BB, $BC, $BB, $B0    ;  8 ; 45* is 9.5 .. 
-.byte $0C, $09, $0C, $09, $0C, $09, $0C, $0C    ;  9
-.byte $09, $90, $09, $90, $09, $90, $09, $90   ;  10
-.byte $0E, $9E, $E9, $9E, $E9, $9E, $E9, $9E   ;  11
+; test circle thing ... 70.. 16x16
+.byte $00, $00, $00, $AA, $AA, $00, $00, $00
+.byte $00, $00, $AA, $AA, $AA, $AA, $00, $00
+.byte $00, $0A, $AA, $AA, $AA, $AA, $A0, $00
+.byte $00, $AA, $AA, $AA, $AA, $AA, $AA, $00
+.byte $0A, $AA, $AA, $AA, $AA, $AA, $AA, $A0
+.byte $0A, $AA, $AA, $AA, $AA, $AA, $AA, $A0
+.byte $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA
+.byte $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA
+.byte $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA
+.byte $AA, $AA, $AA, $AA, $AA, $AA, $AA, $AA
+.byte $0A, $AA, $AA, $AA, $AA, $AA, $AA, $A0
+.byte $0A, $AA, $AA, $AA, $AA, $AA, $AA, $A0
+.byte $00, $AA, $AA, $AA, $AA, $AA, $AA, $00
+.byte $00, $0A, $AA, $AA, $AA, $AA, $A0, $00
+.byte $00, $00, $AA, $AA, $AA, $AA, $00, $00
+.byte $00, $00, $00, $AA, $AA, $00, $00, $00
 
-.repeat 13
-    .byte $EE, $EE, $EE, $EE, $EE, $EE, $EE, $E0    ;  12
-    .byte $0E, $EE, $66, $EE, $EE, $66, $EE, $EE    ;     
-    .byte $EE, $66, $EE, $66, $66, $EE, $66, $E0    ;  
-    .byte $06, $EE, $EE, $EE, $EE, $EE, $EE, $66    ;  
-.endrepeat
-
-test_border: ; 32 
-.repeat 64
-   .res 4, $0B
-   .res 4, $B0
-.endrepeat
-
-test_cross_hair_8x8:    ;  8x8x16 color = 32 bytes ; sprite 96
-;     01   23   45   67
-.byte $11, $00, $00, $11
-.byte $10, $00, $00, $01
-.byte $00, $00, $00, $00
-.byte $00, $01, $10, $00
-.byte $00, $01, $10, $00
-.byte $00, $00, $00, $00
-.byte $10, $00, $00, $01
-.byte $11, $00, $00, $11
-
-.byte $00, $00, $00, $00  ;  bearing label   sprite addr 97
-.byte $00, $00, $01, $00
-.byte $00, $00, $10, $00
-.byte $00, $01, $00, $00
-.byte $00, $10, $00, $00
-.byte $01, $00, $00, $00
-.byte $11, $11, $11, $00
-.byte $00, $00, $00, $00
-
-; cell position label sprite addr 50-57
-.byte $00,$FF,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00 
-.byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $FF,$00,$00,$FF,$FF,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-;     XH                               $XL                            ___  __  YH                              YL
-.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00  
-.byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00  
-.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00  
-
-; world position label 58-65
-;     XH                 $XL                  ___  ___  YH                  YL
-.byte $FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $FF,$00,$00,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$FF,$00,$00,$FF,$00,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-.byte $00,$FF,$00,$FF,$00,$00,$00,$FF,$00,$00,$FF,$00,$FF,$00,$FF,$FF,$00,$FF,$FF,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00   
-;      01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF, 01, 23, 45, 67, 89, AF, CD, EF
-;     XH                               $XL                            ___  __  YH                              YL
-.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00,$00,$00,$00,$00,$10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$10,$00,$00,$00  
-.byte $01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00,$00,$00,$01,$00,$10,$00,$00,$00  
-.byte $10,$10,$10,$10,$00,$00,$00,$00,$10,$10,$11,$10,$00,$00,$00,$00,$00,$00,$01,$00,$10,$10,$00,$00,$00,$00,$01,$00,$11,$10,$00,$00  
-
-; directional cursor reminder... 16x16 - 66-69
-.byte $00, $10, $00, $10, $01, $11, $11, $00
-.byte $00, $10, $00, $10, $01, $00, $00, $00
-.byte $00, $10, $10, $10, $01, $11, $00, $00
-.byte $00, $10, $10, $10, $01, $00, $00, $00
-.byte $00, $01, $01, $00, $01, $11, $11, $00
-.byte $00, $00, $00, $00, $00, $00, $00, $00
-.byte $01, $11, $00, $00, $00, $01, $11, $00
-.byte $10, $00, $10, $01, $10, $01, $00, $01
-.byte $11, $11, $10, $01, $10, $01, $00, $01
-.byte $10, $00, $10, $00, $00, $01, $11, $10
-.byte $00, $00, $00, $00, $00, $00, $00, $00
-.byte $00, $11, $11, $10, $01, $00, $01, $00
-.byte $00, $00, $01, $00, $00, $10, $10, $00
-.byte $00, $00, $10, $00, $00, $01, $00, $00
-.byte $00, $01, $00, $00, $00, $10, $10, $00
-.byte $00, $11, $11, $10, $01, $00, $01, $00
+.res 384,0
