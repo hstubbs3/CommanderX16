@@ -256,6 +256,11 @@ LOW_NIBBLE_HIGH:
 .byte $00,$10,$20,$30,$40,$50,$60,$70,$80,$90,$A0,$B0,$C0,$D0,$E0,$F0
 .byte $00,$10,$20,$30,$40,$50,$60,$70,$80,$90,$A0,$B0,$C0,$D0,$E0,$F0
 
+MISSING_ONE_NEIGHBOR_MUL:
+.byte 0,1,2,4,5,6,7,8,10,11,12,13,14,16,17,18,19,20,22,23,24,25,26,28,29,30,31,32,34,35,36,37,38,40,41,42,43,44,46,47,48,49,50,52,53,54,55,56,58,59,60,61,62,64,65,66,67,68,70,71,72,73,74,76,77,78,79,80,82,83,84,85,86,88,89,90,91,92,94,95,96,97,98,100,101,102,103,104,106,107,108,109,110,112,113,114,115,116,118,119,120,121,122,124,125,126,127,128,130,131,132,133,134,136,137,138,139,140,142,143,144,145,146,148,149,150,151,152,154,155,156,157,158,160,161,162,163,164,166,167,168,169,170,172,173,174,175,176,178,179,180,181,182,184,185,186,187,188,190,191,192,193,194,196,197,198,199,200,202,203,204,205,206,208,209,210,211,212,214,215,216,217,218,220,221,222,223,224,226,227,228,229,230,232,233,234,235,236,238,239,240,241,242,244,245,246,247,248,250,251,252,253,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
+
+MISSING_TWO_NEIGHBOR_MUL:
+.byte 0,2,3,5,6,8,9,11,12,14,15,17,18,20,21,23,24,26,27,29,30,32,33,35,36,38,39,41,42,44,45,47,48,50,51,53,54,56,57,59,60,62,63,65,66,68,69,71,72,74,75,77,78,80,81,83,84,86,87,89,90,92,93,95,96,98,99,101,102,104,105,107,108,110,111,113,114,116,117,119,120,122,123,125,126,128,129,131,132,134,135,137,138,140,141,143,144,146,147,149,150,152,153,155,156,158,159,161,162,164,165,167,168,170,171,173,174,176,177,179,180,182,183,185,186,188,189,191,192,194,195,197,198,200,201,203,204,206,207,209,210,212,213,215,216,218,219,221,222,224,225,227,228,230,231,233,234,236,237,239,240,242,243,245,246,248,249,251,252,254,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 BUFFER_A_OFFSETS_HIGH: ; 128 bytes
 .byte 24,24,25,25,26,27,27,28,29,29,30,30,31,32,32,33,34,34,35,35,36,37,37,38,39,39,40,40,41,42,42,43,44,44,45,45,46,47,47,48,49,49,50,50,51,52,52,53,54,54,55,55,56,57,57,58,59,59,60,60,61,62,62,63,64,64,65,65,66,67,67,68,69,69,70,70,71,72,72,73,74,74,75,75,76,77,77,78,79,79,80,80,81,82,82,83,84,84,85,85,86,87,87,88,89,89,90,90,91,92,92,93,94,94,95,95,96,97,97,98,99,99,100,100,101,102,102,103
 
@@ -402,8 +407,17 @@ SCREEN_OUT_TOP     = 240
 SCREEN_OUT_BOTTOM  = 120
 
 ; global data ; 2E00
-GLOBAL_DATA:         .byte $DE,$AD ; 0-1
 default_irq_vector:  .addr 0 ; 4-5 
+; current cell values in neighborhood...
+CELL_VAL_UPLEFT:  .byte 255
+CELL_VAL_UPRIGHT: .byte 255
+CELL_VAL_LEFT:    .byte 255
+CELL_VAL_SELF:    .byte 255
+CELL_VAL_RIGHT:   .byte 255
+CELL_VAL_DOWNLEFT: .byte 255
+CELL_VAL_DOWNRIGHT: .byte 255
+
+GLOBAL_DATA:         .byte $DE,$AD,$BE,$EF ; 0-1
 ;line 0
 MASTER_CLOCK:        .addr 0 ; 6-7
 .byte 0
@@ -427,8 +441,8 @@ CURRENT_BITMAP_BUFFER: .byte 64 ;
 ;  64   display  ready    B  is ready for swap
 ; 128   dirty    display  B is being displayed, A to be drawn on
 ; 192   ready    display  A  is ready for swap
-
 LAST_BITMAP_BUFFER:    .byte 0 ; 
+
 ; line 4
 camera_facing: 		 .byte 1 ; 7
 .byte 0
@@ -445,16 +459,11 @@ camera_world_pos_XL:       .byte 48 ; 9
 camera_world_pos_YH:        .byte 15 ; A
 camera_world_pos_YL:       .byte 128  ; B
 ; line 7 
-DEBUG_A: .byte 0  ; B
-DEBUG_B: .byte 0  ; C
-DEBUG_C: .byte 0  ; D
-DEBUG_D: .byte 0  ; E
-; line 8
 DO_WATER:   .byte 0 ;   
-
+DO_FAUCET:  .byte 0 ;
+; line 8
 NUM_AVAIL_SPRITES:   .byte 128 ; A
 NUM_RESERVED_SPRITES:    .byte  0;(1+NUM_RESERVED_SPRITES-MASTER_CLOCK) << 1 ; F
-
 SPRITE_OBJECT_ENABLE: .byte 255 ;255 ;
 
 CAMERA_CENTER_XL:    .byte 0 ; 12
@@ -492,8 +501,7 @@ custom_irq_handler: ; 2E12
  : DEC VERA_LOCK
  : jmp (default_irq_vector)
 
- : INC DEBUG_C
-   LDA CURRENT_BITMAP_BUFFER
+ : LDA CURRENT_BITMAP_BUFFER
    EOR LAST_BITMAP_BUFFER  
    BEQ :--- ; if these match then there's nothing to change
    CLC 
@@ -586,7 +594,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #64   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
+  LDX #32   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
   BRA :++
   : 
      INC ZP_PTR+1
@@ -598,6 +606,7 @@ start:
      DEX 
      BNE :--
 
+   jmp no_waves
   ; initialize some waves 
   STZ ZP_PTR
   LDA #>TUB_WORLD
@@ -639,7 +648,7 @@ start:
     BNE :--
   :
 
-
+no_waves:
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
   LDA #1
   STA VERA_ctrl
@@ -839,10 +848,6 @@ start:
 
 
 @do_update:
-   LDA DO_WATER
-   BNE :+
-   JSR UPDATE_WATER_SIM
- :
 
    ;  set up screen center stuff
 
@@ -959,24 +964,33 @@ start:
     DEY
     BNE :-
   :
+
    ;  set up tub pointer .. this will let us grab the height value for current location.. 
-    STZ $7E
+
+    STZ $7C
     LDA camera_cell_y
     LSR  ;  y pages of 128
-    ROR $7E
+    ROR $7C
     LSR  ; y pages of 64 ! 
-    ROR $7E
+    ROR $7C
     ADC #>TUB_WORLD
-    STA $7F
+    STA $7D
     STA CAMERA_CELL_LINE_PTR+1
-    LDA $7E
+    LDA $7C
     STA CAMERA_CELL_LINE_PTR    
 
+
     LDY camera_cell_x
-    LDA ($7E),y
+    LDA ($7C),y
     CMP #86 ; is largest value we will allow .. accounts for tub heights.. 
     BCC :+
-    LDA #86    ;
+    LDA #86
+
+   : 
+     CMP #63
+     BCS :+
+;     INC A;  increase the height of spot we're at by 1...
+     STA ($7E),y
    : TAY 
 
    CLC
@@ -1029,6 +1043,28 @@ start:
       INX 
       BNE :-
 
+   LDA DO_WATER
+   BEQ :++
+;   LDA MASTER_CLOCK
+;   AND #1
+
+   LDA DO_FAUCET
+   BEQ :+
+   LDA #63
+   ; we're going to pretend the faucet is running...
+   STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
+   STA TUB_WORLD+(15*64)+8
+   STA TUB_WORLD+(14*64)+8
+   STA TUB_WORLD+(16*64)+7
+ :  JSR UPDATE_WATER_SIM
+   LDA DO_FAUCET
+   BEQ :+
+   LDA #85
+   STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
+   STA TUB_WORLD+(15*64)+8
+   STA TUB_WORLD+(14*64)+8
+   STA TUB_WORLD+(16*64)+7
+ :
 
   jsr push_world_to_object_list
 
@@ -1040,7 +1076,11 @@ start:
 
 ; OK so we want bit 6 (64) to be set 
    BRA :++
-:  wai 
+;   LDA #2
+:  
+   wai 
+;   CMP VSYNC_counter
+;   BCS :-
 :  LDA CURRENT_BITMAP_BUFFER
    AND #64
    BNE :--
@@ -1051,6 +1091,57 @@ start:
    jsr draw_object_list
 
 @WRITE_DEBUG:
+    STZ $7A
+    LDA camera_cell_y
+    DEC A 
+    LSR 
+    ROR $7A
+    LSR 
+    ROR $7A
+    ADC #>TUB_WORLD
+    STA $7B
+    LDY camera_cell_x
+    LDA ($7A),y 
+    STA CELL_VAL_UPLEFT
+    INY 
+    LDA ($7A),Y
+    STA CELL_VAL_UPRIGHT
+
+    STZ $7C
+    LDA camera_cell_y
+    LSR  ;  y pages of 128
+    ROR $7C
+    LSR  ; y pages of 64 ! 
+    ROR $7C
+    ADC #>TUB_WORLD
+    STA $7D
+    STA CAMERA_CELL_LINE_PTR+1
+    LDA $7C
+    STA CAMERA_CELL_LINE_PTR    
+    LDA ($7C),Y
+    STA CELL_VAL_RIGHT
+    DEY 
+    LDA ($7C),Y
+    STA CELL_VAL_SELF
+    DEY 
+    LDA ($7C),Y 
+    STA CELL_VAL_LEFT
+
+    STZ $7E
+    LDA camera_cell_y
+    INC A
+    LSR  ;  y pages of 128
+    ROR $7E
+    LSR  ; y pages of 64 ! 
+    ROR $7E
+    ADC #>TUB_WORLD
+    STA $7F
+    LDA ($7E),Y
+    STA CELL_VAL_DOWNLEFT
+    INY 
+    LDA ($7E),Y
+    STA CELL_VAL_DOWNRIGHT 
+
    STZ VERA_ctrl
    LDA #42;+64
    STA VERA_addr_low
@@ -1058,6 +1149,81 @@ start:
    STA VERA_addr_high
    LDA #$21
    STA VERA_addr_bank
+
+   LDA VERA_data0 ; skip a spot at 2
+   LDA VERA_data0 ; skip a spot at 4
+
+   LDX CELL_VAL_UPLEFT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  6
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  8
+
+   LDA VERA_data0     ; skip a spot    10
+   LDA VERA_data0     ; skip a spot    12
+
+   LDX CELL_VAL_UPRIGHT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  14
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  16
+   CLC
+   LDA VERA_addr_low
+   ADC #64-16
+   STA VERA_addr_low
+
+   LDX CELL_VAL_LEFT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  2
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  4
+
+   LDA VERA_data0    ;     6
+   LDA VERA_data0    ;     8
+
+   LDX CELL_VAL_SELF
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  10
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  12
+
+   LDA VERA_data0    ;     14
+   LDA VERA_data0    ;     16
+
+   LDX CELL_VAL_RIGHT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  18
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  20
+
+   CLC
+   LDA VERA_addr_low
+   ADC #64-20
+   STA VERA_addr_low
+
+   LDA VERA_data0 ; skip a spot at 2
+   LDA VERA_data0 ; skip a spot at 4
+
+   LDX CELL_VAL_DOWNLEFT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  6
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  8
+
+   LDA VERA_data0     ; skip a spot    10
+   LDA VERA_data0     ; skip a spot    12
+
+   LDX CELL_VAL_DOWNRIGHT
+   LDA HIGH_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  14
+   LDA LOW_NIBBLE_TO_HEX,X 
+   STA VERA_data0                ;  16
+
+   LDA #42
+   STA VERA_addr_low
+   INC VERA_addr_high
+
+
    LDY #0
  : LDX GLOBAL_DATA,Y 
    LDA HIGH_NIBBLE_TO_HEX,X ; 1
@@ -1072,7 +1238,6 @@ start:
    STA VERA_data0
    INY
    LDA VERA_data0             ;  5
-   LDA VERA_addr_low
    LDX GLOBAL_DATA,Y 
    LDA HIGH_NIBBLE_TO_HEX,X   ;  6
    STA VERA_data0
@@ -1125,11 +1290,12 @@ start:
    STZ VSYNC_counter
    STX STALL_COUNTER
    STY STALL_COUNTERH
-   LDA MASTER_CLOCK
-   INC A
-   CLC
-   ADC LAST_VSYNC_COUNTER
-   STA MASTER_CLOCK
+;   LDA MASTER_CLOCK
+;   INC A
+;   CLC
+;   ADC LAST_VSYNC_COUNTER
+;   STA MASTER_CLOCK
+   INC MASTER_CLOCK
    BNE :+
    INC MASTER_CLOCK+1
 :
@@ -1352,6 +1518,18 @@ start:
    LDA #$FF 
    EOR DO_WATER
    STA DO_WATER 
+
+ : CMP #SEVEN_CHAR
+   BNE :+
+   LDA DO_WATER
+   BNE :+
+   JSR UPDATE_WATER_SIM
+
+ : CMP #SIX_CHAR
+   BNE :+
+   LDA DO_FAUCET
+   EOR #$FF 
+   STA DO_FAUCET
 
  : JMP @do_update
 
@@ -1637,8 +1815,6 @@ TRY_AGAIN = 6
          ADC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
 
-         STX DEBUG_A
-         STA DEBUG_B
 
          CMP PWOL_BOT_CHECK
          BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
@@ -1797,8 +1973,6 @@ TRY_AGAIN = 6
          SBC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
 
-         STX DEBUG_A
-         STA DEBUG_B
 
          CMP PWOL_BOT_CHECK
          BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
@@ -1982,8 +2156,6 @@ TRY_AGAIN = 6
          SBC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
 
-         STX DEBUG_A
-         STA DEBUG_B
 
          CMP PWOL_BOT_CHECK
          BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
@@ -2154,8 +2326,6 @@ TRY_AGAIN = 6
          ADC PWOL_ACROSS_ROW_YH
          STA PWOL_CURRENT_YH
 
-         STX DEBUG_A
-         STA DEBUG_B
 
          CMP PWOL_BOT_CHECK
          BCC :+      ;     if its within bottom definitely on screen, else check top as well.. 
@@ -2253,7 +2423,6 @@ draw_object_list:
 
 
 
-    INC DEBUG_D
 
     STZ VERA_ctrl
     STZ ZP_PTR
@@ -2661,21 +2830,30 @@ DOLB_Y_CALC_POINTERH = ZP_PTR+8
       BNE :-
       JMP @NEXT_OBJECT
 
-.macro calc_downlefts_backwards_for_row row, start, count
-.proc 
-   SELF = TUBWORLD+(64*row)+start-1 ;because 1 is last processed..
+.macro calc_downlefts_backwards_for_row row, start, end
+.local SELF
+.local LEFT 
+.local DOWNLEFT
+.local DOWNRIGHT
+.local SCRATCH
+.local COUNT
+.local LOOP
+   SELF = TUB_WORLD+(64*row)+start ; because start has nothing to the left, needs processed different
    LEFT = SELF-1
    DOWNLEFT = LEFT+64
    DOWNRIGHT = DOWNLEFT+1
-   SCRATCH = WATER_CALC_SCRATCH+(64*row)+start-1
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+start
+   COUNT = end-start
 
-.if count & 1 = 1 
-   LDX #count
-   LDA SELF,X 
-   ADC DOWNRIGHT,X
-   BRA ODD_START
+.if COUNT & 1 = 1 
+   LDX #COUNT-1
+   LDA SELF+1,X ;   4   4this is basically start+count .. OK 
+   ADC DOWNRIGHT+1,X ; 4   8
+   ADC LEFT+1,X   ;  4  12
+   ADC DOWNLEFT+1,X  ;  4  16
+   STA SCRATCH+1,X   ;  4  20    20 each without dex/BNE... = ~25 would be normal/expected without the Y thing..  
 .else 
-   LDX #count
+   LDX #COUNT
 .endif
 LOOP:
    LDA LEFT,X           ;  4
@@ -2683,25 +2861,33 @@ LOOP:
    TAY                  ;  2  10
    ADC SELF,X           ;  4  14
    ADC DOWNRIGHT,X      ;  4  18
+   ADC SCRATCH,X 
+   ROR
+;   ADC #0
    STA SCRATCH,X        ;  4  22
    DEX                  ;  2  24    
    TYA                  ;  2  26
-ODD_START:
    ADC LEFT,X           ;  4  30
    ADC DOWNLEFT,X       ;  4  34
+   ADC SCRATCH,X 
+   ROR
+ ;  ADC #0
    STA SCRATCH,X        ;  4  38
    DEX                  ;  2  40
    BNE LOOP             ;  ~3   43  /2 =  ~22 per each
-.endproc
 .endmacro
 
-.macro calc_new_values_for_row row, start, count 
-.proc 
+.macro calc_new_values_for_row row, start, end ; end value needs to have an up-right and start must have downleft!
+.local SELF
+.local SCRATCH_DOWNLEFT
+.local SCRATCH_UPRIGHT
+.local COUNT
    SCRATCH_DOWNLEFT = WATER_CALC_SCRATCH+(64*row)+start-1
    SCRATCH_UPRIGHT = SCRATCH_DOWNLEFT-64+1
-   SELF = TUBWORLD+(64*row)+start-1
+   SELF = TUB_WORLD+(64*row)+start-1
+   COUNT = end-start+1
    LDX #COUNT
- :  LDA SCRATCH_DOWNLEFT,X  ;  <256    4
+ : LDA SCRATCH_DOWNLEFT,X  ;  <256    4
    ADC SCRATCH_UPRIGHT,X   ;  <512     4  8
    ROR ; <256                          2  10
    LSR ; <128                          2  12
@@ -2712,59 +2898,266 @@ ODD_START:
    STA SELF,X  ;                       4  26
    DEX                  ;              2  28
    BNE :-               ;             ~3  31    + ~22 per each = ~53 cycles per normie * ~1300 = ~69,000 cycles otay
-.endproc
 .endmacro
 
+.macro calc_new_value_especial row, column, upleft, upright, right, left, downleft, downright
+.local SELF
+.local SCRATCH 
+   SELF = TUB_WORLD+(64*row)+column
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
+   LDA SELF 
+   ADC SELF+left 
+   adc SELF+downleft
+   adc SELF+downright 
+   STA SCRATCH
+   LDA SELF 
+   ADC SELF+upleft
+   adc SELF+upright
+   adc SELF+right 
+   ADC SCRATCH
+   ROR 
+   LSR 
+   LSR 
+   ADC SELF
+   LSR 
+   ADC #0
+   STA SCRATCH
+.endmacro
+
+.macro calc_missing_three_neighbors row, column, neighborA, neighborB, neighborC
+.local SELF 
+.local SCRATCH 
+   SELF = TUB_WORLD+(64*row)+column
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
+   LDA SELF
+   ADC SELF+neighborA
+   ADC SELF+neighborB
+   ADC SELF+neighborC
+   LSR 
+   LSR 
+   ADC SELF
+   LSR 
+   ADC #0
+   STA SCRATCH
+
+.endmacro
+
+.macro calc_missing_two_neighbors row, column, neighborA, neighborB, neighborC, neighborD 
+.local SELF 
+.local SCRATCH 
+   SELF = TUB_WORLD+(64*row)+column
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
+   LDA SELF+neighborA
+   ADC SELF+neighborB
+   ADC SELF+neighborC
+   ADC SELF+neighborD   ;  4x
+   LSR ; 2x..
+   TAX 
+   LDA MISSING_TWO_NEIGHBOR_MUL,X ; 3X ! 
+   ADC SELF ;  4x 
+   LSR 
+   LSR 
+   ADC SELF
+   LSR 
+   ADC #0
+   STA SCRATCH
+.endmacro
+
+.macro calc_missing_one_neighbors row, column, neighborA, neighborB, neighborC, neighborD, neighborE
+.local SELF 
+.local SCRATCH 
+   SELF = TUB_WORLD+(64*row)+column
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+column
+   LDA SELF+neighborA
+   ADC SELF+neighborB
+   ADC SELF+neighborC
+   ADC SELF+neighborD   ;  4x <252
+   ADC SELF+neighborE   ;  5x <315
+   ROR ; 2.5X 
+   TAX 
+   LDA MISSING_ONE_NEIGHBOR_MUL,X ; 2.5*6/5 = 6/2 = 3x 
+   ADC SELF ; 4X 
+   LSR 
+   LSR 
+   ADC SELF
+   LSR 
+   ADC #0
+   STA SCRATCH
+.endmacro
+
+.macro copy_scratch_to_self row,column
+   LDA WATER_CALC_SCRATCH+(64*row)+column
+   STA TUB_WORLD+(64*row)+column
+.endmacro
 
 UPDATE_WATER_SIM:
    ;  make downlefts shingles to stash for calculation as newSelf = (downleft+upright)/8 + Self )/2
-   ;  row 1 - 21 to 55 = 35 cells , no north.. 21 has no left neighbor, so macro can only do 34 and to 22
-   calc_downlefts_backwards_for_row 1, 22, 34
-   calc_downlefts_backwards_for_row 2, 21, 36 ; row 2 - 20 to 56 = 37 cells, start 21 do 36
-   calc_downlefts_backwards_for_row 3, 19, 39 ; row 3 - 18 to 57 = 40 cells, start 19 do 39 
-   calc_downlefts_backwards_for_row 4, 17, 42 ; row 4 - 16 to 58 = 43 cells, start 17 do 42 
-   calc_downlefts_backwards_for_row 5, 15, 45 ; row 5 - 14 to 59 = 46 cells, start 15 do 45 
-   calc_downlefts_backwards_for_row 6, 14, 46 ; row 6 - 13 to 59 = 47 cells, start 14 do 46 
-   calc_downlefts_backwards_for_row 7, 13, 47 ; row 7 - 12 to 59 = 48 cells, start 13 do 47 
-   calc_downlefts_backwards_for_row 8, 12, 48 ; row 8 - 11 to 59 = 49 cells, start 12 do 48 
-   calc_downlefts_backwards_for_row 9, 11, 49 ; row 9 - 10 to 59 = 50 cells, start 11 do 49 <- last one with end=59 
+   
+   ; row 0 is wall of tub... need to make "downlefts" for row 1 to use as uprights..
+   CLC
+   LDX #54-21
+ : LDA TUB_WORLD+64+21,X ; 
+   ADC TUB_WORLD+64+22,X ; right
+   ADC TUB_WORLD+128+22,X ; down right
+   ADC TUB_WORLD+128+21,X ; down left
+   STA WATER_CALC_SCRATCH+21+1,X ; save to upper rights 
+   DEX 
+   BNE :-
+   calc_downlefts_backwards_for_row  1, $15, $37 ; row 1 - 21 to 55 ... need to reflect because row 0 is wall of tub..
+   calc_downlefts_backwards_for_row 2, 20, 56
+   calc_downlefts_backwards_for_row  3, $12, $39 ; row 3 - 18 to 57
+   calc_downlefts_backwards_for_row  4, $10, $3A ; row 2 - 20 to
+   calc_downlefts_backwards_for_row  5, $0E, $3B ; row 2 - 20 to
+   calc_downlefts_backwards_for_row  6, $0D, $3B ; row 2 - 20 to
+   calc_downlefts_backwards_for_row  7, $0C, $3B ; row 2 - 20 to
+   calc_downlefts_backwards_for_row  8, $0B, $3B ; row 2 - 20 to
+   calc_downlefts_backwards_for_row  9, $0A, $3A ; row 9 - $3B has no DR
+   calc_downlefts_backwards_for_row 10, $0A, $3A ; row 
+   calc_downlefts_backwards_for_row 11, $09, $39 ; row 11 - $3A has no DR
+   calc_downlefts_backwards_for_row 12, $09, $39 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 13, $08, $39 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 14, $08, $39 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 15, $07, $38 ; row 15 - $39 has no DR 
+   calc_downlefts_backwards_for_row 16, $07, $37 ; 
+   calc_downlefts_backwards_for_row 17, $06, $36 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 18, $06, $36 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 19, $05, $35 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 20, $05, $35 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 21, $04, $34 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 22, $04, $33 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 23, $04, $32 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 24, $04, $31 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 25, $04, $30 ; row 2 - 20 to
+   calc_downlefts_backwards_for_row 26, $05, $2E ; row 26 - 4 to but 5 has no downleft
+   calc_downlefts_backwards_for_row 27, $06, $2C ; row 27 - 5 to but 5/6 have no downleft
+   calc_downlefts_backwards_for_row 28, $07, $2A ; row 28 - 6 to but 6/7 have no downleft
+   LDX #42-7
+ : LDA TUB_WORLD+(29*64)+7,X ;  self
+   ADC TUB_WORLD+(29*64)+6,X ;  left
+   ADC TUB_WORLD+(28*64)+7,X ;  upleft as low right
+   ADC TUB_WORLD+(28*64)+8,X ;  upright as low left
+   STA WATER_CALC_SCRATCH+(29*64)+7,X 
+   DEX 
+   BNE :-
 
-   calc_new_values_for_row 2, 21, 35 ; because last 1 has no right neighbors...?
+   calc_new_value_especial 1, 21, 64, 63, 1, 1, 63, 64
+   calc_new_value_especial 2, 20, 64, -63, 1, 1, 63, 64
+   calc_new_value_especial 3, 19, 64, -63, 1, -1, 63, 64
+   calc_new_value_especial 3, 18, 64, 63, 1, 1, 63, 64
+   calc_new_value_especial 4, 17, 64, -63, 1, -1, 63, 64
+   calc_new_value_especial 4, 16, 64, 63, 1, 1, 63, 64
+   calc_new_value_especial 5, 15, 64, -63, 1, -1, 63, 64
+   calc_new_value_especial 5, 14, 64, 63, 1, 1, 63, 64
+   calc_new_value_especial 6, 13, 64, -63, 1, 1, 63, 64
+   calc_new_value_especial 7, 12, 64, -63, 1, 1, 63, 64
+   calc_new_value_especial 8, 11, 64, -63, 1, 1, 63, 64
+   calc_new_value_especial 9, 10, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 10, 10, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 11, 9, 64, -63, 1, 1, -63, 64   
+   calc_new_value_especial 12, 9, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 13, 8, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 14, 8, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 15, 7, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 16, 7, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 17, 6, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 18, 6, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 19, 5, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 20, 5, -64, -63, 1, 1, 63, 64
+   calc_new_value_especial 21, 4, 64, -63, 1, 1, -63, 64
+   calc_new_value_especial 22, 4, -64, -63, 1, 1, -63, 64
+   calc_new_value_especial 23, 4, -64, -63, 1, 1, -63, 64
+   calc_new_value_especial 24, 4, -64, -63, 1, 1, -63, 64
+   calc_new_value_especial 25, 4, -64, -63, 1, 1, -63, 64
+   calc_new_value_especial 26, 4, -64, -63, 1, 1, -63, -64
+   calc_new_value_especial 27, 5, -64, -63, 1, 1, -63, -64
+   calc_new_value_especial 28, 6, -64, -63, 1, 1, -63, -64
+   calc_new_value_especial 29, 7, -64, -63, 1, 1, -63, -64
 
-   RTS
-   ;  calc down_righs  
-   UWS_ROW1_S = TUB_WORLD+64+21  
-   UWS_ROW1_L = TUB_WORLD+64+20 
-   UWS_ROW1_DL = TUB_WORLD+128+20 
-   UWS_ROW1_DR = TUB_WORLD+128+21 
-   UWS_ROW1_SCRATCH = WATER_CALC_SCRATCH+64+21
-   LDX #34           ;        2     2
- : LDA UWS_ROW1_L,X           ;  4     4  L  S
-   ADC UWS_ROW1_DL,X          ;  4     8   DL    
-   TAY                        ;  2     10
-   ADC UWS_ROW1_S,X           ;  4     14
-   ADC UWS_ROW1_DR,X          ;  4     18
-   STA UWS_ROW1_SCRATCH,X     ;  4     22
-   DEX                        ;  2     24
-   TYA                        ;  2     26    S+DR !   
-   ADC UWS_ROW1_L,X           ;  4     30
-   ADC UWS_ROW1_DL,X          ;  4     34
-   STA UWS_ROW1_SCRATCH,X     ;  4     38
-   DEX                        ;  2     40
-   BNE :-                     ;  3     43  *17  = 731 cycles..
-   LDA UWS_ROW1_S             ;  4     generate additional 1 for row2 to use as uprights
-   ADC UWS_ROW1_DL            ;  4  8
-   ASL                        ;  2  10
-   STA UWS_ROW1_SCRATCH    ;  4  14    +731 = 745 cycles so far .. OK 
-   ; row 2 - 20 to 55 = 36 cells .. uses row1 as upright values.. need to calc downlefts
-   UWS_ROW2_S = TUB_WORLD+128+19 ; 19 needs to be handled different..
-   UWS_ROW2_L = UWS_ROW2_S-1
-   UWS_ROW2_DL = UWS_ROW2_L+64
-   UWS_ROW2_DR = UWS_ROW2_DL+1 ; feels like maybe this could be rewritten with a little DSL .. at least a macro..
-   LDX #36
+   calc_new_value_especial  1, 55, 64, 63, -1, -1, 63, 64
+   calc_new_value_especial  2, 56, 64, 63, -1, -1, 63, 64
+   calc_new_value_especial  3, 57, 64, 63, -1, -1, 63, 64
+   calc_new_value_especial  4, 58, 64, 63, -1, -1, 63, 64
+   calc_new_value_especial  4, 57, -64, 63, 1, -1, 63, 64
+   calc_new_value_especial  5, 59, 64, 63, -1, -1, 63, 64
+   calc_new_value_especial  5, 58, -64, 63, 1, -1, 63, 64
 
 
-   RTS
+
+;.macro calc_new_value_especial row, column, upleft, upright, right, left, downleft, downright
+;   calc_new_value_especial , , -64, -63, 1, -1, 63, 64
+
+
+
+;  now calculate new values... 
+   calc_new_values_for_row 1, 22, 54
+   calc_new_values_for_row 2, $15, $36 ; row 2 - $14 has no left and $38 has no up/right 
+   calc_new_values_for_row 3, $14, $37 ; row 3 - $12 has no left and $37 has no up/right 
+   calc_new_values_for_row 4, $12, $38 ; row 
+   calc_new_values_for_row 5, 16, $39 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 6, $0E, $3A ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 7, $0D, $3A ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 8, $0C, $3A ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 9, $0B, $3A ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 10, $0B, $39 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 11, $0A, $38 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 12, $0A, $38 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 13, $09, $38 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 14, $09, $38 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 15, $08, $37 ; row start 1 more than calc back (because need downleft) and 1 less prev calc back
+   calc_new_values_for_row 16, $08, $37
+   calc_new_values_for_row 17, $07, $36
+   calc_new_values_for_row 18, $07, $35
+   calc_new_values_for_row 19, $06, $35
+   calc_new_values_for_row 20, $06, $34
+   calc_new_values_for_row 21, $05, $34
+   calc_new_values_for_row 22, $05, $33
+   calc_new_values_for_row 23, $05, $32
+   calc_new_values_for_row 24, $05, $31
+   calc_new_values_for_row 25, $05, $30
+   calc_new_values_for_row 26, $06, $2E
+   calc_new_values_for_row 27, $07, $2C
+   calc_new_values_for_row 28, $08, $2A
+   calc_new_values_for_row 29, $08, $29
+
+;  the ones we had to do especiale need copied now... 
+   copy_scratch_to_self  1, 21
+   copy_scratch_to_self  2, 20
+   copy_scratch_to_self  3, 19
+   copy_scratch_to_self  3, 18
+   copy_scratch_to_self  4, 17
+   copy_scratch_to_self  4, 16
+   copy_scratch_to_self  5, 15
+   copy_scratch_to_self  5, 14
+   copy_scratch_to_self  6, 13
+   copy_scratch_to_self  7, 12
+   copy_scratch_to_self  8, 11
+   copy_scratch_to_self  9, 10
+   copy_scratch_to_self 10, 10
+   copy_scratch_to_self 11,  9   
+   copy_scratch_to_self 12,  9
+   copy_scratch_to_self 13,  8
+   copy_scratch_to_self 14,  8
+   copy_scratch_to_self 15,  7
+   copy_scratch_to_self 16,  7
+   copy_scratch_to_self 17,  6
+   copy_scratch_to_self 18,  6
+   copy_scratch_to_self 19,  5
+   copy_scratch_to_self 20,  5
+   copy_scratch_to_self 21,  4
+   copy_scratch_to_self 22,  4
+   copy_scratch_to_self 23,  4
+   copy_scratch_to_self 24,  4
+   copy_scratch_to_self 25,  4
+   copy_scratch_to_self 26,  4
+   copy_scratch_to_self 27,  5
+   copy_scratch_to_self 28,  6
+   copy_scratch_to_self 29,  7
+
+
+
+
+
+   RTS ; fin
 
 test_optimal_pal_data:
 ;      GB   R  $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes)

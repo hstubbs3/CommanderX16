@@ -384,6 +384,51 @@ TODO 	limit sprites to bottom of screen
 0910 	ewww gotta run.. 
 	COMMIT
 
+2024/03/29
+0715	ok back at it.. water sim.. 
+
+.macro calc_downlefts_backwards_for_row_faster row, start, end ; don't use, is not correct if count is odd! 
+.proc 
+   SELF = TUBWORLD+(64*row)+start ; because start has nothing to the left, needs processed different
+   LEFT = SELF-1
+   DOWNLEFT = LEFT+64
+   DOWNRIGHT = DOWNLEFT+1
+   SCRATCH = WATER_CALC_SCRATCH+(64*row)+start
+   COUNT = end-start
+
+   LDX #COUNT     ;  2  2
+   LDA SELF,X     ;  4  6
+   ADC DOWNRIGHT,X ; 4  10
+   STA ZP_PTR     ;  3  13    lefts of right
+LOOP:
+   LDA LEFT,X           ;  4  4
+   ADC DOWNLEFT,X       ;  4  8
+   STA ZP_PTR+1         ;  3  11    next self
+   ADC ZP_PTR           ;  3  14    +prev self
+   STA SCRATCH,X        ;  4  18
+   DEX                  ;  2  20    
+ODD_START:
+   LDA LEFT,X           ;  4  24
+   ADC DOWNLEFT,X       ;  4  28
+   STA ZP_PTR           ;  3  31    next self
+   ADC ZP_PTR+1         ;  3  34    prev self
+   STA SCRATCH,X        ;  4  38
+   DEX                  ;  2  40
+   BNE LOOP             ;  ~3   43  /2 =  ~22 per each oops is really same as above.. funny... 
+.endproc
+.endmacro
+
+0930 	left had to run to work.. faucet wasn't working correct though
+
+1900 	OK set faucet on/off to 7 key
+2100 	is bugging but ok
+
+2024/03/30
+0500 	working on water sim, sorting out algo / bugs.. 
+0815 	committing there in case need to reference? 
+	COMMIT
+
+
 TODO 	Water Sim
 
 TODO 	SPAN buffer thing / avoid overdraw
