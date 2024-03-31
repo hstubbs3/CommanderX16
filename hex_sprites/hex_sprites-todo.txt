@@ -431,7 +431,27 @@ ODD_START:
 1205 	will need to figure out something better with the water sim...
 	COMMIT
 
+1545 	gonna take another crack at it... 
+1700 	thinking should add 1 to the height for each neighbor that is larger... 
+1935 	nope.. still lost
+
+2024/03/31 	Easter Sunday ! 
+0945 	back at it with the water sim stuff... probably <64 is not enough resolution...
+		7bit may not be enough either.. 
+		base algorithm seems correct though? 
+1000 	found little oopsy in the map include.. so south side may get error now.. hehe
+1010 	rechecking the algo.. 6 bits should be OK ? should be that add all /8 though ..
+1210 	reorg'd and now is broken.. yay.. probably some lookup table not aligned. dumping..
+1250 	Reorg'd workng, stopped flashing.. ayya
+TODO 	REORG FRAME LOOP / cleanup code.. / tables.. 
+	DONE
+1340 	first 2 rows of new sim entered in.. seems OK so far.. hard to tell .. 
+	COMMIT
+	
+
 TODO 	Water Sim
+
+
 
 TODO 	SPAN buffer thing / avoid overdraw
 TODO 	implement faster maths for the buffer writing.. 
@@ -440,7 +460,8 @@ TODO 	optimize object list - use classes, store less data within each object..
 TODO 	blitting extra objects to buffer
 
 BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 
-TODO 	fixing keyboard controls 
+TODO 	Proper keyboard buffer / driver
+TODO 	SNES controller inputs
 
 TODO 	make moving around by X/Y/Z work 
 
