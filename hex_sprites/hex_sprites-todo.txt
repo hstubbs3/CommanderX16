@@ -523,7 +523,8 @@ TODO 	switch stuff to banked..
 
 1045 	OK through row 7 special cases completed, through row 6 ready to go..?
 1115 	appears some issue with row 4-6 .. 
-
+1140 	Oh... I wasn't actually writing out downrights.. 
+	COMMIT 
 TODO 	Water Sim
 
 

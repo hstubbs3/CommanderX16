@@ -629,20 +629,20 @@ custom_irq_handler: ; 2E12
 
    LDA ZP_SCRATCH_BL ;  3  25
    ADC ZP_SCRATCH_AL ;  3  28    add previous - self+right+downleft+downright ; 
-  ; STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
-   TAY               ;           2  30
+   STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
+;   TAY               ;           2  30
    LDA ZP_SCRATCH_BH ;  3  36    3  33
    ADC ZP_SCRATCH_AH ;  3  39    3  36
-;   STA SC_SELF_H,X   ;  4  43    
-   STA ZP_SC_SELF_H  ;           3  39
+   STA SC_SELF_H,X   ;  4  43    
+;   STA ZP_SC_SELF_H  ;           3  39
 
-;   LDA SC_SELF_L,X   ;  4  47    recall the downright low byte
-   TYA               ;           2  41
+   LDA SC_SELF_L,X   ;  4  47    recall the downright low byte
+;   TYA               ;           2  41
    ADC SC_UPLEFT_L,X ;  4  51    4  45    add upleft from prev row
    STA ZP_SELF_L     ;  3  54    3  48    save this to zero page temporarily..
 
-;   LDA SC_SELF_H,X   ;  4  58    recall downright high byte    
-   LDA ZP_SC_SELF_H  ;           3  51
+   LDA SC_SELF_H,X   ;  4  58    recall downright high byte    
+;   LDA ZP_SC_SELF_H  ;           3  51
    ADC SC_UPLEFT_H,X ;  4  63    4  55    add the upleft high byte
    ROR ; 8x to 4x    ;  2  65    2  57
    ADC #0            ;           2  59    <- this is for rounding reasons... 
@@ -666,20 +666,20 @@ ODDSTART:
 
    LDA ZP_SCRATCH_BL ;  3  26    add previous - self+right+downleft+downright ;
    ADC ZP_SCRATCH_AL ;  3  29     
-;   STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
-   TAY
+   STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
+ ;  TAY
    LDA ZP_SCRATCH_BH ;  3  36
    ADC ZP_SCRATCH_AH ;  3  39
-;   STA SC_SELF_H,X   ;  4  43 
-   STA ZP_SC_SELF_H  ;           3  39
+   STA SC_SELF_H,X   ;  4  43 
+;   STA ZP_SC_SELF_H  ;           3  39
 
-;   LDA SC_SELF_L,X   ;  4  49    recall the downright low byte
-   TYA               ;           2  41
+   LDA SC_SELF_L,X   ;  4  49    recall the downright low byte
+;   TYA               ;           2  41
    ADC SC_UPLEFT_L,X ;  4  53    add upleft from prev row
    STA ZP_SELF_L     ;  3  56    save this to zero page temporarily..
 
-;   LDA SC_SELF_H,X  ;  2  59    recall downright high byte    
-   LDA ZP_SC_SELF_H  ;           3  51
+   LDA SC_SELF_H,X  ;  2  59    recall downright high byte    
+;   LDA ZP_SC_SELF_H  ;           3  51
    ADC SC_UPLEFT_H,X ;  4  63    add the uoleft high byte
    ROR ; 8x to 4x    ;  2  65
    ADC #0
@@ -759,8 +759,9 @@ UPDATE_WATER_SIM:
    ROL
    STA WATER_CALC_SCRATCH+64+20
 
-   LDX #55-21 ; 21 has no left.. 55 can start cycle pushing in 
+   make_upleft_for 1, 21, 0, 1, 63
 
+   LDX #55-21 ; 21 has no left.. 55 can start cycle pushing in 
    UWS_ROW1_SELF_H = TUB_WORLD+64+21
    UWS_ROW1_SELF_L = TUB_WORLD_LOW+64+21
    UWS_ROW1_SCRATCH_SELF_H = WATER_CALC_SCRATCH+64+21
@@ -774,7 +775,6 @@ UPDATE_WATER_SIM:
    UWS_ZP_C_L = ZP_PTR+6
    UWS_ZP_C_H = ZP_PTR+7
 
-   make_upleft_for 1, 21, 0, 1, 63
    LDA UWS_ROW1_SELF_L,X      ;  self
    ADC UWS_ROW1_SELF_L+64,X   ;  downright  
    STA UWS_ZP_A_L 
@@ -911,12 +911,13 @@ UPDATE_WATER_SIM:
    LDA TUB_WORLD+128+56
    ADC TUB_WORLD+192+56
    STA ZP_PTR+3
-   calc_row  2, 20, 56  
+;   calc_row  2, 20, 56  
 
    ;  row 4 needs UL generated 58,16,17
    make_upleft_for 4, 58, 0, 0, -1
    make_upleft_for 4, 17, 0, -63, -1
    make_upleft_for 4, 16, 0, 0, 1
+
    ;  row 3 - 18 to 57 is even, so start ZP_PTR[0,1]
    LDA TUB_WORLD_LOW+192+57
    ADC TUB_WORLD_LOW+256+57
@@ -1547,8 +1548,9 @@ start:
    LDA TUB_WORLD+(15*64)+8
    LDA #63
    ; we're going to pretend the faucet is running...
-     STA TUB_WORLD+64+21
-     STA TUB_WORLD+256+18
+;     STA TUB_WORLD+64+32
+     STA TUB_WORLD+192+55
+ ;    STA TUB_WORLD+256+18
      STA TUB_WORLD+(15*64)+8 ;  this is middle row furthest west ( < x )
      STA TUB_WORLD+(15*64)+9
      STA TUB_WORLD+(14*64)+9
