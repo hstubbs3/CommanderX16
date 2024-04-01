@@ -460,7 +460,9 @@ TODO 	test 14bit tub-world performance.
 TODO 	test 8bit with look-aside.. 
 	SKIP
 	COMMIT
-
+2024/04/01
+0200 	Currently is in interesting state... like basal evaporation and wave progression mainly there ... 
+		stick a few wave particles over this baseline simulation and may just be in business?
 
 
 TODO 	Water Sim

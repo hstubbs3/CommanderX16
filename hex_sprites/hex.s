@@ -577,7 +577,7 @@ custom_irq_handler: ; 2E12
 
 
 ; produce downright to scratch for next row to use as upleft... 
-.macro calc_row_even row, start, end ; ZP_PTR should contain right+downright of right most.. 
+.macro calc_row row, start, end ; ZP_PTR should contain right+downright of right most.. 
 ;  going to 14bit here .. 
 .local SELF 
 .local SELF_H
@@ -596,6 +596,7 @@ custom_irq_handler: ; 2E12
 .local ZP_SCRATCH_BH
 .local ZP_SCRATCH_BL
 .local ZP_SELF_L
+.local ODDSTART
    SELF = (64*row)+start-1
    SELF_H = TUB_WORLD+SELF
    SELF_L = TUB_WORLD_LOW+SELF
@@ -613,18 +614,18 @@ custom_irq_handler: ; 2E12
    ZP_SCRATCH_BL = ZP_PTR+2
    ZP_SCRATCH_BH = ZP_PTR+3
    ZP_SELF_L     = ZP_PTR+4
-
-
    LDX #COUNT        ;  2  2    leftmost is done at x=1 
+.if COUNT & 1 = 1
+   BRA ODDSTART
+.endif
+;   ;feed in one to start 
+;   LDA SELF_L+1,X     ; 4   6  
+;   ADC DOWNLEFT_L+1,X ; 8  10
+;   STA ZP_SCRATCH_AL  ; 4  14    because this is used by A / EVEN count.
 
-   ;feed in one to start 
-   LDA SELF_L+1,X     ; 4   6  
-   ADC DOWNLEFT_L+1,X ; 8  10
-   STA ZP_SCRATCH_AL  ; 4  14    because this is used by A / EVEN count.
-
-   LDA SELF_H+1,X     ; 4  18
-   ADC DOWNLEFT_H+1,X ; 4  22
-   STA ZP_SCRATCH_AH  ; 4  26    ;  26 cycles overhead to get primed.. OK ... 
+;   LDA SELF_H+1,X     ; 4  18
+;   ADC DOWNLEFT_H+1,X ; 4  22
+;   STA ZP_SCRATCH_AH  ; 4  26    ;  26 cycles overhead to get primed.. OK ... 
 
 
  : LDA SELF_L,X      ;  4  4
@@ -650,11 +651,11 @@ custom_irq_handler: ; 2E12
    LDA SC_SELF_H,X   ;  4  58    recall downright high byte    
    ADC SC_UPLEFT_H,X ;  4  63    add the uoleft high byte
    ROR ; 8x to 4x    ;  2  65
-
-   ROR ZP_SELF_L     ;  5  70
-   LSR ; 4x to 2x    ;  2  72
    ADC #0
-;   ROR ZP_SELF_L     ;  5  77
+
+;   ROR ZP_SELF_L     ;  5  70
+   LSR ; 4x to 2x    ;  2  72
+   ROR ZP_SELF_L     ;  5  77
    LSR ; 2x to 1x    ;  2  79
    STA SELF_H,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
 
@@ -662,7 +663,7 @@ custom_irq_handler: ; 2E12
    ROR
    STA SELF_L,X      ;  4  92
    DEX               ;  2  94    OK now this should be odd.. 
-
+ODDSTART:
    LDA SELF_L,X      ;  4  4
    ADC DOWNLEFT_L,X  ;  4  8
    STA ZP_SCRATCH_AL ;  3  11    because used by A / EVEN counts
@@ -683,9 +684,9 @@ custom_irq_handler: ; 2E12
    LDA SC_SELF_H,X               ;  2  59    recall downright high byte    
    ADC SC_UPLEFT_H,X ;  4  63    add the uoleft high byte
    ROR ; 8x to 4x    ;  2  65
-   ROR ZP_SELF_L     ;  5  70
-   LSR ; 4x to 2x    ;  2  72
    ADC #0
+;   ROR ZP_SELF_L     ;  5  70
+   LSR ; 4x to 2x    ;  2  72
  ;  ROR ZP_SELF_L     ;  5  77
    LSR ; 2x to 1x    ;  2  79
    STA SELF_H,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
@@ -695,42 +696,148 @@ custom_irq_handler: ; 2E12
    STA SELF_L,X      ;  4  92
    DEX               ;  2  94    OK now this should be odd.. 
 
-   BNE :-            ;  3  - so ~96 each.. expecting almost 1 Jiffy to calculate world now.. 
+   BNE :-           ;  3  - so ~96 each.. expecting almost 1 Jiffy to calculate world now.. 
 
-   ;  exiting this, we have the next right+downright bit stashed in ZP_PTP[0,1]
+   ;  exiting this, we have the next right+downright bit stashed in ZP_PTR[0,1] or ZP_PTR[2,3]
+.endmacro
+
+.macro make_upleft_for row, col, neighborA, neighborB, neighborC, neighborD
+.local SELF 
+.local SOURCE
+.local DEST
+   SELF = (64*row)+col
+   SOURCE = TUB_WORLD+SELF
+   DEST = WATER_CALC_SCRATCH+SELF-64
+   LDA SOURCE+neighborA
+   ADC SOURCE+neighborB
+   ADC SOURCE+neighborC
+   ADC SOURCE+neighborD
+   STA DEST
 .endmacro
 
 UPDATE_WATER_SIM:
    ; for each row, need to fixup right-most and left-most few so that uplefts exist and down-rights can be calculated..
    ; for now, am leaving the borders out of it.. 
-   calc_row_even  2, 21, 54  
-   calc_row_even  3, 20, 55 
-   calc_row_even  4, 19, 56
-   calc_row_even  5, 16, 57
-   calc_row_even  6, 14, 57
-   calc_row_even  7, 13, 58
-   calc_row_even  8, 12, 57
-   calc_row_even  9, 11, 58
-   calc_row_even 10, 11, 56
-   calc_row_even 11, 10, 57
-   calc_row_even 12, 10, 55
-   calc_row_even 13,  9, 56
-   calc_row_even 14,  9, 54
-   calc_row_even 15,  8, 55
-   calc_row_even 16,  8, 53
-   calc_row_even 17,  7, 54
-   calc_row_even 18,  7, 52
-   calc_row_even 19,  6, 53
-   calc_row_even 20,  6, 51
-   calc_row_even 21,  5, 52
-   calc_row_even 22,  5, 50
-   calc_row_even 23,  5, 50
-   calc_row_even 24,  5, 48
-   calc_row_even 25,  5, 46
-   calc_row_even 26,  6, 45
-   calc_row_even 27,  7, 42
-   calc_row_even 28,  8, 41
+   calc_row  2, 20, 56  
+   calc_row  3, 18, 58 
+   calc_row  4, 16, 59
+   calc_row  5, 14, 59
+   calc_row  6, 13, 59
+   calc_row  7, 12, 59
+   calc_row  8, 11, 59
+   calc_row  9, 11, 59
+   calc_row 10, 10, 58
+   calc_row 11, 10, 58
+   calc_row 12,  9, 57
+   calc_row 13,  9, 57
+   calc_row 14,  8, 56
+   calc_row 15,  8, 56
+   calc_row 16,  7, 55
+   calc_row 17,  7, 55
+   calc_row 18,  6, 54
+   calc_row 19,  6, 54
+   calc_row 20,  5, 53
+   calc_row 21,  5, 53
+   calc_row 22,  5, 52
+   calc_row 23,  5, 51
+   calc_row 24,  5, 50
+   calc_row 25,  6, 48
+   calc_row 26,  6, 46
+   calc_row 27,  7, 44
+   calc_row 28,  8, 42
+   LDA TUB_WORLD_LOW+(64*29)+41
+   STA ZP_PTR
+   LDA TUB_WORLD+(64*29)+41
+   STA ZP_PTR+1
 
+   LDX #41-7 ; is odd.. go figure
+ : LDA TUB_WORLD_LOW+(64*29)+8,X ; self as self + downleft.. 
+   STA ZP_PTR+2
+   LDA TUB_WORLD+(64*29)+8,X
+   STA ZP_PTR+3
+
+   LDA ZP_PTR
+   ADC ZP_PTR+2
+   STA ZP_PTR ; downright/2 low  
+   LDA ZP_PTR+1
+   ADC ZP_PTR+3
+   STA ZP_PTR+1 ; downright/2 high
+   LDA WATER_CALC_SCRATCH_LOW+(64*28)+8,X
+   LSR WATER_CALC_SCRATCH+(64*28)+8,X ; and this is reducing upleft to 2x ...
+   ROR ; upleft is now only 2x not 4x.. matching our downright.. 
+   ADC ZP_PTR
+   STA ZP_PTR
+   LDA WATER_CALC_SCRATCH+(64*28)+8,X
+   ADC ZP_PTR+1
+   LSR ; 4x to 2x    ;  2  72
+   ADC #0
+   LSR ; 2x to 1x    ;  2  79
+   STA TUB_WORLD+(64*29)+8,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
+   LDA ZP_PTR     ;  3  86
+   ROR
+   STA TUB_WORLD_LOW+(64*29)+8,X      ;  4  92
+   DEX 
+   LDA TUB_WORLD_LOW+(64*29)+8,X ; self as self + downleft.. 
+   STA ZP_PTR
+   LDA TUB_WORLD+(64*29)+8,X
+   STA ZP_PTR+1
+
+   LDA ZP_PTR
+   ADC ZP_PTR+2
+   STA ZP_PTR+2 ; downright/2 low  
+   LDA ZP_PTR+1
+   ADC ZP_PTR+3
+   STA ZP_PTR+3 ; downright/2 high
+   LDA WATER_CALC_SCRATCH_LOW+(64*28)+8,X
+   LSR WATER_CALC_SCRATCH+(64*28)+8,X ; and this is reducing upleft to 2x ...
+   ROR ; upleft is now only 2x not 4x.. matching our downright.. 
+   ADC ZP_PTR+2
+   STA ZP_PTR+2
+   LDA WATER_CALC_SCRATCH+(64*28)+8,X
+   ADC ZP_PTR+3
+   LSR ; 4x to 2x    ;  2  72
+   ADC #0
+   LSR ; 2x to 1x    ;  2  79
+   STA TUB_WORLD+(64*29)+8,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
+   LDA ZP_PTR+2     ;  3  86
+   ROR
+   STA TUB_WORLD_LOW+(64*29)+8,X      ;  4  92
+   DEX 
+   BNE :-
+
+   ; 29,7 only has upleft, upright, and right neighbors! 
+   LDA TUB_WORLD_LOW+(64*29)+7
+   ADC ZP_PTR 
+   STA ZP_PTR
+   LDA TUB_WORLD+(64*29)+7
+   ADC ZP_PTR+1
+   STA ZP_PTR+1   ;  ok so have downright 2x 
+   LDA TUB_WORLD_LOW+(64*28)+7 ; upleft 
+   ADC TUB_WORLD_LOW+(64*28)+8 ; upright
+   STA ZP_PTR+2 
+   LDA TUB_WORLD+(64*28)+7
+   ADC TUB_WORLD+(64*28)+8 ; 
+   LSR 
+   STA ZP_PTR+3 ; is 1x upleft/right
+   LDA ZP_PTR+2
+   ROR 
+   ADC TUB_WORLD_LOW+(64*29)+7
+   STA ZP_PTR+2
+   LDA ZP_PTR+3
+   ADC TUB_WORLD+(64*29)+7 ; now is upleft 2x
+   STA ZP_PTR+3
+   LDA ZP_PTR
+   ADC ZP_PTR+2
+   STA ZP_PTR ; 4x
+   LDA ZP_PTR+1
+   ADC ZP_PTR+3
+   ROR ; 4x to 2x
+   ADC #0
+   LSR ; 2x to 1x
+   STA TUB_WORLD+(64*29)+7
+   LDA ZP_PTR
+   ROR 
+   STA TUB_WORLD_LOW+(64*29)+7
    RTS
 
 start:
@@ -1159,31 +1266,31 @@ start:
       BNE :-
 
    LDA DO_WATER
-   BEQ :+++
+   BEQ :++
  ;  STZ DO_WATER
    LDA DO_FAUCET
    BEQ :+
 ;   STZ DO_FAUCET
    LDA TUB_WORLD+(15*64)+8
-   CMP #63
-   BCS :+
    LDA #63
    ; we're going to pretend the faucet is running...
- :   STA TUB_WORLD+(15*64)+8 ;  this is middle row furthest west ( < x )
+     STA TUB_WORLD+(15*64)+8 ;  this is middle row furthest west ( < x )
      STA TUB_WORLD+(15*64)+9
      STA TUB_WORLD+(14*64)+9
      STA TUB_WORLD+(16*64)+8
-   LDA CAMERA_CELL_LINE_PTR 
-   STA ZP_PTR
-   LDA CAMERA_CELL_LINE_PTR+1
-   STA ZP_PTR+1
-   LDY camera_cell_x
-   LDA (ZP_PTR),y
+: 
+
+;  LDA CAMERA_CELL_LINE_PTR 
+;   STA ZP_PTR
+;   LDA CAMERA_CELL_LINE_PTR+1
+;   STA ZP_PTR+1
+;   LDY camera_cell_x
+;   LDA (ZP_PTR),y
 ;   inc A
-   CMP #64
-   BCC :+
-   LDA #63
- : STA (ZP_PTR),y
+;   CMP #64
+;   BCC :+
+;   LDA #63
+; : STA (ZP_PTR),y
 
    JSR UPDATE_WATER_SIM
 
