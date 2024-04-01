@@ -447,7 +447,21 @@ TODO 	REORG FRAME LOOP / cleanup code.. / tables..
 	DONE
 1340 	first 2 rows of new sim entered in.. seems OK so far.. hard to tell .. 
 	COMMIT
-	
+
+1520 	looking back at it.. seems will need to go to 16bit as 64 isn't really enough and 128 doesn't seem would be much better?
+		sure, that only adds 4K to this program..  and would have to rejigger stuff? 
+
+2015 	back at it.. let's see.. maybe 8bit with the current tub-world being like a look-aside sorta thing? 
+		or do 14bit with current tub-world as the visible part?
+2345 	14bit appears to be doing well... ~100 cycles per cell ... 1 jiffy / update.. ok fine.. is what it is
+		behavior is just perfect though..
+TODO 	test 14bit tub-world performance. 
+	DONE
+TODO 	test 8bit with look-aside.. 
+	SKIP
+	COMMIT
+
+
 
 TODO 	Water Sim
 

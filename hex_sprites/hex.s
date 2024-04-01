@@ -129,9 +129,14 @@ MOVE_X_L: ; 1F00
 TUB_WORLD: ; 32*64 = 2K ... is 2000 to 2800-1
 .include "tub_world_hieghts_01.inc"
 
-WATER_CALC_SCRATCH: ; 2800 to 3000-1
-.include "tub_world_hieghts_01.inc"
+TUB_WORLD_LOW: ; 2800 to 3000-1
+.res 2048,0
 
+WATER_CALC_SCRATCH: ; 3000 to 3800-1
+.res 2048,0
+
+WATER_CALC_SCRATCH_LOW: ; 3800 to 4000-1
+.res 2048,0
 
 ;3000
 
@@ -565,137 +570,166 @@ custom_irq_handler: ; 2E12
    ; RTI will happen after jump
 
 
+;TUB_WORLD:    "presentation" layer
+;TUB_WORLD_LOW: hidden low bytes
+;WATER_CALC_SCRATCH: scratch layer for bouncing
+;WATER_CALC_SCRATCH_LOW: scratch layer for bouncing
+
+
 ; produce downright to scratch for next row to use as upleft... 
 .macro calc_row_even row, start, end ; ZP_PTR should contain right+downright of right most.. 
+;  going to 14bit here .. 
 .local SELF 
-.local SCRATCH_UPLEFT
-.local LEFT 
-.local DOWNLEFT 
-.local DOWNRIGHT 
-.local SCRATCH 
-   SELF = TUB_WORLD+(64*row)+start-1
-   SCRATCH_UPLEFT = WATER_CALC_SCRATCH+(64*row)+start-1-64
-   LEFT = SELF-1
-   DOWNLEFT = SELF+63
-   DOWNRIGHT = SELF+64
-   SCRATCH = WATER_CALC_SCRATCH+(64*row)+start-1
-   LDX #1+end-start ; leftmost is done at x=1 
- : LDA SELF,X 
-   ADC DOWNLEFT,X 
-   STA ZP_PTR+1
-   ADC ZP_PTR ; add previous - self+right+downleft+downright
-   STA SCRATCH,X ; calc'd downright to stash downright
-   ADC SCRATCH_UPLEFT,X ; now just pilin in the upleft 
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA SELF,X ; save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
-   DEX ; OK now thiis should be odd.. 
-   LDA SELF,X
-   ADC DOWNLEFT,X
-   STA ZP_PTR
-   ADC ZP_PTR+1
-   STA SCRATCH,X ; calc'd downright to stash downright
-   ADC SCRATCH_UPLEFT,X ; now just pilin in the upleft 
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA SELF,X ; save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
-   DEX ; OK now this should be EVEN.. 
-   BNE :-
-   ;  exiting this, we have the next right+downright bit stashed in ZP_PTR
+.local SELF_H
+.local SELF_L 
+.local SC_UPLEFT_H ; scratch upleft
+.local SC_UPLEFT_L 
+.local LEFT_H 
+.local LEFT_L 
+.local DOWNLEFT_H 
+.local DOWNLEFT_L
+.local SC_SELF_H ; scratch self
+.local SC_SELF_L
+.local COUNT 
+.local ZP_SCRATCH_AH
+.local ZP_SCRATCH_AL
+.local ZP_SCRATCH_BH
+.local ZP_SCRATCH_BL
+.local ZP_SELF_L
+   SELF = (64*row)+start-1
+   SELF_H = TUB_WORLD+SELF
+   SELF_L = TUB_WORLD_LOW+SELF
+   SC_SELF_H = WATER_CALC_SCRATCH+SELF
+   SC_SELF_L = WATER_CALC_SCRATCH_LOW+SELF
+   SC_UPLEFT_H = SC_SELF_H-64
+   SC_UPLEFT_L = SC_SELF_L-64
+   LEFT_H = SELF_H-1
+   LEFT_L = SELF_L+SELF-1
+   DOWNLEFT_H = SELF_H+63
+   DOWNLEFT_L = SELF_L+SELF+63
+   COUNT = 1+end-start
+   ZP_SCRATCH_AL = ZP_PTR
+   ZP_SCRATCH_AH = ZP_PTR+1
+   ZP_SCRATCH_BL = ZP_PTR+2
+   ZP_SCRATCH_BH = ZP_PTR+3
+   ZP_SELF_L     = ZP_PTR+4
+
+
+   LDX #COUNT        ;  2  2    leftmost is done at x=1 
+
+   ;feed in one to start 
+   LDA SELF_L+1,X     ; 4   6  
+   ADC DOWNLEFT_L+1,X ; 8  10
+   STA ZP_SCRATCH_AL  ; 4  14    because this is used by A / EVEN count.
+
+   LDA SELF_H+1,X     ; 4  18
+   ADC DOWNLEFT_H+1,X ; 4  22
+   STA ZP_SCRATCH_AH  ; 4  26    ;  26 cycles overhead to get primed.. OK ... 
+
+
+ : LDA SELF_L,X      ;  4  4
+   ADC DOWNLEFT_L,X  ;  4  8
+   STA ZP_SCRATCH_BL ;  3  11    because used by B / ODD counts
+
+   LDA SELF_H,X      ;  4  15
+   ADC DOWNLEFT_H,X  ;  4  19
+   STA ZP_SCRATCH_BH ;  3  22
+
+   LDA ZP_SCRATCH_BL ;  3  26
+   ADC ZP_SCRATCH_AL ;  3  29    add previous - self+right+downleft+downright ; 
+   STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
+
+   LDA ZP_SCRATCH_BH ;  3  36
+   ADC ZP_SCRATCH_AH ;  3  39
+   STA SC_SELF_H,X   ;  4  43 
+
+   LDA SC_SELF_L,X   ;  4  47    recall the downright low byte
+   ADC SC_UPLEFT_L,X ;  4  51    add upleft from prev row
+   STA ZP_SELF_L     ;  3  54    save this to zero page temporarily..
+
+   LDA SC_SELF_H,X   ;  4  58    recall downright high byte    
+   ADC SC_UPLEFT_H,X ;  4  63    add the uoleft high byte
+   ROR ; 8x to 4x    ;  2  65
+
+   ROR ZP_SELF_L     ;  5  70
+   LSR ; 4x to 2x    ;  2  72
+   ADC #0
+;   ROR ZP_SELF_L     ;  5  77
+   LSR ; 2x to 1x    ;  2  79
+   STA SELF_H,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
+
+   LDA ZP_SELF_L     ;  3  86
+   ROR
+   STA SELF_L,X      ;  4  92
+   DEX               ;  2  94    OK now this should be odd.. 
+
+   LDA SELF_L,X      ;  4  4
+   ADC DOWNLEFT_L,X  ;  4  8
+   STA ZP_SCRATCH_AL ;  3  11    because used by A / EVEN counts
+   LDA SELF_H,X      ;  4  15
+   ADC DOWNLEFT_H,X  ;  4  19
+   STA ZP_SCRATCH_AH ;  3  22
+
+   LDA ZP_SCRATCH_BL ;  3  26    add previous - self+right+downleft+downright ;
+   ADC ZP_SCRATCH_AL ;  3  29     
+   STA SC_SELF_L,X   ;  4  33    stash downright for next row to use as upleft .. 
+   LDA ZP_SCRATCH_BH ;  3  36
+   ADC ZP_SCRATCH_AH ;  3  39
+   STA SC_SELF_H,X   ;  4  43 
+
+   LDA SC_SELF_L,X   ;  4  49    recall the downright low byte
+   ADC SC_UPLEFT_L,X ;  4  53    add upleft from prev row
+   STA ZP_SELF_L     ;  3  56    save this to zero page temporarily..
+   LDA SC_SELF_H,X               ;  2  59    recall downright high byte    
+   ADC SC_UPLEFT_H,X ;  4  63    add the uoleft high byte
+   ROR ; 8x to 4x    ;  2  65
+   ROR ZP_SELF_L     ;  5  70
+   LSR ; 4x to 2x    ;  2  72
+   ADC #0
+ ;  ROR ZP_SELF_L     ;  5  77
+   LSR ; 2x to 1x    ;  2  79
+   STA SELF_H,X      ;  4  83    save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
+
+   LDA ZP_SELF_L     ;  3  86
+   ROR
+   STA SELF_L,X      ;  4  92
+   DEX               ;  2  94    OK now this should be odd.. 
+
+   BNE :-            ;  3  - so ~96 each.. expecting almost 1 Jiffy to calculate world now.. 
+
+   ;  exiting this, we have the next right+downright bit stashed in ZP_PTP[0,1]
 .endmacro
 
 UPDATE_WATER_SIM:
-   ; row1 - is no ups.. working backwards need to calc downright and get upleft from prev.. 
-   ;  upleft is upleft, upright, left, self..
-   LDA TUB_WORLD+64+55  ; starting with 55 saved as its own right
-   ADC TUB_WORLD+128+55 ; add the downright here .. 
-   STA ZP_PTR ; stash to use as right..
-   LDX #55-21 ;   there's 34 (22 to 55 inclusive) we can process with such a start.. 
- : LDA TUB_WORLD+64+21,X ; load self 
-   ADC TUB_WORLD+128+21-1,X ;  add down left to use as right+downright next thing. 
-   STA ZP_PTR+1 ; stash this thing.. that's right+downright for the next thing
-   ADC ZP_PTR  ;  add previous right - self+right+downleft+downright..
-   STA WATER_CALC_SCRATCH+64+21,X ; this we stash for next row.. 
-   LDA TUB_WORLD+64+21,X ; load self
-   ASL ; double it
-   ADC TUB_WORLD+64+21,X ; load self 3x self
-   ADC TUB_WORLD+64+21-1,X ; add left + 3x self..
-   ADC WATER_CALC_SCRATCH+64+21,X ; add the downright we calc'd before
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA TUB_WORLD+64+21,X ; save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
-   DEX ; OK now thiis should be odd.. 
-   LDA TUB_WORLD+64+21,X ; load the self
-   ADC TUB_WORLD+128+21-1,X ; add downleft
-   STA ZP_PTR ; stash that for even counter to use
-   ADC ZP_PTR+1 ; and then use prev stashed value. . woot! 
-   STA WATER_CALC_SCRATCH+64+21,X ; this gets stash for next row.. 
-   LDA TUB_WORLD+64+21,X ; load self
-   ADC TUB_WORLD+64+21-1,X ; add left
-   ASL ; double it
-   ADC TUB_WORLD+64+21,X ; load self 3x self
-   ADC TUB_WORLD+64+21-1,X ; add left + 3x self..
-   ADC WATER_CALC_SCRATCH+64+21,X ; add the downright we calc'd before
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA TUB_WORLD+64+21,X ; save the new value.. this self+downleft is in ZP_PTR+1  .. OK 
-   DEX ; OK now this should be even.. 
-   BNE :- ; and that will bring us down to row1,21 with ZP_PTR containing right+downright for us.. 
-
-   LDA TUB_WORLD+64+21
-   ADC TUB_WORLD+128+21-1
-   STA WATER_CALC_SCRATCH+64+20 ; stash this for making upleft of row 2,20
-   ADC ZP_PTR
-   STA WATER_CALC_SCRATCH+64+21 ;   and stash the downright.. 
-   LDA TUB_WORLD+64+21 ; self is left and up 
-   ASL 
-   ASL 
-   ADC WATER_CALC_SCRATCH+64+21 ; add the downright we calc'd before
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA TUB_WORLD+64+21 ; row 1 is calc'd.. yay
-
-   ; row 2 - 56 - no upleft was generated yet, downright missing stuff..    
-   LDA TUB_WORLD+128+56
-   ASL 
-   ADC TUB_WORLD+128+56 
-   ADC TUB_WORLD+128+55 ; is upleft 
-   STA WATER_CALC_SCRATCH+64+56 ;    stash for use as upleft in calc this row..
-
-   LDA TUB_WORLD+128+56 ; use as right
-   ADC TUB_WORLD+192+56 ; use as downright
-   STA ZP_PTR
-   calc_row_even 2, 21,56 ; 20 has no left so need to stop before it.. 
-   LDA TUB_WORLD+128+20 ; load self
-   ADC TUB_WORLD+192+19 ; add downleft
-   STA WATER_CALC_SCRATCH+128+19 ; stash this for making 3,19
-   ADC ZP_PTR
-   STA WATER_CALC_SCRATCH+128+20 ; save to use as upleft for next row 
-   LDA TUB_WORLD+128+20 ; load self 
-   ASL 
-   ADC WATER_CALC_SCRATCH+64+20 ; add the partial we stashed earlier.. this is upleft for us
-   ADC WATER_CALC_SCRATCH+128+20 ; this is downright we'd calc'd for ourselves
-   ROR ; 8x to 4x
-   LSR ; 4x
-   LSR ; 2x 
-   LSR ; 1x
-   ADC #0 ; round up
-   STA TUB_WORLD+128+20 ; row 2 is calc'd.. yay
+   ; for each row, need to fixup right-most and left-most few so that uplefts exist and down-rights can be calculated..
+   ; for now, am leaving the borders out of it.. 
+   calc_row_even  2, 21, 54  
+   calc_row_even  3, 20, 55 
+   calc_row_even  4, 19, 56
+   calc_row_even  5, 16, 57
+   calc_row_even  6, 14, 57
+   calc_row_even  7, 13, 58
+   calc_row_even  8, 12, 57
+   calc_row_even  9, 11, 58
+   calc_row_even 10, 11, 56
+   calc_row_even 11, 10, 57
+   calc_row_even 12, 10, 55
+   calc_row_even 13,  9, 56
+   calc_row_even 14,  9, 54
+   calc_row_even 15,  8, 55
+   calc_row_even 16,  8, 53
+   calc_row_even 17,  7, 54
+   calc_row_even 18,  7, 52
+   calc_row_even 19,  6, 53
+   calc_row_even 20,  6, 51
+   calc_row_even 21,  5, 52
+   calc_row_even 22,  5, 50
+   calc_row_even 23,  5, 50
+   calc_row_even 24,  5, 48
+   calc_row_even 25,  5, 46
+   calc_row_even 26,  6, 45
+   calc_row_even 27,  7, 42
+   calc_row_even 28,  8, 41
 
    RTS
 
@@ -727,7 +761,7 @@ start:
   STA ZP_PTR
   LDA #>test_vram_data
   STA ZP_PTR+1
-  LDX #48   ;   num pages to copy - 16 pages / 8K  - sprite addr 0-255
+  LDX #35   ;   num pages to copy - 34 pages of 256bytes => 276 sprite addresses.. 
   BRA :++
   : 
      INC ZP_PTR+1
@@ -739,7 +773,6 @@ start:
      DEX 
      BNE :--
 
-  ; initialize some waves 
   ; write custom palette data  - 16 colors only for now.. $1:FA00-$1:FBFF   VERA Color Palette (256 x 2 bytes) 
   LDA #1
   STA VERA_ctrl
@@ -1127,22 +1160,26 @@ start:
 
    LDA DO_WATER
    BEQ :+++
-
+ ;  STZ DO_WATER
    LDA DO_FAUCET
    BEQ :+
-   LDA #64
+;   STZ DO_FAUCET
+   LDA TUB_WORLD+(15*64)+8
+   CMP #63
+   BCS :+
+   LDA #63
    ; we're going to pretend the faucet is running...
- : STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
-   STA TUB_WORLD+(15*64)+8
-   STA TUB_WORLD+(14*64)+8
-   STA TUB_WORLD+(16*64)+7
+ :   STA TUB_WORLD+(15*64)+8 ;  this is middle row furthest west ( < x )
+     STA TUB_WORLD+(15*64)+9
+     STA TUB_WORLD+(14*64)+9
+     STA TUB_WORLD+(16*64)+8
    LDA CAMERA_CELL_LINE_PTR 
    STA ZP_PTR
    LDA CAMERA_CELL_LINE_PTR+1
    STA ZP_PTR+1
    LDY camera_cell_x
    LDA (ZP_PTR),y
-   INC A
+;   inc A
    CMP #64
    BCC :+
    LDA #63
@@ -3312,7 +3349,7 @@ HEX_DISPLAY_FONT:       ; 8x8x16 color = 32 bytes ... sprite addr 256
 .byte $01, $00, $00, $00
 .byte $00, $00, $00, $00   
 
-; test circle thing ... 70.. 16x16
+; test circle thing ... 16.. 16x16 - 128 bytes.. 
 .byte $00, $00, $00, $AA, $AA, $00, $00, $00
 .byte $00, $00, $AA, $AA, $AA, $AA, $00, $00
 .byte $00, $0A, $AA, $AA, $AA, $AA, $A0, $00
