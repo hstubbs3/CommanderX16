@@ -464,11 +464,70 @@ TODO 	test 8bit with look-aside..
 0200 	Currently is in interesting state... like basal evaporation and wave progression mainly there ... 
 		stick a few wave particles over this baseline simulation and may just be in business?
 
+0715 	finish up the special cases ... and PRG is getting to be 37K with al the reserved memory, so maybe time to push
+		stuff to use banked memory.. 
+		banked RAM is 8K at $A000-$BFFF, using address $0 to set the bank.. bank 1 is first user bank (default)
+TODO 	switch stuff to banked.. 
+	DONE
+0755 	Surprizingly was simple.. now PRG is only 31K! joyous.. didn't even zero out first ...
+0805 	just kidding! added the zeroing out of rest of the bank..
+		WORLD DATA could be compressed and this routine altered ? would also need different update world sim as well.. hmmm
+0810 	back at the water sim - need to add in rest of special cases for 14bit .. 
+0920 	completed row1 and row2... is there faster way to add 16bit nums thought?
+		need to track the carries from the lower bits.. 
+		Say want to add 3 16bit numbers A, B , C , storing result in R -  
+		LDA A_LOW 	;	4 	4
+		ADC B_LOW 	;	4 	8
+		STA R_LOW 	;	4 	12
+		LDA A_HIGH 	;	4 	16
+		ADC B_HIGH 	;	4 	20
+		STA R_HIGH 	;	4 	24
+		LDA R_LOW 	;	4 	28
+		ADC C_LOW 	;	4 	32
+		STA R_LOW 	;	4 	36
+		LDA R_HIGH ;	4 	40
+		ADC C_HIGH ;	4 	44
+		STA R_HIGH 	;	4 	48 	;	48! 
+
+		LDY A_HIGH 	; 	4 	4
+		LDA A_LOW 	;	4 	8
+		ADC B_LOW 	;	4 	12
+		BCC :+ 		;	2/3 	14 	/	15
+		INY 		;	2/ 		16
+		DEC A 		;	2/ 		18
+	  	: ADC C_LOW ; 	4 		22 		19 ;	
+	  	STA R_LOW 	;	4 		26 		23
+	  	TYA 		;	2 		28 		25
+	  	ADC C_HIGH  ; 	4 		32 		29
+	  	STA R_HIGH 	;	4 		36 		33 	... 	umm.. wow... 
+
+	  	old method 4 numbers starting with ABS lookups = 64.. using ZP intermediary for R? 56? 
+	  	LDY A_HIGH 	;	4 	4
+	  	LDA A_LOW 	;	4 	8
+	  	ADC B_LOW 	; 	4 	12
+	  	BCC :+ 		;	2/3 	14 	/	15
+	  	INY 		;	2/ 		16
+	  	DEC A 		;	2/ 		18
+	  	: ADC C_LOW ; 	4 		22 		19
+	  	BCC :+ 		; 	2/3 	24 		22
+	  	INY 		;	2/ 		26 		24
+	  	DEC A 		; 	2/ 		28 		
+	  	: ADC D_LOW ; 	2 		30 		26
+	  	STA R_LOW 	;	4 		34 		30
+	  	TYA 		;	2 		36 		34
+	  	ADC B_HIGH  ; 	4 		40 		38
+	  	ADC C_HIGH 	; 	4 		44 		42
+	  	ADC D_HIGH ; 	4 		48 		46
+	  	STA R_HIGH ; 	4 		52 		50 		;	saves at least 4-6 cycles... potentially ditch the DEC A for 6-8 cycle shave?
+
+
+1045 	OK through row 7 special cases completed, through row 6 ready to go..?
+1115 	appears some issue with row 4-6 .. 
 
 TODO 	Water Sim
 
 
-
+TODO 	alternative WORLD DATA format and update functions... 
 TODO 	SPAN buffer thing / avoid overdraw
 TODO 	implement faster maths for the buffer writing.. 
 TODO 	alternate assets for off-by-one pixel cache writing?
