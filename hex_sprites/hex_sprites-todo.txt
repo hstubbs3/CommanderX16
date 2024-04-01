@@ -525,7 +525,10 @@ TODO 	switch stuff to banked..
 1115 	appears some issue with row 4-6 .. 
 1140 	Oh... I wasn't actually writing out downrights.. 
 	COMMIT 
+1255 	ok back to it I guess.. 
+1430 	OK marking this as done for now maybe.. implement the roaming around bobbin?
 TODO 	Water Sim
+	COMMIT
 
 
 TODO 	alternative WORLD DATA format and update functions... 

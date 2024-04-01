@@ -495,7 +495,7 @@ custom_irq_handler: ; 2E12
  : LDA CURRENT_BITMAP_BUFFER
    EOR LAST_BITMAP_BUFFER  
    BEQ :--- ; if these match then there's nothing to change
-   CLC 
+;   CLC 
    LDA CURRENT_BITMAP_BUFFER  
    STA LAST_BITMAP_BUFFER  
 ;        A        B     CURRENT BITMAP BUFFER
@@ -511,8 +511,8 @@ custom_irq_handler: ; 2E12
    LDA #VRAM_BITMAP_LAYERB>>9
    BRA @GO_SWAP   
 @DISPLAY_B:
-   CMP #192
-   BCC @NOP_nothing_to_do
+   CMP #128
+   BEQ @NOP_nothing_to_do
    STZ CURRENT_BITMAP_BUFFER
    LDA #VRAM_BITMAP_LAYERA>>9   
 @GO_SWAP:
@@ -710,6 +710,36 @@ ODDSTART:
    SOURCE_L = TUB_WORLD_LOW+SELF
    DEST_H = WATER_CALC_SCRATCH+SELF-64
    DEST_L = WATER_CALC_SCRATCH_LOW+SELF-64
+   LDY SOURCE_H            ;  4  4
+   LDA SOURCE_L            ;  4  8
+   ADC SOURCE_L+neighborA  ;  4  12
+   BCC :+                  ;  2/3   14    15
+   INY                     ;  2/    16
+   DEC A                   ;  2/    18
+:  ADC SOURCE_L+neighborB  ;  4     22    19
+   BCC :+                  ;  2/3   24    22
+   INY                     ;  2/    26
+   DEC A                   ;  2/    28
+:  ADC SOURCE_L+neighborC  ;  4     32    26
+   STA DEST_L              ;  4     36    30
+   TYA                     ;  2     38    32
+   ADC SOURCE_H+neighborA    ;  4     42    36    
+   ADC SOURCE_H+neighborB    ;  4     46    40
+   ADC SOURCE_H+neighborC    ;  4     50    44
+   STA DEST_H              ;  4     54    48    not too shabby..
+.endmacro
+
+.macro make_downright_for row, col, neighborA, neighborB, neighborC
+.local SELF 
+.local SOURCE_H
+.local DEST_H
+.local SOURCE_L
+.local DEST_L
+   SELF = (64*row)+col
+   SOURCE_H = TUB_WORLD+SELF
+   SOURCE_L = TUB_WORLD_LOW+SELF
+   DEST_H = WATER_CALC_SCRATCH+SELF
+   DEST_L = WATER_CALC_SCRATCH_LOW+SELF
    LDY SOURCE_H            ;  4  4
    LDA SOURCE_L            ;  4  8
    ADC SOURCE_L+neighborA  ;  4  12
@@ -965,29 +995,150 @@ UPDATE_WATER_SIM:
    STA ZP_PTR+3
    calc_row  6, 13, 59
 
-;   RTS 
+   ; row 8 need UL generated for 11
+   make_upleft_for 8, 11, 0, -63, 0
+
+.macro setup_downright_even row, col, downright
+   LDA TUB_WORLD_LOW+(64*row)+col 
+   ADC TUB_WORLD_LOW+(64*row)+col+downright
+   STA ZP_PTR
+   LDA TUB_WORLD+(64*row)+col 
+   ADC TUB_WORLD+(64*row)+col+downright
+   STA ZP_PTR+1
+.endmacro
+.macro setup_downright_odd row, col, downright
+   LDA TUB_WORLD_LOW+(64*row)+col 
+   ADC TUB_WORLD_LOW+(64*row)+col+downright
+   STA ZP_PTR+2
+   LDA TUB_WORLD+(64*row)+col 
+   ADC TUB_WORLD+(64*row)+col+downright
+   STA ZP_PTR+3
+.endmacro
+   ;  row 7 is EVEN ZP_PTR[0,1]
+   setup_downright_even 7, 59, 64
    calc_row  7, 12, 59
+   ; row 9 needs UL for 10
+   make_upleft_for 9, 10, 0, -63, 0
+   ; row 8 is ODD 
+   setup_downright_odd 8, 59, 64
    calc_row  8, 11, 59
+   ;  row 10 has all UL OK 
+   ;  row 9 will need 10 calc'd special.. 
+   make_upleft_for 10, 10, -64, -63, 0
+   setup_downright_odd 9, 59, 63
    calc_row  9, 11, 59
+.macro calc_from_scratch row, col
+   LDA WATER_CALC_SCRATCH_LOW+(64*row)-64+col
+   ADC WATER_CALC_SCRATCH_LOW+(64*row)+col
+   STA ZP_PTR
+   LDA WATER_CALC_SCRATCH+(64*row)-64+col
+   ADC WATER_CALC_SCRATCH+(64*row)+col
+   ROR 
+   ADC #0   ;  8x -> 4x 
+   LSR 
+   ROR ZP_PTR    ;  4x -> 2x 
+   LSR ; 2x -> 1X H 
+   STA TUB_WORLD+(64*row)+col
+   LDA ZP_PTR 
+   ROR ;  2x -> 1x 
+   STA TUB_WORLD_LOW+(64*row)+col   
+.endmacro
+   calc_from_scratch 9, 10
+
+   ;  row 11 needs UL for 9
+   make_upleft_for 11, 9, 0, -63, 0
+   setup_downright_odd 10, 58, 64
    calc_row 10, 10, 58
+   ;  row 12 has all UL OK 
+   ;  row 11 needs 10 calc'd especial 
+   make_upleft_for 11, 10, 0, -63, 0
+   make_upleft_for 12, 10, -64, -63, 0
+   calc_from_scratch 11, 10
+   setup_downright_odd 11, 58, 63
    calc_row 11, 10, 58
+   ; row 13 needs UL 8 and needs it calc'd especial.. 
+   make_upleft_for 13, 8, 0, -63, 0
+   make_upleft_for 14, 8, -64, -63, 0
+   setup_downright_odd 12, 57, 64
    calc_row 12,  9, 57
+   ; row 14 has all UL already OK 
+   setup_downright_odd 13, 57, 63 
    calc_row 13,  9, 57
+   calc_from_scratch 13, 8
+   ; row 15 needs UL for 7 
+   make_upleft_for 15, 7, 0, -63, 0
+   make_upleft_for 16, 7, -64, -63, 0
+   setup_downright_odd 14, 56, 64
    calc_row 14,  8, 56
+   ; row 16 all set .. 15 needs 7 calc'd special 
+   setup_downright_odd 15, 56, 63
    calc_row 15,  8, 56
+   calc_from_scratch 15, 7
+   ; rows 17/18 needs UL for 6
+   make_upleft_for 17, 6, 0, -63, 0
+   make_upleft_for 18, 6, -64, -63, 0
+   setup_downright_odd 16, 55, 64
    calc_row 16,  7, 55
+   setup_downright_odd 17, 55, 63
    calc_row 17,  7, 55
+   calc_from_scratch 17, 6
+   ; rows 19/20 needs UL for 5
+   make_upleft_for 19, 5, 0, -63, 0
+   make_upleft_for 20, 5, -64, -63, 0
+   setup_downright_odd 18, 54, 64
    calc_row 18,  6, 54
+   setup_downright_odd 19, 54, 63
    calc_row 19,  6, 54
+   calc_from_scratch 19, 5
+   ; rows 21-28 will need ULs for left-most 
+   make_upleft_for 21, 4, 0, -63, 0
+   make_upleft_for 22, 4, -64, -63, 0
+   make_upleft_for 23, 4, -64, -63, 0
+   make_upleft_for 24, 4, -64, -63, 0
+   make_upleft_for 25, 4, -64, -63, 0
+   make_upleft_for 26, 4, -64, -63, 0
+   make_upleft_for 27, 5, -64, -63, 0
+   make_upleft_for 28, 6, -64, -63, 0
+   make_upleft_for 29, 7, -64, -63, 0
+   setup_downright_odd 20, 53, 64 
    calc_row 20,  5, 53
+   setup_downright_odd 21, 53, 63
    calc_row 21,  5, 53
+   calc_from_scratch 21, 4
+   setup_downright_even 22, 52, 63
    calc_row 22,  5, 52
+   calc_from_scratch 22, 4
+   setup_downright_odd 23, 51, 63
    calc_row 23,  5, 51
+   calc_from_scratch 23, 4
+   setup_downright_even 24, 50, 63
    calc_row 24,  5, 50
-   calc_row 25,  6, 48
+   calc_from_scratch 24, 4
+   make_downright_for 25, 49, 0, -1, 0
+   setup_downright_even 25, 48, 63
+   calc_row 25,  5, 48
+   calc_from_scratch 25, 4
+   calc_from_scratch 25, 49   
+   make_downright_for 26, 47, 0, -1, 0
+   setup_downright_odd 6, 46, 63
    calc_row 26,  6, 46
-   calc_row 27,  7, 44
+   calc_from_scratch 26, 4
+   calc_from_scratch 26, 5
+   calc_from_scratch 26, 47
+   make_downright_for 27, 5, 1, 0, 1
+   make_downright_for 27, 45, 0, -1, 0
+   setup_downright_odd 27, 43, 63
+   calc_row 27,  7, 43
+   calc_from_scratch 27, 5
+   calc_from_scratch 27, 6
+   calc_from_scratch 27, 45
+   make_downright_for 28, 6, 1, 0, 1
+   make_downright_for 28, 43, 0, -1, 0
+   setup_downright_odd 28, 42, 63
    calc_row 28,  8, 42
+   calc_from_scratch 28, 6
+   calc_from_scratch 28, 7
+   calc_from_scratch 28, 43
    LDA TUB_WORLD_LOW+(64*29)+41
    STA ZP_PTR
    LDA TUB_WORLD+(64*29)+41
@@ -1486,8 +1637,16 @@ start:
 
 
     LDY camera_cell_x
+    LDA DO_WATER
+    CMP #255
     LDA ($7C),y
-    TAY 
+    BCC :+
+    BMI :+
+    CMP #32
+    BCS :+
+    ADC #8
+    STA ($7C),y
+   :TAY 
 
    CLC
    LDA CAMERA_CENTER_YL
@@ -1549,11 +1708,14 @@ start:
    LDA #63
    ; we're going to pretend the faucet is running...
 ;     STA TUB_WORLD+64+32
-     STA TUB_WORLD+192+55
+ ;    STA TUB_WORLD+192+55
  ;    STA TUB_WORLD+256+18
-     STA TUB_WORLD+(15*64)+8 ;  this is middle row furthest west ( < x )
+     STA TUB_WORLD+(15*64)+7 ;  this is middle row furthest west ( < x )
+     STA TUB_WORLD+(15*64)+8
      STA TUB_WORLD+(15*64)+9
+     STA TUB_WORLD+(14*64)+8
      STA TUB_WORLD+(14*64)+9
+     STA TUB_WORLD+(16*16)+7
      STA TUB_WORLD+(16*64)+8
 : 
 
@@ -1600,12 +1762,12 @@ start:
 ; 192   ready    display  A  is ready for swap
 
 ; OK so we want bit 6 (64) to be set 
+   LDA VSYNC_counter
    BRA :++
-;   LDA #2
 :  
-   wai 
-;   CMP VSYNC_counter
-;   BCS :-
+;   wai 
+   CMP VSYNC_counter
+   BEQ :-
 :  LDA CURRENT_BITMAP_BUFFER
    AND #64
    BNE :--
