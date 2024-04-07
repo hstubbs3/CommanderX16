@@ -530,6 +530,32 @@ TODO 	switch stuff to banked..
 TODO 	Water Sim
 	COMMIT
 
+2024/04/07
+0835 	just got new laptop working, confirmed x16 emulator loads, can assemble project.. 
+		lost commits were mainly around separating world tile map from height data - needs changes to ZigZag mainly..
+		need to get the update function sorted out too.. apparently should be allowing for neg? 
+		effectively height to px function is limited to +52 .. could extend to accepting neg range ?
+		for now have it accept +/-63 as 7bit signed integer ? 
+
+TODO 	update height xfer function to use 7bit signed integers.. 
+	DONE
+0855 	updated CONVERT_HEIGHTS_PIXELS and CONVERT_HEIGHTS_PIXELS_L lookups to do this... tested/works..
+0910	updated CONVERT_HEIGHTS_PIXELS and CONVERT_HEIGHTS_PIXELS_L lookups to do 8bit signed cuz really that is the correct.
+0920 	started separation of world map from height data... 
+
+
+TODO 	separate world tile map from height data ( should be separate tile class data / heights / etc)
+	TODO 	update ZigZag to check MAP data before loading HEIGHT.. 
+
+
+
+TODO 	fix water sim with proper update function ( using 8bit signed integers...)
+
+
+TODO  reorg program flow...  
+TODO 	provide for loading additional files 
+TODO 	Proper keyboard buffer / driver
+TODO 	sort out throttling / framerate smoothing...
 
 TODO 	alternative WORLD DATA format and update functions... 
 TODO 	SPAN buffer thing / avoid overdraw
@@ -539,7 +565,6 @@ TODO 	optimize object list - use classes, store less data within each object..
 TODO 	blitting extra objects to buffer
 
 BUG 	WHY can't copy to sprite attribute table using cache writes and have it work? is just weird... 
-TODO 	Proper keyboard buffer / driver
 TODO 	SNES controller inputs
 
 TODO 	make moving around by X/Y/Z work 
