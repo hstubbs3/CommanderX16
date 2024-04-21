@@ -551,7 +551,18 @@ TODO 	separate world tile map from height data ( should be separate tile class d
 	TODO 	update ZigZag to check MAP data before loading HEIGHT.. 
 	DONE
 	COMMIT
-	
+
+0855 	height function was already set up to do signed .. so can focus on what actually needed for the xfer function...
+		say O goes high... splish... then next update its neighbors should each get 1/n of some amount of xfered. 
+		and O would get 1/n of some amount from the neighbors.. so this is a delta...
+		NEW = OLD - SUM(OLD-NEIGHBOR)/N 
+		NEW = OLD - (OLD - A + OLD - B + OLD - C + OLD - E + OLD - F )/6 
+		NEW = OLD - (6*OLD - A - B - C - D - E -F )/6
+		NEW = OLD - 6*OLD/6 - (A+B+C+D+E+F)/6
+		NEW = average of neighbors ... 
+		is not quite right.. that should only be delta.... like NEW = OLD - averages/2 ? 
+1100 	ok water_test.py seems to have the corrected update function before decay.. will need proper testing..
+	COMMIT
 
 TODO 	fix water sim with proper update function ( using 8bit signed integers...)
 
