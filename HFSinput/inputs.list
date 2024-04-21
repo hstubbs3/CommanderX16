@@ -1,0 +1,173 @@
+ca65 V2.19 - Git b993d88
+Main file   : inputs.s
+Current file: inputs.s
+
+000000r 1               ; 	080D
+000000r 1  4C rr rr     jmp start ; 	3 bytes
+000003r 1               ;	0810 	- 240 bytes available for stuff that doesn't need alignment
+000003r 1  DE AD BE EF  .repeat 28
+000007r 1  DE AD BE EF  
+00000Br 1  DE AD BE EF  
+000073r 1               	.byte $DE,$AD,$BE,$EF
+000073r 1               .endrepeat
+000073r 1               SCRATCH128:
+000073r 1  DE AD BE EF  .repeat 32
+000077r 1  DE AD BE EF  
+00007Br 1  DE AD BE EF  
+0000F3r 1               	.byte $DE,$AD,$BE,$EF
+0000F3r 1               .endrepeat
+0000F3r 1               
+0000F3r 1               CINT              = $FF81
+0000F3r 1               VSYNC_BIT         = $01
+0000F3r 1               ; RAM Interrupt Vectors
+0000F3r 1               IRQVec            = $0314
+0000F3r 1               
+0000F3r 1               ; VERA
+0000F3r 1               VERA_addr_low     = $9F20
+0000F3r 1               VERA_addr_high    = $9F21
+0000F3r 1               VERA_addr_bank    = $9F22
+0000F3r 1               VERA_data0        = $9F23
+0000F3r 1               VERA_data1        = $9F24
+0000F3r 1               VERA_ctrl         = $9F25
+0000F3r 1               VERA_ien          = $9F26
+0000F3r 1               VERA_isr          = $9F27
+0000F3r 1               VERA_dc_video     = $9F29
+0000F3r 1               
+0000F3r 1               .include "HFSinput.s"
+0000F3r 2               HFS_KEYMAP:
+0000F3r 2  00 00 00 00  .res 256,0
+0000F7r 2  00 00 00 00  
+0000FBr 2  00 00 00 00  
+0001F3r 2               
+0001F3r 2               HFS_KEYSTATE:
+0001F3r 2  00 00 00 00  .res 256,0
+0001F7r 2  00 00 00 00  
+0001FBr 2  00 00 00 00  
+0002F3r 2               
+0002F3r 2               
+0002F3r 2               
+0002F3r 2               GETIN             = $FFE4
+0002F3r 2               
+0002F3r 2               HFS_INIT_KEYMAP:
+0002F3r 2  A2 00        	LDX #0
+0002F5r 2  8A            :  TXA
+0002F6r 2  9D rr rr      	STA HFS_KEYMAP,X
+0002F9r 2  E8            	INX
+0002FAr 2  D0 F9         	BNE :-
+0002FCr 2  60            	rts
+0002FDr 2               
+0002FDr 2               HFS_GET_KEYS:
+0002FDr 2  A2 00            LDX #0
+0002FFr 2  A9 00            LDA #0
+000301r 2  9D rr rr      :  STA HFS_KEYSTATE,X
+000304r 2  E8            	INX
+000305r 2  D0 FA         	BNE :-
+000307r 2  80 09         	BRA :++
+000309r 2  A8            :  TAY
+00030Ar 2  BE rr rr      	LDX HFS_KEYMAP,Y
+00030Dr 2  A9 FF            LDA #255
+00030Fr 2  9D rr rr       	STA HFS_KEYSTATE,X
+000312r 2  20 E4 FF      :  JSR GETIN
+000315r 2  C9 00            CMP #0
+000317r 2  D0 F0        	BNE :--
+000319r 2  60               rts
+00031Ar 2               
+00031Ar 1               
+00031Ar 1  00 00        default_irq_vector:  .addr 0
+00031Cr 1  00           VSYNC_counter:       .byte 0
+00031Dr 1  00           LINE_COUNTER: 		 .byte 0
+00031Er 1               
+00031Er 1               ;	The X16 KERNAL uses the following video memory layout:
+00031Er 1               ;
+00031Er 1               ; 	Addresses	Description
+00031Er 1               ; 	$0:0000-$1:2BFF	320x240@256c Bitmap
+00031Er 1               ; 	$1:2C00-$1:2FFF	unused (1024 bytes)
+00031Er 1               ; 	$1:3000-$1:AFFF	Sprite Image Data (up to $1000 per sprite at 64x64 8-bit)
+00031Er 1               ; 	$1:B000-$1:EBFF	Text Mode
+00031Er 1               ; 	$1:EC00-$1:EFFF	unused (1024 bytes)
+00031Er 1               ; 	$1:F000-$1:F7FF	Charset
+00031Er 1               ; 	$1:F800-$1:F9BF	unused (448 bytes)
+00031Er 1               ; 	$1:F9C0-$1:F9FF	VERA PSG Registers (16 x 4 bytes)
+00031Er 1               ; 	$1:FA00-$1:FBFF	VERA Color Palette (256 x 2 bytes)
+00031Er 1               ; 	$1:FC00-$1:FFFF	VERA Sprite Attributes (128 x 8 bytes)
+00031Er 1               
+00031Er 1               
+00031Er 1               custom_irq_handler: ; 2E12
+00031Er 1  AD 27 9F        lda VERA_isr
+000321r 1  29 01           and #VSYNC_BIT
+000323r 1  F0 03           BEQ :+
+000325r 1  EE rr rr        INC VSYNC_counter
+000328r 1               ;   jmp (default_irq_vector)
+000328r 1               ;   STA VERA_data0
+000328r 1  60            : rts
+000329r 1  6C rr rr      jmp (default_irq_vector)
+00032Cr 1               
+00032Cr 1               start:
+00032Cr 1  AD 14 03       lda IRQVec
+00032Fr 1  8D rr rr       sta default_irq_vector
+000332r 1  AD 15 03       lda IRQVec+1
+000335r 1  8D rr rr       sta default_irq_vector+1
+000338r 1  78             sei ; disable IRQ while vector is changing
+000339r 1  A9 rr          lda #<custom_irq_handler
+00033Br 1  8D 14 03       sta IRQVec
+00033Er 1  A9 rr          lda #>custom_irq_handler
+000340r 1  8D 15 03       sta IRQVec+1
+000343r 1  A9 01          lda #VSYNC_BIT ; make VERA only generate VSYNC IRQs
+000345r 1  8D 26 9F       sta VERA_ien
+000348r 1  58             cli ; enable IRQ now that vector is properly set
+000349r 1               
+000349r 1  20 rr rr       JSR HFS_INIT_KEYMAP
+00034Cr 1  9C rr rr       STZ HFS_KEYMAP+32 ;	sets spacebar to be exit key
+00034Fr 1               
+00034Fr 1               FRAMELOOP:
+00034Fr 1  AD rr rr     	LDA VSYNC_counter
+000352r 1  C9 02        	CMP #2
+000354r 1  B0 08        	BCS :++
+000356r 1  CB             : wai
+000357r 1  AD rr rr         LDA VSYNC_counter
+00035Ar 1  C9 02            CMP #2
+00035Cr 1  90 F8        	BCC :-
+00035Er 1                 :
+00035Er 1  9C rr rr       	STZ VSYNC_counter
+000361r 1               
+000361r 1  9C 25 9F       	STZ VERA_ctrl
+000364r 1  9C 20 9F       	STZ VERA_addr_low
+000367r 1  AD rr rr       	LDA LINE_COUNTER
+00036Ar 1  1A             	INC A
+00036Br 1  C9 3C          	CMP #60
+00036Dr 1  90 03          	BCC :+
+00036Fr 1  A9 00          	LDA #0
+000371r 1  18             	CLC
+000372r 1  8D rr rr       : STA LINE_COUNTER
+000375r 1  69 B0          	ADC #$B0
+000377r 1  8D 21 9F       	STA VERA_addr_high
+00037Ar 1  A9 21          	LDA #$21
+00037Cr 1  8D 22 9F       	STA VERA_addr_bank
+00037Fr 1               
+00037Fr 1  AD rr rr       	LDA LINE_COUNTER
+000382r 1  8D 23 9F       	STA VERA_data0
+000385r 1               
+000385r 1                ; 	JSR HFS_GET_KEYS
+000385r 1               
+000385r 1  A2 00          	LDX #0
+000387r 1  3C rr rr       : BIT HFS_KEYSTATE,X
+00038Ar 1  10 03          	BPL :+
+00038Cr 1  8E 23 9F       	STX VERA_data0
+00038Fr 1  E8             : INX
+000390r 1  D0 F5          	BNE :--
+000392r 1               
+000392r 1  2C rr rr       	BIT HFS_KEYSTATE ; entry 0 is for exiting..
+000395r 1  10 B8          	BPL FRAMELOOP
+000397r 1               
+000397r 1               
+000397r 1               CLEANUP_AND_EXIT:
+000397r 1                  ; restore default IRQ vector
+000397r 1  78              sei
+000398r 1  AD rr rr        lda default_irq_vector
+00039Br 1  8D 14 03        sta IRQVec
+00039Er 1  AD rr rr        lda default_irq_vector+1
+0003A1r 1  8D 15 03        sta IRQVec+1
+0003A4r 1  58              cli
+0003A5r 1               ;   jsr CINT we're not trashing screen mode this time so... ?
+0003A5r 1  60              rts
+0003A5r 1               

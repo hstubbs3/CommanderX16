@@ -1,0 +1,15 @@
+HFSinput-todo.txt
+
+2024/04/13
+0700 	Start work on keyboard scanning routines, figuring stuff out
+0810 	yeah, GETIN is NOT going to work, will need to hook in somewhere lower... ? 
+
+2024/04/21
+0735 	maybe GETIN can work but it has to be further up? no... if it depends on typematic...?
+		need to track up/down events.. 
+		
+
+
+
+TODO 	create proper kbd scanning routine to populate keystate
+

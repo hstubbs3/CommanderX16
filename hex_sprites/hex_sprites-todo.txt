@@ -543,11 +543,15 @@ TODO 	update height xfer function to use 7bit signed integers..
 0910	updated CONVERT_HEIGHTS_PIXELS and CONVERT_HEIGHTS_PIXELS_L lookups to do 8bit signed cuz really that is the correct.
 0920 	started separation of world map from height data... 
 
+2024/04/21
+0830 	getting back at it.. first, stop copy of the map to tubworld.. OK 
 
+0850 	OK world separate from tile data.. check! 
 TODO 	separate world tile map from height data ( should be separate tile class data / heights / etc)
 	TODO 	update ZigZag to check MAP data before loading HEIGHT.. 
-
-
+	DONE
+	COMMIT
+	
 
 TODO 	fix water sim with proper update function ( using 8bit signed integers...)
 

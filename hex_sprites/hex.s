@@ -1238,30 +1238,14 @@ UPDATE_WATER_SIM:
 start:
 
   ; copy tub data to bank and zero rest of it.. 
-    LDX #0
-    LDY #8
-    LDA #$20
-    STA @LOADA_TUB_WORLD_INC+2
-    LDA #$A0
-    STA @STOREA_TUB_WORLD+2
-    BRA @LOADA_TUB_WORLD_INC
-@COPY_TUB_LOOP:
-    INC @LOADA_TUB_WORLD_INC+2
-    INC @STOREA_TUB_WORLD+2
-@LOADA_TUB_WORLD_INC:
-    LDA TUB_WORLD_INC,X
-@STOREA_TUB_WORLD:
-    STA TUB_WORLD,X
-    INX 
-    BNE @LOADA_TUB_WORLD_INC
-    DEY 
-    BNE @COPY_TUB_LOOP
-
-   LDY #24
+   LDX #0
+   LDY #32
+   LDA #$9F
+   STA @WIPE_BANK_THINGER+2
 @WIPE_BANK_LOOP:
    INC @WIPE_BANK_THINGER+2
 @WIPE_BANK_THINGER:
-   STZ $A700,X
+   STZ $A000,X
    DEX 
    BNE @WIPE_BANK_THINGER
    DEY 
@@ -2295,6 +2279,11 @@ PWOL_CENTER_Y_TOP     =  ZP_PTR+50
 PWOL_TOP_CHECK = ZP_PTR+51
 PWOL_BOT_CHECK = ZP_PTR+52
 
+PWOL_MAP_PTR_AL = ZP_PTR+53
+PWOL_MAP_PTR_AH = ZP_PTR+54
+PWOL_MAP_PTR_BL = ZP_PTR+55
+PWOL_MAP_PTR_BH = ZP_PTR+56
+
 TRY_AGAIN = 6
    LDA camera_screen_out_top
    STA PWOL_TOP_CHECK
@@ -2407,6 +2396,13 @@ TRY_AGAIN = 6
     STA PWOL_TUB_PTR_AH
     STA PWOL_TUB_PTR_BH
 
+    LDA CAMERA_WORLD_LINE_PTR
+    STA PWOL_MAP_PTR_AL
+    STA PWOL_MAP_PTR_BL
+    LDA CAMERA_WORLD_LINE_PTR+1
+    STA PWOL_MAP_PTR_AH
+    STA PWOL_MAP_PTR_BH
+
    ; STZ VERA_ctrl
    ; LDA #<(VRAM_TEXT_SCREEN+17*64)
    ; STA VERA_addr_low
@@ -2425,7 +2421,7 @@ TRY_AGAIN = 6
     @zigzag_A_right:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAR_NEXT ; if we're outside we'll just skip is OK here
-        LDA (PWOL_TUB_PTR_AL),y
+        LDA (PWOL_MAP_PTR_AL),y
         CMP #129
         BCS @ZAR_NEXT ; this isn't a valid spot in the level map.. 
         ; bytes 1 and 4 were updated when we cleared the object list
@@ -2443,8 +2439,10 @@ TRY_AGAIN = 6
         TXA ; push new next to the Z buffer spot
         STA (PWOL_Z_STARTS_PTR) ;  and the new next gets saved back the Z_starts... otay.. start filling in data..  
         ; bytes .1..4.6 filled in already.. 
-        LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-        BPL @ZAR_INSIDE_TUB 
+        LDA (PWOL_MAP_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BMI @ZAR_HIT_WALL_OUCH 
+        LDA (PWOL_TUB_PTR_AL),y 
+        BRA @ZAR_INSIDE_TUB
       @ZAR_HIT_WALL_OUCH:
           LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
@@ -2531,6 +2529,12 @@ TRY_AGAIN = 6
          BCS :+
          JMP @zigzag_B
        : STA PWOL_TUB_PTR_AH
+       	 LDA PWOL_MAP_PTR_AL
+       	 SBC #64
+       	 STA PWOL_MAP_PTR_AL
+       	 LDA PWOL_MAP_PTR_AH
+       	 SBC #0
+       	 STA PWOL_MAP_PTR_AH
 
          CLC 
          LDA PWOL_CURRENT_XL
@@ -2585,7 +2589,7 @@ TRY_AGAIN = 6
    @zigzag_A_left:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZAL_NEXT ; if we're outside we'll just skip is OK 
-        LDA (PWOL_TUB_PTR_AL),y
+        LDA (PWOL_MAP_PTR_AL),y
         CMP #129
         BCS @ZAL_NEXT ; we're outside level. 
 
@@ -2606,8 +2610,10 @@ TRY_AGAIN = 6
         ; bytes .1..4.6 filled in already.. 
         LDA WORLD_SPRITE_NUM
         STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
-        LDA (PWOL_TUB_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-        BPL @ZAL_INSIDE_TUB 
+        LDA (PWOL_MAP_PTR_AL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BMI @ZAL_HIT_WALL_OUCH 
+        LDA (PWOL_TUB_PTR_AL),y 
+        BRA @ZAL_INSIDE_TUB
       @ZAL_HIT_WALL_OUCH:
           LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
@@ -2689,6 +2695,12 @@ TRY_AGAIN = 6
          BCS :+
          JMP @zigzag_B
        : STA PWOL_TUB_PTR_AH
+         LDA PWOL_MAP_PTR_AL
+         SBC #64
+         STA PWOL_MAP_PTR_AL
+         LDA PWOL_MAP_PTR_AH
+         SBC #0
+         STA PWOL_MAP_PTR_AH
 
 
          CLC 
@@ -2769,7 +2781,7 @@ TRY_AGAIN = 6
    @zigzag_B_left:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZBL_NEXT ; if we're outside we'll just skip is OK 
-        LDA (PWOL_TUB_PTR_BL),y
+        LDA (PWOL_MAP_PTR_BL),y
         CMP #129
         BCS @ZBL_NEXT ; we're outside level. 
 
@@ -2790,8 +2802,10 @@ TRY_AGAIN = 6
         ; bytes .1..4.6 filled in already.. 
         LDA WORLD_SPRITE_NUM
         STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
-        LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-        BPL @ZBL_INSIDE_TUB 
+        LDA (PWOL_MAP_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BMI @ZBL_HIT_WALL_OUCH 
+        LDA (PWOL_TUB_PTR_BL),y 
+        BRA @ZBL_INSIDE_TUB
       @ZBL_HIT_WALL_OUCH:
           LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
@@ -2876,6 +2890,12 @@ TRY_AGAIN = 6
          rts
        : STA PWOL_TUB_PTR_BH
 
+       	 LDA PWOL_MAP_PTR_BL
+       	 ADC #64
+       	 STA PWOL_MAP_PTR_BL
+       	 LDA PWOL_MAP_PTR_BH
+       	 ADC #0
+       	 STA PWOL_MAP_PTR_BH
 
          CLC 
 
@@ -2938,7 +2958,7 @@ TRY_AGAIN = 6
     @zigzag_B_right:
         CPY #64  ;  make sure we don't go outside level.. 
         BCS @ZBR_NEXT ; if we're outside we'll just skip is OK 
-        LDA (PWOL_TUB_PTR_BL),y
+        LDA (PWOL_MAP_PTR_BL),y
         CMP #129
         BCS @ZBR_NEXT ; we're outside level. 
 
@@ -2959,8 +2979,10 @@ TRY_AGAIN = 6
         ; bytes .1..4.6 filled in already.. 
         LDA WORLD_SPRITE_NUM
         STA OBJECT_LIST_BYTE0_ADDRLOW,X  ;   most of the time will be setting this anyway.. 
-        LDA (PWOL_TUB_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
-        BPL @ZBR_INSIDE_TUB 
+        LDA (PWOL_MAP_PTR_BL),y     ; get value of world at this point - 0-127=height, 128=wall, 129+ invalid
+        BMI @ZBR_HIT_WALL_OUCH 
+        LDA (PWOL_TUB_PTR_BL),y 
+        BRA @ZBR_INSIDE_TUB
       @ZBR_HIT_WALL_OUCH:
           LDA WORLD_WALL_SPRITE_NUM
           STA OBJECT_LIST_BYTE0_ADDRLOW,X ; hit the wall, ouch.. write wall stuff
@@ -3044,6 +3066,13 @@ TRY_AGAIN = 6
          BCC :+
          rts
        : STA PWOL_TUB_PTR_BH
+
+         LDA PWOL_MAP_PTR_BL
+         ADC #64 ;   0,-1
+         STA PWOL_MAP_PTR_BL
+         LDA PWOL_MAP_PTR_BH
+         ADC #0
+         STA PWOL_MAP_PTR_BH
 
          CLC 
          LDA PWOL_CURRENT_XL
