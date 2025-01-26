@@ -7,7 +7,11 @@ HFSinput-todo.txt
 2024/04/21
 0735 	maybe GETIN can work but it has to be further up? no... if it depends on typematic...?
 		need to track up/down events.. 
-		
+
+0815 	oh.. this will require deeper research - 
+		https://cx16forum.com/forum/viewtopic.php?t=6429&sid=cc3234ea60cdbf1b5fe4a9446b1ebaca&start=10
+
+		will put pin in this for now and get back to the hex_sprites stuff.. (could use joystick routines for now?)
 
 
 

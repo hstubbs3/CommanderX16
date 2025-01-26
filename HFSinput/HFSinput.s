@@ -15,20 +15,18 @@ HFS_INIT_KEYMAP:
  	INX 
  	BNE :-
  	rts
-
-HFS_DEC_KEYS:
+ 	
+HFS_GET_KEYS:
     LDX #0
     LDA #0
- : STA HFS_KEYSTATE,X
+ :  STA HFS_KEYSTATE,X
  	INX 
  	BNE :-
-   rts
-
+ 	BRA :++
  :  TAY
-   LDX HFS_KEYMAP,Y
+ 	LDX HFS_KEYMAP,Y
     LDA #255
-   STA HFS_KEYSTATE,X 
-HFS_GET_KEY:
+  	STA HFS_KEYSTATE,X 
  :  JSR GETIN
     CMP #0
 	BNE :--
